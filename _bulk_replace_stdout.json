@@ -1,0 +1,911 @@
+{
+  "files_changed": 178,
+  "total_replacements": 1309,
+  "details": {
+    "src/components/responsive/layout/ResponsiveCard.jsx": {
+      "rounded-[0.875rem]": 1,
+      "border-[#D1D5DB]": 1
+    },
+    "src/components/responsive/Chats/ChatsTablet.jsx": {
+      "text-[#1A1A2E]": 1,
+      "bg-[#F3F4F6]": 1,
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/category/category-filter-sheet.jsx": {
+      "text-[#6B7280]": 6,
+      "text-[#1A1A2E]": 5,
+      "rounded-[0.875rem]": 4,
+      "bg-[#F3F4F6]": 4,
+      "bg-white": 4
+    },
+    "src/components/responsive/Profile/ProfileTablet.jsx": {
+      "bg-[#F7F8FC]": 2,
+      "text-[#1A1A2E]": 1
+    },
+    "src/components/notifications/notification-item.jsx": {
+      "text-[#6B7280]": 2,
+      "text-[#1A1A2E]": 1,
+      "bg-[#F3F4F6]": 1,
+      "bg-white": 1
+    },
+    "src/components/provider-booking/provider-reviews-panel.jsx": {
+      "text-[#6B7280]": 7,
+      "border-[#D1D5DB]": 5,
+      "text-[#1A1A2E]": 4,
+      "bg-white": 4,
+      "bg-[#F3F4F6]": 1,
+      "rounded-[0.875rem]": 6
+    },
+    "src/components/responsive/Chats/ChatsMobile.jsx": {
+      "text-[#1A1A2E]": 1,
+      "bg-[#F3F4F6]": 1,
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/responsive/Profile/ProfileMobile.jsx": {
+      "bg-[#F7F8FC]": 2,
+      "text-[#1A1A2E]": 1
+    },
+    "src/components/ui/drawer.jsx": {
+      "bg-white": 2,
+      "bg-[#F3F4F6]": 1
+    },
+    "src/components/responsive/Wallet/wallet-parts.jsx": {
+      "text-[#6B7280]": 2,
+      "text-[#1A1A2E]": 3,
+      "bg-white": 1
+    },
+    "src/components/appointments/booking-details-view.jsx": {
+      "text-[#6B7280]": 2,
+      "bg-[#F7F8FC]": 1,
+      "border-[#D1D5DB]": 7,
+      "text-[#1A1A2E]": 10,
+      "bg-white": 9,
+      "bg-[#F3F4F6]": 3,
+      "rounded-[0.875rem]": 10
+    },
+    "src/components/appointments/bookings-calendar-view.jsx": {
+      "text-[#6B7280]": 3,
+      "border-[#D1D5DB]": 2,
+      "text-[#1A1A2E]": 2,
+      "rounded-[0.875rem]": 1,
+      "bg-[#F3F4F6]": 1
+    },
+    "src/components/chats/call-controls.jsx": {
+      "bg-white": 4
+    },
+    "src/components/responsive/ChatDetail/index.jsx": {
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/provider-booking/provider-services-panel.jsx": {
+      "text-[#6B7280]": 8,
+      "border-[#D1D5DB]": 11,
+      "text-[#1A1A2E]": 6,
+      "bg-white": 9,
+      "bg-[#F3F4F6]": 1,
+      "rounded-[0.875rem]": 1
+    },
+    "src/components/appointments/call-restriction-modal.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 1,
+      "rounded-[0.875rem]": 2,
+      "bg-white": 1
+    },
+    "src/components/provider-booking/report-doctor-modal.jsx": {
+      "text-[#6B7280]": 5,
+      "border-[#D1D5DB]": 2,
+      "text-[#1A1A2E]": 4,
+      "rounded-[0.875rem]": 4,
+      "bg-white": 2
+    },
+    "src/components/addresses/address-map-view.jsx": {
+      "text-[#6B7280]": 2,
+      "text-[#1A1A2E]": 2,
+      "rounded-[0.875rem]": 2,
+      "bg-white": 2
+    },
+    "src/components/addresses/address-page-shell.jsx": {
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/provider-booking/reels/reels-sheet.jsx": {
+      "text-[#6B7280]": 1,
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 2,
+      "bg-[#F3F4F6]": 1,
+      "bg-white": 1
+    },
+    "src/components/responsive/primitives/Skeleton.jsx": {
+      "border-[#D1D5DB]": 1,
+      "rounded-[0.875rem]": 2,
+      "bg-white": 1
+    },
+    "src/components/appointments/booking-list-card.jsx": {
+      "text-[#6B7280]": 5,
+      "border-[#D1D5DB]": 2,
+      "text-[#1A1A2E]": 3,
+      "bg-white": 1,
+      "bg-[#F3F4F6]": 3,
+      "rounded-[0.875rem]": 2
+    },
+    "src/components/responsive/Saved/SavedTablet.jsx": {
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/provider-booking/doctor-profile-sidebar.jsx": {
+      "text-[#6B7280]": 10,
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 1,
+      "rounded-[0.875rem]": 8,
+      "bg-white": 12
+    },
+    "src/components/responsive/Filter/FilterTablet.jsx": {
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/home/service-card.jsx": {
+      "text-[#6B7280]": 1,
+      "border-[#D1D5DB]": 2,
+      "text-[#1A1A2E]": 3,
+      "bg-white": 2,
+      "bg-[#F3F4F6]": 1,
+      "rounded-[0.875rem]": 2
+    },
+    "src/components/appointments/booking-empty-state.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 1,
+      "rounded-[0.875rem]": 1
+    },
+    "src/components/video-call/video-player.jsx": {
+      "text-[#6B7280]": 1,
+      "bg-[#F3F4F6]": 1
+    },
+    "src/components/provider-booking/reels/reel-slide.jsx": {
+      "rounded-[0.875rem]": 3,
+      "bg-white": 1
+    },
+    "src/components/responsive/WalletOffers/WalletOffersTablet.jsx": {
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/shared/provider-card.jsx": {
+      "text-[#6B7280]": 4,
+      "text-[#1A1A2E]": 1
+    },
+    "src/components/profile/profile-view.jsx": {
+      "text-[#6B7280]": 4,
+      "text-[#1A1A2E]": 9,
+      "rounded-[0.875rem]": 5,
+      "bg-white": 10,
+      "bg-[#F7F8FC]": 2
+    },
+    "src/components/addresses/delete-address-modal.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 1,
+      "rounded-[0.875rem]": 2,
+      "bg-[#F3F4F6]": 2,
+      "bg-white": 1
+    },
+    "src/components/provider-booking/provider-booking-summary.jsx": {
+      "text-[#6B7280]": 5,
+      "border-[#D1D5DB]": 2,
+      "rounded-[0.875rem]": 2,
+      "bg-white": 3
+    },
+    "src/components/responsive/WalletOffers/wallet-offers-parts.jsx": {
+      "text-[#6B7280]": 2,
+      "border-[#D1D5DB]": 2,
+      "text-[#1A1A2E]": 2,
+      "rounded-[0.875rem]": 1,
+      "bg-white": 3
+    },
+    "src/components/responsive/Booking/BookingTablet.jsx": {
+      "bg-white": 1
+    },
+    "src/components/appointments/rebook-appointment-modal.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 3,
+      "rounded-[0.875rem]": 5,
+      "bg-[#F3F4F6]": 2,
+      "bg-white": 3
+    },
+    "src/components/provider-booking/branch-picker-dialog.jsx": {
+      "text-[#6B7280]": 2,
+      "border-[#D1D5DB]": 3,
+      "text-[#1A1A2E]": 1,
+      "bg-white": 2
+    },
+    "src/components/responsive/ProviderDetail/provider-detail-layout.jsx": {
+      "border-[#D1D5DB]": 2,
+      "rounded-[0.875rem]": 1,
+      "bg-white": 1
+    },
+    "src/components/responsive/ProviderDetail/ProviderDetailMobile.jsx": {
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/home/category-item.jsx": {
+      "text-[#1A1A2E]": 2
+    },
+    "src/components/responsive/WalletAddMoney/wallet-add-money-parts.jsx": {
+      "text-[#6B7280]": 4,
+      "border-[#D1D5DB]": 7,
+      "text-[#1A1A2E]": 6,
+      "rounded-[0.875rem]": 4,
+      "bg-white": 7
+    },
+    "src/components/responsive/CategoryListing/CategoryListingDesktop.jsx": {
+      "text-[#6B7280]": 2,
+      "border-[#D1D5DB]": 2,
+      "hover:bg-[#F7F8FC]": 1,
+      "bg-white": 1,
+      "text-[#1A1A2E]": 4
+    },
+    "src/components/chats/message-input.jsx": {
+      "text-[#6B7280]": 1,
+      "border-[#D1D5DB]": 1,
+      "bg-white": 1
+    },
+    "src/components/responsive/Referrals/referrals-parts.jsx": {
+      "text-[#6B7280]": 7,
+      "rounded-[0.875rem]": 1,
+      "bg-[#F3F4F6]": 1
+    },
+    "src/components/responsive/Shorts/ShortsShared.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 2,
+      "bg-[#F7F8FC]": 3
+    },
+    "src/components/responsive/navigation/DesktopSidebar.jsx": {
+      "hover:bg-[#F7F8FC]": 1,
+      "border-[#D1D5DB]": 3,
+      "text-[#1A1A2E]": 3,
+      "bg-white": 1,
+      "text-[#6B7280]": 2,
+      "rounded-[0.875rem]": 3
+    },
+    "src/components/provider-booking/block-doctor-modal.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 2,
+      "rounded-[0.875rem]": 3,
+      "bg-[#F3F4F6]": 2,
+      "bg-white": 1
+    },
+    "src/components/forms/search-input.jsx": {
+      "text-[#6B7280]": 1
+    },
+    "src/components/responsive/Chats/ChatsDesktop.jsx": {
+      "text-[#1A1A2E]": 1,
+      "bg-[#F3F4F6]": 1,
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/chats/chat-workspace.jsx": {
+      "border-[#D1D5DB]": 1,
+      "bg-white": 1
+    },
+    "src/components/provider-booking/provider-booking-hero.jsx": {
+      "bg-white": 8,
+      "text-[#1A1A2E]": 5
+    },
+    "src/components/provider-booking/reels/reels-modal.jsx": {
+      "text-[#6B7280]": 1,
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 2,
+      "bg-[#F3F4F6]": 1,
+      "bg-white": 1
+    },
+    "src/components/responsive/Appointments/AppointmentsMobile.jsx": {
+      "bg-white": 1
+    },
+    "src/components/responsive/Profile/ProfileDesktop.jsx": {
+      "text-[#1A1A2E]": 1
+    },
+    "src/components/responsive/Shorts/ShortsContent.jsx": {
+      "bg-white": 2
+    },
+    "src/components/layout/provider-nav.jsx": {
+      "text-[#6B7280]": 3,
+      "border-[#D1D5DB]": 4,
+      "text-[#1A1A2E]": 2,
+      "rounded-[0.875rem]": 2,
+      "bg-[#F3F4F6]": 2
+    },
+    "src/components/addresses/address-form-view.jsx": {
+      "text-[#1A1A2E]": 5,
+      "rounded-[0.875rem]": 3,
+      "bg-white": 3
+    },
+    "src/components/providers/providers-filter-sheet.jsx": {
+      "text-[#6B7280]": 3,
+      "text-[#1A1A2E]": 4,
+      "rounded-[0.875rem]": 1,
+      "bg-[#F3F4F6]": 2,
+      "bg-white": 2
+    },
+    "src/components/responsive/Appointments/AppointmentsTablet.jsx": {
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/responsive/Location/index.jsx": {
+      "text-[#6B7280]": 1,
+      "bg-white": 1
+    },
+    "src/components/shared/provider-wishlist-button.jsx": {
+      "bg-[#F3F4F6]": 2
+    },
+    "src/components/ui/skeleton.jsx": {
+      "rounded-[0.875rem]": 1,
+      "bg-[#F3F4F6]": 1
+    },
+    "src/components/appointments/cancel-appointment-modal.jsx": {
+      "text-[#6B7280]": 2,
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 3,
+      "bg-white": 2,
+      "bg-[#F3F4F6]": 2,
+      "rounded-[0.875rem]": 3
+    },
+    "src/components/addresses/address-list-view.jsx": {
+      "text-[#6B7280]": 8,
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 3,
+      "bg-white": 5,
+      "bg-[#F3F4F6]": 1,
+      "rounded-[0.875rem]": 1
+    },
+    "src/components/responsive/Shorts/ShortsMobile.jsx": {
+      "border-[#D1D5DB]": 2,
+      "bg-[#F7F8FC]": 2,
+      "bg-white": 2
+    },
+    "src/components/responsive/ChatDetail/chat-detail-parts.jsx": {
+      "text-[#1A1A2E]": 1,
+      "bg-[#F3F4F6]": 1,
+      "bg-white": 1
+    },
+    "src/components/layout/user-nav.jsx": {
+      "text-[#6B7280]": 2,
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 6,
+      "rounded-[0.875rem]": 2,
+      "bg-white": 1
+    },
+    "src/components/responsive/Language/LanguageTablet.jsx": {
+      "border-[#D1D5DB]": 1,
+      "bg-[#F7F8FC]": 1,
+      "bg-white": 1
+    },
+    "src/components/responsive/Booking/BookingMobile.jsx": {
+      "bg-white": 1
+    },
+    "src/components/notifications/notification-filter-tabs.jsx": {
+      "bg-white": 1,
+      "text-[#1A1A2E]": 1
+    },
+    "src/components/responsive/ChatDetail/ChatDetailTablet.jsx": {
+      "border-[#D1D5DB]": 1,
+      "bg-[#F7F8FC]": 1,
+      "bg-white": 1
+    },
+    "src/components/category/category-listing-header.jsx": {
+      "text-[#6B7280]": 2,
+      "border-[#D1D5DB]": 2,
+      "text-[#1A1A2E]": 6,
+      "bg-white": 1
+    },
+    "src/components/places/google-places-autocomplete.jsx": {
+      "text-[#6B7280]": 2,
+      "border-[#D1D5DB]": 1,
+      "rounded-[0.875rem]": 1,
+      "bg-[#F3F4F6]": 1
+    },
+    "src/components/responsive/Home/HomeDesktop.jsx": {
+      "text-[#6B7280]": 3,
+      "border-[#D1D5DB]": 2,
+      "text-[#1A1A2E]": 4,
+      "rounded-[0.875rem]": 2,
+      "bg-white": 3
+    },
+    "src/components/addresses/address-search-view.jsx": {
+      "text-[#6B7280]": 2,
+      "text-[#1A1A2E]": 1,
+      "rounded-[0.875rem]": 3,
+      "bg-white": 4
+    },
+    "src/components/provider-booking/reels/reels-sheets.jsx": {
+      "text-[#6B7280]": 19,
+      "border-[#D1D5DB]": 9,
+      "text-[#1A1A2E]": 14,
+      "bg-white": 10,
+      "bg-[#F3F4F6]": 3,
+      "rounded-[0.875rem]": 4
+    },
+    "src/components/responsive/ChatDetail/ChatDetailMobile.jsx": {
+      "bg-white": 1,
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/forms/password-input.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 1
+    },
+    "src/components/addresses/add-address-button.jsx": {
+      "rounded-[0.875rem]": 1
+    },
+    "src/components/responsive/PackageDetail/PackageDetailDesktop.jsx": {
+      "hover:bg-[#F7F8FC]": 3,
+      "border-[#D1D5DB]": 3,
+      "text-[#1A1A2E]": 4,
+      "bg-white": 2,
+      "text-[#6B7280]": 6,
+      "rounded-[0.875rem]": 1
+    },
+    "src/components/provider-booking/services-sheet.jsx": {
+      "text-[#6B7280]": 4,
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 1,
+      "rounded-[0.875rem]": 1,
+      "bg-white": 2
+    },
+    "src/components/chats/voice-call-layout.jsx": {
+      "bg-white": 1
+    },
+    "src/components/home/home-header.jsx": {
+      "text-[#6B7280]": 4,
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 5,
+      "bg-white": 2,
+      "bg-[#F3F4F6]": 3,
+      "rounded-[0.875rem]": 1
+    },
+    "src/components/appointments/booking-tab-bar.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 2,
+      "bg-white": 2
+    },
+    "src/components/chats/chat-header.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 1,
+      "bg-white": 1
+    },
+    "src/components/responsive/Filter/FilterMobile.jsx": {
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/chats/message-bubble.jsx": {
+      "text-[#6B7280]": 2,
+      "text-[#1A1A2E]": 2,
+      "bg-[#F3F4F6]": 1,
+      "bg-white": 1
+    },
+    "src/components/responsive/Category/CategoryDesktop.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 1
+    },
+    "src/components/responsive/Saved/SavedMobile.jsx": {
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/responsive/Profile/profile-parts.jsx": {
+      "text-[#6B7280]": 4,
+      "text-[#1A1A2E]": 6,
+      "rounded-[0.875rem]": 4,
+      "bg-white": 9
+    },
+    "src/components/responsive/Search/SearchMobile.jsx": {
+      "text-[#6B7280]": 3,
+      "border-[#D1D5DB]": 2,
+      "text-[#1A1A2E]": 3,
+      "bg-white": 1
+    },
+    "src/components/ui/select.jsx": {
+      "text-[#6B7280]": 1,
+      "bg-white": 1
+    },
+    "src/components/chats/call-restriction-modal.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 1,
+      "rounded-[0.875rem]": 2,
+      "bg-white": 1
+    },
+    "src/components/responsive/primitives/EmptyState.jsx": {
+      "text-[#6B7280]": 1
+    },
+    "src/components/home/special-packages-showcase.jsx": {
+      "text-[#6B7280]": 4,
+      "text-[#1A1A2E]": 1,
+      "bg-white": 1
+    },
+    "src/components/ui/card.jsx": {
+      "text-[#6B7280]": 1,
+      "border-[#D1D5DB]": 1,
+      "rounded-[0.875rem]": 1
+    },
+    "src/components/responsive/Search/index.jsx": {
+      "border-[#D1D5DB]": 1,
+      "bg-[#F3F4F6]": 1,
+      "bg-white": 1
+    },
+    "src/components/responsive/CallVideo/CallVideoDesktop.jsx": {
+      "bg-white": 4
+    },
+    "src/components/responsive/Search/SearchDesktop.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 1
+    },
+    "src/components/provider-booking/provider-videos-panel.jsx": {
+      "rounded-[0.875rem]": 1,
+      "text-[#6B7280]": 1
+    },
+    "src/components/responsive/Service/ServiceTablet.jsx": {
+      "text-[#6B7280]": 1
+    },
+    "src/components/responsive/DoctorListing/index.jsx": {
+      "border-[#D1D5DB]": 1,
+      "bg-[#F3F4F6]": 1
+    },
+    "src/components/responsive/Booking/index.jsx": {
+      "text-[#6B7280]": 2
+    },
+    "src/components/provider-booking/provider-packages-panel.jsx": {
+      "text-[#6B7280]": 2,
+      "text-[#1A1A2E]": 1,
+      "rounded-[0.875rem]": 2,
+      "bg-white": 1
+    },
+    "src/components/responsive/ProviderDetail/ProviderDetailDesktop.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 1
+    },
+    "src/components/responsive/Service/ServiceMobile.jsx": {
+      "text-[#6B7280]": 1
+    },
+    "src/components/responsive/primitives/PrimaryButton.jsx": {
+      "text-[#6B7280]": 1,
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 3,
+      "bg-white": 1,
+      "bg-[#F3F4F6]": 2,
+      "hover:bg-[#F7F8FC]": 1
+    },
+    "src/components/responsive/Wallet/WalletTablet.jsx": {
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/responsive/Notification/NotificationTablet.jsx": {
+      "text-[#6B7280]": 1,
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/home/mobile-home-cards.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 2,
+      "bg-white": 3
+    },
+    "src/components/responsive/Booking/booking-wizard-parts.jsx": {
+      "text-[#6B7280]": 10,
+      "border-[#D1D5DB]": 3,
+      "rounded-[0.875rem]": 4,
+      "bg-[#F3F4F6]": 4,
+      "bg-white": 1
+    },
+    "src/components/responsive/Notification/NotificationMobile.jsx": {
+      "text-[#6B7280]": 1,
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/responsive/Filter/filter-parts.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 2,
+      "bg-[#F3F4F6]": 1
+    },
+    "src/components/responsive/Reviews/reviews-parts.jsx": {
+      "text-[#6B7280]": 4,
+      "rounded-[0.875rem]": 2,
+      "bg-[#F3F4F6]": 1
+    },
+    "src/components/responsive/Dialogs/ReportSheetResponsive.jsx": {
+      "text-[#6B7280]": 2,
+      "border-[#D1D5DB]": 3,
+      "text-[#1A1A2E]": 3,
+      "rounded-[0.875rem]": 2,
+      "bg-white": 3
+    },
+    "src/components/chats/chat-filter-tabs.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 1,
+      "bg-white": 1
+    },
+    "src/components/responsive/PackageDetail/package-detail-parts.jsx": {
+      "text-[#6B7280]": 5,
+      "border-[#D1D5DB]": 4,
+      "text-[#1A1A2E]": 9,
+      "bg-white": 7,
+      "bg-[#F3F4F6]": 2,
+      "rounded-[0.875rem]": 4
+    },
+    "src/components/chats/conversation.jsx": {
+      "bg-[#F3F4F6]": 2
+    },
+    "src/components/ui/button.jsx": {
+      "border-[#D1D5DB]": 1,
+      "bg-white": 1
+    },
+    "src/components/shared/error-state.jsx": {
+      "text-[#6B7280]": 1
+    },
+    "src/components/ui/dialog.jsx": {
+      "text-[#6B7280]": 1,
+      "rounded-[0.875rem]": 1,
+      "bg-white": 1
+    },
+    "src/components/category/category-active-filters.jsx": {
+      "text-[#1A1A2E]": 1
+    },
+    "src/components/responsive/CallVideo/CallVideoMobile.jsx": {
+      "bg-white": 7
+    },
+    "src/components/provider-booking/provider-reels-viewer.jsx": {
+      "text-[#6B7280]": 1,
+      "rounded-[0.875rem]": 1,
+      "bg-white": 2
+    },
+    "src/components/responsive/DoctorListing/DoctorListingMobile.jsx": {
+      "text-[#6B7280]": 2,
+      "bg-[#F3F4F6]": 7
+    },
+    "src/components/responsive/primitives/ResponsiveSheet.jsx": {
+      "border-[#D1D5DB]": 2,
+      "text-[#6B7280]": 2
+    },
+    "src/components/ui/input.jsx": {
+      "text-[#6B7280]": 2,
+      "bg-white": 2
+    },
+    "src/components/responsive/Appointments/AppointmentsDesktop.jsx": {
+      "hover:bg-[#F7F8FC]": 1,
+      "border-[#D1D5DB]": 5,
+      "text-[#1A1A2E]": 6,
+      "bg-white": 3,
+      "text-[#6B7280]": 3,
+      "rounded-[0.875rem]": 5
+    },
+    "src/components/responsive/Language/LanguageMobile.jsx": {
+      "border-[#D1D5DB]": 1,
+      "bg-[#F7F8FC]": 1,
+      "bg-white": 1
+    },
+    "src/components/category/category-provider-list-card.jsx": {
+      "text-[#6B7280]": 2,
+      "text-[#1A1A2E]": 1,
+      "rounded-[0.875rem]": 1,
+      "bg-[#F3F4F6]": 1,
+      "bg-white": 1
+    },
+    "src/components/chats/chat-empty-inbox.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 1
+    },
+    "src/components/layout/desktop-breadcrumb-bar.jsx": {
+      "text-[#6B7280]": 2
+    },
+    "src/components/responsive/Booking/BookingDesktop.jsx": {
+      "text-[#6B7280]": 5,
+      "border-[#D1D5DB]": 2,
+      "text-[#1A1A2E]": 3,
+      "rounded-[0.875rem]": 2,
+      "bg-white": 1
+    },
+    "src/components/responsive/Search/SearchTablet.jsx": {
+      "text-[#6B7280]": 1,
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 2
+    },
+    "src/components/responsive/primitives/ResponsivePageHeader.jsx": {
+      "text-[#6B7280]": 1,
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 2,
+      "bg-[#F3F4F6]": 1,
+      "bg-white": 1
+    },
+    "src/components/responsive/Service/ServiceDesktop.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 1
+    },
+    "src/components/home/upcoming-appointment-card.jsx": {
+      "bg-white": 4,
+      "text-[#1A1A2E]": 1
+    },
+    "src/components/category/category-provider-grid-card.jsx": {
+      "text-[#6B7280]": 2,
+      "border-[#D1D5DB]": 2,
+      "text-[#1A1A2E]": 2,
+      "bg-white": 1,
+      "bg-[#F3F4F6]": 1,
+      "rounded-[0.875rem]": 2
+    },
+    "src/components/responsive/Notification/NotificationDesktop.jsx": {
+      "text-[#6B7280]": 1,
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 1
+    },
+    "src/components/chats/chat-empty-pane.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 1
+    },
+    "src/components/home/nearby-provider-card.jsx": {
+      "text-[#1A1A2E]": 1,
+      "rounded-[0.875rem]": 1,
+      "bg-white": 1
+    },
+    "src/components/responsive/layout/DesktopLayout.jsx": {
+      "border-[#D1D5DB]": 1,
+      "bg-[#F7F8FC]": 1,
+      "bg-white": 1
+    },
+    "src/components/responsive/WalletAddMoney/WalletAddMoneyTablet.jsx": {
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/provider-booking/booking-success-modal.jsx": {
+      "text-[#6B7280]": 1,
+      "text-[#1A1A2E]": 1,
+      "bg-white": 2
+    },
+    "src/components/provider-booking/shared.jsx": {
+      "text-[#6B7280]": 2,
+      "border-[#D1D5DB]": 3,
+      "text-[#1A1A2E]": 5,
+      "bg-white": 3
+    },
+    "src/components/home/banner-showcase.jsx": {
+      "rounded-[0.875rem]": 1
+    },
+    "src/components/responsive/ProviderDetail/ProviderDetailTablet.jsx": {
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/responsive/Chats/chats-parts.jsx": {
+      "border-[#D1D5DB]": 1,
+      "bg-white": 1
+    },
+    "src/components/responsive/PackageDetail/PackageDetailTablet.jsx": {
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 3,
+      "bg-white": 1,
+      "bg-[#F3F4F6]": 3,
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/places/google-place-autocomplete-widget.jsx": {
+      "rounded-[0.875rem]": 2,
+      "border-[#D1D5DB]": 1
+    },
+    "src/components/home/package-card.jsx": {
+      "text-[#6B7280]": 2,
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 2,
+      "bg-white": 1
+    },
+    "src/components/home/hero-section.jsx": {
+      "text-[#6B7280]": 2,
+      "text-[#1A1A2E]": 3,
+      "rounded-[0.875rem]": 1,
+      "bg-white": 1
+    },
+    "src/components/chats/chat-inbox-panel.jsx": {
+      "text-[#6B7280]": 2,
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 1,
+      "rounded-[0.875rem]": 1,
+      "bg-white": 1
+    },
+    "src/components/responsive/PackageDetail/PackageDetailMobile.jsx": {
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 3,
+      "bg-white": 1,
+      "bg-[#F3F4F6]": 3,
+      "bg-[#F7F8FC]": 2
+    },
+    "src/components/responsive/BookingDetail/BookingDetailDesktop.jsx": {
+      "text-[#6B7280]": 3,
+      "bg-[#F7F8FC]": 5,
+      "border-[#D1D5DB]": 6,
+      "text-[#1A1A2E]": 13,
+      "bg-white": 3,
+      "bg-[#F3F4F6]": 1,
+      "rounded-[0.875rem]": 10
+    },
+    "src/components/chats/chat-card.jsx": {
+      "text-[#6B7280]": 2,
+      "text-[#1A1A2E]": 3,
+      "rounded-[0.875rem]": 1
+    },
+    "src/components/responsive/Filter/FilterDesktop.jsx": {
+      "border-[#D1D5DB]": 1,
+      "hover:bg-[#F7F8FC]": 1
+    },
+    "src/components/ui/badge.jsx": {
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 1
+    },
+    "src/components/responsive/DoctorListing/DoctorListingDesktop.jsx": {
+      "text-[#6B7280]": 3,
+      "border-[#D1D5DB]": 2,
+      "text-[#1A1A2E]": 4,
+      "bg-white": 1,
+      "bg-[#F3F4F6]": 3,
+      "hover:bg-[#F7F8FC]": 1
+    },
+    "src/components/provider-booking/reels/reels-feed-toggle.jsx": {
+      "bg-white": 1
+    },
+    "src/components/responsive/CallAudio/CallAudioDesktop.jsx": {
+      "bg-white": 5
+    },
+    "src/components/responsive/Location/LocationDesktop.jsx": {
+      "text-[#6B7280]": 4,
+      "border-[#D1D5DB]": 2,
+      "text-[#1A1A2E]": 2,
+      "bg-white": 1
+    },
+    "src/components/responsive/Language/language-parts.jsx": {
+      "border-[#D1D5DB]": 2,
+      "text-[#1A1A2E]": 1,
+      "rounded-[0.875rem]": 1,
+      "bg-white": 3
+    },
+    "src/components/category/category-filter-chips.jsx": {
+      "text-[#6B7280]": 1,
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 1,
+      "bg-white": 1
+    },
+    "src/components/responsive/layout/MobileLayout.jsx": {
+      "pb-[5.5rem]": 1,
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/responsive/WalletOffers/WalletOffersMobile.jsx": {
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/ui/tabs.jsx": {
+      "text-[#1A1A2E]": 1,
+      "rounded-[0.875rem]": 1,
+      "bg-[#F3F4F6]": 1,
+      "bg-white": 1
+    },
+    "src/components/responsive/primitives/SearchField.jsx": {
+      "text-[#6B7280]": 1,
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 2,
+      "bg-white": 1
+    },
+    "src/components/home/top-rated-provider-card.jsx": {
+      "bg-white": 1,
+      "text-[#1A1A2E]": 1
+    },
+    "src/components/responsive/BookingDetail/index.jsx": {
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/responsive/Wallet/WalletMobile.jsx": {
+      "bg-[#F7F8FC]": 1
+    },
+    "src/components/provider-booking/provider-gallery-panel.jsx": {
+      "text-[#6B7280]": 1,
+      "rounded-[0.875rem]": 2,
+      "bg-white": 6
+    },
+    "src/components/provider-booking/provider-about-panel.jsx": {
+      "text-[#6B7280]": 5,
+      "border-[#D1D5DB]": 4,
+      "rounded-[0.875rem]": 4
+    },
+    "src/components/provider-booking/booking-payment-view.jsx": {
+      "text-[#6B7280]": 8,
+      "bg-[#F7F8FC]": 2,
+      "border-[#D1D5DB]": 11,
+      "text-[#1A1A2E]": 12,
+      "bg-white": 8,
+      "bg-[#F3F4F6]": 5,
+      "rounded-[0.875rem]": 6
+    },
+    "src/components/provider-booking/service-select-card.jsx": {
+      "text-[#6B7280]": 2,
+      "border-[#D1D5DB]": 1,
+      "text-[#1A1A2E]": 2,
+      "rounded-[0.875rem]": 1,
+      "bg-white": 2
+    },
+    "src/components/shared/empty-state.jsx": {
+      "text-[#6B7280]": 2,
+      "bg-[#F3F4F6]": 1
+    },
+    "src/components/responsive/WalletAddMoney/WalletAddMoneyMobile.jsx": {
+      "bg-[#F7F8FC]": 1
+    }
+  }
+}

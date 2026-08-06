@@ -1,0 +1,198 @@
+﻿
+========== src/theme/icons.js CONTENTS ==========
+
+/** Shared icon sizes and nav icon paths */
+
+export const iconSize = {
+  xs: 14,
+  sm: 16,
+  md: 20,
+  lg: 24,
+  xl: 28,
+  fab: 28,
+};
+
+export const navIcons = {
+  home: "/icons/nav/12.svg",
+  shorts: "/icons/nav/13.svg",
+  bookings: "/icons/nav/14.svg",
+  chats: "/icons/nav/15.svg",
+  profile: "/icons/nav/16.svg",
+};
+
+
+========== 1. border-[#E5E7EB] ==========
+
+D:\Priya\bookento-web\src\components\addresses\address-list-view.jsx:164:                 className="hover:text-primary flex size-9 items-center justify-center rounded-full border border-[#E5E7EB] bg-background text-muted-foreground transition-colors"
+D:\Priya\bookento-web\src\components\addresses\address-list-view.jsx:172:                 className="hover:text-destructive flex size-9 items-center justify-center rounded-full border border-[#E5E7EB] bg-background text-muted-foreground transition-colors"
+D:\Priya\bookento-web\src\components\appointments\booking-tab-bar.jsx:59:                 : "max-md:border max-md:border-[#E5E7EB] max-md:bg-background max-md:text-foreground md:bg-card md:text-muted-foreground md:ring-1 md:ring-border md:ring-inset md:hover:bg-background md:hover:text-foreground md:hover:ring-primary/30",
+D:\Priya\bookento-web\src\components\appointments\rebook-appointment-modal.jsx:104:                       : "border-[#E5E7EB] bg-background text-muted-foreground",
+D:\Priya\bookento-web\src\components\appointments\rebook-appointment-modal.jsx:130:                       : "border-[#E5E7EB] bg-background text-[#374151] hover:border-[#CBD5E1]",
+D:\Priya\bookento-web\src\components\category\category-filter-sheet.jsx:53:           : "border-[#E5E7EB] bg-background text-foreground hover:border-primary/25",
+D:\Priya\bookento-web\src\components\category\category-filter-sheet.jsx:142:               "text-foreground placeholder:text-muted-foreground h-[3.25rem] w-full rounded-xl border border-[#E5E7EB] bg-background",
+D:\Priya\bookento-web\src\components\chats\chat-header.jsx:90:             className="flex size-10 items-center justify-center rounded-full border border-transparent transition-colors hover:border-[#E5E7EB] md:size-11"
+D:\Priya\bookento-web\src\components\chats\chat-header.jsx:100:             className="flex size-10 items-center justify-center rounded-full border border-transparent transition-colors hover:border-[#E5E7EB] md:size-11"
+D:\Priya\bookento-web\src\components\responsive\PackageDetail\package-detail-parts.jsx:98:                   : "border-[#E5E7EB] bg-background text-foreground hover:border-primary/25 hover:bg-[#F8FAFC]",
+D:\Priya\bookento-web\src\components\responsive\Shorts\ShortsShared.jsx:29:         <header className="safe-top flex items-center gap-3 border-b border-[#E5E7EB] bg-surface-page px-4 py-3">
+
+========== 2. bg-[#E8EAF0] ==========
+
+D:\Priya\bookento-web\src\components\responsive\primitives\Skeleton.jsx:8:       className={cn("animate-pulse rounded-xl bg-[#E8EAF0]", className)}
+
+========== 3. text-[#B1B1B1] ==========
+
+D:\Priya\bookento-web\src\components\layout\user-nav.jsx:23:         active ? "text-primary" : "text-[#B1B1B1]",
+D:\Priya\bookento-web\src\components\layout\user-nav.jsx:62:                     active ? "text-primary" : "text-[#B1B1B1]",
+D:\Priya\bookento-web\src\components\layout\user-nav.jsx:92:                     active ? "text-primary" : "text-[#B1B1B1]",
+
+========== 4. #1865EA in Tailwind arbitrary classes ==========
+
+D:\Priya\bookento-web\src\components\appointments\booking-details-view.jsx:163:     "flex h-12 flex-1 items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-colors max-md:bg-[#E4EEFF] max-md:text-[#1865EA] max-md:hover:bg-[#D6E6FF] md:gradient-brand md:text-white md:transition-opacity md:hover:opacity-95";
+D:\Priya\bookento-web\src\components\appointments\booking-details-view.jsx:239:             className="flex size-9 items-center justify-center rounded-full bg-[#FFFFFF] text-[#1865EA] transition-colors hover:bg-[#EFF6FF] md:size-10"
+D:\Priya\bookento-web\src\components\appointments\booking-details-view.jsx:265:                     isActive && "bg-[#EAF3FF] text-[#1865EA]",
+D:\Priya\bookento-web\src\components\appointments\booking-empty-state.jsx:33:         <CalendarDays className="size-16 text-[#1865EA]/70" strokeWidth={1.5} />
+D:\Priya\bookento-web\src\components\appointments\booking-tab-bar.jsx:16:   confirm: "max-md:border-[#1865EA] max-md:bg-[#EAF3FF] max-md:text-[#1865EA]",
+D:\Priya\bookento-web\src\components\appointments\call-restriction-modal.jsx:44:         <div className="mt-4 rounded-xl bg-[#EFF6FF] px-4 py-3 text-center text-sm text-[#1865EA]">
+D:\Priya\bookento-web\src\components\appointments\cancel-appointment-modal.jsx:52:               className="border-border/70 text-foreground placeholder:text-muted-foreground w-full resize-none rounded-2xl border bg-background px-4 py-3 text-sm outline-none focus:border-[#1865EA] focus:ring-2 focus:ring-[#1865EA]/15"
+D:\Priya\bookento-web\src\components\appointments\cancel-appointment-modal.jsx:60:         <div className="mt-4 flex items-start gap-2 rounded-xl bg-[#EFF6FF] px-3 py-3 text-sm text-[#1865EA]">
+D:\Priya\bookento-web\src\components\appointments\rebook-appointment-modal.jsx:70:             <div className="flex items-center gap-2 text-sm font-semibold text-[#1865EA]">
+D:\Priya\bookento-web\src\components\appointments\rebook-appointment-modal.jsx:103:                       ? "border-[#1865EA] bg-[#EFF6FF] text-[#1865EA]"
+D:\Priya\bookento-web\src\components\appointments\rebook-appointment-modal.jsx:129:                       ? "border-[#1865EA] bg-[#EFF6FF] text-[#1865EA]"
+D:\Priya\bookento-web\src\components\appointments\rebook-appointment-modal.jsx:140:         <div className="mt-4 flex items-start gap-2 rounded-xl bg-[#EFF6FF] px-3 py-3 text-sm text-[#1865EA]">
+D:\Priya\bookento-web\src\components\chats\call-restriction-modal.jsx:64:         <div className="mt-4 flex items-start gap-2.5 rounded-xl bg-[#EFF6FF] px-4 py-3 text-sm text-[#1865EA]">
+D:\Priya\bookento-web\src\components\chats\call-restriction-modal.jsx:72:           className="mt-5 h-12 w-full rounded-xl bg-[#1865EA] text-sm font-semibold text-white transition-opacity hover:opacity-95"
+D:\Priya\bookento-web\src\components\chats\chat-card.jsx:61:             <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#1865EA] text-[10px] font-bold text-white">
+D:\Priya\bookento-web\src\components\chats\chat-filter-tabs.jsx:46:                 ? "bg-[#1865EA] text-white shadow-[0_2px_8px_rgba(24,101,234,0.28)]"
+D:\Priya\bookento-web\src\components\chats\message-bubble.jsx:80:               ? "rounded-br-md bg-[#1865EA] text-white shadow-[0_2px_8px_rgba(24,101,234,0.2)]"
+D:\Priya\bookento-web\src\components\chats\message-input.jsx:69:           className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#1865EA] text-white shadow-[0_2px_8px_rgba(24,101,234,0.25)] transition-opacity hover:opacity-95 md:size-11"
+D:\Priya\bookento-web\src\components\chats\message-input.jsx:99:           className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#1865EA] text-white shadow-[0_2px_8px_rgba(24,101,234,0.25)] transition-opacity hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-40 md:size-11"
+D:\Priya\bookento-web\src\components\notifications\notification-item.jsx:41:             notification.isRead ? "bg-transparent" : "bg-[#1865EA]",
+D:\Priya\bookento-web\src\components\responsive\BookingDetail\BookingDetailDesktop.jsx:199:                         isActive && "bg-[#EAF3FF] text-[#1865EA]",
+
+========== 5. shadow-[0_ inline shadow classes ==========
+
+D:\Priya\bookento-web\src\components\addresses\add-address-button.jsx:13: shadow-[0_4px_14px_rgba(37,99,235,0.35)]
+D:\Priya\bookento-web\src\components\addresses\address-form-view.jsx:127: shadow-[0_2px_12px_rgba(15,23,42,0.04)]
+D:\Priya\bookento-web\src\components\addresses\address-form-view.jsx:145: shadow-[0_8px_24px_rgba(15,23,42,0.12)]
+D:\Priya\bookento-web\src\components\addresses\address-form-view.jsx:151: shadow-[0_8px_20px_rgba(37,99,235,0.45)]
+D:\Priya\bookento-web\src\components\addresses\address-list-view.jsx:64: shadow-[0_8px_24px_rgba(15,23,42,0.12)]
+D:\Priya\bookento-web\src\components\addresses\address-list-view.jsx:110: shadow-[0_2px_10px_rgba(15,23,42,0.04)]
+D:\Priya\bookento-web\src\components\addresses\address-list-view.jsx:141: shadow-[0_2px_12px_rgba(15,23,42,0.04)]
+D:\Priya\bookento-web\src\components\addresses\address-map-view.jsx:48: shadow-[0_8px_24px_rgba(15,23,42,0.12)]
+D:\Priya\bookento-web\src\components\addresses\address-map-view.jsx:59: shadow-[0_10px_24px_rgba(37,99,235,0.45)]
+D:\Priya\bookento-web\src\components\addresses\address-map-view.jsx:67: shadow-[0_16px_40px_rgba(15,23,42,0.18)]
+D:\Priya\bookento-web\src\components\addresses\address-map-view.jsx:84: shadow-[0_4px_14px_rgba(37,99,235,0.35)]
+D:\Priya\bookento-web\src\components\addresses\address-search-view.jsx:51: shadow-[0_4px_20px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\addresses\address-search-view.jsx:57: shadow-[0_4px_14px_rgba(37,99,235,0.35)]
+D:\Priya\bookento-web\src\components\addresses\delete-address-modal.jsx:21: shadow-[0_20px_60px_rgba(15,23,42,0.18)]
+D:\Priya\bookento-web\src\components\addresses\delete-address-modal.jsx:30: shadow-[0_8px_20px_rgba(235,29,38,0.35)]
+D:\Priya\bookento-web\src\components\appointments\booking-details-view.jsx:247: shadow-[0_2px_12px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\appointments\booking-details-view.jsx:314: shadow-[0_2px_12px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\appointments\booking-details-view.jsx:336: shadow-[0_2px_12px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\appointments\booking-details-view.jsx:337: shadow-[0_2px_12px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\appointments\booking-list-card.jsx:37: shadow-[0_2px_10px_rgba(15,23,42,0.05)]
+D:\Priya\bookento-web\src\components\appointments\booking-list-card.jsx:38: shadow-[0_12px_28px_rgba(15,23,42,0.1)]
+D:\Priya\bookento-web\src\components\appointments\booking-list-card.jsx:130: shadow-[0_4px_14px_rgba(24,101,234,0.28)]
+D:\Priya\bookento-web\src\components\appointments\booking-tab-bar.jsx:57: shadow-[0_2px_8px_rgba(24,101,234,0.22)]
+D:\Priya\bookento-web\src\components\appointments\bookings-calendar-view.jsx:56: shadow-[0_2px_12px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\appointments\call-restriction-modal.jsx:25: shadow-[0_20px_60px_rgba(15,23,42,0.18)]
+D:\Priya\bookento-web\src\components\appointments\cancel-appointment-modal.jsx:35: shadow-[0_20px_60px_rgba(15,23,42,0.18)]
+D:\Priya\bookento-web\src\components\appointments\rebook-appointment-modal.jsx:61: shadow-[0_20px_60px_rgba(15,23,42,0.18)]
+D:\Priya\bookento-web\src\components\category\category-filter-chips.jsx:43: shadow-[0_2px_8px_rgba(24,101,234,0.22)]
+D:\Priya\bookento-web\src\components\category\category-filter-chips.jsx:43: shadow-[0_4px_12px_rgba(24,101,234,0.3)]
+D:\Priya\bookento-web\src\components\category\category-filter-sheet.jsx:249: shadow-[0_-8px_40px_rgba(15,23,42,0.12)]
+D:\Priya\bookento-web\src\components\category\category-provider-grid-card.jsx:49: shadow-[0_2px_12px_rgba(15,23,42,0.04)]
+D:\Priya\bookento-web\src\components\category\category-provider-grid-card.jsx:49: shadow-[0_10px_28px_rgba(15,23,42,0.08)]
+D:\Priya\bookento-web\src\components\category\category-provider-list-card.jsx:54: shadow-[0_2px_12px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\chats\call-controls.jsx:24: shadow-[0_8px_24px_rgba(239,68,68,0.4)]
+D:\Priya\bookento-web\src\components\chats\call-controls.jsx:48: shadow-[0_16px_48px_rgba(0,0,0,0.35)]
+D:\Priya\bookento-web\src\components\chats\call-restriction-modal.jsx:42: shadow-[0_20px_60px_rgba(15,23,42,0.18)]
+D:\Priya\bookento-web\src\components\chats\chat-filter-tabs.jsx:46: shadow-[0_2px_8px_rgba(24,101,234,0.28)]
+D:\Priya\bookento-web\src\components\chats\chat-workspace.jsx:50: shadow-[0_2px_12px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\chats\local-video.jsx:17: shadow-[0_12px_40px_rgba(0,0,0,0.45)]
+D:\Priya\bookento-web\src\components\chats\message-bubble.jsx:55: shadow-[0_1px_4px_rgba(15,23,42,0.04)]
+D:\Priya\bookento-web\src\components\chats\message-bubble.jsx:80: shadow-[0_2px_8px_rgba(24,101,234,0.2)]
+D:\Priya\bookento-web\src\components\chats\message-input.jsx:69: shadow-[0_2px_8px_rgba(24,101,234,0.25)]
+D:\Priya\bookento-web\src\components\chats\message-input.jsx:99: shadow-[0_2px_8px_rgba(24,101,234,0.25)]
+D:\Priya\bookento-web\src\components\home\banner-showcase.jsx:110: shadow-[0_2px_8px_rgba(15,23,42,0.05)]
+D:\Priya\bookento-web\src\components\home\banner-showcase.jsx:112: shadow-[0_14px_36px_-10px_rgba(15,23,42,0.18)]
+D:\Priya\bookento-web\src\components\home\banner-showcase.jsx:211: shadow-[0_0_0_3px_#B8D4FF]
+D:\Priya\bookento-web\src\components\home\category-item.jsx:35: shadow-[0_2px_8px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\home\category-item.jsx:62: shadow-[0_2px_8px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\home\hero-section.jsx:66: shadow-[0_4px_14px_rgba(94,76,245,0.35)]
+D:\Priya\bookento-web\src\components\home\hero-section.jsx:75: shadow-[0_8px_24px_rgba(0,0,0,0.08)]
+D:\Priya\bookento-web\src\components\home\home-header.jsx:85: shadow-[0_2px_10px_rgba(15,23,42,0.04)]
+D:\Priya\bookento-web\src\components\home\mobile-home-cards.jsx:13: shadow-[0_2px_12px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\home\mobile-home-cards.jsx:32: shadow-[0_2px_8px_rgba(24,101,234,0.25)]
+D:\Priya\bookento-web\src\components\home\mobile-home-cards.jsx:47: shadow-[0_2px_12px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\home\nearby-provider-card.jsx:11: shadow-[0_2px_12px_rgba(15,23,42,0.08)]
+D:\Priya\bookento-web\src\components\home\service-card.jsx:26: shadow-[0_2px_12px_rgba(15,23,42,0.04)]
+D:\Priya\bookento-web\src\components\home\service-card.jsx:26: shadow-[0_10px_28px_rgba(15,23,42,0.08)]
+D:\Priya\bookento-web\src\components\home\special-packages-showcase.jsx:73: shadow-[0_2px_12px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\home\special-packages-showcase.jsx:73: shadow-[0_8px_24px_rgba(15,23,42,0.1)]
+D:\Priya\bookento-web\src\components\home\top-rated-provider-card.jsx:70: shadow-[0_2px_8px_rgba(24,101,234,0.25)]
+D:\Priya\bookento-web\src\components\home\upcoming-appointment-card.jsx:14: shadow-[0_12px_32px_rgba(240,61,78,0.28)]
+D:\Priya\bookento-web\src\components\layout\user-nav.jsx:51: shadow-[0_-4px_24px_rgba(15,23,42,0.07)]
+D:\Priya\bookento-web\src\components\profile\profile-view.jsx:63: shadow-[0_2px_12px_rgba(15,23,42,0.04)]
+D:\Priya\bookento-web\src\components\profile\profile-view.jsx:113: shadow-[0_8px_24px_rgba(24,101,234,0.22)]
+D:\Priya\bookento-web\src\components\profile\profile-view.jsx:214: shadow-[0_8px_30px_rgba(15,23,42,0.08)]
+D:\Priya\bookento-web\src\components\profile\profile-view.jsx:413: shadow-[0_8px_30px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\provider-booking\reels\reel-slide.jsx:100: shadow-[0_8px_32px_rgba(15,23,42,0.12)]
+D:\Priya\bookento-web\src\components\provider-booking\reels\reels-sheets.jsx:694: shadow-[0_2px_8px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\provider-booking\reels\reels-sheets.jsx:697: shadow-[0_2px_8px_rgba(24,101,234,0.12)]
+D:\Priya\bookento-web\src\components\provider-booking\reels\reels-sheets.jsx:748: shadow-[0_4px_24px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\provider-booking\block-doctor-modal.jsx:34: shadow-[0_20px_60px_rgba(15,23,42,0.18)]
+D:\Priya\bookento-web\src\components\provider-booking\booking-payment-view.jsx:275: shadow-[0_2px_12px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\provider-booking\booking-payment-view.jsx:443: shadow-[0_2px_12px_rgba(15,23,42,0.04)]
+D:\Priya\bookento-web\src\components\provider-booking\booking-payment-view.jsx:483: shadow-[0_0_0_1px_rgba(24,101,234,0.08)]
+D:\Priya\bookento-web\src\components\provider-booking\booking-payment-view.jsx:503: shadow-[0_0_0_1px_rgba(24,101,234,0.08)]
+D:\Priya\bookento-web\src\components\provider-booking\booking-payment-view.jsx:522: shadow-[0_4px_20px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\provider-booking\booking-payment-view.jsx:526: shadow-[0_4px_14px_rgba(24,101,234,0.35)]
+D:\Priya\bookento-web\src\components\provider-booking\booking-success-modal.jsx:107: shadow-[0_4px_14px_rgba(24,101,234,0.35)]
+D:\Priya\bookento-web\src\components\provider-booking\doctor-profile-sidebar.jsx:43: shadow-[0_4px_24px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\provider-booking\doctor-profile-sidebar.jsx:129: shadow-[0_4px_24px_rgba(15,23,42,0.04)]
+D:\Priya\bookento-web\src\components\provider-booking\provider-booking-summary.jsx:111: shadow-[0_4px_14px_rgba(24,101,234,0.35)]
+D:\Priya\bookento-web\src\components\provider-booking\provider-booking-summary.jsx:130: shadow-[0_4px_20px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\provider-booking\provider-booking-summary.jsx:173: shadow-[0_8px_32px_rgba(15,23,42,0.12)]
+D:\Priya\bookento-web\src\components\provider-booking\provider-booking-summary.jsx:174: shadow-[0_4px_20px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\provider-booking\provider-services-panel.jsx:202: shadow-[0_4px_14px_rgba(24,101,234,0.25)]
+D:\Priya\bookento-web\src\components\provider-booking\provider-services-panel.jsx:202: shadow-[0_6px_18px_rgba(24,101,234,0.35)]
+D:\Priya\bookento-web\src\components\provider-booking\report-doctor-modal.jsx:99: shadow-[0_20px_60px_rgba(15,23,42,0.18)]
+D:\Priya\bookento-web\src\components\provider-booking\shared.jsx:40: shadow-[0_4px_14px_rgba(24,101,234,0.25)]
+D:\Priya\bookento-web\src\components\provider-booking\shared.jsx:75: shadow-[0_4px_14px_rgba(24,101,234,0.35)]
+D:\Priya\bookento-web\src\components\provider-booking\shared.jsx:75: shadow-[0_6px_18px_rgba(24,101,234,0.4)]
+D:\Priya\bookento-web\src\components\providers\providers-filter-sheet.jsx:24: shadow-[0_2px_8px_rgba(24,101,234,0.22)]
+D:\Priya\bookento-web\src\components\providers\providers-filter-sheet.jsx:120: shadow-[0_-8px_40px_rgba(15,23,42,0.12)]
+D:\Priya\bookento-web\src\components\responsive\Appointments\AppointmentsMobile.jsx:25: shadow-[0_2px_8px_rgba(24,101,234,0.22)]
+D:\Priya\bookento-web\src\components\responsive\Appointments\AppointmentsTablet.jsx:25: shadow-[0_2px_8px_rgba(24,101,234,0.22)]
+D:\Priya\bookento-web\src\components\responsive\ChatDetail\ChatDetailTablet.jsx:28: shadow-[0_2px_12px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\responsive\Chats\chats-parts.jsx:8: shadow-[0_2px_12px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\responsive\Location\LocationDesktop.jsx:71: shadow-[0_2px_10px_rgba(15,23,42,0.04)]
+D:\Priya\bookento-web\src\components\responsive\navigation\DesktopSidebar.jsx:98: shadow-[0_4px_14px_rgba(24,101,234,0.35)]
+D:\Priya\bookento-web\src\components\responsive\PackageDetail\package-detail-parts.jsx:97: shadow-[0_0_0_1px_rgba(24,101,234,0.08)]
+D:\Priya\bookento-web\src\components\responsive\PackageDetail\package-detail-parts.jsx:149: shadow-[0_2px_12px_rgba(15,23,42,0.06)]
+D:\Priya\bookento-web\src\components\responsive\primitives\SearchField.jsx:18: shadow-[0_1px_2px_rgba(0,0,0,0.03)]
+D:\Priya\bookento-web\src\components\responsive\Profile\profile-parts.jsx:59: shadow-[0_2px_12px_rgba(15,23,42,0.04)]
+D:\Priya\bookento-web\src\components\responsive\Profile\profile-parts.jsx:109: shadow-[0_8px_24px_rgba(24,101,234,0.22)]
+D:\Priya\bookento-web\src\components\responsive\Profile\profile-parts.jsx:210: shadow-[0_8px_30px_rgba(15,23,42,0.08)]
+D:\Priya\bookento-web\src\components\responsive\ProviderDetail\provider-detail-layout.jsx:45: shadow-[0_4px_24px_rgba(15,23,42,0.05)]
+D:\Priya\bookento-web\src\components\responsive\Shorts\ShortsMobile.jsx:144: shadow-[0_8px_30px_rgba(15,23,42,0.12)]
+D:\Priya\bookento-web\src\components\responsive\Shorts\ShortsMobile.jsx:208: shadow-[0_8px_30px_rgba(15,23,42,0.12)]
+D:\Priya\bookento-web\src\components\responsive\Wallet\wallet-parts.jsx:55: shadow-[0_8px_24px_rgba(24,101,234,0.25)]
+D:\Priya\bookento-web\src\components\responsive\WalletAddMoney\wallet-add-money-parts.jsx:42: shadow-[0_2px_12px_rgba(15,23,42,0.04)]
+D:\Priya\bookento-web\src\components\responsive\WalletAddMoney\wallet-add-money-parts.jsx:81: shadow-[0_2px_12px_rgba(15,23,42,0.04)]
+D:\Priya\bookento-web\src\components\responsive\WalletAddMoney\wallet-add-money-parts.jsx:108: shadow-[0_2px_8px_rgba(24,101,234,0.25)]
+D:\Priya\bookento-web\src\components\responsive\WalletAddMoney\wallet-add-money-parts.jsx:122: shadow-[0_4px_16px_rgba(255,107,0,0.28)]
+D:\Priya\bookento-web\src\components\responsive\WalletAddMoney\wallet-add-money-parts.jsx:155: shadow-[0_2px_12px_rgba(15,23,42,0.04)]
+D:\Priya\bookento-web\src\components\responsive\WalletAddMoney\wallet-add-money-parts.jsx:180: shadow-[0_2px_12px_rgba(15,23,42,0.04)]
+D:\Priya\bookento-web\src\components\responsive\WalletAddMoney\wallet-add-money-parts.jsx:228: shadow-[0_4px_14px_rgba(24,101,234,0.35)]
+D:\Priya\bookento-web\src\components\responsive\WalletOffers\wallet-offers-parts.jsx:62: shadow-[0_2px_12px_rgba(15,23,42,0.04)]
+
+========== 6. Hardcoded hex in src/app/ className strings ==========
+
+D:\Priya\bookento-web\src\app\(user)\chats\page.jsx:21:       className="text-foreground flex size-9 items-center justify-center rounded-full transition-colors hover:bg-[#F3F4F6] md:size-10"
+
+========== END ==========
+Project root: d:\Priya\bookento-web
+Generated: 2026-08-06T09:53:03.3176063+05:30
+

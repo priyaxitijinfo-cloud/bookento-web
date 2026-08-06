@@ -1,0 +1,69 @@
+  const handleClearFilters = () => {
+    resetFilters();
+    setSearchOpen(false);
+  };
+
+  const handleSearchToggle = () => {
+    if (searchOpen) {
+      setSearchOpen(false);
+      setProviderSearch("");
+      return;
+    }
+    setSearchOpen(true);
+  };
+
+  return (
+    <div className={PAGE_SHELL_CLASS}>
+      <CategoryListingHeader
+        className="md:hidden"
+        title="Explore Providers"
+        backHref={ROUTES.HOME}
+        showFilterActive={hasSheetFilters}
+        onFilterClick={() => setFilterOpen(true)}
+        searchOpen={searchOpen}
+        onSearchOpenChange={setSearchOpen}
+        searchQuery={providerSearch}
+        onSearchQueryChange={setProviderSearch}
+        searchPlaceholder="Search providers, specialties, cities..."
+      />
+
+      <div className={DESKTOP_STICKY_HEADER_CLASS}>
+        <HomeHeader embedded />
+        <DesktopBreadcrumbBar
+          backHref={ROUTES.HOME}
+          backLabel="Back to Home"
+          currentLabel="Explore Providers"
+          rightAction={(
+            <ListingHeaderActions
+              searchOpen={searchOpen}
+              onSearchToggle={handleSearchToggle}
+              onFilterClick={() => setFilterOpen(true)}
+              showFilterActive={hasSheetFilters}
+            />
+          )}
+        />
+      </div>
+
+      <main className={cn(PAGE_CONTAINER_VARIANTS.browseWithBreadcrumb, "md:space-y-6")}>
+        {searchOpen ? (
+          <div className="relative hidden md:block">
+            <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+            <input
+              type="text"
+              value={providerSearch}
+              onChange={(event) => setProviderSearch(event.target.value)}
+              placeholder="Search providers, specialties, cities..."
+              className={cn(
+                "border-border/80 bg-[#FAFBFD] text-foreground placeholder:text-muted-foreground",
+                "h-11 w-full rounded-lg border px-10 text-sm",
+                "focus-visible:ring-primary/30 focus-visible:bg-white focus-visible:ring-2 focus-visible:outline-none",
+              )}
+            />
+          </div>
+        ) : null}
+
+        <CategoryFilterChips
+          filters={SORT_CHIPS}
+          activeFilter={activeSortChip}
+          onChange={handleSortChange}
+        />

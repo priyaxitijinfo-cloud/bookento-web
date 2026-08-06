@@ -1,0 +1,42 @@
+function locality(id, area, city, state, country, pincode, latitude, longitude) {
+  return {
+    id,
+    title: `${area}, ${city}`,
+    subtitle: [state, country].filter(Boolean).join(", "),
+    area,
+    city,
+    state: state || country,
+    country,
+    pincode,
+    latitude,
+    longitude,
+  };
+}
+
+export const WORLDWIDE_LOCALITY_SUGGESTIONS = [
+  locality("loc_adajan", "Adajan", "Surat", "Gujarat", "India", "395009", 21.1959, 72.7863),
+  locality("loc_palanpur", "Palanpur Jakatnaka", "Surat", "Gujarat", "India", "395009", 21.2034, 72.7921),
+  locality("loc_jahangirabad", "Jahangirabad", "Surat", "Gujarat", "India", "395005", 21.2145, 72.821),
+  locality("loc_athwa", "Athwa", "Surat", "Gujarat", "India", "395001", 21.1702, 72.7926),
+  locality("loc_vesu", "Vesu", "Surat", "Gujarat", "India", "395007", 21.1418, 72.7747),
+  locality("loc_piplod", "Piplod", "Surat", "Gujarat", "India", "395007", 21.1598, 72.7674),
+  locality("loc_katargam", "Katargam", "Surat", "Gujarat", "India", "395004", 21.2275, 72.8238),
+  locality("loc_mota_varachha", "Mota Varachha", "Surat", "Gujarat", "India", "394101", 21.2408, 72.8806),
+  locality("loc_udhna", "Udhna", "Surat", "Gujarat", "India", "394210", 21.1831, 72.8468),
+  locality("loc_mumbai_bandra", "Bandra West", "Mumbai", "Maharashtra", "India", "400050", 19.0596, 72.8295),
+  locality("loc_delhi_cp", "Connaught Place", "New Delhi", "Delhi", "India", "110001", 28.6315, 77.2167),
+  locality("loc_bengaluru_koramangala", "Koramangala", "Bengaluru", "Karnataka", "India", "560034", 12.9352, 77.6245),
+  locality("loc_hyderabad_hitec", "HITEC City", "Hyderabad", "Telangana", "India", "500081", 17.4474, 78.3762),
+  locality("loc_ahmedabad_sg", "Satellite", "Ahmedabad", "Gujarat", "India", "380015", 23.0225, 72.5714),
+  locality("loc_nyc_manhattan", "Manhattan", "New York", "New York", "United States", "10001", 40.758, -73.9855),
+  locality("loc_la_hollywood", "Hollywood", "Los Angeles", "California", "United States", "90028", 34.0928, -118.3287),
+  locality("loc_london_westminster", "Westminster", "London", "England", "United Kingdom", "SW1A", 51.5014, -0.1419),
+  locality("loc_dubai_marina", "Dubai Marina", "Dubai", "Dubai", "United Arab Emirates", "00000", 25.08, 55.1403),
+  locality("loc_dubai_downtown", "Downtown", "Dubai", "Dubai", "United Arab Emirates", "00000", 25.1972, 55.2744),
+  locality("loc_toronto_downtown", "Downtown", "Toronto", "Ontario", "Canada", "M5H", 43.6532, -79.3832),
+  locality("loc_sydney_cbd", "CBD", "Sydney", "New South Wales", "Australia", "2000", -33.8688, 151.2093),
+  locality("loc_sg_marina", "Marina Bay", "Singapore", "Singapore", "Singapore", "018956", 1.2834, 103.8607),
+  locality("loc_paris_marais", "Le Marais", "Paris", "Île-de-France", "France", "75004", 48.8566, 2.3522),
+  locality("loc_tokyo_shibuya", "Shibuya", "Tokyo", "Tokyo", "Japan", "150-0002", 35.6595, 139.7005),
+  locality("loc_bangkok_sukhumvit", "Sukhumvit", "Bangkok", "Bangkok", "Thailand", "10110", 13.7397, 100.5608),
+];

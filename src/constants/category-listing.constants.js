@@ -1,0 +1,90 @@
+export const CATEGORY_LISTING_CONFIG = {
+  doctor: {
+    subFilters: ["All", "Dermatologist", "Cardiologist", "Gynecologist", "Pediatrician"],
+    specialties: [
+      "Dermatologist",
+      "Cardiologist",
+      "Gynecologist",
+      "Pediatrician",
+      "General Physician",
+    ],
+    namePrefix: "Dr. ",
+  },
+  salon: {
+    subFilters: ["All", "Hair Stylist", "Color Specialist", "Spa Therapist", "Makeup Artist"],
+    specialties: ["Hair Stylist", "Color Specialist", "Spa Therapist", "Makeup Artist", "Nail Artist"],
+    namePrefix: "",
+  },
+  fitness: {
+    subFilters: ["All", "Personal Trainer", "Yoga Coach", "CrossFit Coach", "Nutrition Coach"],
+    specialties: ["Personal Trainer", "Yoga Coach", "CrossFit Coach", "Nutrition Coach", "Gym Instructor"],
+    namePrefix: "",
+  },
+  tutoring: {
+    subFilters: ["All", "Math Tutor", "Science Tutor", "English Tutor", "Exam Coach"],
+    specialties: ["Math Tutor", "Science Tutor", "English Tutor", "Exam Coach", "Language Tutor"],
+    namePrefix: "",
+  },
+  "pet-care": {
+    subFilters: ["All", "Pet Groomer", "Veterinarian", "Pet Sitter", "Dog Trainer"],
+    specialties: ["Pet Groomer", "Veterinarian", "Pet Sitter", "Dog Trainer", "Cat Care Specialist"],
+    namePrefix: "",
+  },
+  homecare: {
+    subFilters: ["All", "Elder Care Specialist", "Home Nurse", "Daily Help Provider", "Post Surgery Care"],
+    specialties: ["Elder Care Specialist", "Home Nurse", "Daily Help Provider", "Post Surgery Care", "Patient Attendant"],
+    namePrefix: "",
+  },
+  "kids-care": {
+    subFilters: ["All", "Babysitter", "Daycare Provider", "Early Learning Coach", "Special Needs Care"],
+    specialties: ["Babysitter", "Daycare Provider", "Early Learning Coach", "Special Needs Care", "Child Monitor"],
+    namePrefix: "",
+  },
+  plumbing: {
+    subFilters: ["All", "Pipe Repair Expert", "Plumbing Installer", "Emergency Plumber", "Maintenance Plumber"],
+    specialties: ["Pipe Repair Expert", "Plumbing Installer", "Emergency Plumber", "Maintenance Plumber", "Water Heater Specialist"],
+    namePrefix: "",
+  },
+  automotive: {
+    subFilters: ["All", "Car Wash Specialist", "Auto Mechanic", "Detailing Expert", "Battery Service"],
+    specialties: ["Car Wash Specialist", "Auto Mechanic", "Detailing Expert", "Battery Service", "AC Repair Specialist"],
+    namePrefix: "",
+  },
+  gardening: {
+    subFilters: ["All", "Landscaper", "Lawn Care Expert", "Plant Care Specialist", "Irrigation Expert"],
+    specialties: ["Landscaper", "Lawn Care Expert", "Plant Care Specialist", "Irrigation Expert", "Garden Designer"],
+    namePrefix: "",
+  },
+  cooking: {
+    subFilters: ["All", "Home Chef", "Meal Prep Expert", "Baker", "Party Caterer"],
+    specialties: ["Home Chef", "Meal Prep Expert", "Baker", "Party Caterer", "Tiffin Service"],
+    namePrefix: "",
+  },
+  events: {
+    subFilters: ["All", "Wedding Planner", "Birthday Planner", "Corporate Event Manager", "Decorator"],
+    specialties: ["Wedding Planner", "Birthday Planner", "Corporate Event Manager", "Decorator", "Event Coordinator"],
+    namePrefix: "",
+  },
+  carpenter: {
+    subFilters: ["All", "Furniture Carpenter", "Modular Kitchen Expert", "Door & Window Specialist", "Repair Carpenter"],
+    specialties: ["Furniture Carpenter", "Modular Kitchen Expert", "Door & Window Specialist", "Repair Carpenter", "Custom Woodwork"],
+    namePrefix: "",
+  },
+  renovation: {
+    subFilters: ["All", "Painting Expert", "Flooring Specialist", "Full Home Renovator", "Commercial Renovator"],
+    specialties: ["Painting Expert", "Flooring Specialist", "Full Home Renovator", "Commercial Renovator", "Wall Finishing Expert"],
+    namePrefix: "",
+  },
+  shooting: {
+    subFilters: ["All", "Photographer", "Videographer", "Product Shoot Expert", "Event Photographer"],
+    specialties: ["Photographer", "Videographer", "Product Shoot Expert", "Event Photographer", "Portrait Specialist"],
+    namePrefix: "",
+  },
+};
+
+export const SERVICE_MODE_LABELS = {
+  in_clinic: { label: "In-person", className: "bg-orange-50 text-orange-600" },
+  home_visit: { label: "In-person", className: "bg-orange-50 text-orange-600" },
+  online: { label: "Online", className: "bg-emerald-50 text-emerald-600" },
+  video_call: { label: "Video call", className: "bg-sky-50 text-sky-600" },
+};
