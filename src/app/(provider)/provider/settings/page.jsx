@@ -9,14 +9,14 @@ import { FormField } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useProviderSettingsStore } from "@/store";
+import { useSettingsStore } from "@/store";
 
 export default function ProviderSettingsPage() {
-  const { settings, updateSettings, isLoading } = useProviderSettingsStore();
-  const { notifications = {}, business = {}, payment = {} } = settings ?? {};
+  const { providerSettings, updateProviderSettings, isLoading } = useSettingsStore();
+  const { notifications, business, payment } = providerSettings;
 
   const handleSave = async (section, data) => {
-    await updateSettings({ [section]: { ...settings[section], ...data } });
+    await updateProviderSettings({ [section]: { ...providerSettings[section], ...data } });
     toast.success("Settings saved");
   };
 

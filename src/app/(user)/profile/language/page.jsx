@@ -4,7 +4,7 @@ import { Suspense, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
-import { LanguageOptionsList } from "@/components/profile/language-options";
+import { LanguageOptionsList } from "@/components/responsive/Language/language-parts";
 import { UserPageShell } from "@/components/layout/user-page-shell";
 import { Button } from "@/components/ui/button";
 import { resolveBackNavigation } from "@/lib/navigation/back-navigation";
