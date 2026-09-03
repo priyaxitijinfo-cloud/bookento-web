@@ -1,30 +1,14 @@
 "use client";
 
-import Link from "next/link";
-
-import { DesktopLayout } from "@/components/responsive/layout";
 import {
-  DoctorProfileSidebarFixed,
+  DoctorProfileSidebar,
+  HomeHeader,
+  ProfileDesktopBreadcrumb,
   ProfileMainPanel,
   ProviderDetailModals,
   ProviderTabPanels,
 } from "./provider-detail-layout";
-
-function DesktopProviderHeader({ backHref, backLabel, profileLabel }) {
-  return (
-    <div className="mx-auto flex h-[68px] w-full max-w-[90rem] items-center px-6 lg:px-8">
-      <div className="min-w-0">
-        <Link
-          href={backHref}
-          className="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
-        >
-          {backLabel}
-        </Link>
-        <h1 className="truncate text-xl font-semibold text-foreground">{profileLabel}</h1>
-      </div>
-    </div>
-  );
-}
+import { DESKTOP_STICKY_HEADER_CLASS } from "@/lib/layout/page-layout.constants";
 
 export function ProviderDetailDesktop({
   provider,
@@ -57,52 +41,54 @@ export function ProviderDetailDesktop({
 
   return (
     <>
-      <DesktopLayout
-        header={(
-          <DesktopProviderHeader
-            backHref={backHref}
+      <div className="bg-surface-page flex h-dvh flex-col overflow-hidden">
+        <div className={`${DESKTOP_STICKY_HEADER_CLASS} shrink-0`}>
+          <HomeHeader embedded />
+          <ProfileDesktopBreadcrumb
+            href={backHref}
             backLabel={backLabel}
-            profileLabel={profileLabel}
+            currentLabel={profileLabel}
           />
-        )}
-        maxWidth="wide"
-        contentClassName="!py-4"
-      >
-        <div className="grid gap-6 xl:grid-cols-[340px_minmax(0,1fr)]">
-          <div className="hidden xl:block">
-            <DoctorProfileSidebarFixed
-              provider={provider}
-              categorySlug={categorySlug}
-              saved={saved}
-              onToggleSaved={onToggleSaved}
-              onBlockClick={onBlockClick}
-              onReportClick={onReportClick}
-            />
-          </div>
-
-          <ProfileMainPanel
-            tabs={tabs}
-            activeTab={activeTab}
-            onTabChange={onTabChange}
-            showBookingFooter={showBookingFooter}
-            provider={provider}
-            services={services}
-            categorySlug={categorySlug}
-            mobileFooterClassName="hidden"
-          >
-            <ProviderTabPanels
-              activeTab={activeTab}
-              provider={provider}
-              categorySlug={categorySlug}
-              services={services}
-              packages={packages}
-              gallery={gallery}
-              aboutParagraphs={aboutParagraphs}
-              setServicesOpen={setServicesOpen}
-            />
-          </ProfileMainPanel>
         </div>
-      </DesktopLayout>
+
+        <div className="mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col px-4 pt-0 pb-4 md:px-6 md:pt-1 md:pb-4">
+          <div className="grid min-h-0 flex-1 gap-6 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)]">
+            <aside className="hidden min-h-0 overflow-y-auto lg:block">
+              <DoctorProfileSidebar
+                provider={provider}
+                categorySlug={categorySlug}
+                saved={saved}
+                onToggleSaved={onToggleSaved}
+                onBlockClick={onBlockClick}
+                onReportClick={onReportClick}
+              />
+            </aside>
+
+            <ProfileMainPanel
+              tabs={tabs}
+              activeTab={activeTab}
+              onTabChange={onTabChange}
+              showBookingFooter={showBookingFooter}
+              provider={provider}
+              services={services}
+              categorySlug={categorySlug}
+              mobileFooterClassName="hidden"
+              fillViewport
+            >
+              <ProviderTabPanels
+                activeTab={activeTab}
+                provider={provider}
+                categorySlug={categorySlug}
+                services={services}
+                packages={packages}
+                gallery={gallery}
+                aboutParagraphs={aboutParagraphs}
+                setServicesOpen={setServicesOpen}
+              />
+            </ProfileMainPanel>
+          </div>
+        </div>
+      </div>
 
       <ProviderDetailModals
         servicesOpen={servicesOpen}

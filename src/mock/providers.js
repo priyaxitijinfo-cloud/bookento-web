@@ -44,7 +44,13 @@ export const mockProviders = Array.from({ length: 100 }, (_, i) => {
     coverImage: coverUrl(`cover-${i}`, 1200, 400),
     description: `Award-winning service provider in ${loc} with ${3 + (i % 10)} years of experience. We deliver premium quality services with customer satisfaction as our top priority.`,
     categoryId: `cat_${String((i % 30) + 1).padStart(4, "0")}`,
-    specialty: ["Hair Styling", "Spa Therapy", "Dental Care", "Fitness", "Home Services"][i % 5],
+    specialty: [
+      "Hair Styling",
+      "Spa Therapy",
+      "Dental Care",
+      "Fitness",
+      "Home Services",
+    ][i % 5],
     status: i < 95 ? PROVIDER_STATUS.APPROVED : PROVIDER_STATUS.PENDING,
     rating: Number((3.5 + (i % 15) * 0.1).toFixed(1)),
     totalReviews: 20 + (i % 180),
@@ -80,6 +86,12 @@ export const mockProviders = Array.from({ length: 100 }, (_, i) => {
     tags: ["Verified", "Top Rated", "Fast Response"].slice(0, 1 + (i % 3)),
   };
 });
+
+mockProviders[0] = {
+  ...mockProviders[0],
+  businessName: "Quiet Garden Spa",
+  specialty: "Spa Therapy",
+};
 
 export const currentProvider = {
   ...mockProviders[0],

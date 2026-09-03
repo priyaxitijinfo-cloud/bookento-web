@@ -1,29 +1,25 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { ChevronDown, Heart, Search } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+
+import { HeroHeartIcon } from "@/components/icons/hero-nav-icons";
+
+import { SearchIcon } from "@/components/icons/search-icon";
 
 import { Avatar } from "@/components/ui/avatar";
 import { ROUTES } from "@/constants/routes.constants";
-import { currentUser } from "@/mock/providers";
-import { useFilterStore } from "@/store";
+import { useNotificationStore, useProfileStore } from "@/store";
 import { cn } from "@/lib/utils";
 
 export function HomeHeader({ embedded = false }) {
-  const router = useRouter();
-  const { setProviderSearch } = useFilterStore();
-  const [query, setQuery] = useState("");
-
-  function handleSearch(e) {
-    e.preventDefault();
-    const term = query.trim();
-    setProviderSearch(term);
-    router.push(term ? `${ROUTES.SEARCH}?q=${encodeURIComponent(term)}` : ROUTES.SEARCH);
-  }
-
+  const { profile, addresses } = useProfileStore();
+  const unreadCount = useNotificationStore((state) => state.unreadCount("user"));
+  const defaultAddress = addresses.find((address) => address.isDefault) || addresses[0];
+  const addressLabel = defaultAddress
+    ? [defaultAddress.addressLine1, defaultAddress.city].filter(Boolean).join(", ")
+    : "Add delivery address";
   return (
     <header
       className={cn(
@@ -37,24 +33,31 @@ export function HomeHeader({ embedded = false }) {
           <div className="flex items-center justify-between gap-3">
             <div className="flex min-w-0 flex-1 items-center gap-3">
               <Link href={ROUTES.PROFILE} className="shrink-0">
-                <Avatar src={currentUser.avatar} name={currentUser.name} size="md" className="ring-border ring-2" />
+                <Avatar
+                  src={profile.avatar}
+                  name={profile.name}
+                  size="md"
+                  className="ring-border ring-2"
+                />
               </Link>
               <div className="min-w-0">
                 <Link href={ROUTES.PROFILE} className="block">
-                  <p className="text-foreground truncate text-base font-bold">{currentUser.name}</p>
+                  <p className="text-foreground truncate text-base font-semibold">
+                    {profile.name}
+                  </p>
                 </Link>
                 <Link
                   href={ROUTES.ADDRESSES}
-                  className="text-muted-foreground mt-0.5 inline-flex max-w-full items-center gap-0.5 truncate text-xs"
+                  className="text-muted-foreground mt-0.5 inline-flex max-w-full min-w-0 items-center gap-0.5 text-xs"
                 >
-                  123 Street, USA
-                  <ChevronDown className="size-3.5 shrink-0" />
+                  <span className="truncate">{addressLabel}</span>
+                  <ChevronDown className="size-3.5 shrink-0" aria-hidden />
                 </Link>
               </div>
             </div>
             <Link
               href={ROUTES.NOTIFICATIONS}
-              className="relative flex size-10 shrink-0 items-center justify-center rounded-full bg-[#F4F4F8] text-foreground transition-colors hover:bg-muted"
+              className="text-foreground hover:bg-muted relative flex size-10 shrink-0 items-center justify-center rounded-full bg-[#FFFFFF] transition-colors"
               aria-label="Notifications"
             >
               <svg
@@ -69,24 +72,30 @@ export function HomeHeader({ embedded = false }) {
                   fill="currentColor"
                 />
               </svg>
-              <span className="bg-destructive absolute top-2 right-2 size-2 rounded-full ring-2 ring-[#F4F4F8]" />
+              {unreadCount > 0 ? (
+                <span
+                  className="bg-destructive absolute top-2 right-2 size-2 rounded-full ring-2 ring-[#FFFFFF]"
+                  aria-hidden
+                />
+              ) : null}
             </Link>
           </div>
 
-          <form onSubmit={handleSearch} className="relative mt-4">
-            <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search..."
+          <Link
+            href={ROUTES.SEARCH}
+            aria-label="Search providers"
+            className="relative mt-4 block w-full"
+          >
+            <SearchIcon className="text-muted-foreground pointer-events-none absolute top-1/2 left-3.5 z-10 size-4 -translate-y-1/2" />
+            <div
               className={cn(
-                "border-border/70 bg-background text-foreground placeholder:text-muted-foreground",
-                "h-11 w-full rounded-full border pl-10 text-sm shadow-card",
-                "focus-visible:ring-primary/30 focus-visible:ring-2 focus-visible:outline-none",
+                "bg-background text-muted-foreground border-[#F0F0F0]",
+                "flex h-11 w-full items-center rounded-full border pl-10 text-sm",
               )}
-            />
-          </form>
+            >
+              Search...
+            </div>
+          </Link>
         </div>
 
         {/* Desktop header */}
@@ -100,21 +109,23 @@ export function HomeHeader({ embedded = false }) {
               className="size-9 rounded-xl shadow-sm"
               priority
             />
-            <span className="text-foreground text-lg font-bold tracking-tight">Bookento</span>
+            <span className="text-foreground text-lg font-bold tracking-tight">
+              Bookento
+            </span>
           </Link>
 
           <div className="ml-auto flex items-center gap-1 sm:gap-2">
             <Link
               href={ROUTES.SAVED}
               aria-label="Saved providers"
-              className="text-muted-foreground hover:text-foreground flex size-10 items-center justify-center rounded-full transition-colors hover:bg-muted"
+              className="text-muted-foreground hover:text-foreground hover:bg-muted flex size-10 items-center justify-center rounded-full transition-colors"
             >
-              <Heart className="size-5" />
+              <HeroHeartIcon tone="dark" className="size-5" />
             </Link>
             <Link
               href={ROUTES.APPOINTMENTS}
               aria-label="My bookings"
-              className="relative flex size-10 items-center justify-center rounded-full text-[#4D5972] transition-colors hover:bg-muted hover:text-[#000000]"
+              className="hover:bg-muted relative flex size-10 items-center justify-center rounded-full text-[#4D5972] transition-colors hover:text-[#000000]"
             >
               <svg
                 viewBox="0 0 22 22"
@@ -145,7 +156,12 @@ export function HomeHeader({ embedded = false }) {
               aria-label="Profile"
               className="hover:ring-primary/30 flex shrink-0 rounded-full transition-shadow hover:ring-2"
             >
-              <Avatar src={currentUser.avatar} name={currentUser.name} size="sm" className="ring-border ring-2" />
+              <Avatar
+                src={profile.avatar}
+                name={profile.name}
+                size="sm"
+                className="ring-border ring-2"
+              />
             </Link>
           </div>
         </div>

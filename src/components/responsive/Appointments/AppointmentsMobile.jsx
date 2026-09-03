@@ -1,72 +1,88 @@
 "use client";
 
-import { LayoutList } from "lucide-react";
+import { useMemo, useState } from "react";
 
+import {
+  BookingDateRangeSheet,
+  isAppointmentInDateRange,
+} from "@/components/appointments/booking-date-range-sheet";
 import { BookingEmptyState } from "@/components/appointments/booking-empty-state";
 import { BookingListCard } from "@/components/appointments/booking-list-card";
 import { BookingTabBar } from "@/components/appointments/booking-tab-bar";
-import { BookingsCalendarView } from "@/components/appointments/bookings-calendar-view";
 import { UserPageShell } from "@/components/layout/user-page-shell";
 import { ROUTES } from "@/constants/routes.constants";
 import { cn } from "@/lib/utils";
 
-function ViewToggleButton({ viewMode, onToggle }) {
-  const isCalendar = viewMode === "calendar";
-
+function MobileDateRangeButton({ active, onOpen }) {
   return (
     <button
       type="button"
-      onClick={onToggle}
-      aria-label={isCalendar ? "Show list view" : "Show calendar view"}
-      aria-pressed={isCalendar}
+      onClick={onOpen}
+      aria-label="Select date range"
+      aria-pressed={active}
       className={cn(
         "flex size-9 items-center justify-center rounded-full transition-colors",
-        isCalendar
+        active
           ? "profile-tab-active text-white shadow-[0_2px_8px_rgba(24,101,234,0.22)]"
-          : "bg-[#FFFFFF] hover:bg-[#FFFFFF]",
+          : "text-[#1865EA]",
       )}
     >
-      {isCalendar ? (
-        <LayoutList className="size-5" />
-      ) : (
-        <img src="/icons/calender01.svg" alt="" className="size-5" aria-hidden />
-      )}
+      <img src="/icons/calender01.svg" alt="" className="size-5" aria-hidden />
     </button>
   );
 }
 
-export function AppointmentsMobile({
-  appointmentTab,
-  setAppointmentTab,
-  viewMode,
-  toggleView,
-  activeList,
-  counts,
-}) {
-  return (
-    <UserPageShell
-      title="My Bookings"
-      backHref={ROUTES.HOME}
-      backLabel="Back to Home"
-      containerVariant="browseWithBreadcrumb"
-      className="bg-background"
-      rightAction={<ViewToggleButton viewMode={viewMode} onToggle={toggleView} />}
-    >
-      <BookingTabBar value={appointmentTab} onChange={setAppointmentTab} counts={counts} />
+export function AppointmentsMobile({ appointmentTab, setAppointmentTab, activeList }) {
+  const [dateRangeOpen, setDateRangeOpen] = useState(false);
+  const [dateRange, setDateRange] = useState(null);
 
-      <div className="mt-[11px]">
-        {activeList.length === 0 ? (
-          <BookingEmptyState tab={appointmentTab} />
-        ) : viewMode === "calendar" ? (
-          <BookingsCalendarView appointments={activeList} />
-        ) : (
-          <div className="grid grid-cols-1 gap-3">
-            {activeList.map((appointment) => (
-              <BookingListCard key={appointment.id} appointment={appointment} />
-            ))}
-          </div>
-        )}
-      </div>
-    </UserPageShell>
+  const filteredList = useMemo(
+    () =>
+      activeList.filter((appointment) =>
+        isAppointmentInDateRange(appointment.scheduledDate, dateRange),
+      ),
+    [activeList, dateRange],
+  );
+
+  const hasDateFilter = Boolean(dateRange?.start);
+
+  return (
+    <>
+      <UserPageShell
+        title="My Bookings"
+        backHref={ROUTES.HOME}
+        backLabel="Back to Home"
+        hideMobileBack
+        containerVariant="browseWithBreadcrumb"
+        className="bg-background"
+        rightAction={
+          <MobileDateRangeButton
+            active={hasDateFilter}
+            onOpen={() => setDateRangeOpen(true)}
+          />
+        }
+      >
+        <BookingTabBar value={appointmentTab} onChange={setAppointmentTab} />
+
+        <div className="mt-[11px]">
+          {filteredList.length === 0 ? (
+            <BookingEmptyState tab={appointmentTab} />
+          ) : (
+            <div className="grid grid-cols-1 gap-3">
+              {filteredList.map((appointment) => (
+                <BookingListCard key={appointment.id} appointment={appointment} />
+              ))}
+            </div>
+          )}
+        </div>
+      </UserPageShell>
+
+      <BookingDateRangeSheet
+        open={dateRangeOpen}
+        onClose={() => setDateRangeOpen(false)}
+        value={dateRange}
+        onApply={setDateRange}
+      />
+    </>
   );
 }

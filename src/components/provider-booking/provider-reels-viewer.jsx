@@ -16,7 +16,10 @@ import {
   ReelsReportSheet,
   ReelsShareSheet,
 } from "@/components/provider-booking/reels/reels-sheets";
-import { categoryListingRoute, providerPackageRoute } from "@/constants/routes.constants";
+import {
+  categoryListingRoute,
+  providerPackageRoute,
+} from "@/constants/routes.constants";
 import { cn } from "@/lib/utils";
 import { useBookingStore } from "@/store";
 import { formatCompactNumber } from "@/utils/format.utils";
@@ -73,11 +76,14 @@ export function ProviderReelsViewer({
     showAllReels ? initialIndex : getFilteredIndex(initialIndex),
   );
 
-  const scrollToIndex = useCallback((index, behavior = "auto") => {
-    const container = scrollRef.current;
-    if (!container || slideHeight <= 0) return;
-    container.scrollTo({ top: index * slideHeight, behavior });
-  }, [slideHeight]);
+  const scrollToIndex = useCallback(
+    (index, behavior = "auto") => {
+      const container = scrollRef.current;
+      if (!container || slideHeight <= 0) return;
+      container.scrollTo({ top: index * slideHeight, behavior });
+    },
+    [slideHeight],
+  );
 
   const activeReel = filteredReels[activeIndex] || filteredReels[0];
 
@@ -141,10 +147,19 @@ export function ProviderReelsViewer({
   }, []);
 
   useEffect(() => {
-    const nextIndex = showAllReels ? initialIndex : getFilteredIndex(initialIndex, feedFilter);
+    const nextIndex = showAllReels
+      ? initialIndex
+      : getFilteredIndex(initialIndex, feedFilter);
     setActiveIndex(nextIndex);
     if (slideHeight > 0) scrollToIndex(nextIndex);
-  }, [feedFilter, getFilteredIndex, initialIndex, scrollToIndex, showAllReels, slideHeight]);
+  }, [
+    feedFilter,
+    getFilteredIndex,
+    initialIndex,
+    scrollToIndex,
+    showAllReels,
+    slideHeight,
+  ]);
 
   useEffect(() => {
     if (slideHeight <= 0 || activeSheet) return undefined;
@@ -171,7 +186,14 @@ export function ProviderReelsViewer({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeIndex, activeSheet, filteredReels.length, onClose, scrollToIndex, slideHeight]);
+  }, [
+    activeIndex,
+    activeSheet,
+    filteredReels.length,
+    onClose,
+    scrollToIndex,
+    slideHeight,
+  ]);
 
   const handleScroll = useCallback(() => {
     const container = scrollRef.current;
@@ -180,25 +202,33 @@ export function ProviderReelsViewer({
     if (index >= 0 && index < filteredReels.length) setActiveIndex(index);
   }, [filteredReels.length, slideHeight]);
 
-  const handleWheel = useCallback((event) => {
-    if (activeSheet || slideHeight <= 0 || wheelLockRef.current) return;
-    event.preventDefault();
-    event.stopPropagation();
-    const direction = event.deltaY > 0 ? 1 : -1;
-    const nextIndex = Math.min(Math.max(activeIndex + direction, 0), filteredReels.length - 1);
-    if (nextIndex === activeIndex) return;
-    wheelLockRef.current = true;
-    setActiveIndex(nextIndex);
-    scrollToIndex(nextIndex, "smooth");
-    window.setTimeout(() => {
-      wheelLockRef.current = false;
-    }, 450);
-  }, [activeIndex, activeSheet, filteredReels.length, scrollToIndex, slideHeight]);
+  const handleWheel = useCallback(
+    (event) => {
+      if (activeSheet || slideHeight <= 0 || wheelLockRef.current) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const direction = event.deltaY > 0 ? 1 : -1;
+      const nextIndex = Math.min(
+        Math.max(activeIndex + direction, 0),
+        filteredReels.length - 1,
+      );
+      if (nextIndex === activeIndex) return;
+      wheelLockRef.current = true;
+      setActiveIndex(nextIndex);
+      scrollToIndex(nextIndex, "smooth");
+      window.setTimeout(() => {
+        wheelLockRef.current = false;
+      }, 450);
+    },
+    [activeIndex, activeSheet, filteredReels.length, scrollToIndex, slideHeight],
+  );
 
   const handleBookNow = (packageId) => {
     setProviderId(provider.id);
     setPackageId(packageId);
-    const url = `${providerPackageRoute(provider.id, packageId)}${categorySlug ? `?from=${categorySlug}` : ""}`;
+    const isDoctorPackage = String(packageId).startsWith("doc_pkg_");
+    const categoryQuery = categorySlug || (isDoctorPackage ? "doctor" : null);
+    const url = `${providerPackageRoute(provider.id, packageId)}${categoryQuery ? `?from=${categoryQuery}` : ""}`;
     onClose();
     router.push(url);
   };
@@ -240,10 +270,16 @@ export function ProviderReelsViewer({
   if (filteredReels.length === 0) {
     return createPortal(
       <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/85 p-4">
-        <div className="max-w-sm rounded-2xl bg-background p-6 text-center">
+        <div className="bg-background max-w-sm rounded-2xl p-6 text-center">
           <p className="font-semibold">No reels found</p>
-          <p className="text-muted-foreground mt-2 text-sm">Try switching between Popular and Nearby.</p>
-          <button type="button" onClick={onClose} className="gradient-brand mt-4 w-full rounded-xl py-2.5 text-sm font-semibold text-white hover:opacity-95">
+          <p className="text-muted-foreground mt-2 text-sm">
+            Try switching between Popular and Nearby.
+          </p>
+          <button
+            type="button"
+            onClick={onClose}
+            className="gradient-brand mt-4 w-full rounded-xl py-2.5 text-sm font-medium text-white hover:opacity-95 md:font-semibold"
+          >
             Close
           </button>
         </div>
@@ -258,7 +294,7 @@ export function ProviderReelsViewer({
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 z-[120] flex size-10 items-center justify-center rounded-full bg-background/15 text-white backdrop-blur md:hidden"
+          className="bg-background/15 absolute top-4 right-4 z-[120] flex size-10 items-center justify-center rounded-full text-white backdrop-blur md:hidden"
           aria-label="Close reels"
         >
           <X className="size-5" />
@@ -266,7 +302,7 @@ export function ProviderReelsViewer({
 
         <div className="relative h-dvh w-full max-w-[420px] md:h-[min(90vh,820px)]">
           <div className="relative h-full overflow-hidden bg-black md:rounded-2xl md:shadow-2xl">
-            <div className="absolute right-3 top-3 z-20 hidden gap-2 md:flex">
+            <div className="absolute top-3 right-3 z-20 hidden gap-2 md:flex">
               <button
                 type="button"
                 onClick={() => setActiveSheet("category")}
@@ -290,7 +326,7 @@ export function ProviderReelsViewer({
               onScroll={handleScroll}
               onWheel={handleWheel}
               onClick={handleReelTap}
-              className="h-full w-full touch-pan-y snap-y snap-mandatory overflow-y-auto overscroll-y-contain scroll-smooth scrollbar-hide"
+              className="scrollbar-hide h-full w-full touch-pan-y snap-y snap-mandatory overflow-y-auto overscroll-y-contain scroll-smooth"
             >
               {filteredReels.map((reel, index) => (
                 <ReelSlide
@@ -336,13 +372,19 @@ export function ProviderReelsViewer({
                   }}
                   className={cn(
                     "flex size-11 items-center justify-center rounded-full bg-black/35 text-white backdrop-blur-md transition-transform duration-300",
-                    showMuteControl ? "pointer-events-auto scale-100" : "pointer-events-none scale-95",
+                    showMuteControl
+                      ? "pointer-events-auto scale-100"
+                      : "pointer-events-none scale-95",
                   )}
                   aria-label={muted ? "Unmute" : "Mute"}
                   aria-hidden={!showMuteControl}
                   tabIndex={showMuteControl ? 0 : -1}
                 >
-                  {muted ? <VolumeX className="size-5" /> : <Volume2 className="size-5" />}
+                  {muted ? (
+                    <VolumeX className="size-5" />
+                  ) : (
+                    <Volume2 className="size-5" />
+                  )}
                 </button>
               </div>
 
@@ -352,38 +394,40 @@ export function ProviderReelsViewer({
                   showAllReels ? "bottom-[198px] md:bottom-[182px]" : "bottom-[200px]",
                 )}
               >
-              <ReelsActionButton
-                icon={REELS_ACTION_ICONS.like}
-                activeIcon={REELS_ACTION_ICONS.likeActive}
-                label={formatCompactNumber(activeReel.likes + (liked[activeReel.id] ? 1 : 0))}
-                onClick={() => {
-                  setLiked((prev) => {
-                    const next = !prev[activeReel.id];
-                    toast.success(next ? "Added to liked" : "Removed from liked");
-                    return { ...prev, [activeReel.id]: next };
-                  });
-                }}
-                active={Boolean(liked[activeReel.id])}
-              />
-              <ReelsActionButton
-                icon={REELS_ACTION_ICONS.comment}
-                label={String(activeReel.comments)}
-                onClick={() => setActiveSheet("comments")}
-              />
-              <ReelsActionButton
-                icon={REELS_ACTION_ICONS.share}
-                onClick={() => setActiveSheet("share")}
-              />
-              <ReelsActionButton
-                icon={REELS_ACTION_ICONS.save}
-                activeIcon={REELS_ACTION_ICONS.saveActive}
-                onClick={() => handleToggleSave(activeReel.id)}
-                active={Boolean(saved[activeReel.id])}
-              />
-              <ReelsActionButton
-                icon={REELS_ACTION_ICONS.report}
-                onClick={() => setActiveSheet("report")}
-              />
+                <ReelsActionButton
+                  icon={REELS_ACTION_ICONS.like}
+                  activeIcon={REELS_ACTION_ICONS.likeActive}
+                  label={formatCompactNumber(
+                    activeReel.likes + (liked[activeReel.id] ? 1 : 0),
+                  )}
+                  onClick={() => {
+                    setLiked((prev) => {
+                      const next = !prev[activeReel.id];
+                      toast.success(next ? "Added to liked" : "Removed from liked");
+                      return { ...prev, [activeReel.id]: next };
+                    });
+                  }}
+                  active={Boolean(liked[activeReel.id])}
+                />
+                <ReelsActionButton
+                  icon={REELS_ACTION_ICONS.comment}
+                  label={String(activeReel.comments)}
+                  onClick={() => setActiveSheet("comments")}
+                />
+                <ReelsActionButton
+                  icon={REELS_ACTION_ICONS.share}
+                  onClick={() => setActiveSheet("share")}
+                />
+                <ReelsActionButton
+                  icon={REELS_ACTION_ICONS.save}
+                  activeIcon={REELS_ACTION_ICONS.saveActive}
+                  onClick={() => handleToggleSave(activeReel.id)}
+                  active={Boolean(saved[activeReel.id])}
+                />
+                <ReelsActionButton
+                  icon={REELS_ACTION_ICONS.report}
+                  onClick={() => setActiveSheet("report")}
+                />
               </div>
             </>
           )}
@@ -404,7 +448,11 @@ export function ProviderReelsViewer({
             onToggleSave={handleToggleSave}
             contained
           />
-          <ReelsReportSheet open={activeSheet === "report"} onClose={() => setActiveSheet(null)} contained />
+          <ReelsReportSheet
+            open={activeSheet === "report"}
+            onClose={() => setActiveSheet(null)}
+            contained
+          />
           <ReelsCategorySheet
             open={activeSheet === "category"}
             onClose={() => setActiveSheet(null)}

@@ -1,16 +1,20 @@
 "use client";
 
-import { Check, ChevronLeft, ChevronRight, Home, Monitor } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 
-import { LocationIcon } from "@/components/icons/location-icon";
+import {
+  VisitHomeIcon,
+  VisitOnlineIcon,
+  VisitOnsiteIcon,
+} from "@/components/icons/visit-type-icons";
 import { timeSlots } from "@/mock/appointments";
 import { cn } from "@/lib/utils";
 import { getLocalDateKey } from "@/utils/format.utils";
 
 export const PACKAGE_VISIT_TYPES = [
-  { value: "in_clinic", label: "Onsite", icon: LocationIcon },
-  { value: "online", label: "Online", icon: Monitor },
-  { value: "home_visit", label: "Homevisit", icon: Home },
+  { value: "in_clinic", label: "Onsite", icon: VisitOnsiteIcon },
+  { value: "online", label: "Online", icon: VisitOnlineIcon },
+  { value: "home_visit", label: "Homevisit", icon: VisitHomeIcon },
 ];
 
 export function getPackageDateRange(count, startOffset = 0) {
@@ -24,8 +28,12 @@ export function getPackageDateRange(count, startOffset = 0) {
 
 export function PackageSectionTitle({ children, action, className }) {
   return (
-    <div className={cn("mb-3 flex items-center justify-between gap-4 md:mb-4", className)}>
-      <h2 className="min-w-0 text-base font-bold text-foreground md:text-lg">{children}</h2>
+    <div
+      className={cn("mb-3 flex items-center justify-between gap-4 md:mb-4", className)}
+    >
+      <h2 className="text-foreground min-w-0 text-base font-semibold md:text-lg md:font-bold">
+        {children}
+      </h2>
       {action ? <div className="shrink-0">{action}</div> : null}
     </div>
   );
@@ -44,26 +52,32 @@ export function PackageSectionPanel({ children, className }) {
   );
 }
 
-export function MonthNavigator({ monthLabel, onPrev, onNext, disablePrev, disableNext }) {
+export function MonthNavigator({
+  monthLabel,
+  onPrev,
+  onNext,
+  disablePrev,
+  disableNext,
+}) {
   return (
     <div className="flex shrink-0 items-center gap-1.5">
       <button
         type="button"
         onClick={onPrev}
         disabled={disablePrev}
-        className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background text-foreground transition-colors hover:bg-[#F8F9FC] disabled:cursor-not-allowed disabled:opacity-40"
+        className="border-border/60 bg-background text-foreground flex size-8 shrink-0 items-center justify-center rounded-lg border transition-colors hover:bg-[#F8F9FC] disabled:cursor-not-allowed disabled:opacity-40"
         aria-label="Scroll to previous dates"
       >
         <ChevronLeft className="size-4" />
       </button>
-      <span className="min-w-[5.25rem] whitespace-nowrap px-1 text-center text-sm font-semibold tabular-nums text-foreground">
+      <span className="text-foreground min-w-[5.25rem] px-1 text-center text-sm font-semibold whitespace-nowrap tabular-nums">
         {monthLabel}
       </span>
       <button
         type="button"
         onClick={onNext}
         disabled={disableNext}
-        className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background text-foreground transition-colors hover:bg-[#F8F9FC] disabled:cursor-not-allowed disabled:opacity-40"
+        className="border-border/60 bg-background text-foreground flex size-8 shrink-0 items-center justify-center rounded-lg border transition-colors hover:bg-[#F8F9FC] disabled:cursor-not-allowed disabled:opacity-40"
         aria-label="Scroll to next dates"
       >
         <ChevronRight className="size-4" />
@@ -72,13 +86,20 @@ export function MonthNavigator({ monthLabel, onPrev, onNext, disablePrev, disabl
   );
 }
 
-export function DatePickerRow({ dates, selectedDate, onSelect, scrollRef, onScroll, className }) {
+export function DatePickerRow({
+  dates,
+  selectedDate,
+  onSelect,
+  scrollRef,
+  onScroll,
+  className,
+}) {
   return (
     <div
       ref={scrollRef}
       onScroll={onScroll}
       className={cn(
-        "scrollbar-hide overflow-x-auto overscroll-x-contain scroll-smooth touch-pan-x",
+        "scrollbar-hide touch-pan-x overflow-x-auto overscroll-x-contain scroll-smooth",
         className,
       )}
     >
@@ -94,11 +115,16 @@ export function DatePickerRow({ dates, selectedDate, onSelect, scrollRef, onScro
               className={cn(
                 "flex min-h-[4.25rem] min-w-[3.35rem] shrink-0 flex-col items-center justify-center rounded-xl border px-2.5 py-2.5 transition-colors",
                 selected
-                  ? "border-primary bg-[#EFF6FF] text-primary shadow-[0_0_0_1px_rgba(24,101,234,0.08)]"
+                  ? "border-primary text-primary bg-[#EFF6FF] shadow-[0_0_0_1px_rgba(24,101,234,0.08)]"
                   : "border-border bg-background text-foreground hover:border-primary/25 hover:bg-[#F8FAFC]",
               )}
             >
-              <span className={cn("text-base font-bold leading-none", selected ? "text-primary" : "text-foreground")}>
+              <span
+                className={cn(
+                  "text-base leading-none font-bold",
+                  selected ? "text-primary" : "text-foreground",
+                )}
+              >
                 {String(date.getDate()).padStart(2, "0")}
               </span>
               <span
@@ -120,7 +146,7 @@ export function DatePickerRow({ dates, selectedDate, onSelect, scrollRef, onScro
 export function TimePickerGrid({ selectedTime, onSelect, columns = "grid-cols-4" }) {
   return (
     <div className={cn("grid gap-2 md:gap-2.5", columns)}>
-      {timeSlots.slice(0, 16).map((slot) => {
+      {timeSlots.map((slot) => {
         const selected = selectedTime === slot.time;
         return (
           <button
@@ -133,7 +159,7 @@ export function TimePickerGrid({ selectedTime, onSelect, columns = "grid-cols-4"
               !slot.available && "cursor-not-allowed opacity-40",
               selected
                 ? "border-primary bg-background text-primary shadow-sm"
-                : "border-transparent bg-background/80 text-muted-foreground hover:border-primary/20 hover:text-foreground",
+                : "bg-background/80 text-muted-foreground hover:border-primary/20 hover:text-foreground border-transparent",
             )}
           >
             {slot.time}
@@ -146,16 +172,23 @@ export function TimePickerGrid({ selectedTime, onSelect, columns = "grid-cols-4"
 
 export function PackageInfoCard({ pkg, theme }) {
   return (
-    <article className="rounded-2xl border border-border/60 bg-background p-4 shadow-card md:p-5">
+    <article className="border-border/60 bg-background shadow-card rounded-2xl border p-4 md:p-5">
       <div className="flex items-stretch gap-3.5 md:gap-5">
-        <div className="w-[4.75rem] min-h-[7rem] shrink-0 overflow-hidden rounded-xl bg-muted md:w-[7rem] md:min-h-[8.5rem]">
+        <div className="bg-muted min-h-[7rem] w-[4.75rem] shrink-0 overflow-hidden rounded-xl md:min-h-[8.5rem] md:w-[7rem]">
           <img src={pkg.image} alt={pkg.name} className="size-full object-cover" />
         </div>
 
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
-            <h2 className="text-base font-bold leading-snug text-foreground md:text-lg">{pkg.name}</h2>
-            <span className={cn("shrink-0 rounded-md px-2 py-0.5 text-[10px] font-semibold md:px-2.5 md:py-1 md:text-xs", theme.badge)}>
+            <h2 className="text-foreground text-base leading-snug font-semibold md:text-lg md:font-bold">
+              {pkg.name}
+            </h2>
+            <span
+              className={cn(
+                "shrink-0 rounded-md px-2 py-0.5 text-[10px] font-semibold md:px-2.5 md:py-1 md:text-xs",
+                theme.badge,
+              )}
+            >
               Save {pkg.discountPercent}%
             </span>
           </div>
@@ -201,10 +234,12 @@ export function VisitTypePicker({ visitType, onSelect }) {
             <span
               className={cn(
                 "flex size-11 items-center justify-center rounded-lg md:size-12",
-                selected ? "bg-emerald-500 text-white" : "bg-muted text-muted-foreground",
+                selected
+                  ? "bg-emerald-500 text-white"
+                  : "bg-muted text-muted-foreground",
               )}
             >
-              <Icon className="size-5" strokeWidth={2} />
+              <Icon className="size-6" />
             </span>
             <span
               className={cn(

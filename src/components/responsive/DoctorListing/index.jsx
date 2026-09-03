@@ -81,7 +81,10 @@ export function DoctorListingPageSkeleton() {
       <div className="mx-auto max-w-lg space-y-4 px-4 py-4 md:max-w-7xl md:px-6 md:py-6">
         <div className="flex gap-2.5 overflow-hidden py-2.5">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="bg-muted h-10 w-24 shrink-0 animate-pulse rounded-lg" />
+            <div
+              key={i}
+              className="bg-muted h-10 w-24 shrink-0 animate-pulse rounded-lg"
+            />
           ))}
         </div>
         <div className="hidden gap-4 md:grid md:grid-cols-4">
@@ -149,7 +152,11 @@ function DoctorListingContent() {
     setVisibleCount((c) => Math.min(c + PAGE_SIZE, filtered.length));
   }, [filtered.length]);
 
-  const lastRef = useInfiniteScroll({ onLoadMore: loadMore, hasMore, isLoading: false });
+  const lastRef = useInfiniteScroll({
+    onLoadMore: loadMore,
+    hasMore,
+    isLoading: false,
+  });
 
   const activeCategory = categoryFilter ? getCategoryById(categoryFilter) : null;
   const activeSortChip = SORT_VALUE_TO_CHIP[sortBy] || "All";
@@ -213,6 +220,7 @@ function DoctorListingContent() {
   return (
     <>
       <ResponsiveView
+        fallback={<DoctorListingPageSkeleton />}
         mobile={<DoctorListingMobile {...viewProps} />}
         tablet={<DoctorListingTablet {...viewProps} />}
         desktop={<DoctorListingDesktop {...viewProps} />}

@@ -5,10 +5,35 @@ import { ArrowLeft, Bookmark } from "lucide-react";
 
 import { UserBottomNav } from "@/components/layout/user-nav";
 import { EmptyState } from "@/components/shared/empty-state";
+import { IllustrationEmptyState } from "@/components/shared/illustration-empty-state";
 import { ROUTES } from "@/constants/routes.constants";
+import {
+  MOBILE_HEADER_BACK_CLASS,
+  MOBILE_HEADER_BACK_TITLE_GROUP_CLASS,
+  MOBILE_HEADER_CLASS,
+  MOBILE_HEADER_INNER_CLASS,
+  MOBILE_HEADER_TITLE_CLASS,
+} from "@/lib/layout/mobile-header.constants";
 import { cn } from "@/lib/utils";
 
 import { ReelsPlayerShell, SavedReelsGrid } from "./ShortsContent";
+
+function ReelsEmptyStateMobile() {
+  return (
+    <IllustrationEmptyState
+      src="/icons/reels.png"
+      title="No Reels Yet"
+      description={
+        <>
+          <span className="block">You haven&apos;t saved anything yet.</span>
+          <span className="block">Save your favorite Reels to access them.</span>
+        </>
+      }
+      className="md:hidden"
+      imageClassName="size-[188px]"
+    />
+  );
+}
 
 export function ShortsSavedGridSection({
   pageTitle,
@@ -26,21 +51,20 @@ export function ShortsSavedGridSection({
   return (
     <>
       {showMobileHeader ? (
-        <header className="safe-top flex items-center gap-3 border-b border-border bg-surface-page px-4 py-3">
-          <Link
-            href={backHref}
-            className="text-foreground flex size-9 items-center justify-center rounded-full transition-colors hover:bg-black/5"
-            aria-label={backLabel}
-          >
-            <ArrowLeft className="size-5" />
-          </Link>
-          <div className="min-w-0">
-            <h1 className="text-foreground text-lg font-bold">{pageTitle}</h1>
-            <p className="text-muted-foreground text-xs">
-              {hasHydrated
-                ? `${savedReels.length} reel${savedReels.length !== 1 ? "s" : ""}`
-                : "\u00a0"}
-            </p>
+        <header className={cn(MOBILE_HEADER_CLASS, "md:hidden")}>
+          <div className={cn(MOBILE_HEADER_INNER_CLASS, "justify-between")}>
+            <div className={MOBILE_HEADER_BACK_TITLE_GROUP_CLASS}>
+              <Link
+                href={backHref}
+                className={MOBILE_HEADER_BACK_CLASS}
+                aria-label={backLabel}
+              >
+                <ArrowLeft className="size-5" strokeWidth={2.25} />
+              </Link>
+              <h1 className={MOBILE_HEADER_TITLE_CLASS}>
+                {hasHydrated && savedReels.length === 0 ? "Reels" : pageTitle}
+              </h1>
+            </div>
           </div>
         </header>
       ) : null}
@@ -51,15 +75,20 @@ export function ShortsSavedGridSection({
             <div className="border-primary size-8 animate-spin rounded-full border-2 border-t-transparent" />
           </div>
         ) : savedReels.length === 0 ? (
-          <EmptyState
-            icon={Bookmark}
-            title="No saved reels yet"
-            description="Tap the bookmark icon on any reel to save it here."
-            actionLabel="Browse all reels"
-            onAction={() => {
-              window.location.href = `${ROUTES.REELS}?view=all`;
-            }}
-          />
+          <>
+            <ReelsEmptyStateMobile />
+            <div className="hidden md:block">
+              <EmptyState
+                icon={Bookmark}
+                title="No saved reels yet"
+                description="Tap the bookmark icon on any reel to save it here."
+                actionLabel="Browse all reels"
+                onAction={() => {
+                  window.location.href = `${ROUTES.REELS}?view=all`;
+                }}
+              />
+            </div>
+          </>
         ) : (
           <SavedReelsGrid
             className={gridClassName}
@@ -84,13 +113,15 @@ export function ShortsPlayerSection({
   setActiveIndex,
   playerHeightClass,
   playerContainerClass,
+  playerFrameClass,
   showEmptySaved = true,
 }) {
   return (
     <main className={cn("mx-auto max-w-7xl", playerContainerClass)}>
       <div
         className={cn(
-          "relative mx-auto min-h-0 w-full max-w-md overflow-hidden bg-black",
+          "relative mx-auto min-h-0 w-full overflow-hidden bg-black",
+          playerFrameClass ?? "max-w-md",
           playerHeightClass,
         )}
       >
@@ -99,7 +130,7 @@ export function ShortsPlayerSection({
             <div className="size-8 animate-spin rounded-full border-2 border-white/30 border-t-white" />
           </div>
         ) : visibleReels.length === 0 && showEmptySaved ? (
-          <div className="flex h-full items-center justify-center bg-surface-page p-6">
+          <div className="bg-surface-page flex h-full items-center justify-center p-6">
             <EmptyState
               icon={Bookmark}
               title="No saved reels yet"
@@ -128,8 +159,10 @@ export function ShortsMobileShell({ showSavedGrid, children }) {
   return (
     <div
       className={cn(
-        "relative min-h-dvh pb-20",
-        showSavedGrid ? "overflow-visible bg-surface-page" : "overflow-hidden bg-black",
+        "relative min-h-dvh",
+        showSavedGrid
+          ? "bg-surface-page overflow-visible pb-20"
+          : "overflow-hidden bg-black pb-0",
       )}
     >
       {children}

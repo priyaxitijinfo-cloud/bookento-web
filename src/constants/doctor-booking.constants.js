@@ -122,31 +122,56 @@ export const DOCTOR_GALLERY = [
 ];
 
 const DOCTOR_SERVICE_CATALOG = [
-  { name: "Annual Physical Checkup", duration: 45, price: 15000, originalPrice: 19000 },
-  { name: "General Consultation", duration: 30, price: 1500, originalPrice: 2500 },
-  { name: "Follow-up Consultation", duration: 20, price: 800, originalPrice: 1200 },
+  { name: "Annual Physical Checkup", duration: 45, price: 450, originalPrice: 799 },
+  { name: "General Consultation", duration: 30, price: 399, originalPrice: 699 },
+  { name: "Follow-up Consultation", duration: 20, price: 299, originalPrice: 499 },
   { name: "Women's Health Screening", duration: 40, price: 4500, originalPrice: 5500 },
   { name: "Prenatal Checkup", duration: 35, price: 3200, originalPrice: 4000 },
   { name: "Postnatal Care Visit", duration: 30, price: 2800, originalPrice: 3500 },
-  { name: "Hormonal Balance Consultation", duration: 30, price: 2200, originalPrice: 2800 },
+  {
+    name: "Hormonal Balance Consultation",
+    duration: 30,
+    price: 2200,
+    originalPrice: 2800,
+  },
   { name: "PCOS Management Session", duration: 35, price: 2600, originalPrice: 3200 },
-  { name: "Thyroid Profile Consultation", duration: 25, price: 1800, originalPrice: 2400 },
+  {
+    name: "Thyroid Profile Consultation",
+    duration: 25,
+    price: 1800,
+    originalPrice: 2400,
+  },
   { name: "Diabetes Monitoring Visit", duration: 30, price: 2000, originalPrice: 2600 },
-  { name: "Blood Pressure Review", duration: 20, price: 900, originalPrice: 1200 },
-  { name: "Nutrition & Diet Counseling", duration: 30, price: 1600, originalPrice: 2100 },
-  { name: "Mental Wellness Consultation", duration: 45, price: 2400, originalPrice: 3000 },
+  { name: "Blood Pressure Review", duration: 20, price: 349, originalPrice: 599 },
+  {
+    name: "Nutrition & Diet Counseling",
+    duration: 30,
+    price: 1600,
+    originalPrice: 2100,
+  },
+  {
+    name: "Mental Wellness Consultation",
+    duration: 45,
+    price: 2400,
+    originalPrice: 3000,
+  },
   { name: "Skin & Hair Consultation", duration: 25, price: 1400, originalPrice: 1800 },
   { name: "Allergy Assessment", duration: 30, price: 1700, originalPrice: 2200 },
-  { name: "Vaccination Consultation", duration: 20, price: 1100, originalPrice: 1500 },
-  { name: "Lab Report Review", duration: 15, price: 700, originalPrice: 1000 },
+  { name: "Vaccination Consultation", duration: 20, price: 499, originalPrice: 799 },
+  { name: "Lab Report Review", duration: 15, price: 299, originalPrice: 499 },
   { name: "Ultrasound Consultation", duration: 30, price: 3500, originalPrice: 4200 },
   { name: "Bone Health Checkup", duration: 30, price: 2100, originalPrice: 2700 },
   { name: "Menopause Care Session", duration: 35, price: 2500, originalPrice: 3100 },
   { name: "Fertility Counseling", duration: 40, price: 3800, originalPrice: 4600 },
-  { name: "Sleep Disorder Consultation", duration: 30, price: 1900, originalPrice: 2500 },
+  {
+    name: "Sleep Disorder Consultation",
+    duration: 30,
+    price: 1900,
+    originalPrice: 2500,
+  },
   { name: "Physiotherapy Assessment", duration: 35, price: 2300, originalPrice: 2900 },
   { name: "Senior Care Checkup", duration: 40, price: 2700, originalPrice: 3400 },
-  { name: "Emergency Teleconsultation", duration: 15, price: 1200, originalPrice: 1600 },
+  { name: "Emergency Teleconsultation", duration: 15, price: 399, originalPrice: 699 },
 ];
 
 export const DOCTOR_BOOKING_SERVICES = DOCTOR_SERVICE_CATALOG.map((service, index) => ({
@@ -212,7 +237,7 @@ export const DOCTOR_ABOUT_DESCRIPTION = [
 
 export const PACKAGE_THEMES = {
   rose: {
-    badge: "bg-rose-100 text-rose-700",
+    badge: "bg-[#FEE7F1] text-[#FD4685]",
     checkBg: "bg-rose-500",
     check: "text-rose-500",
     price: "text-rose-600",

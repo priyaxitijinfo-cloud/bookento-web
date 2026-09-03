@@ -70,8 +70,8 @@ function SpecialPackageCard({ pkg }) {
       href={pkg.href}
       className={cn(
         "group relative flex h-[10.5rem] overflow-hidden rounded-2xl p-4",
-        "shadow-card transition-shadow hover:shadow-card-hover",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2",
+        "shadow-card hover:shadow-card-hover transition-shadow",
+        "focus-visible:ring-primary/40 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
       )}
     >
       <img
@@ -87,17 +87,31 @@ function SpecialPackageCard({ pkg }) {
         <div className={cn("absolute inset-0 bg-gradient-to-r", pkg.overlayClass)} />
       )}
 
-      <div className="relative z-10 flex min-w-0 max-w-[68%] flex-1 flex-col">
-        <span className={cn("w-fit rounded-md px-2.5 py-1 text-[10px] font-bold", pkg.badgeClass)}>
+      <div className="relative z-10 flex max-w-[68%] min-w-0 flex-1 flex-col">
+        <span
+          className={cn(
+            "w-fit rounded-md px-2.5 py-1 text-[10px] font-bold",
+            pkg.badgeClass,
+          )}
+        >
           {pkg.discountLabel}
         </span>
-        <h3 className="text-foreground mt-2 line-clamp-1 text-base font-bold leading-tight">{pkg.name}</h3>
-        <p className={cn("mt-1 line-clamp-2 text-xs font-medium leading-relaxed", pkg.subtitleClass)}>
+        <h3 className="text-foreground mt-2 line-clamp-1 text-base leading-tight font-bold">
+          {pkg.name}
+        </h3>
+        <p
+          className={cn(
+            "mt-1 line-clamp-2 text-xs leading-relaxed font-medium",
+            pkg.subtitleClass,
+          )}
+        >
           {pkg.servicesText}
         </p>
         <div className="mt-auto pt-3">
-          <div className="inline-flex items-center gap-2 rounded-lg bg-background px-3 py-1.5 shadow-sm">
-            <span className={cn("text-sm font-bold", pkg.priceClass)}>{formatCurrency(pkg.price)}</span>
+          <div className="bg-background inline-flex items-center gap-2 rounded-lg px-3 py-1.5 shadow-sm">
+            <span className={cn("text-sm font-bold", pkg.priceClass)}>
+              {formatCurrency(pkg.price)}
+            </span>
             <span className="text-muted-foreground text-xs line-through">
               {formatCurrency(pkg.originalPrice)}
             </span>
@@ -109,11 +123,9 @@ function SpecialPackageCard({ pkg }) {
 }
 
 export function SpecialPackagesShowcase({ className }) {
-  const sectionHref = PACKAGES[0]?.href ?? ROUTES.PROVIDERS;
-
   return (
     <section className={className}>
-      <SectionHeader title="Special Packages" href={sectionHref} />
+      <SectionHeader title="Special Packages" />
 
       <MobileScrollRow className="md:hidden">
         {PACKAGES.map((pkg) => (

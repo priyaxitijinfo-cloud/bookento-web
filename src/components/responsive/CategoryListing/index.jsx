@@ -21,6 +21,34 @@ import { getCategoryListingProviders } from "@/mock/category-listing-providers";
 import { CategoryListingDesktop } from "./CategoryListingDesktop";
 import { CategoryListingMobile, CategoryListingTablet } from "./CategoryListingMobile";
 
+function CategoryListingFallback() {
+  return (
+    <div className="bg-background min-h-dvh pb-20 md:pb-6">
+      <div className="border-border h-14 border-b" />
+      <div className="mx-auto max-w-lg space-y-4 px-4 py-4 md:max-w-7xl md:px-6 md:py-6">
+        <div className="flex gap-2.5 overflow-hidden py-2.5">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="bg-muted h-10 w-24 shrink-0 animate-pulse rounded-lg"
+            />
+          ))}
+        </div>
+        <div className="hidden gap-4 md:grid md:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="bg-muted h-56 animate-pulse rounded-2xl" />
+          ))}
+        </div>
+        <div className="flex flex-col gap-3 md:hidden">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="bg-muted h-28 animate-pulse rounded-2xl" />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function filterProvidersBySearch(list, query) {
   const term = query.trim().toLowerCase();
   if (!term) return list;
@@ -46,8 +74,16 @@ export function CategoryListingResponsive({ slug }) {
   const debouncedSearch = useDebounce(searchQuery, 250);
 
   const providers = useMemo(() => {
-    const list = getCategoryListingProviders(slug, category.categoryId, filters.specialty);
-    const filtered = filterProvidersByCategoryFilters(list, filters, sheetFiltersApplied);
+    const list = getCategoryListingProviders(
+      slug,
+      category.categoryId,
+      filters.specialty,
+    );
+    const filtered = filterProvidersByCategoryFilters(
+      list,
+      filters,
+      sheetFiltersApplied,
+    );
     return filterProvidersBySearch(filtered, debouncedSearch);
   }, [slug, category.categoryId, filters, sheetFiltersApplied, debouncedSearch]);
 
@@ -90,7 +126,8 @@ export function CategoryListingResponsive({ slug }) {
     slug,
     config,
     filters,
-    onSpecialtyChange: (specialty) => setFilters((current) => ({ ...current, specialty })),
+    onSpecialtyChange: (specialty) =>
+      setFilters((current) => ({ ...current, specialty })),
     sheetFiltersApplied,
     onRemoveSheetFilter: handleRemoveSheetFilter,
     onClearSheetFilters: handleClearSheetFilters,
@@ -113,6 +150,7 @@ export function CategoryListingResponsive({ slug }) {
   return (
     <>
       <ResponsiveView
+        fallback={<CategoryListingFallback />}
         mobile={<CategoryListingMobile {...viewProps} />}
         tablet={<CategoryListingTablet {...viewProps} />}
         desktop={<CategoryListingDesktop {...viewProps} />}

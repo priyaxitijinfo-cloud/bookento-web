@@ -52,7 +52,7 @@ export function AppointmentsTablet({
       className="bg-surface-page"
       rightAction={<ViewToggleButton viewMode={viewMode} onToggle={toggleView} />}
     >
-      <BookingTabBar value={appointmentTab} onChange={setAppointmentTab} counts={counts} />
+      <BookingTabBar value={appointmentTab} onChange={setAppointmentTab} />
 
       <div className="mt-[15px]">
         {activeList.length === 0 ? (

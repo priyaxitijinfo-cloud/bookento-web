@@ -27,7 +27,7 @@ export function ChatFilterTabs({ value, onChange, counts = {} }) {
   return (
     <div
       ref={scrollRef}
-      className="scrollbar-hide -mx-1.5 flex gap-2 overflow-x-auto px-1.5 py-1.5 md:gap-2.5"
+      className="scrollbar-hide flex gap-2 overflow-x-auto max-md:gap-2 md:-mx-1.5 md:gap-2.5 md:px-1.5 md:py-1.5"
     >
       {TABS.map((tab) => {
         const isActive = value === tab.id;
@@ -40,16 +40,23 @@ export function ChatFilterTabs({ value, onChange, counts = {} }) {
             onMouseDown={(event) => event.preventDefault()}
             onClick={() => handleSelect(tab.id)}
             className={cn(
-              "inline-flex h-9 min-h-9 shrink-0 appearance-none items-center justify-center rounded-full px-4 text-sm font-medium outline-none",
-              "select-none transition-colors duration-150",
+              "inline-flex shrink-0 appearance-none items-center justify-center border font-semibold outline-none",
+              "transition-[color,background-color,border-color,box-shadow] duration-200 ease-out select-none",
+              "max-md:h-[34px] max-md:min-w-[56px] max-md:rounded-lg max-md:px-4 max-md:text-[13px]",
+              "md:h-9 md:min-h-9 md:rounded-xl md:px-4 md:text-sm",
               isActive
-                ? "bg-primary text-white shadow-[0_2px_8px_rgba(24,101,234,0.28)]"
-                : "bg-background text-foreground ring-1 ring-[#E5E7EB] ring-inset hover:bg-[#F8FAFC]",
+                ? "profile-tab-active border-transparent text-white shadow-[0_2px_8px_rgba(24,101,234,0.22)]"
+                : "hover:text-foreground border-[#E6E8EF] bg-white text-[#5B6B8C] hover:border-[#D8DBE5] hover:bg-[#F4F4F8] max-md:border-[#E5E7EB] max-md:bg-white max-md:text-[#374151]",
             )}
           >
             {tab.label}
             {typeof count === "number" && count > 0 && tab.id !== "all" ? (
-              <span className={cn("ml-1.5 tabular-nums", isActive ? "text-white/90" : "text-muted-foreground")}>
+              <span
+                className={cn(
+                  "ml-1.5 tabular-nums max-md:hidden",
+                  isActive ? "text-white/90" : "text-muted-foreground",
+                )}
+              >
                 {count}
               </span>
             ) : null}

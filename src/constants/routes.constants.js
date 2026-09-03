@@ -6,11 +6,16 @@ export const ROUTES = {
   CHATS: "/chats",
   PROFILE: "/profile",
   LANGUAGE: "/profile/language",
+  PROFILE_EDIT: "/profile/edit",
+  HELP: "/profile/help",
+  PRIVACY: "/profile/privacy",
+  TERMS: "/profile/terms",
   SAVED: "/saved",
   ADDRESSES: "/addresses",
   WALLET: "/wallet",
   WALLET_ADD_MONEY: "/wallet/add-money",
   WALLET_ADD_MONEY_OFFERS: "/wallet/add-money/offers",
+  WALLET_TRANSACTIONS: "/wallet/transactions",
   REVIEWS: "/reviews",
   REFERRALS: "/referrals",
   PROVIDERS: "/providers",
@@ -78,9 +83,7 @@ export const PROVIDER_GUEST_ROUTES = [
   ROUTES.PROVIDER_REGISTRATION_STATUS,
 ];
 
-export const PROVIDER_PUBLIC_ROUTES = [
-  ...PROVIDER_GUEST_ROUTES,
-];
+export const PROVIDER_PUBLIC_ROUTES = [...PROVIDER_GUEST_ROUTES];
 
 /** Matches /provider and /provider/* but NOT /providers */
 export function isProviderPanelRoute(pathname) {
@@ -110,6 +113,10 @@ export const PUBLIC_USER_BROWSE_ROUTES = [
   ROUTES.ADDRESSES,
   ROUTES.WALLET,
   ROUTES.LANGUAGE,
+  ROUTES.PROFILE_EDIT,
+  ROUTES.HELP,
+  ROUTES.PRIVACY,
+  ROUTES.TERMS,
   ROUTES.REVIEWS,
   ROUTES.REFERRALS,
 ];
@@ -159,7 +166,9 @@ export function buildCategoryProviderDetailUrl(providerId, categorySlug, provide
   }
 
   const query = params.toString();
-  return query ? `${providerDetailRoute(providerId)}?${query}` : providerDetailRoute(providerId);
+  return query
+    ? `${providerDetailRoute(providerId)}?${query}`
+    : providerDetailRoute(providerId);
 }
 
 export function appendCategoryFlowQuery(baseUrl, categorySlug, provider) {

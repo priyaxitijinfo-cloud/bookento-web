@@ -1,22 +1,32 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { CheckCircle2 } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
-
-import { Button } from "@/components/ui/button";
+import { createPortal } from "react-dom";
 
 const Lottie = dynamic(() => import("lottie-react"), {
   ssr: false,
-  loading: () => <div className="size-[13rem] shrink-0 md:size-[14rem]" aria-hidden />,
+  loading: () => <div className="size-[11rem] shrink-0 md:size-[9.5rem]" aria-hidden />,
 });
 
 const LOTTIE_SRC = "/lottie/successful.json";
 
-export function BookingSuccessModal({ open, doctorName, serviceCount, scheduledTime, onDone }) {
+export function BookingSuccessModal({
+  open,
+  doctorName,
+  serviceCount,
+  scheduledTime,
+  onDone,
+}) {
   const lottieRef = useRef(null);
   const [animationData, setAnimationData] = useState(null);
   const [loadFailed, setLoadFailed] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -48,28 +58,46 @@ export function BookingSuccessModal({ open, doctorName, serviceCount, scheduledT
     };
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
+
   const startAnimation = useCallback(() => {
     lottieRef.current?.stop();
     lottieRef.current?.goToAndPlay(0, true);
   }, []);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
   const serviceLabel = serviceCount === 1 ? "service" : "services";
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
-      <div className="relative w-full max-w-md overflow-hidden rounded-[2rem] bg-background shadow-2xl">
-        <div className="relative">
-          <img
-            src="/images/booking-success-bg.png"
-            alt=""
-            className="absolute inset-0 size-full object-cover object-top"
-            draggable={false}
-            aria-hidden
-          />
+  const modal = (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-5 max-md:bg-black/45 md:bg-black/50 md:p-6 md:backdrop-blur-[10px]">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="booking-success-title"
+        className="relative w-full max-w-[24rem] overflow-hidden rounded-[1.75rem] bg-white text-center shadow-[0_20px_60px_rgba(15,23,42,0.28)] max-md:px-6 max-md:pt-7 max-md:pb-6 md:max-w-[26rem] md:rounded-[2rem] md:px-8 md:pt-8 md:pb-8 md:shadow-[0_24px_64px_rgba(15,23,42,0.32)]"
+      >
+        <Image
+          src="/icons/dailog-bg.png"
+          alt=""
+          fill
+          sizes="(max-width: 768px) 384px, 416px"
+          className="pointer-events-none object-cover object-top"
+          unoptimized
+          priority
+        />
 
-          <div className="relative flex h-[17rem] items-center justify-center md:h-[18rem]">
+        <div className="relative z-10">
+          <div className="relative mx-auto flex h-[11rem] items-center justify-center md:h-[10rem]">
             {animationData ? (
               <Lottie
                 lottieRef={lottieRef}
@@ -78,39 +106,54 @@ export function BookingSuccessModal({ open, doctorName, serviceCount, scheduledT
                 autoplay={false}
                 onDOMLoaded={startAnimation}
                 rendererSettings={{ preserveAspectRatio: "xMidYMid meet" }}
-                style={{ width: "13rem", height: "13rem" }}
-                className="pointer-events-none relative z-10 md:!size-[14rem]"
+                className="pointer-events-none relative z-10 size-[11rem] md:size-[10rem]"
               />
             ) : loadFailed ? (
-              <CheckCircle2
-                className="relative z-10 size-28 text-[#34B233] md:size-32"
-                strokeWidth={1.75}
-                aria-hidden
-              />
+              <div className="relative z-10 flex size-28 items-center justify-center md:size-[6.5rem]">
+                <img
+                  src="/icons/Successfully.svg"
+                  alt=""
+                  className="size-full object-contain"
+                  draggable={false}
+                  aria-hidden
+                />
+              </div>
             ) : (
               <div
-                className="relative z-10 size-[13rem] animate-pulse rounded-full bg-background/40 md:size-[14rem]"
+                className="relative z-10 size-28 animate-pulse rounded-full bg-[#E8F7EE] md:size-[6.5rem]"
                 aria-hidden
               />
             )}
           </div>
-        </div>
 
-        <div className="-mt-[5px] px-6 pb-6 pt-1 text-center md:px-8 md:pb-8">
-          <h2 className="text-[1.625rem] font-bold leading-tight text-foreground md:text-[1.75rem]">
+          <h2
+            id="booking-success-title"
+            className="mt-[30px] text-[1.375rem] leading-tight font-bold text-[#111827] md:mt-1 md:text-[1.5rem]"
+          >
             Booking Confirmed
           </h2>
-          <p className="text-muted-foreground mx-auto mt-3 max-w-xs text-sm leading-relaxed md:text-[0.9375rem]">
-            {serviceCount} {serviceLabel} booked with {doctorName}. See you today at {scheduledTime}.
+          <p className="mt-[22px] text-[14px] leading-relaxed text-[#64748B] md:mx-auto md:mt-3 md:max-w-[15.5rem] md:text-[15px] md:leading-snug">
+            <span className="md:hidden">
+              {serviceCount} {serviceLabel} booked with {doctorName}. See you today at{" "}
+              {scheduledTime}.
+            </span>
+            <span className="hidden md:inline">
+              {serviceCount} {serviceLabel} booked
+              <br />
+              See you today at {scheduledTime}.
+            </span>
           </p>
-          <Button
-            className="gradient-brand mt-7 h-12 w-full rounded-2xl text-base font-semibold shadow-[0_4px_14px_rgba(24,101,234,0.35)] md:mt-8"
+          <button
+            type="button"
             onClick={onDone}
+            className="mt-7 flex h-[3.25rem] w-full items-center justify-center rounded-xl bg-gradient-to-b from-[#4B8DF8] to-[#1865EA] text-[15px] font-semibold text-white transition-opacity hover:opacity-95 md:mt-8 md:h-12 md:rounded-xl md:text-base"
           >
             Done
-          </Button>
+          </button>
         </div>
       </div>
     </div>
   );
+
+  return createPortal(modal, document.body);
 }

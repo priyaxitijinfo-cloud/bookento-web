@@ -24,12 +24,22 @@ function formatPredictionText(value) {
 }
 
 function serializeClientPrediction(placePrediction, index) {
+  const mainText = formatPredictionText(
+    placePrediction.structuredFormat?.mainText ??
+      placePrediction.mainText ??
+      placePrediction.text,
+  );
+  const secondaryText = formatPredictionText(
+    placePrediction.structuredFormat?.secondaryText ?? placePrediction.secondaryText,
+  );
+  const fullText = formatPredictionText(placePrediction.text) || mainText;
+
   return {
     id: placePrediction.placeId || `prediction-${index}`,
     placeId: placePrediction.placeId || "",
-    mainText: formatPredictionText(placePrediction.mainText ?? placePrediction.text),
-    secondaryText: formatPredictionText(placePrediction.secondaryText),
-    fullText: formatPredictionText(placePrediction.text),
+    mainText,
+    secondaryText,
+    fullText,
     placePrediction,
   };
 }
@@ -57,7 +67,8 @@ async function fetchAutocompleteFromGoogle(trimmed, sessionTokenRef, options) {
     request.includedRegionCodes = options.includedRegionCodes;
   }
 
-  const { suggestions } = await AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
+  const { suggestions } =
+    await AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
 
   return (suggestions ?? [])
     .map((item, index) => {

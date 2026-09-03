@@ -4,10 +4,12 @@
  */
 
 /** Default page wrapper with bottom-nav clearance (80px + safe area) */
-export const PAGE_SHELL_CLASS = "bg-background min-h-dvh pb-nav md:pb-6";
+export const PAGE_SHELL_CLASS =
+  "min-h-dvh pb-nav md:pb-6 bg-background page-shell-transparent-mobile md:bg-background";
 
 /** Pages with an extra bottom booking/action bar */
-export const PAGE_SHELL_CLASS_TALL = "bg-background min-h-dvh pb-nav-tall md:pb-32";
+export const PAGE_SHELL_CLASS_TALL =
+  "min-h-dvh pb-nav-tall md:pb-32 bg-background page-shell-transparent-mobile md:bg-background";
 
 /** Tinted surface pages (profile-adjacent flows) */
 export const PAGE_SHELL_CLASS_SURFACE =
@@ -34,7 +36,8 @@ export const BREADCRUMB_LINK_CLASS =
 
 export const BREADCRUMB_CURRENT_CLASS = "truncate text-sm font-semibold";
 
-export const BREADCRUMB_BOTTOM_OFFSET_CLASS = "";
+/** Match top offset so breadcrumb has equal vertical space */
+export const BREADCRUMB_BOTTOM_OFFSET_CLASS = "pb-1.5";
 
 export const DESKTOP_HEADER_HEIGHT = "4.25rem";
 export const DESKTOP_BREADCRUMB_HEIGHT = "3rem";
@@ -46,10 +49,11 @@ export const PAGE_X_PADDING = "px-4 md:px-6";
 export const SECTION_SPACING = "space-y-4 md:space-y-6";
 
 export const PAGE_CONTAINER_VARIANTS = {
-  browse: `page-container mx-auto pt-3 pb-4 md:pt-6 md:pb-6`,
-  browseWithBreadcrumb: `page-container mx-auto pt-3 pb-4 md:pb-6`,
-  wide: `page-container-wide mx-auto pt-3 pb-4 md:pt-6 md:pb-6`,
-  narrow: `page-container-narrow mx-auto py-6`,
+  browse: `page-container mx-auto pt-4 pb-4 md:pt-6 md:pb-6`,
+  browseWithBreadcrumb: `page-container mx-auto pt-4 pb-4 md:pt-2 md:pb-6`,
+  chat: "mx-auto flex h-full min-h-0 w-full max-w-7xl flex-1 flex-col overflow-hidden px-4 pb-0 pt-0 max-md:max-w-none max-md:!px-0 max-md:h-full md:px-6 md:pt-0 md:pb-5",
+  wide: `page-container-wide mx-auto pt-4 pb-4 md:pt-6 md:pb-6`,
+  narrow: `page-container-narrow mx-auto pt-4 pb-6 md:py-6`,
   profile: `page-container-wide mx-auto py-6 md:py-8`,
   providerDetail:
     "page-container-wide mx-auto py-4 md:py-6 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col lg:overflow-hidden lg:pb-6",

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
+import { RadioIndicator } from "@/components/ui/radio-indicator";
 
 const REPORT_REASONS = [
   {
@@ -36,18 +37,14 @@ function ReportRadioOption({ active, title, subtitle, onClick }) {
       onClick={onClick}
       className="flex w-full items-start gap-3 rounded-xl py-1 text-left transition-colors"
     >
-      <span
-        aria-hidden
-        className={cn(
-          "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
-          active ? "border-primary" : "border-border",
-        )}
-      >
-        {active ? <span className="bg-primary size-2.5 rounded-full" /> : null}
-      </span>
+      <RadioIndicator selected={active} className="mt-0.5" />
       <span className="min-w-0">
-        <span className="text-foreground block text-[15px] font-semibold leading-snug">{title}</span>
-        <span className="text-muted-foreground mt-0.5 block text-sm leading-snug">{subtitle}</span>
+        <span className="text-foreground block text-[15px] leading-snug font-semibold">
+          {title}
+        </span>
+        <span className="text-muted-foreground mt-0.5 block text-sm leading-snug">
+          {subtitle}
+        </span>
       </span>
     </button>
   );
@@ -84,7 +81,12 @@ export function ReportDoctorModal({ open, onClose, onSubmit, className }) {
   const canSubmitDetails = description.trim().length > 0;
 
   return (
-    <div className={cn("fixed inset-0 z-[70] flex items-center justify-center p-5", className)}>
+    <div
+      className={cn(
+        "fixed inset-0 z-[70] flex items-center justify-center p-5",
+        className,
+      )}
+    >
       <button
         type="button"
         className="absolute inset-0 bg-black/45 backdrop-blur-[3px]"
@@ -96,9 +98,12 @@ export function ReportDoctorModal({ open, onClose, onSubmit, className }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="report-doctor-title"
-        className="relative w-full max-w-[22rem] rounded-2xl bg-background px-5 pb-5 pt-5 shadow-[0_20px_60px_rgba(15,23,42,0.18)]"
+        className="bg-background relative w-full max-w-[22rem] rounded-2xl px-5 pt-5 pb-5 shadow-[0_20px_60px_rgba(15,23,42,0.18)] md:max-w-[28rem]"
       >
-        <h2 id="report-doctor-title" className="text-foreground text-center text-lg font-bold">
+        <h2
+          id="report-doctor-title"
+          className="text-foreground text-center text-lg font-bold"
+        >
           Report
         </h2>
         <div className="mx-auto mt-4 h-px w-full bg-[#E5E7EB]" />
@@ -124,7 +129,7 @@ export function ReportDoctorModal({ open, onClose, onSubmit, className }) {
             <button
               type="button"
               onClick={handleNext}
-              className="gradient-brand mt-6 h-11 w-full rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-95"
+              className="gradient-brand mt-6 h-11 w-full rounded-xl text-sm font-medium text-white transition-opacity hover:opacity-95 md:font-semibold"
             >
               Next
             </button>
@@ -136,7 +141,10 @@ export function ReportDoctorModal({ open, onClose, onSubmit, className }) {
             </p>
 
             <div className="mt-5">
-              <label htmlFor="report-description" className="text-foreground text-sm font-semibold">
+              <label
+                htmlFor="report-description"
+                className="text-foreground text-sm font-semibold"
+              >
                 Description
               </label>
               <div className="relative mt-2">
@@ -149,11 +157,11 @@ export function ReportDoctorModal({ open, onClose, onSubmit, className }) {
                   placeholder="Describe the issue..."
                   rows={5}
                   className={cn(
-                    "border-border text-foreground placeholder:text-muted-foreground w-full resize-none rounded-xl border bg-background",
-                    "px-4 py-3 text-sm leading-relaxed focus-visible:border-primary/40 focus-visible:ring-primary/20 focus-visible:ring-2 focus-visible:outline-none",
+                    "border-border text-foreground placeholder:text-muted-foreground bg-background w-full resize-none rounded-xl border",
+                    "focus-visible:border-primary/40 focus-visible:ring-primary/20 px-4 py-3 text-sm leading-relaxed focus-visible:ring-2 focus-visible:outline-none",
                   )}
                 />
-                <span className="text-muted-foreground absolute bottom-3 right-3 text-xs">
+                <span className="text-muted-foreground absolute right-3 bottom-3 text-xs">
                   {description.length}/{MAX_DESCRIPTION_LENGTH}
                 </span>
               </div>
@@ -163,7 +171,7 @@ export function ReportDoctorModal({ open, onClose, onSubmit, className }) {
               type="button"
               onClick={handleSubmit}
               disabled={!canSubmitDetails}
-              className="gradient-brand mt-6 h-11 w-full rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50"
+              className="gradient-brand mt-6 h-11 w-full rounded-xl text-sm font-medium text-white transition-opacity hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50 md:font-semibold"
             >
               Submit Report
             </button>

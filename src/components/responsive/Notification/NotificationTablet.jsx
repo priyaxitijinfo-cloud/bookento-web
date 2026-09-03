@@ -7,7 +7,10 @@ import { NotificationItem } from "@/components/notifications/notification-item";
 import { UserHeader } from "@/components/layout/user-nav";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ResponsiveCard } from "@/components/responsive/layout/ResponsiveCard";
-import { PAGE_CONTAINER_VARIANTS, PAGE_SHELL_CLASS } from "@/lib/layout/page-layout.constants";
+import {
+  PAGE_CONTAINER_VARIANTS,
+  PAGE_SHELL_CLASS,
+} from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes.constants";
 
@@ -24,8 +27,12 @@ function NotificationList({ grouped, onRead }) {
 
   if (!hasItems) {
     return (
-      <div className="px-5 pb-8 pt-8">
-        <EmptyState icon={Bell} title="No notifications" description="You're all caught up!" />
+      <div className="px-5 pt-8 pb-8">
+        <EmptyState
+          icon={Bell}
+          title="No notifications"
+          description="You're all caught up!"
+        />
       </div>
     );
   }
@@ -57,7 +64,7 @@ function NotificationList({ grouped, onRead }) {
 
 export function NotificationTablet({ filter, onFilterChange, grouped, onRead }) {
   return (
-    <div className={cn(PAGE_SHELL_CLASS, "mobile-page-bg bg-surface-page pb-8")}>
+    <div className={cn(PAGE_SHELL_CLASS, "bg-surface-page md:bg-surface-page pb-8")}>
       <UserHeader title="Notification" backHref={ROUTES.HOME} hideActions />
       <main className={cn(PAGE_CONTAINER_VARIANTS.browseWithBreadcrumb, "px-6 pt-3")}>
         <ResponsiveCard className="overflow-hidden !p-0">

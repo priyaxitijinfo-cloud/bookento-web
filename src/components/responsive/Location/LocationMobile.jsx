@@ -16,7 +16,7 @@ export function LocationMobile({
 }) {
   return (
     <AddressPageShell
-      title="Select Location"
+      title="My Addresses"
       breadcrumbCurrentLabel="My Addresses"
       backHref={ROUTES.PROFILE}
       rightAction={<AddAddressButton compact onClick={onAddFlow} />}

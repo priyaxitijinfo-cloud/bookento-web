@@ -12,8 +12,9 @@ export function WalletMobile({ balance, transactions }) {
       backHref={ROUTES.PROFILE}
       backLabel="Back to Profile"
       containerVariant="browseWithBreadcrumb"
-      className="bg-surface-page"
-      mainClassName="space-y-5"
+      className="bg-surface-page max-md:!pb-6"
+      mainClassName="space-y-6 max-md:space-y-6"
+      showBottomNav={false}
     >
       <WalletBalanceCard balance={balance} />
       <WalletTransactionsSection transactions={transactions} />

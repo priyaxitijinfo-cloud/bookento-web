@@ -12,7 +12,7 @@ export function useResponsive() {
     ...bp,
     variant: bp.device,
     showSidebar: bp.isDesktop,
-    showBottomNav: bp.isMobile || bp.isTablet,
-    columns: bp.isDesktop ? 3 : bp.isTablet ? 2 : 1,
+    showBottomNav: bp.isReady && (bp.isMobile || bp.isTablet),
+    columns: !bp.isReady ? 1 : bp.isDesktop ? 3 : bp.isTablet ? 2 : 1,
   };
 }

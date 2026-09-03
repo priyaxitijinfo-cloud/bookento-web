@@ -1,18 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-  Check,
-  Heart,
-  MessageCircle,
-  MoreVertical,
-  Send,
-  Share2,
-  UserPlus,
-  X,
-} from "lucide-react";
+import { Check, MessageCircle, MoreVertical, Share2, UserPlus, X } from "lucide-react";
 import { toast } from "sonner";
 
+import { HeroHeartIcon } from "@/components/icons/hero-nav-icons";
+import { SendIcon } from "@/components/icons/send-icon";
+
+import { ReelsActionSvgIcon } from "@/components/icons/reels-action-icons";
 import { ReelsModal } from "@/components/provider-booking/reels/reels-modal";
 import { ReelsSheet } from "@/components/provider-booking/reels/reels-sheet";
 import { CategoryIcon } from "@/components/home/category-item";
@@ -20,6 +15,7 @@ import { DOCTOR_WELLNESS_PACKAGES } from "@/constants/doctor-booking.constants";
 import { HOME_CATEGORIES } from "@/constants/home-categories";
 import { REEL_COMMENTS, REEL_REPORT_REASONS } from "@/mock/reels-comments";
 import { cn } from "@/lib/utils";
+import { RadioIndicator } from "@/components/ui/radio-indicator";
 import { formatCompactNumber } from "@/utils/format.utils";
 import {
   buildReelShareText,
@@ -49,7 +45,14 @@ const REELS_SHARE_OVERLAY_ICONS = {
 const shareGlassButtonClass =
   "inline-flex h-9 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full border border-white/30 bg-background/15 px-3 text-xs font-medium leading-none text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_4px_16px_rgba(0,0,0,0.12)] backdrop-blur-xl whitespace-nowrap";
 
-export function ReelsActionButton({ icon, activeIcon, label, onClick, active }) {
+export function ReelsActionButton({
+  icon,
+  activeIcon,
+  iconName,
+  label,
+  onClick,
+  active,
+}) {
   return (
     <button
       type="button"
@@ -62,14 +65,32 @@ export function ReelsActionButton({ icon, activeIcon, label, onClick, active }) 
       aria-pressed={active}
     >
       <span className="flex size-7 shrink-0 items-center justify-center">
-        <img
-          key={active ? "active" : "default"}
-          src={active && activeIcon ? activeIcon : icon}
-          alt=""
-          draggable={false}
-          className="pointer-events-none size-7 object-contain select-none"
-          aria-hidden
-        />
+        {iconName ? (
+          <>
+            <ReelsActionSvgIcon
+              name={iconName}
+              active={active}
+              className="size-7 md:hidden"
+            />
+            <img
+              key={active ? "active" : "default"}
+              src={active && activeIcon ? activeIcon : icon}
+              alt=""
+              draggable={false}
+              className="pointer-events-none hidden size-7 object-contain select-none md:block"
+              aria-hidden
+            />
+          </>
+        ) : (
+          <img
+            key={active ? "active" : "default"}
+            src={active && activeIcon ? activeIcon : icon}
+            alt=""
+            draggable={false}
+            className="pointer-events-none size-7 object-contain select-none"
+            aria-hidden
+          />
+        )}
       </span>
       {label && (
         <span className="pointer-events-none text-xs font-bold tracking-wide text-white">
@@ -88,9 +109,15 @@ const SHARE_PLATFORMS = [
   { id: "twitter", label: "Twitter", icon: "/images/icons/share/twitter.svg" },
 ];
 
-function ModalFooterButton({ children, onClick, disabled, variant = "blue", className }) {
+function ModalFooterButton({
+  children,
+  onClick,
+  disabled,
+  variant = "blue",
+  className,
+}) {
   return (
-    <div className={cn("border-t border-border/60 bg-background px-5 py-5", className)}>
+    <div className={cn("border-border/60 bg-background border-t px-5 py-5", className)}>
       <button
         type="button"
         onClick={onClick}
@@ -98,7 +125,8 @@ function ModalFooterButton({ children, onClick, disabled, variant = "blue", clas
         className={cn(
           "w-full rounded-xl px-5 py-3.5 text-sm font-semibold text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-50",
           variant === "blue" && "gradient-brand hover:opacity-95",
-          variant === "pink" && "bg-gradient-to-r from-[#FF4D8D] to-[#FF6BA8] hover:opacity-95",
+          variant === "pink" &&
+            "bg-gradient-to-r from-[#FF4D8D] to-[#FF6BA8] hover:opacity-95",
         )}
       >
         {children}
@@ -119,24 +147,26 @@ function ReportReasonOption({ active, label, description, onSelect }) {
         active ? "border-primary bg-[#EFF6FF]" : "border-border/60 bg-background",
       )}
     >
-      <span
-        className={cn(
-          "flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
-          active ? "border-primary bg-primary" : "border-border bg-background",
-        )}
-        aria-hidden
-      >
-        {active && <span className="size-2 rounded-full bg-background" />}
-      </span>
+      <RadioIndicator selected={active} />
       <span className="min-w-0 flex-1">
-        <span className="block text-sm font-semibold leading-snug text-foreground">{label}</span>
-        <span className="text-muted-foreground mt-1 block text-xs leading-relaxed">{description}</span>
+        <span className="text-foreground block text-sm leading-snug font-semibold">
+          {label}
+        </span>
+        <span className="text-muted-foreground mt-1 block text-xs leading-relaxed">
+          {description}
+        </span>
       </span>
     </button>
   );
 }
 
-export function ReelsCommentsSheet({ open, onClose, reel, provider, contained = false }) {
+export function ReelsCommentsSheet({
+  open,
+  onClose,
+  reel,
+  provider,
+  contained = false,
+}) {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState(REEL_COMMENTS);
   const [likedComments, setLikedComments] = useState({});
@@ -240,18 +270,20 @@ export function ReelsCommentsSheet({ open, onClose, reel, provider, contained = 
       title={`${displayCount} Comments`}
       contained={contained}
       className="max-h-[75vh]"
-      footer={(
-        <div className="border-t border-border/60 bg-background px-4 py-3">
+      footer={
+        <div className="border-border/60 bg-background border-t px-4 py-3">
           {replyingTo && (
             <div className="mb-2.5 flex items-center justify-between rounded-lg bg-[#F8F9FC] px-3 py-2">
               <p className="text-muted-foreground text-xs">
                 Replying to{" "}
-                <span className="font-semibold text-foreground">@{replyingTo.userHandle}</span>
+                <span className="text-foreground font-semibold">
+                  @{replyingTo.userHandle}
+                </span>
               </p>
               <button
                 type="button"
                 onClick={handleCancelReply}
-                className="text-muted-foreground flex size-6 items-center justify-center rounded-full hover:bg-background hover:text-foreground"
+                className="text-muted-foreground hover:bg-background hover:text-foreground flex size-6 items-center justify-center rounded-full"
                 aria-label="Cancel reply"
               >
                 <X className="size-3.5" />
@@ -259,7 +291,11 @@ export function ReelsCommentsSheet({ open, onClose, reel, provider, contained = 
             </div>
           )}
           <div className="flex items-center gap-3">
-            <img src={provider.avatar} alt={provider.businessName} className="size-9 shrink-0 rounded-full object-cover" />
+            <img
+              src={provider.avatar}
+              alt={provider.businessName}
+              className="size-9 shrink-0 rounded-full object-cover"
+            />
             <div className="relative min-w-0 flex-1">
               <input
                 ref={inputRef}
@@ -267,38 +303,54 @@ export function ReelsCommentsSheet({ open, onClose, reel, provider, contained = 
                 value={comment}
                 onChange={(event) => setComment(event.target.value)}
                 onKeyDown={handleCommentKeyDown}
-                placeholder={replyingTo ? `Reply to @${replyingTo.userHandle}...` : "Add a comment..."}
-                className="w-full rounded-full border border-border/70 bg-[#F8F9FC] py-2.5 pl-4 pr-12 text-sm outline-none ring-primary/20 focus:ring-2"
+                placeholder={
+                  replyingTo
+                    ? `Reply to @${replyingTo.userHandle}...`
+                    : "Add a comment..."
+                }
+                className="border-border/70 ring-primary/20 w-full rounded-full border bg-[#F8F9FC] py-2.5 pr-12 pl-4 text-sm outline-none focus:ring-2"
               />
               <button
                 type="button"
                 onClick={handlePostComment}
-                className="gradient-brand pointer-events-auto absolute right-1 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-white transition-opacity hover:opacity-95"
+                className="gradient-brand pointer-events-auto absolute top-1/2 right-1 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-white transition-opacity hover:opacity-95"
                 aria-label="Post comment"
               >
-                <Send className="size-3.5" />
+                <SendIcon className="size-3.5" />
               </button>
             </div>
           </div>
         </div>
-      )}
+      }
     >
-      <div className="divide-y divide-border/60">
+      <div>
         {comments.map((item) => (
           <div key={item.id} className="px-5 py-4">
             <div className="flex gap-3">
-              <img src={item.userAvatar} alt={item.userName} className="size-10 shrink-0 rounded-full object-cover" />
+              <img
+                src={item.userAvatar}
+                alt={item.userName}
+                className="size-10 shrink-0 rounded-full object-cover"
+              />
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                   <span className="text-sm font-bold">{item.userName}</span>
-                  <span className="text-muted-foreground text-xs">@{item.userHandle}</span>
+                  <span className="text-muted-foreground text-xs">
+                    @{item.userHandle}
+                  </span>
                 </div>
-                <p className="text-muted-foreground mt-0.5 text-xs">Posted {item.createdAt}</p>
-                <p className="mt-2 text-sm leading-relaxed text-foreground">{item.text}</p>
+                <p className="text-muted-foreground mt-0.5 text-xs">
+                  Posted {item.createdAt}
+                </p>
+                <p className="text-foreground mt-2 text-sm leading-relaxed">
+                  {item.text}
+                </p>
                 <div className="mt-2 flex items-center gap-4 text-xs font-medium">
                   <button
                     type="button"
-                    onClick={() => handleStartReply(item.id, item.userName, item.userHandle)}
+                    onClick={() =>
+                      handleStartReply(item.id, item.userName, item.userHandle)
+                    }
                     className="text-muted-foreground hover:text-foreground"
                   >
                     Reply
@@ -306,7 +358,9 @@ export function ReelsCommentsSheet({ open, onClose, reel, provider, contained = 
                   {item.moreReplies > 0 && !expandedReplies[item.id] && (
                     <button
                       type="button"
-                      onClick={() => setExpandedReplies((prev) => ({ ...prev, [item.id]: true }))}
+                      onClick={() =>
+                        setExpandedReplies((prev) => ({ ...prev, [item.id]: true }))
+                      }
                       className="text-primary font-semibold hover:opacity-80"
                     >
                       View {item.moreReplies} more replies
@@ -316,42 +370,67 @@ export function ReelsCommentsSheet({ open, onClose, reel, provider, contained = 
               </div>
               <button
                 type="button"
-                onClick={() => setLikedComments((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
+                onClick={() =>
+                  setLikedComments((prev) => ({ ...prev, [item.id]: !prev[item.id] }))
+                }
                 className="flex shrink-0 flex-col items-center gap-1 pt-1"
               >
-                <Heart className={cn("size-4", likedComments[item.id] ? "fill-red-500 text-red-500" : "text-muted-foreground")} />
-                <span className="text-muted-foreground text-[10px]">{item.likes + (likedComments[item.id] ? 1 : 0)}</span>
+                <HeroHeartIcon
+                  tone="dark"
+                  filled={Boolean(likedComments[item.id])}
+                  className="text-muted-foreground size-4"
+                />
+                <span className="text-muted-foreground text-[10px]">
+                  {item.likes + (likedComments[item.id] ? 1 : 0)}
+                </span>
               </button>
             </div>
 
-            {expandedReplies[item.id] && item.replies.map((reply) => (
-              <div key={reply.id} className="mt-4 flex gap-3 pl-12">
-                <img src={reply.userAvatar} alt={reply.userName} className="size-9 shrink-0 rounded-full object-cover" />
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-sm font-bold">{reply.userName}</span>
-                    {reply.isCreator && (
-                      <span className="bg-primary/10 text-primary rounded px-1.5 py-0.5 text-[10px] font-semibold">
-                        Creator
-                      </span>
-                    )}
+            {expandedReplies[item.id] &&
+              item.replies.map((reply) => (
+                <div key={reply.id} className="mt-4 flex gap-3 pl-12">
+                  <img
+                    src={reply.userAvatar}
+                    alt={reply.userName}
+                    className="size-9 shrink-0 rounded-full object-cover"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-sm font-bold">{reply.userName}</span>
+                      {reply.isCreator && (
+                        <span className="bg-primary/10 text-primary rounded px-1.5 py-0.5 text-[10px] font-semibold">
+                          Creator
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-muted-foreground mt-0.5 text-xs">
+                      Posted {reply.createdAt}
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed">{reply.text}</p>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleStartReply(item.id, reply.userName, reply.userHandle)
+                      }
+                      className="text-muted-foreground hover:text-foreground mt-2 text-xs font-medium"
+                    >
+                      Reply
+                    </button>
                   </div>
-                  <p className="text-muted-foreground mt-0.5 text-xs">Posted {reply.createdAt}</p>
-                  <p className="mt-2 text-sm leading-relaxed">{reply.text}</p>
                   <button
                     type="button"
-                    onClick={() => handleStartReply(item.id, reply.userName, reply.userHandle)}
-                    className="text-muted-foreground mt-2 text-xs font-medium hover:text-foreground"
+                    className="flex shrink-0 flex-col items-center gap-1 pt-1"
                   >
-                    Reply
+                    <HeroHeartIcon
+                      tone="dark"
+                      className="text-muted-foreground size-4"
+                    />
+                    <span className="text-muted-foreground text-[10px]">
+                      {reply.likes}
+                    </span>
                   </button>
                 </div>
-                <button type="button" className="flex shrink-0 flex-col items-center gap-1 pt-1">
-                  <Heart className="text-muted-foreground size-4" />
-                  <span className="text-muted-foreground text-[10px]">{reply.likes}</span>
-                </button>
-              </div>
-            ))}
+              ))}
           </div>
         ))}
         <div ref={listEndRef} />
@@ -360,7 +439,15 @@ export function ReelsCommentsSheet({ open, onClose, reel, provider, contained = 
   );
 }
 
-export function ReelsShareSheet({ open, onClose, reel, provider, saved, onToggleSave, contained = false }) {
+export function ReelsShareSheet({
+  open,
+  onClose,
+  reel,
+  provider,
+  saved,
+  onToggleSave,
+  contained = false,
+}) {
   const handleLabel = reel?.handle || provider?.businessName || reel?.providerName;
   const isSaved = Boolean(saved && reel?.id && saved[reel.id]);
   const shareUrl = buildReelShareUrl(provider?.id, reel?.id);
@@ -432,7 +519,10 @@ export function ReelsShareSheet({ open, onClose, reel, provider, saved, onToggle
       return;
     }
 
-    const platformUrl = getPlatformShareUrl(platformId, { url: shareUrl, text: shareText });
+    const platformUrl = getPlatformShareUrl(platformId, {
+      url: shareUrl,
+      text: shareText,
+    });
     if (!platformUrl) {
       toast.error("Sharing is not available for this platform.");
       return;
@@ -442,21 +532,36 @@ export function ReelsShareSheet({ open, onClose, reel, provider, saved, onToggle
   };
 
   return (
-    <ReelsSheet open={open} onClose={onClose} title="Share" contained={contained} className="max-h-[80vh]">
+    <ReelsSheet
+      open={open}
+      onClose={onClose}
+      title="Share"
+      contained={contained}
+      className="max-h-[80vh]"
+    >
       <div className="space-y-5 px-5 py-4">
-        <div className="overflow-hidden rounded-2xl border border-border/60">
+        <div className="border-border/60 overflow-hidden rounded-2xl border">
           <div className="relative h-[400px] w-full">
-            <img src={reel?.thumbnailUrl} alt={reel?.title || reel?.caption} className="size-full object-cover" />
-            <span className="absolute right-3 top-3 rounded-full bg-black/45 px-3 py-1 text-xs font-medium text-white backdrop-blur">
+            <img
+              src={reel?.thumbnailUrl}
+              alt={reel?.title || reel?.caption}
+              className="size-full object-cover"
+            />
+            <span className="absolute top-3 right-3 rounded-full bg-black/45 px-3 py-1 text-xs font-medium text-white backdrop-blur">
               {handleLabel}
             </span>
-            <div className="absolute inset-x-0 bottom-0 flex items-stretch gap-2 bg-gradient-to-t from-black/70 to-transparent px-2 pb-2.5 pt-12">
+            <div className="absolute inset-x-0 bottom-0 flex items-stretch gap-2 bg-gradient-to-t from-black/70 to-transparent px-2 pt-12 pb-2.5">
               <button
                 type="button"
                 onClick={handleCopyLink}
                 className={shareGlassButtonClass}
               >
-                <img src={REELS_SHARE_OVERLAY_ICONS.copyLink} alt="" className="block size-[18px] shrink-0 object-contain" draggable={false} />
+                <img
+                  src={REELS_SHARE_OVERLAY_ICONS.copyLink}
+                  alt=""
+                  className="block size-[18px] shrink-0 object-contain"
+                  draggable={false}
+                />
                 Copy Link
               </button>
               <button
@@ -464,7 +569,12 @@ export function ReelsShareSheet({ open, onClose, reel, provider, saved, onToggle
                 onClick={handleAddToStory}
                 className={shareGlassButtonClass}
               >
-                <img src={REELS_SHARE_OVERLAY_ICONS.addToStory} alt="" className="block size-[18px] shrink-0 object-contain" draggable={false} />
+                <img
+                  src={REELS_SHARE_OVERLAY_ICONS.addToStory}
+                  alt=""
+                  className="block size-[18px] shrink-0 object-contain"
+                  draggable={false}
+                />
                 Add to Story
               </button>
               <button
@@ -473,10 +583,15 @@ export function ReelsShareSheet({ open, onClose, reel, provider, saved, onToggle
                 aria-pressed={isSaved}
                 className={cn(
                   shareGlassButtonClass,
-                  isSaved && "border-white/50 bg-background/25",
+                  isSaved && "bg-background/25 border-white/50",
                 )}
               >
-                <img src={REELS_SHARE_OVERLAY_ICONS.savePost} alt="" className="block size-[18px] shrink-0 object-contain" draggable={false} />
+                <img
+                  src={REELS_SHARE_OVERLAY_ICONS.savePost}
+                  alt=""
+                  className="block size-[18px] shrink-0 object-contain"
+                  draggable={false}
+                />
                 {isSaved ? "Saved" : "Save Post"}
               </button>
             </div>
@@ -497,7 +612,9 @@ export function ReelsShareSheet({ open, onClose, reel, provider, saved, onToggle
                 className="size-12 shrink-0 rounded-full object-cover"
                 draggable={false}
               />
-              <span className="text-muted-foreground text-[11px] font-medium">{platform.label}</span>
+              <span className="text-muted-foreground text-[11px] font-medium">
+                {platform.label}
+              </span>
             </button>
           ))}
         </div>
@@ -547,7 +664,8 @@ export function ReelsReportSheet({ open, onClose, contained = false }) {
     handleClose();
   };
 
-  const footerLabel = step === 2 ? "Submit" : selectedReason === "other" ? "Next" : "Submit";
+  const footerLabel =
+    step === 2 ? "Submit" : selectedReason === "other" ? "Next" : "Submit";
 
   return (
     <ReelsSheet
@@ -556,22 +674,16 @@ export function ReelsReportSheet({ open, onClose, contained = false }) {
       title="Report"
       contained={contained}
       className="max-h-[85vh]"
-      footer={(
-        <ModalFooterButton onClick={handleSubmit}>
-          {footerLabel}
-        </ModalFooterButton>
-      )}
+      footer={
+        <ModalFooterButton onClick={handleSubmit}>{footerLabel}</ModalFooterButton>
+      }
     >
       {step === 1 ? (
         <div className="px-5 py-5">
-          <p className="mb-4 text-sm font-medium text-foreground">
+          <p className="text-foreground mb-4 text-sm font-medium">
             Please select a reason for reporting
           </p>
-          <div
-            className="space-y-3"
-            role="radiogroup"
-            aria-label="Report reason"
-          >
+          <div className="space-y-3" role="radiogroup" aria-label="Report reason">
             {REEL_REPORT_REASONS.map((reason) => (
               <ReportReasonOption
                 key={reason.id}
@@ -585,7 +697,7 @@ export function ReelsReportSheet({ open, onClose, contained = false }) {
         </div>
       ) : (
         <div className="px-5 py-5">
-          <p className="mb-4 text-sm text-foreground">
+          <p className="text-foreground mb-4 text-sm">
             Please provide more details about the issue.
           </p>
           <label htmlFor="report-description" className="mb-2 block text-sm font-bold">
@@ -598,9 +710,9 @@ export function ReelsReportSheet({ open, onClose, contained = false }) {
               onChange={(event) => setDescription(event.target.value.slice(0, 500))}
               placeholder="Describe the issue..."
               rows={5}
-              className="w-full resize-none rounded-xl border border-border/70 bg-[#F8F9FC] p-4 pb-8 text-sm outline-none ring-primary/20 focus:ring-2"
+              className="border-border/70 ring-primary/20 w-full resize-none rounded-xl border bg-[#F8F9FC] p-4 pb-8 text-sm outline-none focus:ring-2"
             />
-            <span className="text-muted-foreground absolute bottom-3 right-3 text-xs">
+            <span className="text-muted-foreground absolute right-3 bottom-3 text-xs">
               {description.length}/500
             </span>
           </div>
@@ -617,17 +729,36 @@ export function ReelsBlockSheet({ open, onClose, providerName }) {
       onClose={onClose}
       title="Block"
       titleCenter
-      footer={<ModalFooterButton variant="pink" onClick={() => { toast.success("User blocked"); onClose(); }}>Block</ModalFooterButton>}
+      footer={
+        <ModalFooterButton
+          variant="pink"
+          onClick={() => {
+            toast.success("User blocked");
+            onClose();
+          }}
+        >
+          Block
+        </ModalFooterButton>
+      }
     >
       <div className="space-y-4 px-5 py-5 text-center">
         <h3 className="text-lg font-bold">Block {providerName}</h3>
         <p className="text-muted-foreground text-sm leading-relaxed">
-          Blocked user won&apos;t be able to message you, find your profile or see your content.
+          Blocked user won&apos;t be able to message you, find your profile or see your
+          content.
         </p>
         <ul className="text-muted-foreground space-y-2 text-left text-sm">
-          <li className="flex gap-2"><span className="text-foreground">•</span> You can no longer access blocked user&apos;s content.</li>
-          <li className="flex gap-2"><span className="text-foreground">•</span> You can unblock user at any time.</li>
-          <li className="flex gap-2"><span className="text-foreground">•</span> All new or future accounts by user will be blocked.</li>
+          <li className="flex gap-2">
+            <span className="text-foreground">•</span> You can no longer access blocked
+            user&apos;s content.
+          </li>
+          <li className="flex gap-2">
+            <span className="text-foreground">•</span> You can unblock user at any time.
+          </li>
+          <li className="flex gap-2">
+            <span className="text-foreground">•</span> All new or future accounts by
+            user will be blocked.
+          </li>
         </ul>
       </div>
     </ReelsModal>
@@ -642,7 +773,10 @@ export function ReelsMenuSheet({ open, onClose, onReport }) {
       <div className="space-y-1 p-3">
         <button
           type="button"
-          onClick={() => { onClose(); onReport(); }}
+          onClick={() => {
+            onClose();
+            onReport();
+          }}
           className="hover:bg-muted/60 w-full rounded-xl px-4 py-3.5 text-left text-sm font-semibold"
         >
           Report
@@ -652,7 +786,13 @@ export function ReelsMenuSheet({ open, onClose, onReport }) {
   );
 }
 
-export function ReelsCategorySheet({ open, onClose, selectedCategory, onApply, contained = false }) {
+export function ReelsCategorySheet({
+  open,
+  onClose,
+  selectedCategory,
+  onApply,
+  contained = false,
+}) {
   const [draftCategory, setDraftCategory] = useState(selectedCategory || "doctor");
   const categories = HOME_CATEGORIES.slice(0, 9);
 
@@ -667,7 +807,7 @@ export function ReelsCategorySheet({ open, onClose, selectedCategory, onApply, c
       title="Category"
       contained={contained}
       className="max-h-[min(88vh,680px)]"
-      footer={(
+      footer={
         <ModalFooterButton
           onClick={() => {
             onApply?.(draftCategory);
@@ -677,9 +817,9 @@ export function ReelsCategorySheet({ open, onClose, selectedCategory, onApply, c
         >
           Apply Category
         </ModalFooterButton>
-      )}
+      }
     >
-      <div className="px-5 pb-4 pt-3">
+      <div className="px-5 pt-3 pb-4">
         <div className="grid grid-cols-3 gap-2.5">
           {categories.map((category) => {
             const active = draftCategory === category.slug;
@@ -691,16 +831,16 @@ export function ReelsCategorySheet({ open, onClose, selectedCategory, onApply, c
                 onClick={() => setDraftCategory(category.slug)}
                 aria-pressed={active}
                 className={cn(
-                  "flex aspect-square min-w-0 flex-col items-center justify-center gap-2 rounded-2xl px-1.5 py-3 shadow-card transition-all",
+                  "shadow-card flex aspect-square min-w-0 flex-col items-center justify-center gap-2 rounded-2xl px-1.5 py-3 transition-all",
                   category.bg,
                   active
-                    ? "border-2 border-primary shadow-[0_2px_8px_rgba(24,101,234,0.12)]"
+                    ? "border-primary border-2 shadow-[0_2px_8px_rgba(24,101,234,0.12)]"
                     : "border-[3px] border-white",
                 )}
               >
                 <CategoryIcon category={category} compact />
 
-                <span className="line-clamp-2 w-full text-center text-[13px] font-semibold leading-tight text-foreground">
+                <span className="text-foreground line-clamp-2 w-full text-center text-[13px] leading-tight font-semibold">
                   {category.name}
                 </span>
               </button>
@@ -745,11 +885,17 @@ export function ReelFeedCard({
   }, [isActive]);
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-border/50 bg-background shadow-card">
+    <article className="border-border/50 bg-background shadow-card overflow-hidden rounded-2xl border">
       <div className="flex items-center gap-3 px-4 py-3">
-        <img src={provider.avatar} alt={provider.businessName} className="size-10 shrink-0 rounded-full object-cover" />
+        <img
+          src={provider.avatar}
+          alt={provider.businessName}
+          className="size-10 shrink-0 rounded-full object-cover"
+        />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-bold">{reel.handle || provider.businessName}</p>
+          <p className="truncate text-sm font-bold">
+            {reel.handle || provider.businessName}
+          </p>
           <p className="text-muted-foreground text-xs">6h ago</p>
         </div>
         <button
@@ -758,7 +904,7 @@ export function ReelFeedCard({
           className={cn(
             "inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-colors",
             following
-              ? "border border-border bg-background text-foreground"
+              ? "border-border bg-background text-foreground border"
               : "bg-[#FF4D8D] text-white hover:bg-[#FF3A7F]",
           )}
         >
@@ -777,15 +923,19 @@ export function ReelFeedCard({
         <button
           type="button"
           onClick={onOpenMenu}
-          className="text-muted-foreground hover:text-foreground flex size-9 shrink-0 items-center justify-center rounded-full hover:bg-muted/60"
+          className="text-muted-foreground hover:text-foreground hover:bg-muted/60 flex size-9 shrink-0 items-center justify-center rounded-full"
           aria-label="More options"
         >
           <MoreVertical className="size-5" />
         </button>
       </div>
 
-      <div className="relative mx-4 aspect-[3/4] overflow-hidden rounded-2xl bg-muted">
-        <img src={reel.thumbnailUrl} alt={reel.title || reel.caption} className="size-full object-cover" />
+      <div className="bg-muted relative mx-4 aspect-[3/4] overflow-hidden rounded-2xl">
+        <img
+          src={reel.thumbnailUrl}
+          alt={reel.title || reel.caption}
+          className="size-full object-cover"
+        />
         {reel.videoUrl && (
           <video
             ref={videoRef}
@@ -802,7 +952,7 @@ export function ReelFeedCard({
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
 
-        <div className="absolute bottom-16 right-3 z-10 flex flex-col items-center gap-5">
+        <div className="absolute right-3 bottom-16 z-10 flex flex-col items-center gap-5">
           <ReelsActionButton
             icon={REELS_ACTION_ICONS.like}
             activeIcon={REELS_ACTION_ICONS.likeActive}
@@ -815,27 +965,23 @@ export function ReelFeedCard({
             label={String(reel.comments)}
             onClick={onOpenComments}
           />
-          <ReelsActionButton
-            icon={REELS_ACTION_ICONS.share}
-            onClick={onOpenShare}
-          />
+          <ReelsActionButton icon={REELS_ACTION_ICONS.share} onClick={onOpenShare} />
           <ReelsActionButton
             icon={REELS_ACTION_ICONS.save}
             activeIcon={REELS_ACTION_ICONS.saveActive}
             onClick={() => onToggleSave(reel.id)}
             active={saved[reel.id]}
           />
-          <ReelsActionButton
-            icon={REELS_ACTION_ICONS.report}
-            onClick={onOpenReport}
-          />
+          <ReelsActionButton icon={REELS_ACTION_ICONS.report} onClick={onOpenReport} />
         </div>
       </div>
 
       <div className="space-y-3 px-4 py-4">
         <div>
           <h3 className="text-sm font-bold">{reel.title}</h3>
-          <p className="text-muted-foreground mt-1 text-sm leading-relaxed">{reel.caption}</p>
+          <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
+            {reel.caption}
+          </p>
         </div>
 
         {linkedPackage && onBookNow && (

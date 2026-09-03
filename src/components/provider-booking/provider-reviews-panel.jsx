@@ -1,11 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { MessageCircle, Send, Star, ThumbsUp, X } from "lucide-react";
+import { Star, X } from "lucide-react";
 import { toast } from "sonner";
 
+import {
+  ReviewDislikeIcon,
+  ReviewLikeIcon,
+  ReviewMsgIcon,
+} from "@/components/icons/review-action-icons";
+import { SendIcon } from "@/components/icons/send-icon";
+
 import { currentUser } from "@/mock/users";
-import { TabPanelHeader } from "@/components/provider-booking/shared";
 import { cn } from "@/lib/utils";
 import { formatRelativeTime } from "@/utils/format.utils";
 
@@ -15,12 +21,14 @@ const PATIENT_REVIEWS = [
     userName: "Charlotte Hanlin",
     userAvatar: "/images/listing/doctors/doctor-1.png",
     rating: 5,
-    comment: "Dr. Jenny is very professional in her work and responsive. I have consulted and my problem is solved.",
+    comment:
+      "Dr. Jenny is very professional in her work and responsive. I have consulted and my problem is solved.",
     likes: 965,
     isLiked: true,
     createdAt: new Date(Date.now() - 6 * 86400000).toISOString(),
     reply: {
-      comment: "Thank you for your wonderful feedback! We look forward to serving you again.",
+      comment:
+        "Thank you for your wonderful feedback! We look forward to serving you again.",
       createdAt: new Date(Date.now() - 5 * 86400000).toISOString(),
     },
   },
@@ -29,7 +37,8 @@ const PATIENT_REVIEWS = [
     userName: "Darron Kulikowaki",
     userAvatar: "/images/listing/doctors/doctor-2.png",
     rating: 4,
-    comment: "The doctor is very beautiful and the service is excellent! I like it and want to consult again.",
+    comment:
+      "The doctor is very beautiful and the service is excellent! I like it and want to consult again.",
     likes: 365,
     isLiked: false,
     createdAt: new Date(Date.now() - 10 * 86400000).toISOString(),
@@ -39,7 +48,8 @@ const PATIENT_REVIEWS = [
     userName: "Ananya Desai",
     userAvatar: "/images/listing/doctors/doctor-2.png",
     rating: 4,
-    comment: "Smooth booking process and friendly staff. The doctor explained everything clearly and made me feel comfortable.",
+    comment:
+      "Smooth booking process and friendly staff. The doctor explained everything clearly and made me feel comfortable.",
     likes: 242,
     isLiked: false,
     createdAt: new Date(Date.now() - 12 * 86400000).toISOString(),
@@ -49,12 +59,14 @@ const PATIENT_REVIEWS = [
     userName: "Priya Shah",
     userAvatar: "/images/listing/doctors/doctor-3.png",
     rating: 3,
-    comment: "Very professional and caring doctor. The consultation was detailed and the staff was helpful throughout.",
+    comment:
+      "Very professional and caring doctor. The consultation was detailed and the staff was helpful throughout.",
     likes: 165,
     isLiked: false,
     createdAt: new Date(Date.now() - 14 * 86400000).toISOString(),
     reply: {
-      comment: "Thank you for sharing your experience. We're glad the consultation was helpful for you.",
+      comment:
+        "Thank you for sharing your experience. We're glad the consultation was helpful for you.",
       createdAt: new Date(Date.now() - 13 * 86400000).toISOString(),
     },
   },
@@ -63,7 +75,8 @@ const PATIENT_REVIEWS = [
     userName: "Rahul Mehta",
     userAvatar: "/images/listing/doctors/doctor-4.png",
     rating: 5,
-    comment: "Excellent experience. Clear diagnosis, minimal wait time, and a very clean clinic environment.",
+    comment:
+      "Excellent experience. Clear diagnosis, minimal wait time, and a very clean clinic environment.",
     likes: 428,
     isLiked: false,
     createdAt: new Date(Date.now() - 18 * 86400000).toISOString(),
@@ -91,15 +104,20 @@ function StarRating({ value, className }) {
 
 function ThreadReply({ avatar, name, badge, badgeClassName, comment, createdAt }) {
   return (
-    <div className="flex gap-3 rounded-xl border border-border/50 bg-[#F8F9FC] p-3 md:p-4">
-      <div className="size-9 shrink-0 overflow-hidden rounded-xl bg-background ring-1 ring-primary/10 md:size-10">
+    <div className="border-border/50 flex gap-3 rounded-xl border bg-[#F8F9FC] p-3 md:p-4">
+      <div className="bg-background ring-primary/10 size-9 shrink-0 overflow-hidden rounded-xl ring-1 md:size-10">
         <img src={avatar} alt={name} className="size-full object-cover" />
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <p className="text-sm font-semibold text-foreground">{name}</p>
+          <p className="text-foreground text-sm font-semibold">{name}</p>
           {badge && (
-            <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", badgeClassName)}>
+            <span
+              className={cn(
+                "rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase",
+                badgeClassName,
+              )}
+            >
               {badge}
             </span>
           )}
@@ -125,20 +143,21 @@ function ReviewCard({
   onToggleReply,
   onReplyDraftChange,
   onSubmitReply,
+  mobile = false,
 }) {
   const likeCount =
-    review.likes
-    + (liked && !initiallyLiked ? 1 : 0)
-    - (!liked && initiallyLiked ? 1 : 0);
+    review.likes +
+    (liked && !initiallyLiked ? 1 : 0) -
+    (!liked && initiallyLiked ? 1 : 0);
 
   const doctorName = provider?.businessName?.startsWith("Dr.")
     ? provider.businessName
     : `Dr. ${provider?.businessName || "Doctor"}`;
 
   return (
-    <article className="rounded-2xl border border-border/60 bg-background p-4 md:p-5">
+    <article className="border-border/60 bg-background rounded-2xl border p-4 md:p-5">
       <div className="flex gap-3">
-        <div className="size-10 shrink-0 overflow-hidden rounded-xl bg-muted md:size-11">
+        <div className="bg-muted size-10 shrink-0 overflow-hidden rounded-xl md:size-11">
           <img
             src={review.userAvatar}
             alt={review.userName}
@@ -147,7 +166,7 @@ function ReviewCard({
         </div>
 
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-bold text-foreground">{review.userName}</p>
+          <p className="text-foreground text-sm font-bold">{review.userName}</p>
           <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
             <StarRating value={review.rating} />
             <span className="text-muted-foreground text-xs">
@@ -189,25 +208,31 @@ function ReviewCard({
       )}
 
       {isReplying && (
-        <div className="mt-4 rounded-xl border border-border/60 bg-[#F8F9FC] p-3 md:p-4">
+        <div className="border-border/60 mt-4 rounded-xl border bg-[#F8F9FC] p-3 md:p-4">
           <div className="flex items-start gap-3">
-            <div className="size-9 shrink-0 overflow-hidden rounded-xl bg-background ring-1 ring-primary/10">
-              <img src={currentUser.avatar} alt={currentUser.name} className="size-full object-cover" />
+            <div className="bg-background ring-primary/10 size-9 shrink-0 overflow-hidden rounded-xl ring-1">
+              <img
+                src={currentUser.avatar}
+                alt={currentUser.name}
+                className="size-full object-cover"
+              />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="mb-2 text-sm font-semibold text-foreground">{currentUser.name}</p>
+              <p className="text-foreground mb-2 text-sm font-semibold">
+                {currentUser.name}
+              </p>
               <textarea
                 value={replyDraft}
                 onChange={(event) => onReplyDraftChange(event.target.value)}
                 placeholder="Write your reply..."
                 rows={3}
-                className="w-full resize-none rounded-xl border border-border/70 bg-background px-3 py-2.5 text-sm outline-none ring-primary/20 focus:ring-2"
+                className="border-border/70 bg-background ring-primary/20 w-full resize-none rounded-xl border px-3 py-2.5 text-sm outline-none focus:ring-2"
               />
               <div className="mt-3 flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={onToggleReply}
-                  className="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                  className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
                 >
                   <X className="size-4" />
                   Cancel
@@ -215,9 +240,9 @@ function ReviewCard({
                 <button
                   type="button"
                   onClick={onSubmitReply}
-                  className="gradient-brand inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-95"
+                  className="gradient-brand inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-95 md:font-semibold"
                 >
-                  <Send className="size-3.5" />
+                  <SendIcon className="size-3.5" />
                   Post Reply
                 </button>
               </div>
@@ -226,7 +251,7 @@ function ReviewCard({
         </div>
       )}
 
-      <div className="mt-4 flex items-center border-t border-border/60 pt-3">
+      <div className="border-border/60 mt-4 flex items-center border-t pt-3">
         <button
           type="button"
           onClick={onToggleReply}
@@ -235,11 +260,11 @@ function ReviewCard({
             isReplying ? "text-primary" : "text-muted-foreground hover:text-primary",
           )}
         >
-          <MessageCircle className="size-4" />
+          <ReviewMsgIcon />
           Reply
         </button>
 
-        <span className="mx-4 h-4 w-px bg-border/70" aria-hidden />
+        <span className="bg-border/70 mx-4 h-4 w-px" aria-hidden />
 
         <button
           type="button"
@@ -249,7 +274,7 @@ function ReviewCard({
             liked ? "text-primary" : "text-muted-foreground hover:text-primary",
           )}
         >
-          <ThumbsUp className={cn("size-4", liked && "fill-current")} />
+          {liked ? <ReviewLikeIcon /> : <ReviewDislikeIcon />}
           {likeCount}
         </button>
       </div>
@@ -257,10 +282,13 @@ function ReviewCard({
   );
 }
 
-export function ProviderReviewsPanel({ provider }) {
+export function ProviderReviewsPanel({ provider, mobile = false }) {
   const [likedReviews, setLikedReviews] = useState(() =>
     Object.fromEntries(
-      PATIENT_REVIEWS.filter((review) => review.isLiked).map((review) => [review.id, true]),
+      PATIENT_REVIEWS.filter((review) => review.isLiked).map((review) => [
+        review.id,
+        true,
+      ]),
     ),
   );
   const [replyingReviewId, setReplyingReviewId] = useState(null);
@@ -311,11 +339,6 @@ export function ProviderReviewsPanel({ provider }) {
 
   return (
     <div>
-      <TabPanelHeader
-        title="Patient Reviews"
-        description="Real feedback from patients who have consulted with this doctor."
-      />
-
       <div className="space-y-4">
         {PATIENT_REVIEWS.map((review) => (
           <ReviewCard
@@ -331,6 +354,7 @@ export function ProviderReviewsPanel({ provider }) {
             onToggleReply={() => handleToggleReply(review.id)}
             onReplyDraftChange={(value) => handleReplyDraftChange(review.id, value)}
             onSubmitReply={() => handleSubmitReply(review.id)}
+            mobile={mobile}
           />
         ))}
       </div>

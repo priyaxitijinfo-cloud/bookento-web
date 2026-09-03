@@ -1,26 +1,34 @@
 "use client";
 
 import { UserPageShell } from "@/components/layout/user-page-shell";
-import { PrimaryButton } from "@/components/responsive/primitives/PrimaryButton";
 
-import { LanguageOptionsList } from "./language-parts";
+import { LanguageMobileOptionsList } from "./language-parts";
 
 export function LanguageMobile({ backHref, selectedCode, onSelect, onSave, saving }) {
   return (
     <UserPageShell
-      title="Languages"
+      title="Language"
       backHref={backHref}
       backLabel="Back to Profile"
-      containerVariant="browseWithBreadcrumb"
-      className="bg-surface-page"
-      mainClassName="space-y-6 pb-28"
+      showBottomNav={false}
+      showDesktopHeader={false}
+      showBreadcrumb={false}
+      containerVariant="browse"
+      className="bg-surface-page max-md:!pb-0 md:hidden"
+      headerClassName="max-md:border-transparent"
+      mainClassName="space-y-3 pb-28 max-md:!pt-4"
     >
-      <LanguageOptionsList selectedCode={selectedCode} onSelect={onSelect} />
+      <LanguageMobileOptionsList selectedCode={selectedCode} onSelect={onSelect} />
 
-      <div className="fixed inset-x-0 bottom-16 z-20 border-t border-border/60 bg-background/95 px-4 py-3 backdrop-blur-sm">
-        <PrimaryButton fullWidth onClick={onSave} disabled={saving}>
+      <div className="fixed inset-x-0 bottom-0 z-20 bg-white px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden">
+        <button
+          type="button"
+          onClick={onSave}
+          disabled={saving}
+          className="flex h-[51px] w-full items-center justify-center rounded-[10px] bg-gradient-to-r from-[#58A1FF] to-[#1E57EA] text-[16px] font-semibold text-white transition-opacity hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60"
+        >
           {saving ? "Saving..." : "Save"}
-        </PrimaryButton>
+        </button>
       </div>
     </UserPageShell>
   );

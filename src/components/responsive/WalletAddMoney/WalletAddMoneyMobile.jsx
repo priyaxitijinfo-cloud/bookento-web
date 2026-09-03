@@ -31,8 +31,9 @@ export function WalletAddMoneyMobile(props) {
       backLabel="Back to Wallet"
       breadcrumbTrail={[{ label: "My Wallet", href: ROUTES.WALLET }]}
       containerVariant="browseWithBreadcrumb"
-      className="bg-surface-page"
-      mainClassName="space-y-6 pb-28"
+      showBottomNav={false}
+      className="bg-surface-page max-md:!pb-6"
+      mainClassName="space-y-5 pb-28 max-md:space-y-5"
     >
       <AddMoneyFormContent
         amount={amount}

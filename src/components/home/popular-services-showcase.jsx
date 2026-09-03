@@ -3,7 +3,10 @@
 import { SectionHeader } from "@/components/home/section-header";
 import { MobileScrollRow } from "@/components/home/horizontal-scroll";
 import { ServiceCard } from "@/components/home/service-card";
-import { HOME_POPULAR_SERVICES } from "@/constants/popular-services";
+import {
+  HOME_POPULAR_SERVICES,
+  WEB_HOME_POPULAR_SERVICES,
+} from "@/constants/popular-services";
 import { ROUTES } from "@/constants/routes.constants";
 
 export function PopularServicesShowcase() {
@@ -20,7 +23,7 @@ export function PopularServicesShowcase() {
       </MobileScrollRow>
 
       <div className="hidden gap-3 md:grid md:grid-cols-4 md:gap-4">
-        {HOME_POPULAR_SERVICES.map((svc, i) => (
+        {WEB_HOME_POPULAR_SERVICES.map((svc, i) => (
           <ServiceCard key={svc.id} service={svc} index={i} />
         ))}
       </div>

@@ -5,9 +5,11 @@ import { cn } from "@/lib/utils";
 
 export function SectionHeader({ title, href, className }) {
   return (
-    <div className={cn("mb-3 flex items-center justify-between gap-4 md:mb-4", className)}>
-      <h2 className="text-foreground flex items-center gap-2 text-base font-bold tracking-tight md:text-xl">
-        <span className="section-title-bar" aria-hidden />
+    <div
+      className={cn("mb-3 flex items-center justify-between gap-4 md:mb-4", className)}
+    >
+      <h2 className="text-foreground flex items-center gap-0 text-base font-semibold tracking-tight md:gap-2 md:text-xl md:font-bold">
+        <span className="section-title-bar mr-1.5 md:mr-2" aria-hidden />
         {title}
       </h2>
       {href && (

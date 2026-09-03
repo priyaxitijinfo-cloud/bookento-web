@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { Eye, Heart, MessageCircle, Plus } from "lucide-react";
+import { Eye, MessageCircle, Plus } from "lucide-react";
 
+import { HeroHeartIcon } from "@/components/icons/hero-nav-icons";
 import { ProviderHeader } from "@/components/layout/provider-nav";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -23,7 +24,9 @@ export default function ProviderPostsPage() {
       <ProviderHeader title="Posts" />
       <main className="flex-1 overflow-y-auto p-4 lg:p-6">
         <div className="mb-6 flex items-center justify-between">
-          <p className="text-muted-foreground text-sm">{posts.length} posts published</p>
+          <p className="text-muted-foreground text-sm">
+            {posts.length} posts published
+          </p>
           <Button>
             <Plus className="size-4" /> Create Post
           </Button>
@@ -33,20 +36,33 @@ export default function ProviderPostsPage() {
           {posts.map((post) => (
             <Card key={post.id} className="overflow-hidden">
               <div className="relative aspect-square">
-                <Image src={post.image} alt={post.caption} fill className="object-cover" />
+                <Image
+                  src={post.image}
+                  alt={post.caption}
+                  fill
+                  className="object-cover"
+                />
               </div>
               <CardContent className="p-4">
                 <div className="mb-3 flex items-center gap-2">
-                  <Avatar src={post.providerAvatar} name={post.providerName} size="sm" />
+                  <Avatar
+                    src={post.providerAvatar}
+                    name={post.providerName}
+                    size="sm"
+                  />
                   <div>
                     <p className="text-sm font-medium">{post.providerName}</p>
-                    <p className="text-muted-foreground text-xs">{formatRelativeTime(post.createdAt)}</p>
+                    <p className="text-muted-foreground text-xs">
+                      {formatRelativeTime(post.createdAt)}
+                    </p>
                   </div>
                 </div>
                 <p className="line-clamp-2 text-sm">{post.caption}</p>
                 <div className="mt-2 flex flex-wrap gap-1">
                   {post.hashtags.map((tag) => (
-                    <span key={tag} className="text-primary text-xs">{tag}</span>
+                    <span key={tag} className="text-primary text-xs">
+                      {tag}
+                    </span>
                   ))}
                 </div>
                 <div className="mt-4 flex items-center justify-between border-t pt-3">
@@ -55,7 +71,11 @@ export default function ProviderPostsPage() {
                     onClick={() => toggleLike(post.id)}
                     className="text-muted-foreground hover:text-destructive flex items-center gap-1 text-sm transition-colors"
                   >
-                    <Heart className={`size-4 ${liked[post.id] || post.isLiked ? "fill-destructive text-destructive" : ""}`} />
+                    <HeroHeartIcon
+                      tone="dark"
+                      filled={Boolean(liked[post.id] || post.isLiked)}
+                      className="text-muted-foreground size-4"
+                    />
                     {post.likes + (liked[post.id] ? 1 : 0)}
                   </button>
                   <span className="text-muted-foreground flex items-center gap-1 text-sm">

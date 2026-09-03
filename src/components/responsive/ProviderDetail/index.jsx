@@ -2,23 +2,19 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
-import {
-  BriefcaseMedical,
-  ImageIcon,
-  Info,
-  LayoutGrid,
-  Star,
-  Video,
-} from "lucide-react";
 import { toast } from "sonner";
 
 import { ResponsiveView } from "@/components/responsive/primitives/ResponsiveView";
 import { EmptyState } from "@/components/shared/empty-state";
+import { useBreakpoint } from "@/hooks/responsive/use-breakpoint";
 import { getCategoryBookingData } from "@/constants/category-booking.constants";
 import { PROVIDER_BRANCHES } from "@/constants/provider-branches";
 import { categoryListingRoute, ROUTES } from "@/constants/routes.constants";
 import { BACK_FROM_SOURCES } from "@/lib/navigation/back-navigation";
-import { getHomeCategoryBySlug, getCategoryProviderDisplayName } from "@/constants/home-categories";
+import {
+  getHomeCategoryBySlug,
+  getCategoryProviderDisplayName,
+} from "@/constants/home-categories";
 import { getGalleryByProvider } from "@/mock/gallery";
 import { getPackagesByProvider } from "@/mock/packages";
 import { getProviderById } from "@/mock/providers";
@@ -31,27 +27,24 @@ import { ProviderDetailDesktop } from "./ProviderDetailDesktop";
 import { ProviderDetailMobile } from "./ProviderDetailMobile";
 import { ProviderDetailTablet } from "./ProviderDetailTablet";
 
-const DOCTOR_TABS = [
-  { id: "services", label: "Services", icon: BriefcaseMedical },
-  { id: "packages", label: "Packages", icon: LayoutGrid },
-  { id: "about", label: "About", icon: Info },
-  { id: "gallery", label: "Gallery", icon: ImageIcon },
-  { id: "videos", label: "Videos", icon: Video },
-  { id: "reviews", label: "Reviews", icon: Star },
-];
-
-const GENERIC_TABS = [
+const PROFILE_TABS = [
   { id: "services", label: "Services" },
   { id: "packages", label: "Packages" },
   { id: "about", label: "About" },
   { id: "gallery", label: "Gallery" },
+  { id: "videos", label: "Video" },
+  { id: "reviews", label: "Reviews" },
 ];
+
+const DOCTOR_TABS = PROFILE_TABS;
+const GENERIC_TABS = PROFILE_TABS;
 
 export function ProviderDetailResponsive() {
   const { id } = useParams();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { isMobile } = useBreakpoint();
   const categorySlug = searchParams.get("from");
   const category = categorySlug ? getHomeCategoryBySlug(categorySlug) : null;
   const isCategoryFlow = Boolean(category);
@@ -60,14 +53,15 @@ export function ProviderDetailResponsive() {
   const listingAvatar = searchParams.get("avatar");
 
   const provider = getProviderById(id);
-  const displayProvider = provider && isCategoryFlow
-    ? {
-        ...provider,
-        businessName: listingName || provider.businessName,
-        specialty: listingSpecialty || provider.specialty,
-        avatar: listingAvatar || provider.avatar,
-      }
-    : provider;
+  const displayProvider =
+    provider && isCategoryFlow
+      ? {
+          ...provider,
+          businessName: listingName || provider.businessName,
+          specialty: listingSpecialty || provider.specialty,
+          avatar: listingAvatar || provider.avatar,
+        }
+      : provider;
 
   const validTabIds = useMemo(
     () => (isCategoryFlow ? DOCTOR_TABS : GENERIC_TABS).map((tab) => tab.id),
@@ -122,13 +116,15 @@ export function ProviderDetailResponsive() {
 
   const services = useMemo(() => {
     if (categoryBookingData) return categoryBookingData.services;
-    return getServicesByProvider(id).slice(0, 6).map((service) => ({
-      id: service.id,
-      name: service.name,
-      duration: service.duration,
-      price: service.price,
-      originalPrice: service.price + Math.round(service.price * 0.2),
-    }));
+    return getServicesByProvider(id)
+      .slice(0, 6)
+      .map((service) => ({
+        id: service.id,
+        name: service.name,
+        duration: service.duration,
+        price: service.price,
+        originalPrice: service.price + Math.round(service.price * 0.2),
+      }));
   }, [id, categoryBookingData]);
 
   const packages = useMemo(() => {
@@ -148,7 +144,14 @@ export function ProviderDetailResponsive() {
 
     initializedRef.current = true;
 
-    const { setProviderId, setVisitType, setBranchId, setScheduledDate, setScheduledTime, setServices } = useBookingStore.getState();
+    const {
+      setProviderId,
+      setVisitType,
+      setBranchId,
+      setScheduledDate,
+      setScheduledTime,
+      setServices,
+    } = useBookingStore.getState();
 
     setProviderId(displayProvider.id);
     setVisitType("in_clinic");
@@ -164,7 +167,9 @@ export function ProviderDetailResponsive() {
     if (!displayProvider?.id) return;
 
     const isNowSaved = toggleSaved(displayProvider.id);
-    toast.success(isNowSaved ? "Saved to favorites" : "Removed from saved");
+    toast.success(isNowSaved ? "Saved to favorites" : "Removed from saved", {
+      duration: isMobile ? 2000 : undefined,
+    });
   };
 
   const handleConfirmBlock = () => {
@@ -184,7 +189,9 @@ export function ProviderDetailResponsive() {
           title="Provider not found"
           description="This provider may have been removed."
           actionLabel="Browse providers"
-          onAction={() => { window.location.href = ROUTES.PROVIDERS; }}
+          onAction={() => {
+            window.location.href = ROUTES.PROVIDERS;
+          }}
         />
       </div>
     );
@@ -202,10 +209,16 @@ export function ProviderDetailResponsive() {
   const profileBackLabel = backFromConfig
     ? `Back to ${backFromConfig.label}`
     : isCategoryFlow
-      ? (categorySlug === "doctor" ? "Back to doctors" : `Back to ${category.name.toLowerCase()}`)
-      : (fromSaved ? "Back to saved" : "Back to home");
+      ? categorySlug === "doctor"
+        ? "Back to doctors"
+        : `Back to ${category.name.toLowerCase()}`
+      : fromSaved
+        ? "Back to saved"
+        : "Back to home";
   const profileLabel = isCategoryFlow
-    ? (categorySlug === "doctor" ? "Doctor Profile" : `${category.name} Profile`)
+    ? categorySlug === "doctor"
+      ? "Doctor Profile"
+      : `${category.name} Profile`
     : displayProvider.businessName;
   const aboutParagraphs = categoryBookingData?.aboutParagraphs ?? [
     displayProvider.description,

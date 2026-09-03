@@ -8,7 +8,7 @@ import { SavedLoadingSkeleton, SavedProvidersContent } from "./saved-parts";
 export function SavedMobile({ hasHydrated, providers, savedIds, onWishlistToggle }) {
   return (
     <UserPageShell
-      title="Saved Providers"
+      title="Saved"
       backHref={ROUTES.PROFILE}
       backLabel="Back to Profile"
       containerVariant="browseWithBreadcrumb"

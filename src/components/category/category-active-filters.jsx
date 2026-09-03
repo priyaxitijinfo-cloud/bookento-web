@@ -14,7 +14,9 @@ export function CategoryActiveFilters({ filters, onRemove, onClearAll, className
   return (
     <section className={cn("mb-4", className)}>
       <div className="mb-3 flex items-center justify-between gap-3">
-        <h2 className="text-foreground text-base font-bold leading-none">Active Filters</h2>
+        <h2 className="text-foreground text-base leading-none font-semibold md:font-bold">
+          Active Filters
+        </h2>
         <button
           type="button"
           onClick={onClearAll}

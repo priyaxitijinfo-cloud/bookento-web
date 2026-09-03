@@ -65,12 +65,17 @@ export async function sharePageLink({
   title,
   text,
   url = typeof window !== "undefined" ? window.location.href : "",
+  preferClipboard = false,
 }) {
   if (!url) return "failed";
 
-  const nativeResult = await shareWithNativeShare({ title, text, url });
-  if (nativeResult === "shared" || nativeResult === "cancelled") {
-    return nativeResult;
+  // Desktop browsers often expose navigator.share but consume the user gesture,
+  // so clipboard fallback fails. Prefer copy when requested (e.g. web layouts).
+  if (!preferClipboard) {
+    const nativeResult = await shareWithNativeShare({ title, text, url });
+    if (nativeResult === "shared" || nativeResult === "cancelled") {
+      return nativeResult;
+    }
   }
 
   const copied = await copyToClipboard(url);

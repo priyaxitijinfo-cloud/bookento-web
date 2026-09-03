@@ -4,7 +4,7 @@
   "private": true,
   "description": "Multi Service Provider Platform - Enterprise SaaS",
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbopack --hostname 0.0.0.0",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
@@ -79,5 +79,17 @@
   },
   "engines": {
     "node": ">=20.0.0"
-  }
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/priyaxitijinfo-cloud/bookento-web.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/priyaxitijinfo-cloud/bookento-web/issues"
+  },
+  "homepage": "https://github.com/priyaxitijinfo-cloud/bookento-web#readme"
 }

@@ -1,11 +1,17 @@
 "use client";
 
+import { Bookmark } from "lucide-react";
+
 import { HomeHeader } from "@/components/home/home-header";
 import { DesktopBreadcrumbBar } from "@/components/layout/desktop-breadcrumb-bar";
+import { EmptyState } from "@/components/shared/empty-state";
+import { SkeletonCard } from "@/components/ui/skeleton";
 import { DesktopLayout } from "@/components/responsive/layout";
+import { ResponsiveGrid } from "@/components/responsive/layout/ResponsiveGrid";
+import { ROUTES } from "@/constants/routes.constants";
 import { cn } from "@/lib/utils";
 
-import { ReelsPlayerShell } from "./ShortsContent";
+import { ReelsPlayerShell, SavedReelsGrid } from "./ShortsContent";
 import {
   ShortsMobileShell,
   ShortsPlayerSection,
@@ -63,8 +69,9 @@ export function ShortsMobile({
           playerRef={playerRef}
           activeIndex={activeIndex}
           setActiveIndex={setActiveIndex}
-          playerHeightClass="h-[calc(100dvh-5rem)]"
-          playerContainerClass="px-0"
+          playerHeightClass="h-dvh md:h-[calc(100dvh-5rem)]"
+          playerContainerClass="w-full px-0"
+          playerFrameClass="max-w-none md:max-w-md"
         />
       ) : null}
 
@@ -76,6 +83,7 @@ export function ShortsMobile({
             scrollRef={mobilePlayerRef}
             activeIndex={activeIndex}
             setActiveIndex={setActiveIndex}
+            flushBottom
           />
         </div>
       ) : null}
@@ -105,8 +113,12 @@ export function ShortsTablet({
 }) {
   if (showSavedGrid) {
     return (
-      <div className="relative min-h-dvh overflow-visible bg-surface-page pb-8">
-        <div className={cn("sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur-md")}>
+      <div className="bg-surface-page relative min-h-dvh overflow-visible pb-8">
+        <div
+          className={cn(
+            "border-border bg-background/90 sticky top-0 z-30 border-b backdrop-blur-md",
+          )}
+        >
           <HomeHeader embedded />
           <DesktopBreadcrumbBar {...breadcrumbProps} />
         </div>
@@ -128,8 +140,12 @@ export function ShortsTablet({
   }
 
   return (
-    <div className="relative min-h-dvh overflow-hidden bg-surface-page pb-8">
-      <div className={cn("sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur-md")}>
+    <div className="bg-surface-page relative min-h-dvh overflow-hidden pb-8">
+      <div
+        className={cn(
+          "border-border bg-background/90 sticky top-0 z-30 border-b backdrop-blur-md",
+        )}
+      >
         <HomeHeader embedded />
         <DesktopBreadcrumbBar {...breadcrumbProps} />
       </div>
@@ -142,7 +158,10 @@ export function ShortsTablet({
         activeIndex={activeIndex}
         setActiveIndex={setActiveIndex}
         playerHeightClass="h-[calc(100dvh-8rem)] rounded-2xl shadow-card-hover"
-        playerContainerClass={cn("px-6 py-6", isSavedView && savedPlayerOpen && "hidden")}
+        playerContainerClass={cn(
+          "px-6 py-6",
+          isSavedView && savedPlayerOpen && "hidden",
+        )}
       />
     </div>
   );
@@ -158,6 +177,7 @@ export function ShortsDesktop({
   onSelectReel,
   onToggleSave,
   isSavedView,
+  savedPlayerOpen,
   visibleReels,
   savedPlayerProps,
   feedPlayerProps,
@@ -171,22 +191,46 @@ export function ShortsDesktop({
     return (
       <DesktopLayout
         maxWidth="wide"
-        header={<DesktopBreadcrumbBar {...breadcrumbProps} />}
-        contentClassName="pb-6"
+        showHeaderBorder={false}
+        contentClassName="md:!pt-0 lg:!pt-0"
+        containerClassName="md:!pt-0"
+        header={
+          <>
+            <HomeHeader embedded />
+            <DesktopBreadcrumbBar
+              backHref={back.href}
+              backLabel={back.label}
+              currentLabel="Saved Reels"
+            />
+          </>
+        }
       >
-        <ShortsSavedGridSection
-          pageTitle={pageTitle}
-          backHref={back.href}
-          backLabel={back.label}
-          hasHydrated={hasHydrated}
-          savedReels={savedReels}
-          savedIds={savedIds}
-          onSelectReel={onSelectReel}
-          onToggleSave={onToggleSave}
-          showMobileHeader={false}
-          mainClassName="px-0 py-0"
-          gridClassName="grid grid-cols-5 gap-3"
-        />
+        {!hasHydrated ? (
+          <ResponsiveGrid mobile={2} tablet={3} desktop={5} gap="gap-3">
+            {Array.from({ length: 10 }).map((_, index) => (
+              <SkeletonCard key={index} className="aspect-[3/4] rounded-2xl" />
+            ))}
+          </ResponsiveGrid>
+        ) : savedReels.length === 0 ? (
+          <EmptyState
+            icon={Bookmark}
+            title="No saved reels yet"
+            description="Tap the bookmark icon on any reel to save it here."
+            actionLabel="Browse all reels"
+            onAction={() => {
+              window.location.href = `${ROUTES.REELS}?view=all`;
+            }}
+          />
+        ) : (
+          <SavedReelsGrid
+            className="grid grid-cols-5 gap-3"
+            variant="desktop"
+            savedReels={savedReels}
+            savedIds={savedIds}
+            onSelectReel={onSelectReel}
+            onToggleSave={onToggleSave}
+          />
+        )}
       </DesktopLayout>
     );
   }
@@ -194,8 +238,19 @@ export function ShortsDesktop({
   return (
     <DesktopLayout
       maxWidth="wide"
-      header={<DesktopBreadcrumbBar {...breadcrumbProps} />}
-      contentClassName="min-h-[calc(100dvh-4.25rem-3rem)]"
+      showHeaderBorder={isSavedView && savedPlayerOpen ? false : undefined}
+      header={
+        <>
+          {isSavedView && savedPlayerOpen ? <HomeHeader embedded /> : null}
+          <DesktopBreadcrumbBar {...breadcrumbProps} />
+        </>
+      }
+      contentClassName={
+        isSavedView && savedPlayerOpen
+          ? "min-h-[calc(100dvh-4.25rem-3rem)] md:!pt-0 lg:!pt-0"
+          : "min-h-[calc(100dvh-4.25rem-3rem)]"
+      }
+      containerClassName={isSavedView && savedPlayerOpen ? "md:!pt-0" : undefined}
     >
       <ShortsPlayerSection
         hasHydrated={hasHydrated}

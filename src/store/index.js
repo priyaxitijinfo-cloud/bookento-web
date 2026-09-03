@@ -11,9 +11,13 @@ export { useNotificationStore } from "./notification.store";
 export { useDashboardStore } from "./dashboard.store";
 export { useServiceStore, usePackageStore } from "./service.store";
 export { useUserProfileStore, useProfileStore } from "./user-profile.store";
-export { useProviderProfileStore, useProviderSettingsStore } from "./provider-profile.store";
+export {
+  useProviderProfileStore,
+  useProviderSettingsStore,
+} from "./provider-profile.store";
 export { useSettingsStore } from "./profile.store";
 export { useSavedProvidersStore } from "./saved-providers.store";
 export { useSavedReelsStore } from "./saved-reels.store";
+export { useRecentSearchesStore } from "./recent-searches.store";
 export { createPersistOptions, persistStorage } from "./persist-storage";
 export { rehydratePersistedStores } from "./rehydrate-persisted-stores";

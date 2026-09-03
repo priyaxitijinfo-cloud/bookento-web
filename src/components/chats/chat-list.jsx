@@ -16,13 +16,19 @@ export function ChatList({
       <ChatEmptyInbox
         title={emptyTitle}
         description={emptyDescription}
-        className="min-h-0 py-12"
+        className="min-h-0"
       />
     );
   }
 
   return (
-    <div className={cn("flex flex-col divide-y divide-[#F1F5F9] md:divide-y-0 md:gap-0.5", className)}>
+    <div
+      className={cn(
+        "flex flex-col md:gap-0.5",
+        "max-md:[&>a:last-child_.chat-row-body]:border-b-0",
+        className,
+      )}
+    >
       {conversations.map((conversation) => (
         <ChatCard
           key={conversation.id}

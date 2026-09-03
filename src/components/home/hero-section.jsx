@@ -2,93 +2,100 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
-import { LocationIcon } from "@/components/icons/location-icon";
-
-import { Button } from "@/components/ui/button";
 import { TODAY_APPOINTMENT } from "@/constants/home-appointment";
 import { appointmentDetailRoute } from "@/constants/routes.constants";
-import { avatarUrl } from "@/mock/helpers";
 import { cn } from "@/lib/utils";
 
-const HERO_IMAGE = "/images/hero-spa.png";
-
-const CUSTOMER_AVATARS = [
-  avatarUrl("hero-customer-1"),
-  avatarUrl("hero-customer-2"),
-  avatarUrl("hero-customer-3"),
-];
-
+/**
+ * Web hero — same banner as the app (UpcomingAppointmentCard) home strip.
+ */
 export function HeroSection({ className }) {
   return (
-    <section
+    <Link
+      href={appointmentDetailRoute(TODAY_APPOINTMENT.id)}
       className={cn(
-        "relative aspect-[1024/312] w-full min-h-[12rem] overflow-hidden rounded-xl bg-[#F3EEFF] sm:min-h-[14rem] md:rounded-2xl",
+        "group relative flex min-h-[14rem] w-full overflow-hidden rounded-2xl p-6 shadow-[0_12px_32px_rgba(240,61,78,0.28)] sm:min-h-[15rem] sm:p-7 md:min-h-[16.5rem] md:p-8",
         className,
       )}
-      style={{
-        backgroundImage: `url('${HERO_IMAGE}')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
     >
-      <div className="absolute inset-0 z-10 flex max-w-[88%] flex-col justify-center px-4 py-5 sm:max-w-[78%] sm:px-6 md:max-w-[52%] md:px-10 md:py-8 lg:px-12 lg:py-10">
-        <span className="bg-primary/10 text-primary inline-flex w-fit rounded-full px-2.5 py-0.5 text-[11px] font-semibold sm:px-3 sm:py-1 sm:text-xs">
+      <img
+        src="/icons/bg02.jpg"
+        alt=""
+        className="pointer-events-none absolute inset-0 size-full object-cover"
+        aria-hidden
+        draggable={false}
+      />
+
+      <div className="relative z-10 flex max-w-[55%] min-w-0 flex-1 flex-col lg:max-w-[48%]">
+        <span className="inline-flex w-fit rounded-md bg-white px-2.5 py-[5px] text-[11px] font-semibold text-[#F03D4E] md:px-3 md:py-1.5 md:text-xs">
           Today
         </span>
 
-        <h1 className="text-foreground mt-2 text-[1.35rem] leading-[1.12] font-bold tracking-tight sm:text-2xl md:mt-3 md:text-[2.5rem] lg:text-[2.75rem]">
-          Today, you have an
+        <h1 className="mt-3 text-[1.75rem] leading-[1.15] font-bold tracking-tight text-white sm:text-[2rem] md:mt-4 md:text-[2.35rem] lg:text-[2.5rem]">
+          Hair Spa &amp;
           <br />
-          <span className="text-primary">appointment</span>
+          Facial Combo
         </h1>
 
-        <p className="text-foreground mt-1.5 line-clamp-2 text-sm font-semibold sm:text-base md:mt-2 md:text-lg lg:text-xl">
-          {TODAY_APPOINTMENT.service}
-        </p>
-
-        <div className="text-muted-foreground mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm md:text-[0.9375rem]">
+        <div className="mt-3 inline-flex w-fit max-w-full items-center gap-2 rounded-full border border-white/40 bg-white/18 px-3 py-1.5 text-[11px] font-medium text-white backdrop-blur-[2px] md:mt-4 md:gap-2.5 md:px-3.5 md:py-2 md:text-sm">
           <span className="inline-flex items-center gap-1.5">
-            <Clock className="size-3.5 sm:size-4" strokeWidth={2.5} />
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="size-3.5 shrink-0 md:size-4"
+              aria-hidden
+            >
+              <path
+                d="M8.99994 2C7.61547 2 6.26209 2.41054 5.11095 3.17971C3.95981 3.94888 3.0626 5.04213 2.53279 6.32121C2.00297 7.6003 1.86435 9.00776 2.13445 10.3656C2.40454 11.7235 3.07123 12.9708 4.05019 13.9497C5.02916 14.9287 6.27644 15.5954 7.63431 15.8655C8.99217 16.1356 10.3996 15.997 11.6787 15.4672C12.9578 14.9373 14.0511 14.0401 14.8202 12.889C15.5894 11.7378 15.9999 10.3845 15.9999 9C15.9977 7.14416 15.2595 5.36495 13.9473 4.05267C12.635 2.74039 10.8558 2.00219 8.99994 2ZM11.3589 11.359C11.2396 11.4783 11.0778 11.5453 10.909 11.5453C10.7403 11.5453 10.5785 11.4783 10.4591 11.359L8.55003 9.44991C8.43068 9.33059 8.36361 9.16876 8.36358 9V5.18182C8.36358 5.01304 8.43062 4.85118 8.54996 4.73184C8.6693 4.6125 8.83117 4.54545 8.99994 4.54545C9.16871 4.54545 9.33058 4.6125 9.44992 4.73184C9.56926 4.85118 9.6363 5.01304 9.6363 5.18182V8.73654L11.3589 10.4592C11.4782 10.5785 11.5453 10.7403 11.5453 10.9091C11.5453 11.0778 11.4782 11.2397 11.3589 11.359Z"
+                fill="#FFFFFF"
+              />
+            </svg>
             {TODAY_APPOINTMENT.time}
           </span>
+          <span className="h-3 w-px bg-white/45 md:h-3.5" aria-hidden />
           <span className="inline-flex items-center gap-1.5">
-            <LocationIcon className="size-3.5 sm:size-4" strokeWidth={2.5} />
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="size-3.5 shrink-0 md:size-4"
+              aria-hidden
+            >
+              <path
+                d="M12.2858 11.4898C15.2766 11.4898 17.7012 9.07765 17.7012 6.10208C17.7012 3.12652 15.2766 0.714355 12.2858 0.714355C9.29498 0.714355 6.87044 3.12652 6.87044 6.10208C6.87044 9.07765 9.29498 11.4898 12.2858 11.4898Z"
+                fill="#FFFFFF"
+              />
+              <path
+                d="M15.1063 13.7348H9.4653C6.19352 13.7348 3.48584 16.4287 3.48584 19.6838C3.48584 20.4695 3.8243 21.1429 4.50122 21.4797C5.5166 22.0409 7.773 22.7144 12.2858 22.7144C16.7986 22.7144 19.055 22.0409 20.0704 21.4797C20.6345 21.1429 21.0858 20.4695 21.0858 19.6838C21.0858 16.3164 18.3781 13.7348 15.1063 13.7348Z"
+                fill="#FFFFFF"
+              />
+            </svg>
             {TODAY_APPOINTMENT.visitType}
           </span>
         </div>
 
-        <Button
-          asChild
-          size="lg"
-          className="mt-3 h-9 w-fit rounded-full px-4 text-xs font-semibold shadow-[0_4px_14px_rgba(94,76,245,0.35)] sm:mt-4 sm:h-10 sm:px-5 sm:text-sm md:mt-6 md:h-12 md:px-7"
-        >
-          <Link href={appointmentDetailRoute(TODAY_APPOINTMENT.id)}>
-            View Details
-            <ArrowRight className="size-3.5 sm:size-4" />
-          </Link>
-        </Button>
+        <span className="mt-auto inline-flex w-fit items-center gap-1.5 rounded-full bg-white px-4 py-2.5 text-xs font-semibold text-[#111827] shadow-sm transition-transform group-hover:scale-[1.02] md:mt-6 md:px-5 md:py-3 md:text-sm">
+          View Details
+          <ArrowRight className="size-3.5 md:size-4" />
+        </span>
       </div>
 
-      <div className="absolute right-2 bottom-2 z-10 flex scale-90 items-center gap-2 rounded-2xl bg-background px-2.5 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.08)] sm:right-4 sm:bottom-4 sm:scale-100 sm:px-3 md:right-6 md:bottom-6 md:gap-3 md:px-4 md:py-3">
-        <div className="flex -space-x-2">
-          {CUSTOMER_AVATARS.map((src, i) => (
-            <div
-              key={src}
-              className="border-card relative size-7 overflow-hidden rounded-full border-2 md:size-9"
-              style={{ zIndex: 3 - i }}
-            >
-              <Image src={src} alt="" fill className="object-cover" sizes="36px" />
-            </div>
-          ))}
-        </div>
-        <div>
-          <p className="text-foreground text-xs leading-none font-bold sm:text-sm md:text-base">10K+</p>
-          <p className="text-muted-foreground mt-0.5 text-[9px] sm:text-[10px] md:text-xs">Happy Customers</p>
-        </div>
-      </div>
-    </section>
+      <Image
+        src="/icons/appointment-calendar-web.png"
+        alt=""
+        width={220}
+        height={220}
+        className="pointer-events-none absolute right-4 bottom-3 z-[1] h-[11rem] w-[11rem] object-contain sm:right-6 sm:h-[12.5rem] sm:w-[12.5rem] md:right-8 md:bottom-4 md:h-[14rem] md:w-[14rem] lg:h-[15rem] lg:w-[15rem]"
+        aria-hidden
+        priority
+      />
+    </Link>
   );
 }

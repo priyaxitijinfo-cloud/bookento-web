@@ -1,5 +1,12 @@
-import { appointments } from "@/mock/appointments";
 import { APPOINTMENT_STATUS } from "@/constants/status.constants";
+import { chatDetailRoute, ROUTES } from "@/constants/routes.constants";
+import { appendReturnToParam } from "@/lib/navigation/back-navigation";
+import {
+  getConversationByProviderId,
+  getOrCreateConversationForProvider,
+} from "@/mock/chat";
+import { useChatStore } from "@/store/chat.store";
+import { useAppointmentStore } from "@/store/appointment.store";
 
 const CALLABLE_STATUSES = [
   APPOINTMENT_STATUS.CONFIRMED,
@@ -26,9 +33,49 @@ export function canStartCall(scheduledDate, scheduledTime) {
   return diffMs <= 10 * 60 * 1000 && diffMs >= -60 * 60 * 1000;
 }
 
+/** Read-only lookup for an existing provider conversation (store, then mock). */
+export function findConversationForProvider(providerId) {
+  if (!providerId) return null;
+
+  const storeConversation = useChatStore
+    .getState()
+    .conversations.find((item) => item.participantId === providerId);
+  if (storeConversation) return storeConversation;
+
+  return getConversationByProviderId(providerId) ?? null;
+}
+
+/** Pure route builder — does not create or mutate conversations. */
+export function buildChatRouteForProvider(providerId, returnTo) {
+  const conversation = findConversationForProvider(providerId);
+  if (!conversation) return ROUTES.CHATS;
+
+  const route = chatDetailRoute(conversation.id);
+  return returnTo ? appendReturnToParam(route, returnTo) : route;
+}
+
+/**
+ * Ensure a provider conversation exists in mock data and the chat store.
+ * Must be called from effects or event handlers — never during render.
+ */
+export function ensureProviderConversation(providerId, appointment) {
+  const conversation = getOrCreateConversationForProvider(providerId, appointment);
+  if (!conversation) return null;
+
+  useChatStore.getState().upsertConversation(conversation);
+  return conversation;
+}
+
+/** @deprecated Prefer buildChatRouteForProvider (render) + ensureProviderConversation (effects/events). */
+export function resolveChatRouteForProvider(providerId, appointment, returnTo) {
+  return buildChatRouteForProvider(providerId, returnTo);
+}
+
 /** Find the most relevant appointment linked to a chat participant (provider). */
 export function findLinkedAppointment(providerId) {
   if (!providerId) return null;
+
+  const appointments = useAppointmentStore.getState().appointments;
 
   const linked = appointments.filter(
     (apt) => apt.providerId === providerId && CALLABLE_STATUSES.includes(apt.status),
@@ -69,7 +116,10 @@ export function getMinutesUntilAppointment(scheduledDate, scheduledTime) {
   return Math.max(0, Math.round((appointmentDate.getTime() - Date.now()) / 60_000));
 }
 
-export function filterConversations(conversations, { filter = "all", search = "" } = {}) {
+export function filterConversations(
+  conversations,
+  { filter = "all", search = "" } = {},
+) {
   let list = [...conversations];
 
   if (filter === "unread") {

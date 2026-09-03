@@ -1,8 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { Suspense } from "react";
 
 import { AddAddressButton } from "@/components/addresses/add-address-button";
 import { AddressFormFlow } from "@/components/addresses/address-form-view";
@@ -11,189 +9,95 @@ import { AddressMapFlow } from "@/components/addresses/address-map-view";
 import { AddressPageShell } from "@/components/addresses/address-page-shell";
 import { AddressSearchFlow } from "@/components/addresses/address-search-view";
 import { DeleteAddressModal } from "@/components/addresses/delete-address-modal";
-import {
-  buildLocationFromSuggestion,
-  DEFAULT_MAP_LOCATION,
-  formatAddressPreview,
-  getLabelChipId,
-  resolveStoreLabel,
-} from "@/constants/address-flow.constants";
+import { ADDRESS_FLOW_STEPS } from "@/constants/address-flow.constants";
 import { ROUTES } from "@/constants/routes.constants";
-import { useProfileStore } from "@/store";
+import { useAddressFlowController } from "@/hooks/use-address-flow-controller";
 
-function getNextLabel(addresses) {
-  const labels = ["Home", "Office", "Parents Home", "Other"];
-  const used = new Set(addresses.map((address) => address.label));
-  return labels.find((label) => !used.has(label)) ?? "Other";
-}
+function AddressesPageContent() {
+  const {
+    step,
+    searchQuery,
+    editingAddress,
+    draftLocation,
+    sortedAddresses,
+    currentLocationPreview,
+    deleteTarget,
+    saving,
+    deleting,
+    formInitialAddress,
+    profile,
+    setDeleteTarget,
+    startAddFlow,
+    startEditFlow,
+    handleContinueFromSearch,
+    openSearchFromMap,
+    handleContinueToForm,
+    handleSaveForm,
+    handleConfirmDelete,
+    handleBackFromSearch,
+    handleBackFromForm,
+    handleUseCurrentLocation,
+    navigateToStep,
+    getLabelChipId,
+    getNextLabel,
+  } = useAddressFlowController();
 
-function buildDraftFromAddress(address) {
-  return {
-    label: address.area || address.label,
-    searchLine: address.addressLine1,
-    addressLine1: address.addressLine1,
-    addressLine2: address.addressLine2 || "",
-    area: address.area || address.city,
-    city: address.city,
-    state: address.state,
-    pincode: address.pincode,
-    latitude: address.latitude,
-    longitude: address.longitude,
-  };
-}
-
-export default function AddressesPage() {
-  const router = useRouter();
-  const { addresses: storedAddresses, profile, addAddress, updateAddress, deleteAddress } =
-    useProfileStore();
-  const addresses = storedAddresses ?? [];
-
-  const [view, setView] = useState("list");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [draftLocation, setDraftLocation] = useState(DEFAULT_MAP_LOCATION);
-  const [editingAddress, setEditingAddress] = useState(null);
-  const [deleteTarget, setDeleteTarget] = useState(null);
-  const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-
-  const sortedAddresses = useMemo(
-    () => [...addresses].sort((a, b) => Number(b.isDefault) - Number(a.isDefault)),
-    [addresses],
-  );
-
-  const resetFlow = () => {
-    setView("list");
-    setSearchQuery("");
-    setDraftLocation(DEFAULT_MAP_LOCATION);
-    setEditingAddress(null);
-  };
-
-  const startAddFlow = () => {
-    setEditingAddress(null);
-    setSearchQuery("");
-    setDraftLocation(DEFAULT_MAP_LOCATION);
-    setView("search");
-  };
-
-  const startEditFlow = (address) => {
-    setEditingAddress(address);
-    setDraftLocation(buildDraftFromAddress(address));
-    setView("form");
-  };
-
-  const handleContinueFromSearch = (suggestion) => {
-    setDraftLocation(buildLocationFromSuggestion(suggestion));
-    setView("map");
-  };
-
-  const handleContinueToForm = () => {
-    setView("form");
-  };
-
-  const handleSaveForm = async ({ name, phone, fullAddress, labelChip, searchLine }) => {
-    if (!profile) return;
-
-    setSaving(true);
-
-    const label = editingAddress
-      ? resolveStoreLabel(labelChip, editingAddress.label)
-      : resolveStoreLabel(labelChip) || getNextLabel(addresses);
-
-    const payload = {
-      label,
-      name,
-      phone,
-      addressLine1: searchLine || fullAddress.split(",")[0]?.trim() || fullAddress,
-      addressLine2: draftLocation.addressLine2 || "",
-      area: draftLocation.area,
-      city: draftLocation.city,
-      state: draftLocation.state,
-      country: "India",
-      pincode: draftLocation.pincode,
-      latitude: draftLocation.latitude,
-      longitude: draftLocation.longitude,
-      isDefault: editingAddress?.isDefault ?? addresses.length === 0,
-    };
-
-    if (editingAddress) {
-      await updateAddress(editingAddress.id, {
-        ...payload,
-        addressLine2: fullAddress.includes(",")
-          ? fullAddress.split(",").slice(1).join(",").trim()
-          : payload.addressLine2,
-      });
-      toast.success("Address updated successfully");
-    } else {
-      await addAddress(payload);
-      toast.success("Address added successfully");
-    }
-
-    setSaving(false);
-    resetFlow();
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!deleteTarget) return;
-
-    setDeleting(true);
-    await deleteAddress(deleteTarget.id);
-    setDeleting(false);
-    setDeleteTarget(null);
-    toast.success("Address deleted successfully");
-  };
-
-  const handleBackFromSearch = () => {
-    if (editingAddress || addresses.length > 0) {
-      resetFlow();
-      return;
-    }
-
-    router.push(ROUTES.PROFILE);
-  };
-
-  const handleBackFromForm = () => {
-    if (editingAddress) {
-      resetFlow();
-      return;
-    }
-
-    setView("map");
-  };
-
-  if (view === "search") {
+  if (step === ADDRESS_FLOW_STEPS.SEARCH) {
     return (
       <AddressSearchFlow
         initialQuery={searchQuery}
-        backLabel={addresses.length > 0 || editingAddress ? "Back to Addresses" : "Back to Profile"}
+        backLabel={
+          sortedAddresses.length > 0 || editingAddress
+            ? "Back to Addresses"
+            : "Back to Profile"
+        }
         onBack={handleBackFromSearch}
         onContinue={handleContinueFromSearch}
+        onUseCurrentLocation={handleUseCurrentLocation}
+        currentLocationPreview={currentLocationPreview}
+        rightAction={
+          <span className="md:hidden">
+            <AddAddressButton compact onClick={startAddFlow} />
+          </span>
+        }
       />
     );
   }
 
-  if (view === "map") {
+  if (step === ADDRESS_FLOW_STEPS.MAP) {
     return (
       <AddressMapFlow
         location={draftLocation}
         saving={false}
         backLabel="Back to Search"
-        onBack={() => setView("search")}
+        onBack={() =>
+          navigateToStep(ADDRESS_FLOW_STEPS.SEARCH, {
+            q: draftLocation.searchLine || draftLocation.label || "",
+            draft: draftLocation,
+          })
+        }
+        onEditSearch={openSearchFromMap}
         onSave={handleContinueToForm}
-        saveLabel="Continue"
+        saveLabel="Save Location"
       />
     );
   }
 
-  if (view === "form") {
+  if (step === ADDRESS_FLOW_STEPS.FORM) {
     return (
       <AddressFormFlow
         location={draftLocation}
         initialName={editingAddress?.name ?? profile?.name ?? ""}
         initialPhone={editingAddress?.phone ?? profile?.phone ?? ""}
-        initialAddress={
-          editingAddress ? formatAddressPreview(editingAddress) : formatAddressPreview(draftLocation)
+        initialAddress={formInitialAddress}
+        initialLabelChip={getLabelChipId(
+          editingAddress?.label ?? getNextLabel(sortedAddresses),
+        )}
+        initialCustomLabel={
+          editingAddress && !["Home", "Office"].includes(editingAddress.label)
+            ? editingAddress.label
+            : ""
         }
-        initialLabelChip={getLabelChipId(editingAddress?.label ?? getNextLabel(addresses))}
         isEditing={Boolean(editingAddress)}
         saving={saving}
         backLabel={editingAddress ? "Back to Addresses" : "Back to Map"}
@@ -207,8 +111,9 @@ export default function AddressesPage() {
     <>
       <AddressPageShell
         title="My Addresses"
+        breadcrumbCurrentLabel="My Addresses"
         backHref={ROUTES.PROFILE}
-        rightAction={(
+        rightAction={
           <>
             <span className="md:hidden">
               <AddAddressButton compact onClick={startAddFlow} />
@@ -217,12 +122,15 @@ export default function AddressesPage() {
               <AddAddressButton onClick={startAddFlow} />
             </span>
           </>
-        )}
+        }
       >
         <AddressListView
           addresses={sortedAddresses}
           onEdit={startEditFlow}
           onDelete={setDeleteTarget}
+          onSearchFocus={startAddFlow}
+          onUseCurrentLocation={handleUseCurrentLocation}
+          currentLocationPreview={currentLocationPreview}
         />
       </AddressPageShell>
 
@@ -233,5 +141,19 @@ export default function AddressesPage() {
         loading={deleting}
       />
     </>
+  );
+}
+
+export default function AddressesPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="bg-surface-page flex min-h-dvh items-center justify-center">
+          <p className="text-muted-foreground text-sm">Loading addresses...</p>
+        </div>
+      }
+    >
+      <AddressesPageContent />
+    </Suspense>
   );
 }

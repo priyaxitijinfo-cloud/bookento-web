@@ -35,6 +35,41 @@ export function appendFromParam(path, from) {
   return `${path}${separator}from=${encodeURIComponent(from)}`;
 }
 
+export function appendReturnToParam(path, returnTo) {
+  if (!returnTo || !returnTo.startsWith("/") || returnTo.startsWith("//")) return path;
+
+  const separator = path.includes("?") ? "&" : "?";
+  return `${path}${separator}returnTo=${encodeURIComponent(returnTo)}`;
+}
+
+function getReturnToLabel(path) {
+  if (/^\/appointments\/[^/]+$/.test(path)) return "Back to Booking Details";
+  if (path === ROUTES.APPOINTMENTS) return "Back to Bookings";
+  if (path === ROUTES.CHATS) return "Back to Chats";
+  if (path === ROUTES.HOME) return "Back to Home";
+
+  return "Back";
+}
+
+/** Resolve back link/label when leaving a chat thread. */
+export function resolveChatBackNavigation({ returnTo, from } = {}) {
+  if (returnTo && returnTo.startsWith("/") && !returnTo.startsWith("//")) {
+    return {
+      href: returnTo,
+      label: getReturnToLabel(returnTo),
+    };
+  }
+
+  if (from) {
+    return resolveBackNavigation(from, "chats");
+  }
+
+  return {
+    href: ROUTES.CHATS,
+    label: "Back to Chats",
+  };
+}
+
 export function buildReelsRoute({ from, view } = {}) {
   const params = new URLSearchParams();
   if (from) params.set("from", from);
@@ -46,7 +81,8 @@ export function buildReelsRoute({ from, view } = {}) {
 
 export function resolveBackNavigation(fromQuery, fallback = "home") {
   const from = fromQuery || fallback;
-  const source = BACK_FROM_SOURCES[from] ?? BACK_FROM_SOURCES[fallback] ?? BACK_FROM_SOURCES.home;
+  const source =
+    BACK_FROM_SOURCES[from] ?? BACK_FROM_SOURCES[fallback] ?? BACK_FROM_SOURCES.home;
 
   return {
     href: source.href,

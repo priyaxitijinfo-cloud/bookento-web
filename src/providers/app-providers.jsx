@@ -5,6 +5,8 @@ import { Toaster } from "sonner";
 
 import { rehydratePersistedStores } from "@/store/rehydrate-persisted-stores";
 
+import { MobilePageBackground } from "@/components/layout/mobile-page-background";
+
 export function AppProviders({ children }) {
   useEffect(() => {
     rehydratePersistedStores();
@@ -12,6 +14,7 @@ export function AppProviders({ children }) {
 
   return (
     <>
+      <MobilePageBackground />
       {children}
       <Toaster
         position="top-center"

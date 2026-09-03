@@ -62,7 +62,9 @@ export function buildLocationFromSuggestion(suggestion) {
 }
 
 export function formatAddressLine(address) {
-  const lineOne = [address.addressLine1, address.addressLine2].filter(Boolean).join(", ");
+  const lineOne = [address.addressLine1, address.addressLine2]
+    .filter(Boolean)
+    .join(", ");
   const lineTwo = [address.area || address.city, address.city, address.state]
     .filter(Boolean)
     .join(", ");
@@ -81,6 +83,27 @@ export function formatAddressPreview(address) {
   ].filter(Boolean);
 
   return parts.join(", ");
+}
+
+/** Mobile map card address — e.g. "123, ABC Complex, Near XYZ Mall, Adajan Surat - 395009, Gujarat" */
+export function formatMapCardAddress(address) {
+  const street = [address.addressLine1, address.addressLine2]
+    .filter(Boolean)
+    .join(", ");
+  const locality = [address.area, address.city].filter(Boolean).join(" ");
+  const localityWithPin = [locality, address.pincode].filter(Boolean).join(" - ");
+  const tail = [localityWithPin, address.state].filter(Boolean).join(", ");
+
+  return [street, tail].filter(Boolean).join(", ");
+}
+
+export function getMapCardTitle(location) {
+  return (
+    location.area ||
+    (location.label !== "Current Location" ? location.label : "") ||
+    location.city ||
+    "Selected location"
+  );
 }
 
 export const ADDRESS_LABEL_CHIPS = [

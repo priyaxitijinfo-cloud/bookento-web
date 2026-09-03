@@ -3,18 +3,13 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  ArrowLeft,
-  Bookmark,
-  Eye,
-  LayoutGrid,
-  Volume2,
-  VolumeX,
-} from "lucide-react";
+import { ArrowLeft, Bookmark, LayoutGrid, Volume2, VolumeX } from "lucide-react";
 import { toast } from "sonner";
 
+import { ReelViewsIcon } from "@/components/icons/reel-views-icon";
 import { ReelSlide } from "@/components/provider-booking/reels/reel-slide";
 import { ReelsFeedToggle } from "@/components/provider-booking/reels/reels-feed-toggle";
+import { ReelsCategoryIcon } from "@/components/icons/reels-header-icons";
 import {
   ReelsActionButton,
   ReelsCategorySheet,
@@ -23,12 +18,28 @@ import {
   ReelsReportSheet,
   ReelsShareSheet,
 } from "@/components/provider-booking/reels/reels-sheets";
-import { categoryListingRoute, providerPackageRoute } from "@/constants/routes.constants";
+import {
+  categoryListingRoute,
+  providerDetailRoute,
+  providerPackageRoute,
+} from "@/constants/routes.constants";
 import { useBookingStore } from "@/store";
+import {
+  MOBILE_HEADER_BACK_TITLE_GROUP_CLASS,
+  MOBILE_HEADER_INNER_CLASS,
+  MOBILE_HEADER_TITLE_CLASS,
+} from "@/lib/layout/mobile-header.constants";
 import { cn } from "@/lib/utils";
 import { formatCompactNumber } from "@/utils/format.utils";
 
-function SavedReelTile({ reel, index, isSaved, onSelectReel, onToggleSave }) {
+function SavedReelTile({
+  reel,
+  index,
+  isSaved,
+  onSelectReel,
+  onToggleSave,
+  variant = "mobile",
+}) {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -73,18 +84,24 @@ function SavedReelTile({ reel, index, isSaved, onSelectReel, onToggleSave }) {
   return (
     <div
       ref={containerRef}
-      className="relative isolate aspect-[3/4] w-full overflow-hidden rounded-md bg-[#111827]"
+      className="relative isolate aspect-[3/4] w-full overflow-hidden rounded-md bg-[#111827] md:rounded-2xl"
     >
       <button
         type="button"
         onClick={() => onSelectReel(index)}
-        className="absolute inset-0 block w-full overflow-hidden text-left"
+        className={cn(
+          "absolute inset-0 z-[1] block w-full overflow-hidden text-left",
+          variant === "desktop" && "cursor-pointer",
+        )}
         aria-label={`Open reel by ${reel.providerName}`}
       >
         <video
           ref={videoRef}
           src={reel.videoUrl}
-          className="absolute inset-0 size-full object-cover object-center"
+          className={cn(
+            "absolute inset-0 size-full object-cover object-center",
+            variant === "desktop" && "pointer-events-none",
+          )}
           muted
           loop
           playsInline
@@ -92,8 +109,19 @@ function SavedReelTile({ reel, index, isSaved, onSelectReel, onToggleSave }) {
           aria-hidden
         />
 
-        <span className="absolute bottom-2.5 left-2.5 z-[1] inline-flex items-center gap-1.5 rounded-full bg-black/55 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm">
-          <Eye className="size-3.5" />
+        <span
+          className={cn(
+            "absolute z-[1] inline-flex items-center rounded-full font-medium text-white",
+            variant === "desktop"
+              ? "bottom-3 left-4 gap-2 bg-transparent text-sm font-semibold backdrop-blur-none"
+              : "bottom-2.5 left-2.5 gap-1.5 bg-transparent px-0 py-0 text-xs backdrop-blur-none",
+          )}
+        >
+          {variant === "desktop" ? (
+            <ReelViewsIcon className="size-4" />
+          ) : (
+            <ReelViewsIcon className="size-3.5 text-white" />
+          )}
           {formatCompactNumber(reel.views)}
         </span>
       </button>
@@ -104,10 +132,20 @@ function SavedReelTile({ reel, index, isSaved, onSelectReel, onToggleSave }) {
           event.stopPropagation();
           onToggleSave(reel.id);
         }}
-        className="absolute top-2 right-2 z-10 flex size-8 items-center justify-center text-white transition-opacity hover:opacity-80"
+        className={cn(
+          "absolute z-10 flex items-center justify-center text-white transition-opacity hover:opacity-80",
+          variant === "desktop"
+            ? "top-[10px] right-[10px] size-10 hover:opacity-100"
+            : "top-2 right-2 size-8",
+        )}
         aria-label={isSaved ? "Remove from saved" : "Save reel"}
       >
-        <Bookmark className={cn("size-5", isSaved && "fill-white")} />
+        <Bookmark
+          className={cn(
+            variant === "desktop" ? "size-6" : "size-5",
+            isSaved && "fill-white",
+          )}
+        />
       </button>
     </div>
   );
@@ -119,6 +157,7 @@ export function SavedReelsGrid({
   onSelectReel,
   onToggleSave,
   className,
+  variant = "mobile",
 }) {
   return (
     <div className={className}>
@@ -130,6 +169,7 @@ export function SavedReelsGrid({
           isSaved={savedIds.includes(reel.id)}
           onSelectReel={onSelectReel}
           onToggleSave={onToggleSave}
+          variant={variant}
         />
       ))}
     </div>
@@ -177,6 +217,7 @@ function ReelsPlayer({
   wheelLockRef,
   className,
   enableFeedFilter = false,
+  flushBottom = false,
 }) {
   const router = useRouter();
   const { setProviderId, setPackageId } = useBookingStore();
@@ -286,7 +327,15 @@ function ReelsPlayer({
       if (!activeReel) return;
       setProviderId(activeReel.providerId);
       setPackageId(packageId);
-      router.push(providerPackageRoute(activeReel.providerId, packageId));
+
+      const baseUrl = providerPackageRoute(activeReel.providerId, packageId);
+      const isDoctorPackage = String(packageId).startsWith("doc_pkg_");
+      const isMobile =
+        typeof window !== "undefined" &&
+        window.matchMedia("(max-width: 767px)").matches;
+      const url = isDoctorPackage && isMobile ? `${baseUrl}?from=doctor` : baseUrl;
+
+      router.push(url);
     },
     [activeReel, router, setPackageId, setProviderId],
   );
@@ -311,7 +360,14 @@ function ReelsPlayer({
       setActiveIndex(nextIndex);
       requestAnimationFrame(() => scrollToIndex(nextIndex));
     },
-    [activeIndex, feedFilter, filteredReels, scrollToIndex, setActiveIndex, visibleReels],
+    [
+      activeIndex,
+      feedFilter,
+      filteredReels,
+      scrollToIndex,
+      setActiveIndex,
+      visibleReels,
+    ],
   );
 
   const handleCategoryApply = useCallback(
@@ -334,7 +390,14 @@ function ReelsPlayer({
     if (index !== activeIndex && index >= 0 && index < filteredReels.length) {
       setActiveIndex(index);
     }
-  }, [activeIndex, filteredReels.length, isProgrammaticScrollRef, scrollRef, setActiveIndex, slideHeight]);
+  }, [
+    activeIndex,
+    filteredReels.length,
+    isProgrammaticScrollRef,
+    scrollRef,
+    setActiveIndex,
+    slideHeight,
+  ]);
 
   const handleWheel = useCallback(
     (event) => {
@@ -375,7 +438,9 @@ function ReelsPlayer({
       <div className="flex h-full items-center justify-center bg-black p-6 text-center">
         <div>
           <p className="font-semibold text-white">No reels found</p>
-          <p className="mt-2 text-sm text-white/70">Try switching between Popular and Nearby.</p>
+          <p className="mt-2 text-sm text-white/70">
+            Try switching between Popular and Nearby.
+          </p>
         </div>
       </div>
     );
@@ -383,7 +448,7 @@ function ReelsPlayer({
 
   return (
     <div className={cn("relative h-full w-full overflow-hidden", className)}>
-      <div className="absolute right-3 top-3 z-20 hidden gap-2 md:flex">
+      <div className="absolute top-3 right-3 z-20 hidden gap-2 md:flex">
         {enableFeedFilter && (
           <button
             type="button"
@@ -398,7 +463,7 @@ function ReelsPlayer({
 
       <div
         ref={scrollRef}
-        className="relative z-0 h-full w-full touch-pan-y snap-y snap-mandatory overflow-y-auto overscroll-y-contain scroll-smooth scrollbar-hide"
+        className="scrollbar-hide relative z-0 h-full w-full touch-pan-y snap-y snap-mandatory overflow-y-auto overscroll-y-contain scroll-smooth"
         onScroll={handleScroll}
         onWheel={handleWheel}
         onClick={handleReelTap}
@@ -412,6 +477,8 @@ function ReelsPlayer({
             muted={muted}
             slideHeight={slideHeight}
             onBookNow={handleBookNow}
+            onProviderClick={() => router.push(providerDetailRoute(reel.providerId))}
+            flushBottom={flushBottom}
           />
         ))}
       </div>
@@ -421,40 +488,51 @@ function ReelsPlayer({
           {!activeSheet && (
             <>
               {enableFeedFilter ? (
-                <div className="pointer-events-none absolute inset-x-0 top-0 z-50 flex items-center justify-between px-4 pt-4">
-                  <ReelsFeedToggle value={feedFilter} onChange={handleFeedFilterChange} />
+                <div className="safe-top pointer-events-none absolute inset-x-0 top-6 z-50 grid grid-cols-[2.25rem_1fr_2.25rem] items-center gap-2 px-4 pt-3 md:hidden">
+                  <span aria-hidden className="size-9 shrink-0" />
+                  <div className="flex justify-center">
+                    <ReelsFeedToggle
+                      value={feedFilter}
+                      onChange={handleFeedFilterChange}
+                      variant="glass"
+                    />
+                  </div>
                   <button
                     type="button"
                     onClick={() => setActiveSheet("category")}
-                    className="pointer-events-auto flex size-9 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-md md:hidden"
+                    className="pointer-events-auto flex size-9 shrink-0 items-center justify-center rounded-full bg-white text-[#1A1A2E] shadow-[0_4px_14px_rgba(15,23,42,0.12)]"
                     aria-label="Open categories"
                   >
-                    <LayoutGrid className="size-4" />
+                    <ReelsCategoryIcon className="size-5" />
                   </button>
                 </div>
               ) : (
-                <div className="safe-top pointer-events-auto absolute inset-x-0 top-0 z-20 p-4 md:hidden">
-                  <div className="flex min-h-10 items-center gap-2">
-                    {onBack ? (
-                      <button
-                        type="button"
-                        onClick={stopReelAction(onBack)}
-                        className="flex size-9 items-center justify-center rounded-full text-white transition-colors hover:bg-background/20"
-                        aria-label={backLabel}
-                      >
-                        <ArrowLeft className="size-5" />
-                      </button>
-                    ) : (
-                      <Link
-                        href={backHref}
-                        onClick={stopReelAction()}
-                        className="flex size-9 items-center justify-center rounded-full text-white transition-colors hover:bg-background/20"
-                        aria-label={backLabel}
-                      >
-                        <ArrowLeft className="size-5" />
-                      </Link>
-                    )}
-                    <h1 className="text-lg font-bold text-white">{pageTitle}</h1>
+                <div className="safe-top pointer-events-auto absolute inset-x-0 top-0 z-20 md:hidden">
+                  <div className={cn(MOBILE_HEADER_INNER_CLASS, "justify-between")}>
+                    <div className={MOBILE_HEADER_BACK_TITLE_GROUP_CLASS}>
+                      {onBack ? (
+                        <button
+                          type="button"
+                          onClick={stopReelAction(onBack)}
+                          className="hover:bg-background/20 flex size-9 shrink-0 items-center justify-center rounded-full text-white transition-colors"
+                          aria-label={backLabel}
+                        >
+                          <ArrowLeft className="size-5" strokeWidth={2.25} />
+                        </button>
+                      ) : (
+                        <Link
+                          href={backHref}
+                          onClick={stopReelAction()}
+                          className="hover:bg-background/20 flex size-9 shrink-0 items-center justify-center rounded-full text-white transition-colors"
+                          aria-label={backLabel}
+                        >
+                          <ArrowLeft className="size-5" strokeWidth={2.25} />
+                        </Link>
+                      )}
+                      <h1 className={cn(MOBILE_HEADER_TITLE_CLASS, "text-white")}>
+                        {pageTitle}
+                      </h1>
+                    </div>
                   </div>
                 </div>
               )}
@@ -473,20 +551,34 @@ function ReelsPlayer({
                   }}
                   className={cn(
                     "flex size-11 items-center justify-center rounded-full bg-black/35 text-white backdrop-blur-md transition-transform duration-300",
-                    showMuteControl ? "pointer-events-auto scale-100" : "pointer-events-none scale-95",
+                    showMuteControl
+                      ? "pointer-events-auto scale-100"
+                      : "pointer-events-none scale-95",
                   )}
                   aria-label={muted ? "Unmute" : "Mute"}
                   aria-hidden={!showMuteControl}
                   tabIndex={showMuteControl ? 0 : -1}
                 >
-                  {muted ? <VolumeX className="size-5" /> : <Volume2 className="size-5" />}
+                  {muted ? (
+                    <VolumeX className="size-5" />
+                  ) : (
+                    <Volume2 className="size-5" />
+                  )}
                 </button>
               </div>
 
-              <div className="pointer-events-auto absolute right-3 bottom-[198px] z-50 flex w-11 flex-col items-center gap-3 md:right-4 md:bottom-[182px]">
+              <div
+                className={cn(
+                  "pointer-events-auto absolute right-3 z-[60] flex w-11 flex-col items-center gap-3 md:right-4 md:bottom-[182px] md:z-50",
+                  flushBottom
+                    ? "max-md:bottom-[calc(11.75rem+env(safe-area-inset-bottom,0px))]"
+                    : "bottom-[calc(11.75rem+100px+env(safe-area-inset-bottom,0px))]",
+                )}
+              >
                 <ReelsActionButton
                   icon={REELS_ACTION_ICONS.like}
                   activeIcon={REELS_ACTION_ICONS.likeActive}
+                  iconName="like"
                   label={formatCompactNumber(getDisplayLikes(activeReel, liked))}
                   onClick={() => {
                     const willLike = !liked[activeReel.id];
@@ -497,11 +589,13 @@ function ReelsPlayer({
                 />
                 <ReelsActionButton
                   icon={REELS_ACTION_ICONS.comment}
+                  iconName="comment"
                   label={formatCompactNumber(activeReel.comments)}
                   onClick={() => setActiveSheet("comments")}
                 />
                 <ReelsActionButton
                   icon={REELS_ACTION_ICONS.share}
+                  iconName="share"
                   onClick={() => setActiveSheet("share")}
                 />
                 <span
@@ -513,12 +607,14 @@ function ReelsPlayer({
                   <ReelsActionButton
                     icon={REELS_ACTION_ICONS.save}
                     activeIcon={REELS_ACTION_ICONS.saveActive}
+                    iconName="save"
                     onClick={handleSaveClick}
                     active={isReelSaved}
                   />
                 </span>
                 <ReelsActionButton
                   icon={REELS_ACTION_ICONS.report}
+                  iconName="report"
                   onClick={() => setActiveSheet("report")}
                 />
               </div>
@@ -541,7 +637,11 @@ function ReelsPlayer({
             onToggleSave={onToggleSave}
             contained
           />
-          <ReelsReportSheet open={activeSheet === "report"} onClose={closeSheet} contained />
+          <ReelsReportSheet
+            open={activeSheet === "report"}
+            onClose={closeSheet}
+            contained
+          />
           {enableFeedFilter && (
             <ReelsCategorySheet
               open={activeSheet === "category"}

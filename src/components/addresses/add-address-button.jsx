@@ -1,7 +1,6 @@
 "use client";
 
-import { Plus } from "lucide-react";
-
+import { AddAddressPlusIcon } from "@/components/icons/address-action-icons";
 import { Button } from "@/components/ui/button";
 
 export function AddAddressButton({ onClick, compact = false }) {
@@ -10,17 +9,17 @@ export function AddAddressButton({ onClick, compact = false }) {
       <button
         type="button"
         onClick={onClick}
-        className="flex size-9 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-[0_4px_14px_rgba(37,99,235,0.35)] transition-colors hover:bg-[#1D4ED8]"
+        className="gradient-brand flex size-10 items-center justify-center rounded-lg text-white transition-opacity hover:opacity-95"
         aria-label="Add address"
       >
-        <Plus className="size-5" strokeWidth={2.4} />
+        <AddAddressPlusIcon className="size-4 text-white" />
       </button>
     );
   }
 
   return (
     <Button size="sm" onClick={onClick}>
-      <Plus className="size-4" />
+      <AddAddressPlusIcon className="size-4" />
       Add Address
     </Button>
   );

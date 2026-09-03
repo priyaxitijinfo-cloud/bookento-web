@@ -1,65 +1,98 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import {
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  Home,
-  Monitor,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import { LocationIcon } from "@/components/icons/location-icon";
+import {
+  VisitHomeIcon,
+  VisitOnlineIcon,
+  VisitOnsiteIcon,
+} from "@/components/icons/visit-type-icons";
 import { ServiceSelectCard } from "@/components/provider-booking/service-select-card";
-import { SectionHeading, TabPanelHeader } from "@/components/provider-booking/shared";
-import { PROVIDER_BRANCHES } from "@/constants/provider-branches";
+import { SectionHeading } from "@/components/provider-booking/shared";
 import { timeSlots } from "@/mock/appointments";
 import { useBookingStore } from "@/store";
 import { cn } from "@/lib/utils";
 import { getLocalDateKey } from "@/utils/format.utils";
 
 const VISIT_TYPES = [
-  { value: "in_clinic", label: "Onsite", icon: LocationIcon },
-  { value: "online", label: "Online", icon: Monitor },
-  { value: "home_visit", label: "Homevisit", icon: Home },
+  { value: "in_clinic", label: "Onsite", icon: VisitOnsiteIcon },
+  { value: "online", label: "Online", icon: VisitOnlineIcon },
+  { value: "home_visit", label: "Homevisit", icon: VisitHomeIcon },
 ];
 
-function getDateRange(count, startOffset = 0) {
+function startOfDay(date) {
+  const next = new Date(date);
+  next.setHours(12, 0, 0, 0);
+  return next;
+}
+
+function getMonthDates(year, month) {
+  const today = startOfDay(new Date());
+  const monthStart = startOfDay(new Date(year, month, 1));
+  const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+  const start = isCurrentMonth ? today : monthStart;
+  const lastDay = new Date(year, month + 1, 0).getDate();
+  const startDay = start.getDate();
+  const count = Math.max(1, lastDay - startDay + 1);
+
   return Array.from({ length: count }, (_, index) => {
-    const date = new Date();
-    date.setHours(12, 0, 0, 0);
-    date.setDate(date.getDate() + startOffset + index);
+    const date = new Date(start);
+    date.setDate(start.getDate() + index);
     return date;
   });
 }
 
 export function ProviderServicesPanel({ services, onSeeAllServices }) {
-  const {
-    draft,
-    setVisitType,
-    toggleService,
-    setBranchId,
-    setScheduledDate,
-    setScheduledTime,
-  } = useBookingStore();
+  const { draft, setVisitType, toggleService, setScheduledDate, setScheduledTime } =
+    useBookingStore();
 
-  const [dateOffset, setDateOffset] = useState(0);
-  const dates = useMemo(() => getDateRange(14, dateOffset), [dateOffset]);
+  const today = useMemo(() => startOfDay(new Date()), []);
+  const [viewYear, setViewYear] = useState(today.getFullYear());
+  const [viewMonth, setViewMonth] = useState(today.getMonth());
 
-  const monthLabel = dates[0]?.toLocaleDateString("en", { month: "long", year: "numeric" }) || "";
+  const dates = useMemo(
+    () => getMonthDates(viewYear, viewMonth),
+    [viewYear, viewMonth],
+  );
+
+  const monthLabel = new Date(viewYear, viewMonth, 1)
+    .toLocaleDateString("en", {
+      month: "long",
+      year: "numeric",
+    })
+    .replace(" ", ", ");
+
+  const canGoPrev =
+    viewYear > today.getFullYear() ||
+    (viewYear === today.getFullYear() && viewMonth > today.getMonth());
+
+  const goToPrevMonth = () => {
+    if (!canGoPrev) return;
+    if (viewMonth === 0) {
+      setViewMonth(11);
+      setViewYear((year) => year - 1);
+      return;
+    }
+    setViewMonth((month) => month - 1);
+  };
+
+  const goToNextMonth = () => {
+    if (viewMonth === 11) {
+      setViewMonth(0);
+      setViewYear((year) => year + 1);
+      return;
+    }
+    setViewMonth((month) => month + 1);
+  };
 
   const handleSelectDate = (date) => {
     setScheduledDate(getLocalDateKey(date));
   };
 
   return (
-    <div className="space-y-5">
-      <TabPanelHeader
-        title="Book a Consultation"
-        description="Choose visit type, select services, and pick your preferred date, time, and branch."
-      />
-
-      <section className="rounded-lg border border-border/60 bg-background p-4 md:p-5">
+    <div className="space-y-8">
+      <section>
         <SectionHeading title="Visit type" />
         <div className="grid grid-cols-3 gap-3">
           {VISIT_TYPES.map(({ value, label, icon: Icon }) => {
@@ -79,10 +112,12 @@ export function ProviderServicesPanel({ services, onSeeAllServices }) {
                 <span
                   className={cn(
                     "flex size-11 items-center justify-center rounded-lg",
-                    selected ? "bg-emerald-500 text-white" : "bg-muted text-muted-foreground",
+                    selected
+                      ? "bg-emerald-500 text-white"
+                      : "bg-muted text-muted-foreground",
                   )}
                 >
-                  <Icon className="size-5" strokeWidth={2} />
+                  <Icon className="size-6" />
                 </span>
                 <span
                   className={cn(
@@ -98,7 +133,7 @@ export function ProviderServicesPanel({ services, onSeeAllServices }) {
         </div>
       </section>
 
-      <section className="rounded-lg border border-border/60 bg-background p-4 md:p-5">
+      <section>
         <SectionHeading
           title="Services"
           action={
@@ -106,7 +141,7 @@ export function ProviderServicesPanel({ services, onSeeAllServices }) {
               <button
                 type="button"
                 onClick={onSeeAllServices}
-                className="text-primary inline-flex items-center gap-1 text-sm font-semibold transition-colors hover:text-primary/80"
+                className="text-primary hover:text-primary/80 inline-flex items-center gap-1 text-sm font-semibold transition-colors"
               >
                 See all
                 <ChevronRight className="size-4" />
@@ -130,132 +165,96 @@ export function ProviderServicesPanel({ services, onSeeAllServices }) {
         </div>
       </section>
 
-      <section className="rounded-lg border border-border/60 bg-background p-4 md:p-5">
-        <SectionHeading title="Select Date & Time" />
-
-        <div className="space-y-5">
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-sm font-semibold capitalize text-foreground">{monthLabel}</p>
-            <div className="flex gap-1.5">
-              <button
-                type="button"
-                onClick={() => setDateOffset((offset) => Math.max(0, offset - 7))}
-                disabled={dateOffset === 0}
-                className="flex size-8 items-center justify-center rounded-lg border border-border/60 bg-[#F8F9FC] text-foreground transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-40"
-                aria-label="Previous dates"
-              >
-                <ChevronLeft className="size-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setDateOffset((offset) => offset + 7)}
-                className="flex size-8 items-center justify-center rounded-lg border border-border/60 bg-[#F8F9FC] text-foreground transition-colors hover:bg-accent"
-                aria-label="Next dates"
-              >
-                <ChevronRight className="size-4" />
-              </button>
-            </div>
+      <section>
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="bg-primary h-4 w-1 shrink-0 rounded-full" aria-hidden />
+            <h2 className="text-foreground truncate text-base font-semibold md:text-lg md:font-bold">
+              Select Date &amp; Time
+            </h2>
           </div>
-
-          <div>
-            <p className="text-muted-foreground mb-2.5 text-xs font-medium uppercase tracking-wide">Select Date</p>
-            <div className="scrollbar-hide flex gap-2 overflow-x-auto pb-1">
-              {dates.map((date) => {
-                const iso = getLocalDateKey(date);
-                const isSelected = draft.scheduledDate === iso;
-                return (
-                  <button
-                    key={iso}
-                    type="button"
-                    onClick={() => handleSelectDate(date)}
-                    className={cn(
-                      "flex min-w-[3.25rem] flex-col items-center rounded-lg border px-2.5 py-2.5 text-xs font-medium transition-colors",
-                      isSelected
-                        ? "border-primary bg-primary/10 text-primary shadow-sm"
-                        : "border-border/60 bg-[#F8F9FC] text-muted-foreground hover:border-primary/30 hover:bg-background",
-                    )}
-                  >
-                    <span className="text-base font-bold leading-none">{String(date.getDate()).padStart(2, "0")}</span>
-                    <span className="mt-1">{date.toLocaleDateString("en", { weekday: "short" })}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div>
-            <p className="text-muted-foreground mb-2.5 text-xs font-medium uppercase tracking-wide">Select Time</p>
-            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-5">
-              {timeSlots.slice(0, 10).map((slot) => {
-                const isSelected = draft.scheduledTime === slot.time;
-                return (
-                  <button
-                    key={slot.id}
-                    type="button"
-                    disabled={!slot.available}
-                    onClick={() => setScheduledTime(slot.time)}
-                    className={cn(
-                      "appearance-none rounded-lg px-2 py-2.5 text-xs font-semibold outline-none sm:text-sm",
-                      "select-none focus-visible:ring-2 focus-visible:ring-primary/25 active:scale-[0.98]",
-                      !slot.available && "cursor-not-allowed opacity-40",
-                      isSelected
-                        ? "profile-tab-active border-0 shadow-[0_4px_14px_rgba(24,101,234,0.25)] transition-[box-shadow,transform] hover:shadow-[0_6px_18px_rgba(24,101,234,0.35)]"
-                        : "border border-border/60 bg-[#F8F9FC] text-muted-foreground transition-colors hover:border-primary/30 hover:bg-background hover:text-foreground",
-                    )}
-                  >
-                    {slot.time}
-                  </button>
-                );
-              })}
-            </div>
+          <div className="flex shrink-0 items-center gap-1 text-sm font-medium text-[#5B6B8C]">
+            <button
+              type="button"
+              onClick={goToPrevMonth}
+              disabled={!canGoPrev}
+              className="hover:text-foreground flex size-6 items-center justify-center transition-colors disabled:cursor-not-allowed disabled:opacity-35"
+              aria-label="Previous month"
+            >
+              <ChevronLeft className="size-4" strokeWidth={2} />
+            </button>
+            <span className="min-w-[6.75rem] text-center tabular-nums">
+              {monthLabel}
+            </span>
+            <button
+              type="button"
+              onClick={goToNextMonth}
+              className="hover:text-foreground flex size-6 items-center justify-center transition-colors"
+              aria-label="Next month"
+            >
+              <ChevronRight className="size-4" strokeWidth={2} />
+            </button>
           </div>
         </div>
-      </section>
 
-      <section className="rounded-lg border border-border/60 bg-background p-4 md:p-5">
-        <SectionHeading title="Select Branch" />
-        <div className="space-y-2.5" role="radiogroup" aria-label="Select branch">
-          {PROVIDER_BRANCHES.map((branch) => {
-            const selected = draft.branchId === branch.id;
-            return (
-              <button
-                key={branch.id}
-                type="button"
-                role="radio"
-                aria-checked={selected}
-                onClick={() => setBranchId(branch.id)}
-                className={cn(
-                  "flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition-colors",
-                  selected
-                    ? "border-[#C3F4DC] bg-[#F7FFFB]"
-                    : "border-border bg-background hover:border-primary/20",
-                )}
-              >
-                <LocationIcon
-                  className={cn(
-                    "size-5 shrink-0",
-                    selected ? "text-emerald-500" : "text-muted-foreground",
-                  )}
-                  strokeWidth={2}
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-bold text-foreground">{branch.name}</p>
-                  <p className="text-muted-foreground mt-1 text-xs leading-relaxed">{branch.address}</p>
-                </div>
-                <span
-                  className={cn(
-                    "flex size-5 shrink-0 items-center justify-center rounded-md border transition-colors",
-                    selected
-                      ? "border-emerald-500 bg-emerald-500 text-white"
-                      : "border-border bg-background",
-                  )}
-                  aria-hidden
+        <div className="space-y-4 rounded-2xl bg-[#F2F6FC] p-4 md:p-5">
+          <div className="scrollbar-hide flex gap-2.5 overflow-x-auto pb-1">
+            {dates.map((date) => {
+              const iso = getLocalDateKey(date);
+              const isSelected = draft.scheduledDate === iso;
+              return (
+                <button
+                  key={iso}
+                  type="button"
+                  onClick={() => handleSelectDate(date)}
+                  className="flex min-w-[3.25rem] flex-col items-center gap-1.5"
                 >
-                  {selected && <Check className="size-3.5" strokeWidth={3} />}
-                </span>
-              </button>
-            );
-          })}
+                  <span
+                    className={cn(
+                      "bg-background flex size-12 items-center justify-center rounded-xl text-base font-bold transition-colors",
+                      isSelected
+                        ? "border-primary text-primary border-2 md:border"
+                        : "text-foreground border border-transparent",
+                    )}
+                  >
+                    {String(date.getDate()).padStart(2, "0")}
+                  </span>
+                  <span className="text-foreground text-xs font-medium">
+                    {date.toLocaleDateString("en", { weekday: "short" })}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="border-border/70 border-t" aria-hidden />
+
+          <div className="scrollbar-hide flex gap-2.5 overflow-x-auto pb-1 md:grid md:grid-cols-4 md:overflow-visible md:pb-0 lg:grid-cols-5">
+            {timeSlots.map((slot) => {
+              const isSelected = draft.scheduledTime === slot.time;
+              return (
+                <button
+                  key={slot.id}
+                  type="button"
+                  disabled={!slot.available}
+                  onClick={() => setScheduledTime(slot.time)}
+                  className={cn(
+                    "bg-background shrink-0 rounded-xl px-4 py-2.5 text-sm font-semibold whitespace-nowrap transition-colors",
+                    "md:w-full md:shrink md:rounded-lg",
+                    "focus-visible:ring-primary/25 focus-visible:ring-2 focus-visible:outline-none",
+                    isSelected
+                      ? "border-primary text-primary border-2 md:border"
+                      : slot.available
+                        ? "text-foreground hover:border-primary/30 border border-transparent"
+                        : "text-muted-foreground/40 cursor-not-allowed border border-transparent",
+                  )}
+                  aria-disabled={!slot.available}
+                >
+                  {slot.time}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </section>
     </div>

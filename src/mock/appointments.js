@@ -1,5 +1,12 @@
 import { APPOINTMENT_STATUS } from "@/constants/status.constants";
-import { avatarUrl, generateId, isoDate, personName, timeSlot } from "./helpers";
+import {
+  avatarUrl,
+  generateHalfHourSlots,
+  generateId,
+  isoDate,
+  personName,
+  timeSlot,
+} from "./helpers";
 import { packages } from "./packages";
 import { mockProviders } from "./providers";
 import { services } from "./services";
@@ -195,14 +202,17 @@ providerAppointments[2] = {
   scheduledTime: "04:30 PM",
 };
 
-export const timeSlots = Array.from({ length: 16 }, (_, i) => ({
+export const timeSlots = generateHalfHourSlots(9, 18).map((slot, i) => ({
   id: generateId("slot", i + 1),
-  time: timeSlot(9 + i),
+  time: timeSlot(slot.hour, slot.minute),
   available: i % 5 !== 0,
 }));
 
 export function getAppointmentById(id) {
-  return appointments.find((a) => a.id === id) || providerAppointments.find((a) => a.id === id);
+  return (
+    appointments.find((a) => a.id === id) ||
+    providerAppointments.find((a) => a.id === id)
+  );
 }
 
 export function getUserAppointments(userId) {

@@ -1,46 +1,53 @@
 "use client";
 
 import Image from "next/image";
-import { CalendarDays } from "lucide-react";
 
+import { IllustrationEmptyState } from "@/components/shared/illustration-empty-state";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants/routes.constants";
 
-export function BookingEmptyState({ tab, onBrowse }) {
-  const title = tab === "pending" ? "Not Booking Yet" : `No ${tab} bookings`;
-  const description =
-    tab === "pending"
-      ? "You don't have any upcoming bookings. Let's schedule your first appointment."
-      : `You don't have any ${tab} appointments right now.`;
+const BOOKING_EMPTY_DESCRIPTION =
+  "You don't have any upcoming bookings. Let's schedule your first appointment.";
 
+export function BookingEmptyState({ onBrowse }) {
   return (
-    <div className="flex flex-col items-center justify-center px-4 py-12 text-center md:py-16">
-      {/* Mobile illustration */}
-      <div className="relative mb-6 flex h-44 w-full max-w-[220px] items-center justify-center md:hidden">
-        <Image
-          src="/icons/appointment-calendar.png"
-          alt=""
-          width={200}
-          height={200}
-          className="h-auto w-full max-w-[180px] object-contain"
-          aria-hidden
-          priority
-        />
-      </div>
+    <>
+      <IllustrationEmptyState
+        src="/icons/not-booking-yet.png"
+        title="Not Booking Yet"
+        description={BOOKING_EMPTY_DESCRIPTION}
+        className="md:hidden"
+      />
+      <div className="hidden flex-col items-center justify-center px-4 py-16 text-center md:flex">
+        <div className="relative mb-6 flex size-52 items-center justify-center">
+          <Image
+            src="/icons/not-booking-yet.png"
+            alt=""
+            width={208}
+            height={208}
+            className="size-full object-contain"
+            aria-hidden
+            priority
+          />
+        </div>
 
-      {/* Desktop illustration */}
-      <div className="relative mb-6 hidden size-40 items-center justify-center rounded-[2rem] bg-[#EFF6FF] md:flex">
-        <CalendarDays className="size-16 text-primary/70" strokeWidth={1.5} />
+        <h3 className="text-foreground text-xl font-bold">Not Booking Yet</h3>
+        <p className="text-muted-foreground mt-2 max-w-sm text-sm leading-relaxed">
+          You don&apos;t have any upcoming bookings. Let&apos;s schedule your first
+          appointment.
+        </p>
+        <Button
+          className="gradient-brand mt-6 rounded-xl px-6"
+          onClick={
+            onBrowse ??
+            (() => {
+              window.location.href = ROUTES.PROVIDERS;
+            })
+          }
+        >
+          Explore providers
+        </Button>
       </div>
-
-      <h3 className="text-foreground text-xl font-bold">{title}</h3>
-      <p className="text-muted-foreground mt-2 max-w-sm text-sm leading-relaxed">{description}</p>
-      <Button
-        className="gradient-brand mt-6 hidden rounded-xl px-6 md:inline-flex"
-        onClick={onBrowse ?? (() => { window.location.href = ROUTES.PROVIDERS; })}
-      >
-        Explore providers
-      </Button>
-    </div>
+    </>
   );
 }

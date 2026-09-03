@@ -34,7 +34,7 @@ export function useAddressFlowUrl() {
         params.set("edit", edit);
       }
 
-      if (draft && (nextStep === ADDRESS_FLOW_STEPS.MAP || nextStep === ADDRESS_FLOW_STEPS.FORM)) {
+      if (draft && nextStep !== ADDRESS_FLOW_STEPS.LIST) {
         writeAddressFlowDraft(draft);
       }
 

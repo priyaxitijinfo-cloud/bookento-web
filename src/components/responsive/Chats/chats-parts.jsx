@@ -3,11 +3,7 @@
 import { cn } from "@/lib/utils";
 import { ChatEmptyInbox } from "@/components/chats/chat-empty-inbox";
 import { ChatInboxPanel } from "@/components/chats/chat-inbox-panel";
-
-const CHAT_PANEL_SHELL =
-  "overflow-hidden rounded-2xl border border-border/60 bg-background shadow-card";
-
-const CHAT_MOBILE_PANEL_HEIGHT = "h-[calc(100dvh-3.5rem-5rem-1.75rem)]";
+import { CHAT_LIST_SHELL_CLASS } from "@/components/chats/chat-workspace";
 
 function getInboxEmptyCopy(inbox) {
   return {
@@ -27,7 +23,7 @@ function getInboxEmptyCopy(inbox) {
 export function ChatInboxListPanel({ inbox, className, panelClassName }) {
   if (inbox.isEmpty) {
     return (
-      <div className={cn(CHAT_PANEL_SHELL, CHAT_MOBILE_PANEL_HEIGHT, "flex flex-col", panelClassName, className)}>
+      <div className={cn(CHAT_LIST_SHELL_CLASS, panelClassName, className)}>
         <ChatEmptyInbox className="min-h-0 flex-1" />
       </div>
     );
@@ -36,7 +32,7 @@ export function ChatInboxListPanel({ inbox, className, panelClassName }) {
   const { emptyTitle, emptyDescription } = getInboxEmptyCopy(inbox);
 
   return (
-    <div className={cn(CHAT_PANEL_SHELL, CHAT_MOBILE_PANEL_HEIGHT, "flex flex-col", panelClassName, className)}>
+    <div className={cn(CHAT_LIST_SHELL_CLASS, panelClassName, className)}>
       <ChatInboxPanel
         conversations={inbox.filtered}
         filter={inbox.filter}
@@ -44,7 +40,9 @@ export function ChatInboxListPanel({ inbox, className, panelClassName }) {
         search={inbox.search}
         onSearchChange={inbox.setSearch}
         searchOpen={inbox.searchOpen}
+        onSearchClose={() => inbox.setSearchOpen(false)}
         counts={inbox.counts}
+        showSearch={inbox.searchOpen || Boolean(inbox.search)}
         className="min-h-0 flex-1"
         emptyTitle={emptyTitle}
         emptyDescription={emptyDescription}

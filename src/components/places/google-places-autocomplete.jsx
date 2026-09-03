@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Search, X } from "lucide-react";
+import { X } from "lucide-react";
+
+import { ResponsiveSearchIcon, SearchIcon } from "@/components/icons/search-icon";
 
 import { loadPlacesLibrary } from "@/lib/google-maps/load-google-maps";
 import { LEGACY_PLACE_FIELDS } from "@/lib/google-maps/constants";
@@ -23,10 +25,12 @@ export function GooglePlacesAutocomplete({
   className,
   inputClassName,
   showSearchIcon = true,
+  useDesignSearchIcon = false,
   clearable = true,
   id,
   name,
   autoFocus = false,
+  pacAnchorRef,
   "aria-label": ariaLabel = "Search address",
 }) {
   const inputRef = useRef(null);
@@ -53,7 +57,10 @@ export function GooglePlacesAutocomplete({
           options.componentRestrictions = { country: regionCode };
         }
 
-        const autocomplete = new google.maps.places.Autocomplete(inputRef.current, options);
+        const autocomplete = new google.maps.places.Autocomplete(
+          inputRef.current,
+          options,
+        );
 
         listenerRef.current = autocomplete.addListener("place_changed", () => {
           const place = autocomplete.getPlace();
@@ -99,7 +106,8 @@ export function GooglePlacesAutocomplete({
       document.querySelectorAll(".pac-container").forEach((pac) => {
         if (pac.style.display === "none" || pac.childElementCount === 0) return;
 
-        const rect = input.getBoundingClientRect();
+        const anchor = pacAnchorRef?.current ?? input;
+        const rect = anchor.getBoundingClientRect();
         pac.style.position = "fixed";
         pac.style.width = `${rect.width}px`;
         pac.style.left = `${rect.left}px`;
@@ -122,14 +130,18 @@ export function GooglePlacesAutocomplete({
       input.removeEventListener("focus", handlePacUpdate);
       input.removeEventListener("input", handlePacUpdate);
     };
-  }, [disabled]);
+  }, [disabled, pacAnchorRef]);
 
   const showClear = clearable && Boolean(value) && !disabled;
 
   return (
     <div className={cn("relative w-full", className)}>
       {showSearchIcon ? (
-        <Search className="text-muted-foreground pointer-events-none absolute left-3.5 top-1/2 z-10 size-4 -translate-y-1/2" />
+        useDesignSearchIcon ? (
+          <SearchIcon className="text-muted-foreground pointer-events-none absolute top-1/2 left-3.5 z-10 size-4 -translate-y-1/2" />
+        ) : (
+          <ResponsiveSearchIcon className="text-muted-foreground pointer-events-none absolute top-1/2 left-3.5 z-10 size-4 -translate-y-1/2" />
+        )
       ) : null}
 
       <input
@@ -166,7 +178,7 @@ export function GooglePlacesAutocomplete({
             }
             onChange?.("");
           }}
-          className="text-muted-foreground absolute right-3 top-1/2 z-10 flex size-5 -translate-y-1/2 items-center justify-center rounded-full hover:bg-muted"
+          className="text-muted-foreground hover:bg-muted absolute top-1/2 right-3 z-10 flex size-5 -translate-y-1/2 items-center justify-center rounded-full"
           aria-label="Clear search"
         >
           <X className="size-3.5" />

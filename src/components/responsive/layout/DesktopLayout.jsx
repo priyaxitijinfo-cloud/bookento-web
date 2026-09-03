@@ -8,21 +8,30 @@ export function DesktopLayout({
   children,
   className,
   contentClassName,
-  showSidebar = true,
+  showSidebar = false,
+  showHeaderBorder = true,
   header,
   maxWidth = "wide",
+  containerClassName,
 }) {
   return (
-    <div className={cn("flex min-h-dvh bg-surface-page", className)}>
+    <div className={cn("bg-surface-page flex min-h-dvh", className)}>
       {showSidebar ? <DesktopSidebar /> : null}
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         {header ? (
-          <div className="sticky top-0 z-30 border-b border-border bg-white/90 backdrop-blur-md">
+          <div
+            className={cn(
+              "sticky top-0 z-30 shrink-0 bg-white/90 backdrop-blur-md",
+              showHeaderBorder && "border-border border-b",
+            )}
+          >
             {header}
           </div>
         ) : null}
-        <main className={cn("flex-1 py-6 lg:py-8", contentClassName)}>
-          <PageContainer variant={maxWidth}>{children}</PageContainer>
+        <main className={cn("min-h-0 flex-1 py-6 lg:py-8", contentClassName)}>
+          <PageContainer variant={maxWidth} className={containerClassName}>
+            {children}
+          </PageContainer>
         </main>
       </div>
     </div>

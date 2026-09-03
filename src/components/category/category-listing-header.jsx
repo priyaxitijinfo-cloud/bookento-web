@@ -5,6 +5,11 @@ import Link from "next/link";
 import { ArrowLeft, X } from "lucide-react";
 
 import { ROUTES } from "@/constants/routes.constants";
+import {
+  MOBILE_HEADER_BACK_CLASS,
+  MOBILE_HEADER_CLASS,
+  MOBILE_HEADER_DESKTOP_CLASS,
+} from "@/lib/layout/mobile-header.constants";
 import { cn } from "@/lib/utils";
 
 function CategorySearchIcon({ className }) {
@@ -94,12 +99,12 @@ export function CategoryListingHeader({
   };
 
   return (
-    <header className={cn("border-border bg-card safe-top sticky top-0 z-30 border-b", className)}>
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-4">
-        <div className="flex min-w-0 flex-1 items-center gap-3">
+    <header className={cn(MOBILE_HEADER_CLASS, MOBILE_HEADER_DESKTOP_CLASS, className)}>
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-4 md:px-6">
+        <div className="flex min-w-0 flex-1 items-center gap-2">
           <Link
             href={backHref}
-            className="text-foreground hover:text-primary flex size-9 shrink-0 items-center justify-center rounded-full transition-colors"
+            className={MOBILE_HEADER_BACK_CLASS}
             aria-label="Back to home"
           >
             <ArrowLeft className="size-5" />
@@ -115,7 +120,7 @@ export function CategoryListingHeader({
                 onChange={(event) => onSearchQueryChange?.(event.target.value)}
                 placeholder={searchPlaceholder}
                 className={cn(
-                  "border-border/80 bg-[#FAFBFD] text-foreground placeholder:text-muted-foreground",
+                  "border-border/80 text-foreground placeholder:text-muted-foreground bg-[#FAFBFD]",
                   "h-10 w-full rounded-lg border px-10 text-sm",
                   "focus-visible:ring-primary/30 focus-visible:bg-background focus-visible:ring-2 focus-visible:outline-none",
                 )}
@@ -154,7 +159,10 @@ export function CategoryListingHeader({
           >
             <CategoryFilterIcon className="size-5" />
             {showFilterActive ? (
-              <span className="bg-primary absolute top-1.5 right-1.5 size-2 rounded-full" aria-hidden />
+              <span
+                className="bg-primary absolute top-1.5 right-1.5 size-2 rounded-full"
+                aria-hidden
+              />
             ) : null}
           </button>
         </div>

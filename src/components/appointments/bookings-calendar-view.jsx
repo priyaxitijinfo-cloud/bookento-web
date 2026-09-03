@@ -41,7 +41,8 @@ export function BookingsCalendarView({ appointments }) {
   }, [visibleMonth]);
 
   const selectedAppointments = useMemo(
-    () => appointments.filter((appointment) => appointment.scheduledDate === selectedDate),
+    () =>
+      appointments.filter((appointment) => appointment.scheduledDate === selectedDate),
     [appointments, selectedDate],
   );
 
@@ -53,23 +54,23 @@ export function BookingsCalendarView({ appointments }) {
 
   return (
     <div className="mx-auto w-full max-w-3xl space-y-4">
-      <section className="bg-card overflow-hidden rounded-2xl p-4 shadow-card ring-1 ring-border md:p-5">
+      <section className="bg-card shadow-card ring-border overflow-hidden rounded-2xl p-4 ring-1 md:p-5">
         <div className="mb-4 flex items-center justify-between">
           <button
             type="button"
             onClick={() => setVisibleMonth((month) => subMonths(month, 1))}
-            className="text-primary flex size-9 items-center justify-center rounded-lg bg-primary/10 transition-colors hover:bg-primary/15"
+            className="text-primary bg-primary/10 hover:bg-primary/15 flex size-9 items-center justify-center rounded-lg transition-colors"
             aria-label="Previous month"
           >
             <ChevronLeft className="size-4" />
           </button>
-          <h2 className="text-foreground text-base font-bold md:text-lg">
+          <h2 className="text-foreground text-base font-semibold md:text-lg md:font-bold">
             {format(visibleMonth, "MMMM yyyy")}
           </h2>
           <button
             type="button"
             onClick={() => setVisibleMonth((month) => addMonths(month, 1))}
-            className="text-primary flex size-9 items-center justify-center rounded-lg bg-primary/10 transition-colors hover:bg-primary/15"
+            className="text-primary bg-primary/10 hover:bg-primary/15 flex size-9 items-center justify-center rounded-lg transition-colors"
             aria-label="Next month"
           >
             <ChevronRight className="size-4" />
@@ -78,7 +79,10 @@ export function BookingsCalendarView({ appointments }) {
 
         <div className="mb-2 grid grid-cols-7 gap-1">
           {WEEKDAY_LABELS.map((label) => (
-            <div key={label} className="text-muted-foreground py-1 text-center text-xs font-semibold">
+            <div
+              key={label}
+              className="text-muted-foreground py-1 text-center text-xs font-semibold"
+            >
               {label}
             </div>
           ))}
@@ -102,7 +106,7 @@ export function BookingsCalendarView({ appointments }) {
                   !isCurrentMonth && "text-muted-foreground/50",
                   isSelected
                     ? "border-primary bg-primary/10 text-primary font-semibold"
-                    : "border-transparent hover:border-border hover:bg-muted/60",
+                    : "hover:border-border hover:bg-muted/60 border-transparent",
                   isToday && !isSelected && "border-primary/30 text-primary",
                 )}
               >
@@ -124,9 +128,11 @@ export function BookingsCalendarView({ appointments }) {
       </section>
 
       <section>
-        <h3 className="text-foreground mb-3 text-sm font-bold md:text-base">{selectedDateLabel}</h3>
+        <h3 className="text-foreground mb-3 text-sm font-bold md:text-base">
+          {selectedDateLabel}
+        </h3>
         {selectedAppointments.length === 0 ? (
-          <div className="bg-card text-muted-foreground rounded-2xl border border-dashed border-border px-4 py-8 text-center text-sm">
+          <div className="bg-card text-muted-foreground border-border rounded-2xl border border-dashed px-4 py-8 text-center text-sm">
             No bookings on this date.
           </div>
         ) : (

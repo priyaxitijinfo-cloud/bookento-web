@@ -1,19 +1,24 @@
 "use client";
 
-import { Heart } from "lucide-react";
+import { HeroHeartIcon } from "@/components/icons/hero-nav-icons";
 
 import { CategoryProviderGridCard } from "@/components/category/category-provider-grid-card";
 import { CategoryProviderListCard } from "@/components/category/category-provider-list-card";
 import { EmptyState } from "@/components/shared/empty-state";
+import { IllustrationEmptyState } from "@/components/shared/illustration-empty-state";
 import { SkeletonCard } from "@/components/ui/skeleton";
 import { ROUTES } from "@/constants/routes.constants";
 import { ResponsiveGrid } from "@/components/responsive/layout/ResponsiveGrid";
 
+function SavedEmptyHeartIcon({ className, ...props }) {
+  return <HeroHeartIcon tone="dark" className={className} {...props} />;
+}
+
 export function SavedLoadingSkeleton({ variant = "mobile" }) {
   if (variant === "desktop") {
     return (
-      <ResponsiveGrid cols={4} gap="md">
-        {Array.from({ length: 4 }).map((_, index) => (
+      <ResponsiveGrid mobile={2} tablet={3} desktop={4} gap="gap-5">
+        {Array.from({ length: 8 }).map((_, index) => (
           <SkeletonCard key={index} className="h-56 rounded-2xl" />
         ))}
       </ResponsiveGrid>
@@ -29,6 +34,16 @@ export function SavedLoadingSkeleton({ variant = "mobile" }) {
   );
 }
 
+function SavedEmptyStateMobile() {
+  return (
+    <IllustrationEmptyState
+      src="/icons/saved.png"
+      title="Not Saved Items Yet"
+      description="You haven't saved anything yet. Save your favorite services to access them."
+    />
+  );
+}
+
 export function SavedProvidersContent({
   providers,
   savedIds,
@@ -36,9 +51,13 @@ export function SavedProvidersContent({
   variant = "mobile",
 }) {
   if (providers.length === 0) {
+    if (variant === "mobile") {
+      return <SavedEmptyStateMobile />;
+    }
+
     return (
       <EmptyState
-        icon={Heart}
+        icon={SavedEmptyHeartIcon}
         title="No saved providers"
         description="Tap the heart icon on any provider to save them here."
         actionLabel="Explore providers"
@@ -51,7 +70,7 @@ export function SavedProvidersContent({
 
   if (variant === "desktop") {
     return (
-      <ResponsiveGrid cols={4} gap="md">
+      <ResponsiveGrid mobile={2} tablet={3} desktop={4} gap="gap-5">
         {providers.map((provider) => (
           <CategoryProviderGridCard
             key={provider.listingKey}

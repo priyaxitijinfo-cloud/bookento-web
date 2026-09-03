@@ -5,11 +5,21 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import {
-  Building2, Calendar, Check, ChevronLeft, ChevronRight, Clock,
-  CreditCard, Home, MapPin, Monitor, Wallet,
+  Calendar,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  CreditCard,
+  Wallet,
 } from "lucide-react";
 import { toast } from "sonner";
 
+import {
+  VisitHomeIcon,
+  VisitOnlineIcon,
+  VisitOnsiteIcon,
+} from "@/components/icons/visit-type-icons";
 import { UserHeader } from "@/components/layout/user-nav";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,7 +38,7 @@ import { formatCurrency, formatDate } from "@/utils/format.utils";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
-  { id: "visit", label: "Visit Type", icon: MapPin },
+  { id: "visit", label: "Visit Type", icon: VisitOnsiteIcon },
   { id: "services", label: "Services", icon: Check },
   { id: "datetime", label: "Date & Time", icon: Calendar },
   { id: "summary", label: "Summary", icon: Check },
@@ -37,9 +47,24 @@ const STEPS = [
 ];
 
 const VISIT_OPTIONS = [
-  { value: "in_clinic", label: "In Clinic", icon: Building2, desc: "Visit the provider's location" },
-  { value: "home_visit", label: "Home Visit", icon: Home, desc: "Provider comes to you" },
-  { value: "online", label: "Online", icon: Monitor, desc: "Virtual consultation" },
+  {
+    value: "in_clinic",
+    label: "In Clinic",
+    icon: VisitOnsiteIcon,
+    desc: "Visit the provider's location",
+  },
+  {
+    value: "home_visit",
+    label: "Home Visit",
+    icon: VisitHomeIcon,
+    desc: "Provider comes to you",
+  },
+  {
+    value: "online",
+    label: "Online",
+    icon: VisitOnlineIcon,
+    desc: "Virtual consultation",
+  },
 ];
 
 const PAYMENT_OPTIONS = [
@@ -63,10 +88,22 @@ function BookingWizard() {
 
   const { profile, addresses } = useProfileStore();
   const {
-    draft, currentStep, isComplete,
-    setProviderId, setVisitType, toggleService, setPackageId,
-    setAddressId, setScheduledDate, setScheduledTime,
-    setPaymentMethod, setStep, nextStep, prevStep, completeBooking, reset,
+    draft,
+    currentStep,
+    isComplete,
+    setProviderId,
+    setVisitType,
+    toggleService,
+    setPackageId,
+    setAddressId,
+    setScheduledDate,
+    setScheduledTime,
+    setPaymentMethod,
+    setStep,
+    nextStep,
+    prevStep,
+    completeBooking,
+    reset,
   } = useBookingStore();
 
   const [processing, setProcessing] = useState(false);
@@ -76,8 +113,14 @@ function BookingWizard() {
   const dates = getNextDates();
 
   useEffect(() => {
-    if (providerId) setProviderId(providerId);
-  }, [providerId, setProviderId]);
+    if (!providerId) return;
+
+    if (draft.providerId && draft.providerId !== providerId) {
+      reset();
+    }
+
+    setProviderId(providerId);
+  }, [draft.providerId, providerId, reset, setProviderId]);
 
   useEffect(() => {
     if (isComplete) setStep(5);
@@ -95,18 +138,24 @@ function BookingWizard() {
     return selectedServices.reduce((sum, s) => sum + s.price, 0);
   }, [selectedPackage, selectedServices]);
 
-  const availableVisitTypes = VISIT_OPTIONS.filter(
-    (v) => provider?.serviceModes.includes(v.value),
+  const availableVisitTypes = VISIT_OPTIONS.filter((v) =>
+    provider?.serviceModes.includes(v.value),
   );
 
   const canProceed = () => {
     switch (currentStep) {
-      case 0: return !!draft.visitType;
-      case 1: return draft.serviceIds.length > 0 || !!draft.packageId;
-      case 2: return !!draft.scheduledDate && !!draft.scheduledTime;
-      case 3: return true;
-      case 4: return !!draft.paymentMethod;
-      default: return true;
+      case 0:
+        return !!draft.visitType;
+      case 1:
+        return draft.serviceIds.length > 0 || !!draft.packageId;
+      case 2:
+        return !!draft.scheduledDate && !!draft.scheduledTime;
+      case 3:
+        return true;
+      case 4:
+        return !!draft.paymentMethod;
+      default:
+        return true;
     }
   };
 
@@ -131,7 +180,9 @@ function BookingWizard() {
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center gap-4 p-6">
         <p className="text-muted-foreground">No provider selected</p>
-        <Link href={ROUTES.PROVIDERS}><Button>Browse Providers</Button></Link>
+        <Link href={ROUTES.PROVIDERS}>
+          <Button>Browse Providers</Button>
+        </Link>
       </div>
     );
   }
@@ -148,8 +199,18 @@ function BookingWizard() {
           {formatDate(draft.scheduledDate, "EEE, dd MMM")} at {draft.scheduledTime}.
         </p>
         <div className="mt-6 flex gap-3">
-          <Link href={ROUTES.APPOINTMENTS}><Button>View Bookings</Button></Link>
-          <Button variant="outline" onClick={() => { reset(); router.push(ROUTES.HOME); }}>Go Home</Button>
+          <Link href={ROUTES.APPOINTMENTS}>
+            <Button>View Bookings</Button>
+          </Link>
+          <Button
+            variant="outline"
+            onClick={() => {
+              reset();
+              router.push(ROUTES.HOME);
+            }}
+          >
+            Go Home
+          </Button>
         </div>
       </div>
     );
@@ -163,7 +224,12 @@ function BookingWizard() {
       <div className="border-border border-b px-4 py-4">
         <div className="mx-auto flex max-w-3xl items-center gap-3">
           <div className="relative size-12 overflow-hidden rounded-xl">
-            <Image src={provider.avatar} alt={provider.businessName} fill className="object-cover" />
+            <Image
+              src={provider.avatar}
+              alt={provider.businessName}
+              fill
+              className="object-cover"
+            />
           </div>
           <div>
             <p className="font-semibold">{provider.businessName}</p>
@@ -177,13 +243,19 @@ function BookingWizard() {
         <div className="mx-auto flex max-w-3xl items-center justify-between">
           {STEPS.slice(0, 5).map((step, i) => (
             <div key={step.id} className="flex flex-col items-center gap-1">
-              <div className={cn(
-                "flex size-8 items-center justify-center rounded-full text-xs font-bold transition-colors",
-                i <= currentStep ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground",
-              )}>
+              <div
+                className={cn(
+                  "flex size-8 items-center justify-center rounded-full text-xs font-bold transition-colors",
+                  i <= currentStep
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground",
+                )}
+              >
                 {i < currentStep ? <Check className="size-4" /> : i + 1}
               </div>
-              <span className="text-muted-foreground hidden text-xs sm:block">{step.label}</span>
+              <span className="text-muted-foreground hidden text-xs sm:block">
+                {step.label}
+              </span>
             </div>
           ))}
         </div>
@@ -199,7 +271,7 @@ function BookingWizard() {
                 <Card
                   key={value}
                   className={cn(
-                    "cursor-pointer transition-all hover:shadow-card-hover",
+                    "hover:shadow-card-hover cursor-pointer transition-all",
                     draft.visitType === value && "border-primary ring-primary ring-1",
                   )}
                   onClick={() => setVisitType(value)}
@@ -212,7 +284,9 @@ function BookingWizard() {
                       <p className="font-semibold">{label}</p>
                       <p className="text-muted-foreground text-sm">{desc}</p>
                     </div>
-                    {draft.visitType === value && <Check className="text-primary ml-auto size-5" />}
+                    {draft.visitType === value && (
+                      <Check className="text-primary ml-auto size-5" />
+                    )}
                   </CardContent>
                 </Card>
               ))}
@@ -244,16 +318,23 @@ function BookingWizard() {
                   return (
                     <Card
                       key={svc.id}
-                      className={cn("cursor-pointer", selected && "border-primary ring-primary ring-1")}
+                      className={cn(
+                        "cursor-pointer",
+                        selected && "border-primary ring-primary ring-1",
+                      )}
                       onClick={() => toggleService(svc.id)}
                     >
                       <CardContent className="flex items-center justify-between py-4">
                         <div>
                           <p className="font-medium">{svc.name}</p>
-                          <p className="text-muted-foreground text-sm">{svc.duration} min</p>
+                          <p className="text-muted-foreground text-sm">
+                            {svc.duration} min
+                          </p>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="text-primary font-bold">{formatCurrency(svc.price)}</span>
+                          <span className="text-primary font-bold">
+                            {formatCurrency(svc.price)}
+                          </span>
                           {selected && <Check className="text-primary size-5" />}
                         </div>
                       </CardContent>
@@ -270,18 +351,33 @@ function BookingWizard() {
                   {packages.map((pkg) => (
                     <Card
                       key={pkg.id}
-                      className={cn("cursor-pointer overflow-hidden", draft.packageId === pkg.id && "border-primary ring-primary ring-1")}
+                      className={cn(
+                        "cursor-pointer overflow-hidden",
+                        draft.packageId === pkg.id &&
+                          "border-primary ring-primary ring-1",
+                      )}
                       onClick={() => setPackageId(pkg.id)}
                     >
                       <div className="relative aspect-video">
-                        <Image src={pkg.image} alt={pkg.name} fill className="object-cover" />
-                        <Badge className="absolute right-2 top-2">{pkg.discountPercent}% OFF</Badge>
+                        <Image
+                          src={pkg.image}
+                          alt={pkg.name}
+                          fill
+                          className="object-cover"
+                        />
+                        <Badge className="absolute top-2 right-2">
+                          {pkg.discountPercent}% OFF
+                        </Badge>
                       </div>
                       <CardContent className="pt-3">
                         <p className="font-medium">{pkg.name}</p>
                         <div className="mt-1 flex items-center gap-2">
-                          <span className="text-primary font-bold">{formatCurrency(pkg.price)}</span>
-                          <span className="text-muted-foreground text-sm line-through">{formatCurrency(pkg.originalPrice)}</span>
+                          <span className="text-primary font-bold">
+                            {formatCurrency(pkg.price)}
+                          </span>
+                          <span className="text-muted-foreground text-sm line-through">
+                            {formatCurrency(pkg.originalPrice)}
+                          </span>
                         </div>
                       </CardContent>
                     </Card>
@@ -308,12 +404,18 @@ function BookingWizard() {
                       onClick={() => setScheduledDate(date)}
                       className={cn(
                         "flex shrink-0 flex-col items-center rounded-xl border px-4 py-3 transition-colors",
-                        isSelected ? "border-primary bg-primary/10 text-primary" : "hover:bg-muted",
+                        isSelected
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "hover:bg-muted",
                       )}
                     >
-                      <span className="text-xs uppercase">{d.toLocaleDateString("en", { weekday: "short" })}</span>
+                      <span className="text-xs uppercase">
+                        {d.toLocaleDateString("en", { weekday: "short" })}
+                      </span>
                       <span className="text-lg font-bold">{d.getDate()}</span>
-                      <span className="text-xs">{d.toLocaleDateString("en", { month: "short" })}</span>
+                      <span className="text-xs">
+                        {d.toLocaleDateString("en", { month: "short" })}
+                      </span>
                     </button>
                   );
                 })}
@@ -353,12 +455,15 @@ function BookingWizard() {
               <CardContent className="space-y-4 pt-6">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Visit Type</span>
-                  <span className="font-medium capitalize">{draft.visitType?.replace("_", " ")}</span>
+                  <span className="font-medium capitalize">
+                    {draft.visitType?.replace("_", " ")}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Date & Time</span>
                   <span className="font-medium">
-                    {formatDate(draft.scheduledDate, "dd MMM yyyy")} · {draft.scheduledTime}
+                    {formatDate(draft.scheduledDate, "dd MMM yyyy")} ·{" "}
+                    {draft.scheduledTime}
                   </span>
                 </div>
                 <div className="border-t pt-4">
@@ -399,13 +504,19 @@ function BookingWizard() {
               {PAYMENT_OPTIONS.map(({ value, label, icon: Icon }) => (
                 <Card
                   key={value}
-                  className={cn("cursor-pointer", draft.paymentMethod === value && "border-primary ring-primary ring-1")}
+                  className={cn(
+                    "cursor-pointer",
+                    draft.paymentMethod === value &&
+                      "border-primary ring-primary ring-1",
+                  )}
                   onClick={() => setPaymentMethod(value)}
                 >
                   <CardContent className="flex items-center gap-4 py-4">
                     <Icon className="text-primary size-6" />
                     <span className="font-medium">{label}</span>
-                    {draft.paymentMethod === value && <Check className="text-primary ml-auto size-5" />}
+                    {draft.paymentMethod === value && (
+                      <Check className="text-primary ml-auto size-5" />
+                    )}
                   </CardContent>
                 </Card>
               ))}
@@ -413,7 +524,9 @@ function BookingWizard() {
             <Card className="bg-muted/50">
               <CardContent className="flex items-center justify-between py-4">
                 <span className="font-medium">Amount to pay</span>
-                <span className="text-primary text-xl font-bold">{formatCurrency(totalAmount)}</span>
+                <span className="text-primary text-xl font-bold">
+                  {formatCurrency(totalAmount)}
+                </span>
               </CardContent>
             </Card>
           </div>
@@ -423,7 +536,10 @@ function BookingWizard() {
       {/* Footer nav */}
       <div className="border-border bg-background/95 safe-bottom fixed inset-x-0 bottom-0 border-t p-4 backdrop-blur-xl">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-4">
-          <Button variant="outline" onClick={currentStep === 0 ? () => router.back() : prevStep}>
+          <Button
+            variant="outline"
+            onClick={currentStep === 0 ? () => router.back() : prevStep}
+          >
             <ChevronLeft /> {currentStep === 0 ? "Back" : "Previous"}
           </Button>
           <div className="text-center">

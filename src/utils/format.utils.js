@@ -1,4 +1,12 @@
-import { format, formatDistanceToNow, isValid, parseISO } from "date-fns";
+import {
+  format,
+  formatDistanceToNow,
+  isToday,
+  isValid,
+  isYesterday,
+  parseISO,
+  differenceInCalendarDays,
+} from "date-fns";
 
 export function formatCurrency(amount, currency = "INR", locale = "en-IN") {
   return new Intl.NumberFormat(locale, {
@@ -46,14 +54,9 @@ export function formatChatListTime(date) {
   const parsed = typeof date === "string" ? parseISO(date) : date;
   if (!isValid(parsed)) return "";
 
-  const now = new Date();
-  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const startOfParsed = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
-  const dayDiff = Math.round((startOfToday - startOfParsed) / 86_400_000);
-
-  if (dayDiff === 0) return format(parsed, "HH:mm");
-  if (dayDiff === 1) return "Yesterday";
-  if (dayDiff < 7) return format(parsed, "EEE");
+  if (isToday(parsed)) return format(parsed, "HH:mm");
+  if (isYesterday(parsed)) return "Yesterday";
+  if (differenceInCalendarDays(new Date(), parsed) < 7) return format(parsed, "EEE");
   return format(parsed, "dd MMM");
 }
 
@@ -127,11 +130,13 @@ export function slugify(text) {
 
 export function createMockToken(payload) {
   const header = btoa(JSON.stringify({ alg: "none", typ: "JWT" }));
-  const body = btoa(JSON.stringify({
-    ...payload,
-    exp: Math.floor(Date.now() / 1000) + 86400,
-    iat: Math.floor(Date.now() / 1000),
-  }));
+  const body = btoa(
+    JSON.stringify({
+      ...payload,
+      exp: Math.floor(Date.now() / 1000) + 86400,
+      iat: Math.floor(Date.now() / 1000),
+    }),
+  );
   return `${header}.${body}.mock`;
 }
 

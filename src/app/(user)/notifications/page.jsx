@@ -60,18 +60,21 @@ export default function NotificationsPage() {
       backLabel="Back to Home"
       showBottomNav={false}
       containerVariant="browseWithBreadcrumb"
-      className="mobile-page-bg bg-surface-page"
-      headerClassName="mobile-page-bg border-transparent bg-transparent md:border-border md:bg-card"
-      mainClassName="px-0 pt-0 pb-6 md:px-6 md:pt-3"
+      className="bg-surface-page md:bg-surface-page"
+      mainClassName="max-md:!px-0 max-md:pt-0 pb-6 md:px-6 md:pt-2 md:-mt-[10px]"
     >
-      <div className="md:overflow-hidden md:rounded-2xl md:border md:border-border/60 md:bg-white md:shadow-[0_2px_12px_rgba(15,23,42,0.06)]">
-        <div className="pt-3 pb-2 md:px-1 md:pt-4 md:pb-3">
+      <div>
+        <div className="pt-4 pb-2 md:px-1 md:pt-4 md:pb-3">
           <NotificationFilterTabs value={filter} onChange={setFilter} />
         </div>
 
         {!hasItems ? (
           <div className="px-4 pt-8 md:px-5 md:pb-8">
-            <EmptyState icon={Bell} title="No notifications" description="You're all caught up!" />
+            <EmptyState
+              icon={Bell}
+              title="No notifications"
+              description="You're all caught up!"
+            />
           </div>
         ) : (
           <div>

@@ -11,7 +11,7 @@ import { MobileLayout } from "./MobileLayout";
 export function AppLayout({
   children,
   showBottomNav = true,
-  showSidebar = true,
+  showSidebar = false,
   header,
   className,
   desktopHeader,
@@ -33,7 +33,11 @@ export function AppLayout({
   }
 
   return (
-    <MobileLayout showBottomNav={showBottomNav} className={className} maxWidth={!isDesktop}>
+    <MobileLayout
+      showBottomNav={showBottomNav}
+      className={className}
+      maxWidth={!isDesktop}
+    >
       {children}
     </MobileLayout>
   );

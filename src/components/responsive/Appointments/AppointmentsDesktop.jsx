@@ -18,8 +18,10 @@ function DesktopBookingsHeader({ viewMode, onToggle }) {
   return (
     <div className="mx-auto flex h-[68px] w-full max-w-[90rem] items-center justify-between gap-6 px-6 lg:px-8">
       <div className="min-w-0">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Bookings</p>
-        <h1 className="truncate text-xl font-semibold text-foreground">My Bookings</h1>
+        <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+          Bookings
+        </p>
+        <h1 className="text-foreground truncate text-xl font-semibold">My Bookings</h1>
       </div>
       <div className="flex items-center gap-2">
         <button
@@ -30,7 +32,7 @@ function DesktopBookingsHeader({ viewMode, onToggle }) {
           className={cn(
             "flex size-10 items-center justify-center rounded-xl border transition-colors",
             !isCalendar
-              ? "border-primary bg-[#EAF3FF] text-primary"
+              ? "border-primary text-primary bg-[#EAF3FF]"
               : "border-border bg-background text-muted-foreground hover:text-primary",
           )}
         >
@@ -44,7 +46,7 @@ function DesktopBookingsHeader({ viewMode, onToggle }) {
           className={cn(
             "flex size-10 items-center justify-center rounded-xl border transition-colors",
             isCalendar
-              ? "border-primary bg-[#EAF3FF] text-primary"
+              ? "border-primary text-primary bg-[#EAF3FF]"
               : "border-border bg-background text-muted-foreground hover:text-primary",
           )}
         >
@@ -67,10 +69,13 @@ export function AppointmentsDesktop({
   const toggleView = (mode) => setViewMode(mode);
 
   return (
-    <DesktopLayout header={<DesktopBookingsHeader viewMode={viewMode} onToggle={toggleView} />} maxWidth="wide">
+    <DesktopLayout
+      header={<DesktopBookingsHeader viewMode={viewMode} onToggle={toggleView} />}
+      maxWidth="wide"
+    >
       <div className="grid gap-8 xl:grid-cols-[1fr_280px]">
         <div>
-          <BookingTabBar value={appointmentTab} onChange={setAppointmentTab} counts={counts} />
+          <BookingTabBar value={appointmentTab} onChange={setAppointmentTab} />
 
           <div className="mt-6">
             {activeList.length === 0 ? (
@@ -89,7 +94,7 @@ export function AppointmentsDesktop({
 
         <aside className="space-y-4 xl:sticky xl:top-24 xl:self-start">
           <ResponsiveCard>
-            <h3 className="text-base font-semibold text-foreground">Overview</h3>
+            <h3 className="text-foreground text-base font-semibold">Overview</h3>
             <div className="mt-4 grid gap-2">
               {Object.entries(counts).map(([tab, count]) => (
                 <button
@@ -99,29 +104,31 @@ export function AppointmentsDesktop({
                   className={cn(
                     "flex items-center justify-between rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors",
                     appointmentTab === tab
-                      ? "border-primary/30 bg-[#EAF3FF] text-primary"
+                      ? "border-primary/30 text-primary bg-[#EAF3FF]"
                       : "border-border text-foreground hover:border-primary/20 hover:bg-surface-page",
                   )}
                 >
                   <span className="capitalize">{tab}</span>
-                  <span className="rounded-full bg-background px-2 py-0.5 text-xs font-semibold">{count}</span>
+                  <span className="bg-background rounded-full px-2 py-0.5 text-xs font-semibold">
+                    {count}
+                  </span>
                 </button>
               ))}
             </div>
           </ResponsiveCard>
 
           <ResponsiveCard>
-            <h3 className="text-base font-semibold text-foreground">Quick links</h3>
+            <h3 className="text-foreground text-base font-semibold">Quick links</h3>
             <div className="mt-4 grid gap-2">
               <Link
                 href={ROUTES.HOME}
-                className="rounded-xl border border-border px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-primary/30 hover:bg-[#EAF3FF] hover:text-primary"
+                className="border-border text-foreground hover:border-primary/30 hover:text-primary rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[#EAF3FF]"
               >
                 Book new appointment
               </Link>
               <Link
                 href={ROUTES.PROVIDERS}
-                className="rounded-xl border border-border px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-primary/30 hover:bg-[#EAF3FF] hover:text-primary"
+                className="border-border text-foreground hover:border-primary/30 hover:text-primary rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[#EAF3FF]"
               >
                 Browse providers
               </Link>

@@ -1,10 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Heart, Share2 } from "lucide-react";
-import { toast } from "sonner";
+import { Share2 } from "lucide-react";
+
+import { HeroHeartIcon } from "@/components/icons/hero-nav-icons";
 
 import { ProviderBookingSummaryBar } from "@/components/provider-booking/provider-booking-summary";
+import { MobileHeader } from "@/components/layout/mobile-header";
+import { PAGE_SHELL_CLASS_TALL } from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
 
 import {
@@ -42,41 +45,41 @@ export function PackageDetailMobile({
   const router = useRouter();
 
   return (
-    <div className="min-h-dvh bg-surface-page">
-      <div className="mx-auto flex min-h-dvh w-full max-w-lg flex-col bg-surface-page pb-36">
-        <header className="safe-top sticky top-0 z-30 border-b border-border/60 bg-background">
-          <div className="flex h-14 w-full items-center gap-2 px-4">
-            <button
-              type="button"
-              onClick={() => router.back()}
-              className="flex size-9 shrink-0 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted"
-              aria-label="Go back"
-            >
-              <ArrowLeft className="size-5" />
-            </button>
-            <h1 className="min-w-0 flex-1 text-center text-base font-bold">Packages Details</h1>
+    <div className={cn(PAGE_SHELL_CLASS_TALL, "md:bg-surface-page")}>
+      <div className="md:bg-surface-page mx-auto flex min-h-dvh w-full max-w-lg flex-col pb-36 md:max-w-5xl md:pb-32">
+        <MobileHeader
+          mobileOnly
+          title="Packages Details"
+          titleCentered
+          showBack
+          onBack={() => router.back()}
+          rightAction={
             <div className="flex shrink-0 items-center gap-0.5">
               <button
                 type="button"
                 onClick={onToggleSaved}
-                className="flex size-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted"
+                className="text-foreground flex size-9 items-center justify-center rounded-full transition-colors hover:bg-[#F3F4F6]"
                 aria-label={saved ? "Unsave package" : "Save package"}
               >
-                <Heart className={cn("size-5", saved && "fill-rose-500 text-rose-500")} />
+                <HeroHeartIcon
+                  tone="dark"
+                  filled={saved}
+                  className="text-foreground size-5"
+                />
               </button>
               <button
                 type="button"
                 onClick={onShare}
-                className="flex size-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted"
+                className="text-foreground flex size-9 items-center justify-center rounded-full transition-colors hover:bg-[#F3F4F6]"
                 aria-label="Share package"
               >
                 <Share2 className="size-5" />
               </button>
             </div>
-          </div>
-        </header>
+          }
+        />
 
-        <main className="flex-1 w-full space-y-5 px-4 py-4">
+        <main className="w-full flex-1 space-y-5 px-4 py-4">
           <PackageInfoCard pkg={pkg} theme={theme} />
 
           <section>
@@ -86,7 +89,7 @@ export function PackageDetailMobile({
 
           <section>
             <PackageSectionTitle
-              action={(
+              action={
                 <MonthNavigator
                   monthLabel={monthLabel}
                   onPrev={handlePrevDates}
@@ -94,7 +97,7 @@ export function PackageDetailMobile({
                   disablePrev={!dateScrollEdges.canPrev}
                   disableNext={!dateScrollEdges.canNext}
                 />
-              )}
+              }
             >
               Select Date
             </PackageSectionTitle>

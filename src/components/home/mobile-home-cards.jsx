@@ -10,7 +10,7 @@ export function TopRatedMobileCard({ provider }) {
   return (
     <Link
       href={providerDetailRoute(provider.id)}
-      className="block w-[9.75rem] shrink-0 snap-start overflow-hidden rounded-2xl bg-background shadow-card"
+      className="bg-background shadow-card block w-[9.75rem] shrink-0 snap-start overflow-hidden rounded-2xl"
     >
       <div className="relative h-[10.5rem] overflow-hidden">
         <img
@@ -24,12 +24,14 @@ export function TopRatedMobileCard({ provider }) {
           {provider.rating}
         </span>
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent px-2.5 pt-8 pb-2">
-          <h3 className="line-clamp-1 text-sm font-bold text-white">{provider.businessName}</h3>
+          <h3 className="line-clamp-1 text-sm font-bold text-white">
+            {provider.businessName}
+          </h3>
           <p className="line-clamp-1 text-[11px] text-white/80">{provider.specialty}</p>
         </div>
       </div>
       <div className="p-2.5">
-        <span className="gradient-brand flex w-full items-center justify-center rounded-lg py-2 text-xs font-semibold text-white shadow-[0_2px_8px_rgba(24,101,234,0.25)]">
+        <span className="gradient-brand flex w-full items-center justify-center rounded-lg py-2 text-xs font-medium text-white shadow-[0_2px_8px_rgba(24,101,234,0.25)]">
           Book Now
         </span>
       </div>
@@ -44,18 +46,25 @@ export function PopularServiceMobileCard({ service }) {
   return (
     <Link
       href={providerDetailRoute(service.providerId)}
-      className="block w-[8.75rem] shrink-0 snap-start overflow-hidden rounded-2xl bg-background shadow-card"
+      className="bg-background shadow-card block w-[8.75rem] shrink-0 snap-start overflow-hidden rounded-2xl"
     >
       <div className="relative aspect-square overflow-hidden">
-        <img src={service.image} alt={title} className="size-full object-cover" loading="lazy" />
-        <span className="absolute top-2 left-2 inline-flex items-center gap-0.5 rounded-md bg-background/95 px-1.5 py-0.5 text-[10px] font-semibold text-foreground shadow-sm">
+        <img
+          src={service.image}
+          alt={title}
+          className="size-full object-cover"
+          loading="lazy"
+        />
+        <span className="bg-background/95 text-foreground absolute top-2 left-2 inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10px] font-semibold shadow-sm">
           <Star className="size-2.5 fill-amber-400 text-amber-400" />
           4.8
         </span>
       </div>
       <div className="space-y-1 p-2.5">
         <h3 className="text-foreground line-clamp-1 text-xs font-bold">{title}</h3>
-        <p className="text-primary text-xs font-bold">From {formatCurrency(service.price)}</p>
+        <p className="text-primary text-xs font-bold">
+          From {formatCurrency(service.price)}
+        </p>
         {duration ? (
           <p className="text-muted-foreground inline-flex items-center gap-1 text-[10px]">
             <Clock className="size-3" />

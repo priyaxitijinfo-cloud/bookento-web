@@ -1,11 +1,10 @@
 "use client";
 
 import {
-  DoctorProfileMobileHeader,
+  DoctorProfileMobileHeroHeader,
   ProfileMainPanel,
   ProviderDetailModals,
   ProviderTabPanels,
-  UserBottomNav,
 } from "./provider-detail-layout";
 
 export function ProviderDetailMobile({
@@ -37,41 +36,41 @@ export function ProviderDetailMobile({
   const showBookingFooter = activeTab === "services";
 
   return (
-    <div className="bg-surface-page min-h-dvh pb-28">
-      <div className="mx-auto w-full max-w-lg px-4 py-4">
-        <DoctorProfileMobileHeader
-          provider={provider}
-          categorySlug={categorySlug}
-          backHref={backHref}
-          backLabel={backLabel}
-          saved={saved}
-          onToggleSaved={onToggleSaved}
-          onBlockClick={onBlockClick}
-          onReportClick={onReportClick}
-        />
+    <div className="bg-surface-page flex h-dvh flex-col overflow-hidden md:min-h-dvh md:overflow-visible md:pb-24">
+      <DoctorProfileMobileHeroHeader
+        provider={provider}
+        categorySlug={categorySlug}
+        backHref={backHref}
+        backLabel={backLabel}
+        saved={saved}
+        onToggleSaved={onToggleSaved}
+        onBlockClick={onBlockClick}
+        onReportClick={onReportClick}
+      />
 
-        <div className="mt-4">
-          <ProfileMainPanel
-            tabs={tabs}
+      <div className="bg-background relative -mt-5 flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-[1.75rem] shadow-[0_-6px_24px_rgba(15,23,42,0.08)] md:flex-none md:overflow-visible">
+        <ProfileMainPanel
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={onTabChange}
+          showBookingFooter={showBookingFooter}
+          provider={provider}
+          services={services}
+          categorySlug={categorySlug}
+          mobileSheet
+        >
+          <ProviderTabPanels
             activeTab={activeTab}
-            onTabChange={onTabChange}
-            showBookingFooter={showBookingFooter}
             provider={provider}
-            services={services}
             categorySlug={categorySlug}
-          >
-            <ProviderTabPanels
-              activeTab={activeTab}
-              provider={provider}
-              categorySlug={categorySlug}
-              services={services}
-              packages={packages}
-              gallery={gallery}
-              aboutParagraphs={aboutParagraphs}
-              setServicesOpen={setServicesOpen}
-            />
-          </ProfileMainPanel>
-        </div>
+            services={services}
+            packages={packages}
+            gallery={gallery}
+            aboutParagraphs={aboutParagraphs}
+            setServicesOpen={setServicesOpen}
+            mobileSheet
+          />
+        </ProfileMainPanel>
       </div>
 
       <ProviderDetailModals
@@ -86,7 +85,6 @@ export function ProviderDetailMobile({
         onConfirmBlock={onConfirmBlock}
         onSubmitReport={onSubmitReport}
       />
-      <UserBottomNav />
     </div>
   );
 }

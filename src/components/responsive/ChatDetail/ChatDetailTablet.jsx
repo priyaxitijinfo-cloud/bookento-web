@@ -11,6 +11,12 @@ export function ChatDetailTablet({
   isTyping,
   isLoading,
   onSend,
+  onSendVoice,
+  onSendAttachment,
+  onReact,
+  onDeleteMessage,
+  onPinMessage,
+  onForwardMessage,
   onCall,
   onVideoCall,
   onBack,
@@ -25,13 +31,19 @@ export function ChatDetailTablet({
       showBottomNav={false}
       mainClassName="mx-auto max-w-3xl overflow-hidden pb-0"
     >
-      <div className="-mx-4 -mt-3 flex h-[calc(100dvh-3.5rem)] flex-col overflow-hidden rounded-2xl border border-border/60 bg-background shadow-card">
+      <div className="border-border/60 bg-background shadow-card -mx-4 -mt-3 flex h-[calc(100dvh-3.5rem)] flex-col overflow-hidden rounded-2xl border">
         <ChatThreadPanel
           conversation={conversation}
           messages={messages}
           isTyping={isTyping}
           isLoading={isLoading}
           onSend={onSend}
+          onSendVoice={onSendVoice}
+          onSendAttachment={onSendAttachment}
+          onReact={onReact}
+          onDeleteMessage={onDeleteMessage}
+          onPinMessage={onPinMessage}
+          onForwardMessage={onForwardMessage}
           onCall={onCall}
           onVideoCall={onVideoCall}
           onBack={onBack}

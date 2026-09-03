@@ -3,18 +3,20 @@
 import { UserPageShell } from "@/components/layout/user-page-shell";
 import { ROUTES } from "@/constants/routes.constants";
 
-import { ReviewsContent } from "./reviews-parts";
+import { ReviewsMobileFeed } from "./reviews-parts";
 
-export function ReviewsMobile({ userReviews, providerMap }) {
+export function ReviewsMobile({ userReviews }) {
   return (
     <UserPageShell
-      title="My Reviews"
+      title="Reviews"
       backHref={ROUTES.PROFILE}
       backLabel="Back to Profile"
-      containerVariant="narrow"
-      mainClassName="space-y-4"
+      containerVariant="browseWithBreadcrumb"
+      className="bg-surface-page max-md:!pb-6"
+      mainClassName="max-md:!pt-4"
+      showBottomNav={false}
     >
-      <ReviewsContent userReviews={userReviews} providerMap={providerMap} />
+      <ReviewsMobileFeed reviews={userReviews} />
     </UserPageShell>
   );
 }

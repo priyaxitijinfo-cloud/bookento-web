@@ -15,7 +15,10 @@ import { UpcomingAppointmentCard } from "@/components/home/upcoming-appointment-
 import { MobileScrollRow } from "@/components/home/horizontal-scroll";
 import { ROUTES } from "@/constants/routes.constants";
 import { setBackFromSource } from "@/lib/navigation/back-navigation";
-import { PAGE_CONTAINER_VARIANTS, PAGE_SHELL_CLASS } from "@/lib/layout/page-layout.constants";
+import {
+  PAGE_CONTAINER_VARIANTS,
+  PAGE_SHELL_CLASS,
+} from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
 import { getTrendingProviders } from "@/mock/providers";
 
@@ -48,7 +51,7 @@ export default function HomePage() {
         </div>
         <HeroSection className="hidden md:block" />
 
-        <section>
+        <section className="max-md:[&_h2]:gap-0.5">
           <SectionHeader title="Category" />
           <CategoryGrid />
         </section>
@@ -63,15 +66,26 @@ export default function HomePage() {
 
           <MobileScrollRow className="md:hidden">
             {topRated.map((p) => (
-              <div key={p.id} className="w-[calc((100vw-4.25rem)/2)] shrink-0 snap-start">
-                <TopRatedProviderCard provider={p} compact categorySlug={p.categorySlug} />
+              <div
+                key={p.id}
+                className="w-[calc((100vw-4.25rem)/2)] shrink-0 snap-start"
+              >
+                <TopRatedProviderCard
+                  provider={p}
+                  compact
+                  categorySlug={p.categorySlug}
+                />
               </div>
             ))}
           </MobileScrollRow>
 
           <div className="hidden gap-3 md:grid md:grid-cols-4 md:gap-4">
             {topRated.map((p) => (
-              <TopRatedProviderCard key={p.id} provider={p} categorySlug={p.categorySlug} />
+              <TopRatedProviderCard
+                key={p.id}
+                provider={p}
+                categorySlug={p.categorySlug}
+              />
             ))}
           </div>
         </section>

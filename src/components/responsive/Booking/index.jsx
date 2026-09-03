@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { BookingPaymentView } from "@/components/provider-booking/booking-payment-view";
 import { ResponsiveView } from "@/components/responsive/primitives/ResponsiveView";
 import { Button } from "@/components/ui/button";
+import { getCategoryBookingData } from "@/constants/category-booking.constants";
 import { ROUTES } from "@/constants/routes.constants";
 import { getHomeCategoryBySlug } from "@/constants/home-categories";
 import { getProviderById } from "@/mock/providers";
@@ -29,31 +30,67 @@ export function BookingResponsive() {
 
   const { profile, addresses } = useProfileStore();
   const {
-    draft, currentStep, isComplete,
-    setProviderId, setVisitType, toggleService, setPackageId,
-    setAddressId, setScheduledDate, setScheduledTime,
-    setPaymentMethod, setStep, nextStep, prevStep, completeBooking, reset,
+    draft,
+    currentStep,
+    isComplete,
+    setProviderId,
+    setVisitType,
+    toggleService,
+    setPackageId,
+    setAddressId,
+    setScheduledDate,
+    setScheduledTime,
+    setPaymentMethod,
+    setStep,
+    nextStep,
+    prevStep,
+    completeBooking,
+    reset,
   } = useBookingStore();
 
   const [processing, setProcessing] = useState(false);
   const provider = providerId ? getProviderById(providerId) : null;
   const categorySlug = searchParams.get("from");
   const isCategoryFlow = Boolean(categorySlug && getHomeCategoryBySlug(categorySlug));
-  const displayProvider = provider && isCategoryFlow
-    ? {
-        ...provider,
-        businessName: searchParams.get("name") || provider.businessName,
-        specialty: searchParams.get("specialty") || provider.specialty,
-        avatar: searchParams.get("avatar") || provider.avatar,
-      }
-    : provider;
-  const services = displayProvider ? getServicesByProvider(displayProvider.id) : [];
-  const packages = displayProvider ? getPackagesByProvider(displayProvider.id) : [];
+  const displayProvider =
+    provider && isCategoryFlow
+      ? {
+          ...provider,
+          businessName: searchParams.get("name") || provider.businessName,
+          specialty: searchParams.get("specialty") || provider.specialty,
+          avatar: searchParams.get("avatar") || provider.avatar,
+        }
+      : provider;
+
+  const categoryBookingData = useMemo(() => {
+    if (!isCategoryFlow) return null;
+    return getCategoryBookingData(
+      categorySlug,
+      searchParams.get("name") || provider?.businessName,
+    );
+  }, [isCategoryFlow, categorySlug, searchParams, provider?.businessName]);
+
+  const services = useMemo(() => {
+    if (categoryBookingData?.services?.length) return categoryBookingData.services;
+    return displayProvider ? getServicesByProvider(displayProvider.id) : [];
+  }, [categoryBookingData, displayProvider]);
+
+  const packages = useMemo(() => {
+    if (categoryBookingData?.packages?.length) return categoryBookingData.packages;
+    return displayProvider ? getPackagesByProvider(displayProvider.id) : [];
+  }, [categoryBookingData, displayProvider]);
+
   const dates = getNextDates();
 
   useEffect(() => {
-    if (providerId) setProviderId(providerId);
-  }, [providerId, setProviderId]);
+    if (!providerId) return;
+
+    if (draft.providerId && draft.providerId !== providerId) {
+      reset();
+    }
+
+    setProviderId(providerId);
+  }, [draft.providerId, providerId, reset, setProviderId]);
 
   useEffect(() => {
     if (searchParams.get("step") === "payment") setStep(4);
@@ -75,18 +112,24 @@ export function BookingResponsive() {
     return selectedServices.reduce((sum, s) => sum + s.price, 0);
   }, [selectedPackage, selectedServices]);
 
-  const availableVisitTypes = BOOKING_VISIT_OPTIONS.filter(
-    (v) => displayProvider?.serviceModes.includes(v.value),
+  const availableVisitTypes = BOOKING_VISIT_OPTIONS.filter((v) =>
+    displayProvider?.serviceModes.includes(v.value),
   );
 
   const canProceed = () => {
     switch (currentStep) {
-      case 0: return !!draft.visitType;
-      case 1: return draft.serviceIds.length > 0 || !!draft.packageId;
-      case 2: return !!draft.scheduledDate && !!draft.scheduledTime;
-      case 3: return true;
-      case 4: return !!draft.paymentMethod;
-      default: return true;
+      case 0:
+        return !!draft.visitType;
+      case 1:
+        return draft.serviceIds.length > 0 || !!draft.packageId;
+      case 2:
+        return !!draft.scheduledDate && !!draft.scheduledTime;
+      case 3:
+        return true;
+      case 4:
+        return !!draft.paymentMethod;
+      default:
+        return true;
     }
   };
 
@@ -119,7 +162,9 @@ export function BookingResponsive() {
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center gap-4 p-6">
         <p className="text-muted-foreground">No provider selected</p>
-        <Link href={ROUTES.PROVIDERS}><Button>Browse Providers</Button></Link>
+        <Link href={ROUTES.PROVIDERS}>
+          <Button>Browse Providers</Button>
+        </Link>
       </div>
     );
   }
@@ -145,8 +190,18 @@ export function BookingResponsive() {
           {formatDate(draft.scheduledDate, "EEE, dd MMM")} at {draft.scheduledTime}.
         </p>
         <div className="mt-6 flex gap-3">
-          <Link href={ROUTES.APPOINTMENTS}><Button>View Bookings</Button></Link>
-          <Button variant="outline" onClick={() => { reset(); router.push(ROUTES.HOME); }}>Go Home</Button>
+          <Link href={ROUTES.APPOINTMENTS}>
+            <Button>View Bookings</Button>
+          </Link>
+          <Button
+            variant="outline"
+            onClick={() => {
+              reset();
+              router.push(ROUTES.HOME);
+            }}
+          >
+            Go Home
+          </Button>
         </div>
       </div>
     );

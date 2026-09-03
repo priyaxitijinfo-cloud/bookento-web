@@ -10,7 +10,7 @@ import { useChatStore, useFilterStore } from "@/store";
 import { cn } from "@/lib/utils";
 
 export function useChatInbox() {
-  const { conversations } = useChatStore();
+  const conversations = useChatStore((state) => state.conversations);
   const { chatFilter, setChatFilter } = useFilterStore();
   const [search, setSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -24,7 +24,12 @@ export function useChatInbox() {
 
   const counts = useMemo(() => {
     const unread = conversations.filter((c) => c.unreadCount > 0).length;
-    const neu = filterConversations(conversations, { filter: "new" }).length;
+    const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
+    const now = Date.now();
+    const neu = conversations.filter((c) => {
+      const age = now - new Date(c.lastMessageAt).getTime();
+      return age <= threeDaysMs || c.isPinned;
+    }).length;
     return { all: conversations.length, unread, new: neu };
   }, [conversations]);
 
@@ -47,30 +52,38 @@ export function useChatInbox() {
 }
 
 const CHAT_PANEL_SHELL =
-  "overflow-hidden rounded-2xl border border-border/60 bg-background shadow-card";
+  "overflow-hidden rounded-2xl border border-border/70 bg-background shadow-[0_2px_12px_rgba(24,39,75,0.04)]";
 
-/** Fits below mobile header + bottom nav + main padding without page scroll */
-const CHAT_MOBILE_PANEL_HEIGHT = "h-[calc(100dvh-3.5rem-5rem-1.75rem)]";
+/** Flat full-bleed list on mobile; card shell preserved on md+. */
+export const CHAT_LIST_SHELL_CLASS = cn(
+  "flex h-full min-h-0 flex-1 flex-col",
+  "max-md:min-h-0 max-md:flex-1 max-md:overflow-hidden max-md:bg-transparent",
+  "md:overflow-hidden md:rounded-2xl md:border md:border-border/70 md:bg-background md:shadow-[0_2px_12px_rgba(24,39,75,0.04)]",
+);
 
-/** Fits below desktop header + breadcrumb + main padding without page scroll */
-const CHAT_DESKTOP_PANEL_HEIGHT = "md:h-[calc(100dvh-11.5rem)]";
+/** Shared shell — full viewport on mobile; bottom-nav clearance lives in scroll areas, not shell padding. */
+export const CHAT_PAGE_SHELL_CLASS =
+  "chat-page-shell-mobile page-shell-transparent-mobile flex h-dvh max-h-dvh min-h-0 flex-col overflow-hidden bg-surface-page max-md:!pb-0 md:min-h-dvh md:!pb-0 md:bg-surface-page";
+
+export const CHAT_PAGE_MAIN_CLASS =
+  "flex min-h-0 flex-1 flex-col overflow-hidden max-md:h-full max-md:min-h-0 max-md:bg-transparent";
 
 export function ChatSplitShell({
   inbox,
   activeId,
   children,
   className,
+  showInboxTitle = false,
 }) {
   return (
     <div
       className={cn(
         CHAT_PANEL_SHELL,
-        "md:grid md:grid-cols-[330px_minmax(0,1fr)] lg:grid-cols-[370px_minmax(0,1fr)] xl:grid-cols-[390px_minmax(0,1fr)]",
-        CHAT_DESKTOP_PANEL_HEIGHT,
+        "flex min-h-0 flex-1 flex-col md:grid md:min-h-0 md:grid-cols-[330px_minmax(0,1fr)] lg:grid-cols-[370px_minmax(0,1fr)] xl:grid-cols-[390px_minmax(0,1fr)]",
         className,
       )}
     >
-      <aside className="hidden min-h-0 overflow-hidden border-r border-[#EEF2F7] md:flex md:flex-col">
+      <aside className="hidden min-h-0 border-r border-[#EEF2F7] md:flex md:min-h-0 md:flex-col md:overflow-hidden">
         <ChatInboxPanel
           conversations={inbox.filtered}
           filter={inbox.filter}
@@ -80,12 +93,15 @@ export function ChatSplitShell({
           searchOpen={inbox.searchOpen}
           counts={inbox.counts}
           activeId={activeId}
-          showTitle
+          showTitle={showInboxTitle}
+          showSearch
           className="min-h-0 flex-1"
         />
       </aside>
 
-      <section className="flex min-h-0 min-w-0 flex-col overflow-hidden">{children}</section>
+      <section className="flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+        {children}
+      </section>
     </div>
   );
 }
@@ -93,14 +109,14 @@ export function ChatSplitShell({
 export function ChatListMobile({ inbox }) {
   if (inbox.isEmpty) {
     return (
-      <div className={cn(CHAT_PANEL_SHELL, CHAT_MOBILE_PANEL_HEIGHT, "flex flex-col md:hidden")}>
-        <ChatEmptyInbox className="min-h-0 flex-1" />
+      <div className={cn(CHAT_LIST_SHELL_CLASS, "md:hidden")}>
+        <ChatEmptyInbox className="min-h-0 flex-1 max-md:bg-transparent" />
       </div>
     );
   }
 
   return (
-    <div className={cn(CHAT_PANEL_SHELL, CHAT_MOBILE_PANEL_HEIGHT, "flex flex-col md:hidden")}>
+    <div className={cn(CHAT_LIST_SHELL_CLASS, "md:hidden")}>
       <ChatInboxPanel
         conversations={inbox.filtered}
         filter={inbox.filter}
@@ -108,8 +124,10 @@ export function ChatListMobile({ inbox }) {
         search={inbox.search}
         onSearchChange={inbox.setSearch}
         searchOpen={inbox.searchOpen}
+        onSearchClose={() => inbox.setSearchOpen(false)}
         counts={inbox.counts}
-        className="min-h-0 flex-1"
+        showSearch={inbox.searchOpen || Boolean(inbox.search)}
+        className="min-h-0 flex-1 max-md:h-full"
         emptyTitle={
           inbox.search.trim()
             ? "No matching chats"
@@ -131,9 +149,9 @@ export function ChatListMobile({ inbox }) {
 
 export function ChatDesktopEmpty({ inbox }) {
   return (
-    <div className="hidden md:block">
-      <ChatSplitShell inbox={inbox}>
-        {inbox.isEmpty ? <ChatEmptyInbox /> : <ChatEmptyPane />}
+    <div className="hidden min-h-0 flex-1 flex-col md:flex md:h-full">
+      <ChatSplitShell inbox={inbox} className="h-full min-h-0 flex-1">
+        <ChatEmptyPane />
       </ChatSplitShell>
     </div>
   );

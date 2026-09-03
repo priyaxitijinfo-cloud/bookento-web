@@ -1,23 +1,27 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { SearchIcon } from "@/components/icons/search-icon";
 
+import {
+  CHAT_PAGE_MAIN_CLASS,
+  CHAT_PAGE_SHELL_CLASS,
+} from "@/components/chats/chat-workspace";
 import { UserPageShell } from "@/components/layout/user-page-shell";
 import { ROUTES } from "@/constants/routes.constants";
 
 import { ChatInboxListPanel } from "./chats-parts";
 
 function ChatsSearchAction({ inbox }) {
-  if (inbox.isEmpty) return null;
+  if (inbox.isEmpty || inbox.searchOpen) return null;
 
   return (
     <button
       type="button"
-      aria-label={inbox.searchOpen ? "Close search" : "Search chats"}
-      onClick={() => inbox.setSearchOpen(!inbox.searchOpen)}
-      className="text-foreground flex size-9 items-center justify-center rounded-full transition-colors hover:bg-muted"
+      aria-label="Search chats"
+      onClick={() => inbox.setSearchOpen(true)}
+      className="flex size-9 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-[#F3F4F6] max-md:-mr-1"
     >
-      <Search className="size-5" />
+      <SearchIcon className="size-5" />
     </button>
   );
 }
@@ -28,9 +32,10 @@ export function ChatsMobile({ inbox }) {
       title="Chat"
       backHref={ROUTES.HOME}
       backLabel="Back to Home"
-      containerVariant="browseWithBreadcrumb"
-      className="bg-surface-page h-dvh overflow-hidden pb-0"
-      mainClassName="overflow-hidden pb-0"
+      hideMobileHeader={inbox.searchOpen}
+      containerVariant="chat"
+      className={CHAT_PAGE_SHELL_CLASS}
+      mainClassName={CHAT_PAGE_MAIN_CLASS}
       rightAction={<ChatsSearchAction inbox={inbox} />}
     >
       <ChatInboxListPanel inbox={inbox} panelClassName="md:hidden" />

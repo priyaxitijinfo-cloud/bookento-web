@@ -1,38 +1,36 @@
 "use client";
 
-import { Search } from "lucide-react";
-
-import { ChatDesktopEmpty } from "@/components/chats/chat-workspace";
-import { UserPageShell } from "@/components/layout/user-page-shell";
+import { ChatEmptyPane } from "@/components/chats/chat-empty-pane";
+import { ChatSplitShell } from "@/components/chats/chat-workspace";
+import { HomeHeader } from "@/components/home/home-header";
+import { DesktopBreadcrumbBar } from "@/components/layout/desktop-breadcrumb-bar";
+import { DesktopLayout } from "@/components/responsive/layout";
 import { ROUTES } from "@/constants/routes.constants";
-
-function ChatsSearchAction({ inbox }) {
-  if (inbox.isEmpty) return null;
-
-  return (
-    <button
-      type="button"
-      aria-label={inbox.searchOpen ? "Close search" : "Search chats"}
-      onClick={() => inbox.setSearchOpen(!inbox.searchOpen)}
-      className="text-foreground flex size-9 items-center justify-center rounded-full transition-colors hover:bg-muted md:size-10"
-    >
-      <Search className="size-5" />
-    </button>
-  );
-}
 
 export function ChatsDesktop({ inbox }) {
   return (
-    <UserPageShell
-      title="Chat"
-      backHref={ROUTES.HOME}
-      backLabel="Back to Home"
-      containerVariant="browseWithBreadcrumb"
-      className="bg-surface-page h-dvh overflow-hidden pb-0"
-      mainClassName="overflow-hidden pb-6"
-      rightAction={<ChatsSearchAction inbox={inbox} />}
+    <DesktopLayout
+      maxWidth="wide"
+      showHeaderBorder={false}
+      className="h-dvh overflow-hidden"
+      contentClassName="flex min-h-0 flex-1 flex-col overflow-hidden !py-0"
+      containerClassName="flex min-h-0 flex-1 flex-col overflow-hidden !pt-0 pb-5 md:!pt-0"
+      header={
+        <>
+          <HomeHeader embedded />
+          <DesktopBreadcrumbBar
+            backHref={ROUTES.PROFILE}
+            backLabel="Back to Profile"
+            currentLabel="Chat"
+          />
+        </>
+      }
     >
-      <ChatDesktopEmpty inbox={inbox} />
-    </UserPageShell>
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <ChatSplitShell inbox={inbox} className="min-h-0 flex-1" showInboxTitle>
+          <ChatEmptyPane />
+        </ChatSplitShell>
+      </div>
+    </DesktopLayout>
   );
 }

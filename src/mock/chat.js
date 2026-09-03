@@ -1,4 +1,10 @@
-import { avatarUrl, generateId, isoDate, personName } from "./helpers";
+import {
+  avatarUrl,
+  generateId,
+  isoDate,
+  MOCK_REFERENCE_MS,
+  personName,
+} from "./helpers";
 import { appointments } from "./appointments";
 import { mockProviders } from "./providers";
 import { currentUser } from "./users";
@@ -35,7 +41,7 @@ export const messages = {};
 
 conversations.forEach((conv, ci) => {
   if (ci === 0) {
-    const base = Date.now() - 2 * 60 * 60 * 1000;
+    const base = MOCK_REFERENCE_MS - 2 * 60 * 60 * 1000;
     messages[conv.id] = [
       {
         id: generateId("msg", 1),
@@ -59,7 +65,8 @@ conversations.forEach((conv, ci) => {
         id: generateId("msg", 3),
         conversationId: conv.id,
         senderId: conv.participantId,
-        content: "That's good to hear. We'll review your progress in the upcoming appointment.",
+        content:
+          "That's good to hear. We'll review your progress in the upcoming appointment.",
         type: "text",
         status: "seen",
         createdAt: new Date(base + 12 * 60 * 1000).toISOString(),
@@ -112,8 +119,18 @@ conversations.forEach((conv, ci) => {
       conversationId: conv.id,
       senderId: isUser ? currentUser.id : conv.participantId,
       content: isUser
-        ? ["Hi, I'd like to book an appointment.", "What are your available slots?", "That works for me!", "Thank you!"][i % 4]
-        : ["Hello! How can I help you today?", "We have slots at 2 PM and 4 PM.", "Great! I've confirmed your booking.", "You're welcome! See you soon."][i % 4],
+        ? [
+            "Hi, I'd like to book an appointment.",
+            "What are your available slots?",
+            "That works for me!",
+            "Thank you!",
+          ][i % 4]
+        : [
+            "Hello! How can I help you today?",
+            "We have slots at 2 PM and 4 PM.",
+            "Great! I've confirmed your booking.",
+            "You're welcome! See you soon.",
+          ][i % 4],
       type: "text",
       status: ["sent", "delivered", "seen"][Math.min(i % 3, 2)],
       createdAt: isoDate(ci + i),
@@ -140,7 +157,10 @@ providerConversations.forEach((conv, ci) => {
     id: generateId("pmsg", ci * 100 + i + 1),
     conversationId: conv.id,
     senderId: i % 2 === 0 ? conv.participantId : mockProviders[0].id,
-    content: i % 2 === 0 ? "Hi, I have a question about my booking." : "Sure, how can I assist you?",
+    content:
+      i % 2 === 0
+        ? "Hi, I have a question about my booking."
+        : "Sure, how can I assist you?",
     type: "text",
     status: "seen",
     createdAt: isoDate(ci + i),
@@ -148,7 +168,10 @@ providerConversations.forEach((conv, ci) => {
 });
 
 export function getConversationById(id) {
-  return conversations.find((c) => c.id === id) || providerConversations.find((c) => c.id === id);
+  return (
+    conversations.find((c) => c.id === id) ||
+    providerConversations.find((c) => c.id === id)
+  );
 }
 
 export function getMessages(conversationId) {
@@ -157,4 +180,44 @@ export function getMessages(conversationId) {
 
 export function getConversationByProviderId(providerId) {
   return conversations.find((conv) => conv.participantId === providerId);
+}
+
+export function getOrCreateConversationForProvider(providerId, appointment) {
+  const existing = getConversationByProviderId(providerId);
+  if (existing) return existing;
+
+  const provider = mockProviders.find((item) => item.id === providerId);
+  if (!provider) return null;
+
+  const conversation = {
+    id: generateId("conv", conversations.length + 1),
+    participantId: providerId,
+    participantName: appointment?.providerName || provider.businessName,
+    participantAvatar: appointment?.providerAvatar || provider.avatar,
+    participantRole: "provider",
+    lastMessage: appointment
+      ? `Your ${appointment.serviceName} appointment is confirmed for ${appointment.scheduledTime}.`
+      : "Start a conversation",
+    lastMessageAt: new Date().toISOString(),
+    unreadCount: 0,
+    isOnline: true,
+    isPinned: false,
+  };
+
+  conversations.unshift(conversation);
+  messages[conversation.id] = appointment
+    ? [
+        {
+          id: generateId("msg", Date.now()),
+          conversationId: conversation.id,
+          senderId: providerId,
+          content: `Hello! Your ${appointment.serviceName} booking on ${appointment.scheduledDate} at ${appointment.scheduledTime} is confirmed.`,
+          type: "text",
+          status: "seen",
+          createdAt: new Date().toISOString(),
+        },
+      ]
+    : [];
+
+  return conversation;
 }

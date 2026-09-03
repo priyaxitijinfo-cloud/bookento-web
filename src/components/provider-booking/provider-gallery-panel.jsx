@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
-import { TabPanelHeader } from "@/components/provider-booking/shared";
 import { cn } from "@/lib/utils";
 
 function GalleryTile({ item, index, onSelect, className }) {
@@ -74,12 +73,7 @@ function GridGallery({ items, onSelect, className }) {
   );
 }
 
-export function ProviderGalleryPanel({
-  items,
-  className = "",
-  showHeader = false,
-  variant = "auto",
-}) {
+export function ProviderGalleryPanel({ items, className = "", variant = "auto" }) {
   const [activeIndex, setActiveIndex] = useState(null);
 
   const activeItem = activeIndex !== null ? items[activeIndex] : null;
@@ -87,7 +81,9 @@ export function ProviderGalleryPanel({
     variant === "showcase" || (variant === "auto" && Boolean(items[0]?.featured));
 
   const showPrevious = useCallback(() => {
-    setActiveIndex((index) => (index === null ? null : (index - 1 + items.length) % items.length));
+    setActiveIndex((index) =>
+      index === null ? null : (index - 1 + items.length) % items.length,
+    );
   }, [items.length]);
 
   const showNext = useCallback(() => {
@@ -115,12 +111,6 @@ export function ProviderGalleryPanel({
   if (items.length === 0) {
     return (
       <div>
-        {showHeader && (
-          <TabPanelHeader
-            title="Gallery"
-            description="Clinic photos, equipment, and care environment."
-          />
-        )}
         <p className="text-muted-foreground text-sm">No gallery images available.</p>
       </div>
     );
@@ -128,13 +118,6 @@ export function ProviderGalleryPanel({
 
   return (
     <>
-      {showHeader && (
-        <TabPanelHeader
-          title="Gallery"
-          description="Clinic photos, equipment, and care environment."
-        />
-      )}
-
       {isShowcase ? (
         <ShowcaseGallery items={items} onSelect={setActiveIndex} />
       ) : (
@@ -152,7 +135,7 @@ export function ProviderGalleryPanel({
           <button
             type="button"
             onClick={() => setActiveIndex(null)}
-            className="absolute right-4 top-4 z-10 flex size-10 items-center justify-center rounded-full bg-background/10 text-white transition-colors hover:bg-background/20"
+            className="bg-background/10 hover:bg-background/20 absolute top-4 right-4 z-10 flex size-10 items-center justify-center rounded-full text-white transition-colors"
             aria-label="Close image"
           >
             <X className="size-5" />
@@ -166,7 +149,7 @@ export function ProviderGalleryPanel({
                   event.stopPropagation();
                   showPrevious();
                 }}
-                className="absolute left-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-background/10 text-white transition-colors hover:bg-background/20 md:left-6"
+                className="bg-background/10 hover:bg-background/20 absolute top-1/2 left-3 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full text-white transition-colors md:left-6"
                 aria-label="Previous image"
               >
                 <ChevronLeft className="size-6" />
@@ -177,7 +160,7 @@ export function ProviderGalleryPanel({
                   event.stopPropagation();
                   showNext();
                 }}
-                className="absolute right-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-background/10 text-white transition-colors hover:bg-background/20 md:right-6"
+                className="bg-background/10 hover:bg-background/20 absolute top-1/2 right-3 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full text-white transition-colors md:right-6"
                 aria-label="Next image"
               >
                 <ChevronRight className="size-6" />

@@ -16,15 +16,15 @@ function CallIcon({ className }) {
     >
       <path
         d="M16.2401 23.5136C9.00445 23.7491 -4.00214 10.7422 2.03886 3.68139L3.06214 2.78635C4.14256 1.73952 5.8515 1.75523 6.90594 2.82823C6.93192 2.8544 8.57852 5.01086 8.57852 5.01086C9.59661 6.08386 9.59141 7.77449 8.57332 8.84749L7.64873 9.95713C7.33707 10.3288 7.27474 10.8574 7.48771 11.2971C8.58371 13.5216 10.3706 15.3221 12.573 16.4318C13.0093 16.6516 13.5287 16.5888 13.9027 16.2695L15.0091 15.3326C16.0739 14.3067 17.7465 14.3067 18.8165 15.3274C18.8165 15.3274 20.9566 16.9866 20.9826 17.0128C22.0526 18.0962 22.0526 19.8497 20.9826 20.9331L20.1723 21.87C19.1334 22.9273 17.7205 23.5188 16.2401 23.5136Z"
-        fill="#1865EA"
+        fill="currentColor"
       />
       <path
         d="M16.858 7.09866C17.7155 8.02845 18.3179 9.13962 18.6214 10.3539C18.7332 10.8015 18.4084 11.2237 17.9515 11.286C17.4934 11.3485 17.0773 11.0245 16.9506 10.5797C16.7036 9.71282 16.2583 8.91831 15.6388 8.24936C14.9753 7.53288 14.1634 7.01069 13.2601 6.70982C12.819 6.5629 12.5101 6.13274 12.5899 5.67484C12.6699 5.21554 13.1096 4.90375 13.5567 5.03641C14.816 5.41008 15.9451 6.1128 16.858 7.09866Z"
-        fill="#1865EA"
+        fill="currentColor"
       />
       <path
         d="M13.9276 0.707591C16.2369 1.27922 18.3022 2.50162 19.9444 4.27505C21.4955 5.95427 22.5412 7.99126 22.9955 10.2142C23.0879 10.6661 22.7652 11.0877 22.3083 11.15C21.8505 11.2124 21.432 10.8902 21.335 10.4383C20.9327 8.56381 20.0386 6.84411 18.7252 5.42574C17.3322 3.92553 15.5858 2.87851 13.6343 2.37226C13.1842 2.2555 12.8769 1.82251 12.9567 1.3645C13.0367 0.905375 13.4751 0.595588 13.9276 0.707591Z"
-        fill="#1865EA"
+        fill="currentColor"
       />
     </svg>
   );
@@ -61,7 +61,7 @@ export function ChatHeader({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 border-b border-[#EEF2F7] bg-background px-4 py-3 md:gap-4 md:px-5 md:py-4",
+        "bg-background flex items-center gap-3 border-b border-[#EEF2F7] px-4 py-3 md:gap-4 md:px-5 md:py-4",
         className,
       )}
     >
@@ -70,7 +70,9 @@ export function ChatHeader({
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="text-foreground truncate text-[15px] font-semibold md:text-base">{name}</p>
+        <p className="text-foreground truncate text-[15px] font-semibold md:text-base">
+          {name}
+        </p>
         {isOnline ? (
           <p className="flex items-center gap-1.5 text-xs text-[#22C55E] md:text-sm">
             <span className="size-1.5 shrink-0 rounded-full bg-[#22C55E]" aria-hidden />
@@ -81,13 +83,13 @@ export function ChatHeader({
         )}
       </div>
 
-      <div className="flex shrink-0 items-center gap-1.5 md:gap-2">
+      <div className="flex shrink-0 items-center gap-1.5 max-md:-mr-2 md:gap-2">
         {onCall ? (
           <button
             type="button"
             onClick={onCall}
             aria-label="Voice call"
-            className="flex size-10 items-center justify-center rounded-full border border-transparent transition-colors hover:border-border md:size-11"
+            className="text-primary hover:border-border flex size-10 items-center justify-center rounded-full border border-transparent transition-colors max-md:text-[#4D5972] md:size-11"
           >
             <CallIcon />
           </button>
@@ -97,7 +99,7 @@ export function ChatHeader({
             type="button"
             onClick={onVideoCall}
             aria-label="Video call"
-            className="flex size-10 items-center justify-center rounded-full border border-transparent transition-colors hover:border-border md:size-11"
+            className="hover:border-border hidden size-10 items-center justify-center rounded-full border border-transparent transition-colors md:flex md:size-11"
           >
             <VideoCallIcon />
           </button>

@@ -3,10 +3,17 @@ import Link from "next/link";
 import { Star } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
-import { buildCategoryProviderDetailUrl, providerDetailRoute } from "@/constants/routes.constants";
+import {
+  buildCategoryProviderDetailUrl,
+  providerDetailRoute,
+} from "@/constants/routes.constants";
 import { cn } from "@/lib/utils";
 
-export function TopRatedProviderCard({ provider, compact = false, categorySlug = "salon" }) {
+export function TopRatedProviderCard({
+  provider,
+  compact = false,
+  categorySlug = "salon",
+}) {
   const bookNowHref = (() => {
     const base = categorySlug
       ? buildCategoryProviderDetailUrl(provider.id, categorySlug, provider)
@@ -16,8 +23,13 @@ export function TopRatedProviderCard({ provider, compact = false, categorySlug =
   })();
 
   return (
-    <Card className="h-full overflow-hidden border-0 p-0 shadow-card transition-all hover:shadow-card-hover">
-      <div className={cn("group relative overflow-hidden", compact ? "aspect-[3/4]" : "aspect-[4/5]")}>
+    <Card className="shadow-card hover:shadow-card-hover h-full overflow-hidden border-0 p-0 transition-all">
+      <div
+        className={cn(
+          "group relative overflow-hidden",
+          compact ? "aspect-[3/4]" : "aspect-[4/5]",
+        )}
+      >
         <Link
           href={providerDetailRoute(provider.id)}
           className="absolute inset-0 z-0"
@@ -36,15 +48,22 @@ export function TopRatedProviderCard({ provider, compact = false, categorySlug =
 
         <span
           className={cn(
-            "pointer-events-none absolute inline-flex items-center gap-1 rounded-md bg-background/95 font-semibold text-foreground shadow-sm",
-            compact ? "top-2 left-2 px-1.5 py-0.5 text-[10px]" : "top-3 left-3 px-2 py-1 text-xs",
+            "bg-background/95 text-foreground absolute inline-flex items-center gap-1 rounded-md font-semibold shadow-sm",
+            compact
+              ? "top-2 left-2 z-10 px-2 py-1 text-xs"
+              : "pointer-events-none top-3 left-3 px-2 py-1 text-xs",
           )}
         >
-          <Star className={cn("fill-amber-400 text-amber-400", compact ? "size-2.5" : "size-3")} />
+          <Star className="size-3 fill-amber-400 text-amber-400" />
           {provider.rating}
         </span>
 
-        <div className={cn("absolute inset-x-0 bottom-0 z-10", compact ? "p-2.5" : "p-3.5")}>
+        <div
+          className={cn(
+            "absolute inset-x-0 bottom-0 z-10",
+            compact ? "p-2.5" : "p-3.5",
+          )}
+        >
           <Link href={providerDetailRoute(provider.id)} className="block">
             <h3
               className={cn(
@@ -67,7 +86,7 @@ export function TopRatedProviderCard({ provider, compact = false, categorySlug =
           <Link
             href={bookNowHref}
             className={cn(
-              "gradient-brand mt-3 flex w-full items-center justify-center rounded-lg font-semibold text-white shadow-[0_2px_8px_rgba(24,101,234,0.25)] transition-opacity hover:opacity-95",
+              "gradient-brand mt-3 flex w-full items-center justify-center rounded-lg font-medium text-white shadow-[0_2px_8px_rgba(24,101,234,0.25)] transition-opacity hover:opacity-95 md:font-semibold",
               compact ? "mt-2 py-1.5 text-xs" : "py-2 text-[13px]",
             )}
           >

@@ -7,6 +7,7 @@ import { ResponsiveSheet } from "@/components/responsive/primitives/ResponsiveSh
 import { PrimaryButton } from "@/components/responsive/primitives/PrimaryButton";
 import { REEL_REPORT_REASONS } from "@/mock/reels-comments";
 import { cn } from "@/lib/utils";
+import { RadioIndicator } from "@/components/ui/radio-indicator";
 
 function ReportReasonOption({ active, label, description, onSelect }) {
   return (
@@ -20,18 +21,14 @@ function ReportReasonOption({ active, label, description, onSelect }) {
         active ? "border-primary bg-[#EFF6FF]" : "border-border/60 bg-background",
       )}
     >
-      <span
-        className={cn(
-          "flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
-          active ? "border-primary bg-primary" : "border-border bg-background",
-        )}
-        aria-hidden
-      >
-        {active ? <span className="size-2 rounded-full bg-background" /> : null}
-      </span>
+      <RadioIndicator selected={active} />
       <span className="min-w-0 flex-1">
-        <span className="block text-sm font-semibold leading-snug text-foreground">{label}</span>
-        <span className="text-muted-foreground mt-1 block text-xs leading-relaxed">{description}</span>
+        <span className="text-foreground block text-sm leading-snug font-semibold">
+          {label}
+        </span>
+        <span className="text-muted-foreground mt-1 block text-xs leading-relaxed">
+          {description}
+        </span>
       </span>
     </button>
   );
@@ -81,7 +78,8 @@ export function ReportSheetResponsive({ open, onOpenChange, onClose }) {
     handleClose();
   };
 
-  const footerLabel = step === 2 ? "Submit" : selectedReason === "other" ? "Next" : "Submit";
+  const footerLabel =
+    step === 2 ? "Submit" : selectedReason === "other" ? "Next" : "Submit";
 
   return (
     <ResponsiveSheet
@@ -91,15 +89,17 @@ export function ReportSheetResponsive({ open, onOpenChange, onClose }) {
         if (!next) onClose?.();
       }}
       title="Report"
-      footer={(
+      footer={
         <PrimaryButton fullWidth onClick={handleSubmit}>
           {footerLabel}
         </PrimaryButton>
-      )}
+      }
     >
       {step === 1 ? (
         <div className="space-y-3" role="radiogroup" aria-label="Report reason">
-          <p className="text-sm font-medium text-foreground">Please select a reason for reporting</p>
+          <p className="text-foreground text-sm font-medium">
+            Please select a reason for reporting
+          </p>
           {REEL_REPORT_REASONS.map((reason) => (
             <ReportReasonOption
               key={reason.id}
@@ -112,7 +112,7 @@ export function ReportSheetResponsive({ open, onOpenChange, onClose }) {
         </div>
       ) : (
         <div>
-          <p className="mb-4 text-sm text-foreground">
+          <p className="text-foreground mb-4 text-sm">
             Please provide more details about the issue.
           </p>
           <label htmlFor="report-description" className="mb-2 block text-sm font-bold">
@@ -125,9 +125,9 @@ export function ReportSheetResponsive({ open, onOpenChange, onClose }) {
               onChange={(event) => setDescription(event.target.value.slice(0, 500))}
               placeholder="Describe the issue..."
               rows={5}
-              className="w-full resize-none rounded-xl border border-border/70 bg-[#F8F9FC] p-4 pb-8 text-sm outline-none ring-primary/20 focus:ring-2"
+              className="border-border/70 ring-primary/20 w-full resize-none rounded-xl border bg-[#F8F9FC] p-4 pb-8 text-sm outline-none focus:ring-2"
             />
-            <span className="text-muted-foreground absolute bottom-3 right-3 text-xs">
+            <span className="text-muted-foreground absolute right-3 bottom-3 text-xs">
               {description.length}/500
             </span>
           </div>

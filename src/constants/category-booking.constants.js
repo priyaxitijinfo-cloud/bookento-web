@@ -1,5 +1,9 @@
 import { CATEGORY_LISTING_CONFIG } from "@/constants/category-listing.constants";
 import {
+  getAllCategoryPackages,
+  getCategoryPackages,
+} from "@/constants/category-packages.constants";
+import {
   DOCTOR_ABOUT_DESCRIPTION,
   DOCTOR_BOOKING_SERVICES,
   DOCTOR_GALLERY,
@@ -10,12 +14,18 @@ import { getHomeCategoryBySlug } from "@/constants/home-categories";
 import { imageUrl } from "@/mock/helpers";
 
 const SERVICE_BLUEPRINT = [
-  { label: "Consultation", duration: 30, price: 1500, originalPrice: 2200 },
-  { label: "Standard Session", duration: 45, price: 2500, originalPrice: 3200 },
-  { label: "Premium Session", duration: 60, price: 4200, originalPrice: 5200 },
-  { label: "Follow-up Visit", duration: 25, price: 1200, originalPrice: 1800 },
-  { label: "Express Service", duration: 20, price: 900, originalPrice: 1400 },
-  { label: "Complete Care Package", duration: 90, price: 6500, originalPrice: 8200 },
+  { label: "Consultation", duration: 30, price: 450, originalPrice: 799 },
+  { label: "Standard Session", duration: 45, price: 899, originalPrice: 1299 },
+  { label: "Premium Session", duration: 60, price: 1499, originalPrice: 1999 },
+  { label: "Follow-up Visit", duration: 25, price: 399, originalPrice: 699 },
+  { label: "Express Service", duration: 20, price: 349, originalPrice: 599 },
+  { label: "Complete Care Package", duration: 90, price: 3499, originalPrice: 4499 },
+  { label: "Home Visit", duration: 40, price: 1299, originalPrice: 1799 },
+  { label: "Online Session", duration: 30, price: 599, originalPrice: 899 },
+  { label: "Diagnostic Review", duration: 35, price: 999, originalPrice: 1399 },
+  { label: "Wellness Check", duration: 50, price: 1599, originalPrice: 2199 },
+  { label: "Add-on Support", duration: 15, price: 299, originalPrice: 499 },
+  { label: "Priority Booking Slot", duration: 45, price: 1899, originalPrice: 2499 },
 ];
 
 const PACKAGE_THEMES = ["rose", "blue", "amber"];
@@ -35,13 +45,21 @@ function buildCategoryServices(slug, config, categoryName) {
 }
 
 function buildCategoryPackages(slug, categoryName) {
+  const predefined = getCategoryPackages(slug);
+  if (predefined?.length) return predefined;
+
   return [
     {
       id: `${slug}_pkg_1`,
       name: `${categoryName} Essentials`,
       description: `Core ${categoryName.toLowerCase()} services in one convenient plan`,
       image: "/images/packages/wellness-package-1.png",
-      features: ["Initial consultation", "Standard service session", "Follow-up guidance", "Flexible scheduling"],
+      features: [
+        "Initial consultation",
+        "Standard service session",
+        "Follow-up guidance",
+        "Flexible scheduling",
+      ],
       originalPrice: 6500,
       price: 4800,
       discountPercent: 26,
@@ -52,7 +70,12 @@ function buildCategoryPackages(slug, categoryName) {
       name: `${categoryName} Plus`,
       description: `Popular plan for regular ${categoryName.toLowerCase()} needs`,
       image: "/images/packages/wellness-package-2.png",
-      features: ["Priority booking", "Extended service time", "Add-on support", "Member savings"],
+      features: [
+        "Priority booking",
+        "Extended service time",
+        "Add-on support",
+        "Member savings",
+      ],
       originalPrice: 8200,
       price: 5900,
       discountPercent: 28,
@@ -63,7 +86,12 @@ function buildCategoryPackages(slug, categoryName) {
       name: `${categoryName} Premium`,
       description: `Best value for comprehensive ${categoryName.toLowerCase()} care`,
       image: "/images/packages/wellness-package-3.png",
-      features: ["Full service bundle", "Dedicated support", "Premium slot access", "Exclusive offers"],
+      features: [
+        "Full service bundle",
+        "Dedicated support",
+        "Premium slot access",
+        "Exclusive offers",
+      ],
       originalPrice: 9800,
       price: 7200,
       discountPercent: 27,
@@ -102,7 +130,10 @@ function buildCategoryReels(slug, categoryName) {
     ...reel,
     id: `${slug}_reel_${index + 1}`,
     title: `${categoryName} highlight ${index + 1}`,
-    caption: reel.caption.replace(/wellness|health|clinic/gi, categoryName.toLowerCase()),
+    caption: reel.caption.replace(
+      /wellness|health|clinic/gi,
+      categoryName.toLowerCase(),
+    ),
     handle: `${categoryName} Pro`,
     packageId: `${slug}_pkg_${(index % 3) + 1}`,
   }));
@@ -121,10 +152,14 @@ function buildCategoryBookingData(slug, category, config) {
 }
 
 export function getCategoryBookingData(slug, providerName = "This provider") {
+  const predefinedPackages = getCategoryPackages(slug);
+
   if (slug === "doctor") {
     return {
       services: DOCTOR_BOOKING_SERVICES,
-      packages: DOCTOR_WELLNESS_PACKAGES,
+      packages: predefinedPackages?.length
+        ? predefinedPackages
+        : DOCTOR_WELLNESS_PACKAGES,
       gallery: DOCTOR_GALLERY,
       aboutParagraphs: DOCTOR_ABOUT_DESCRIPTION,
       reels: DOCTOR_REELS,
@@ -133,7 +168,24 @@ export function getCategoryBookingData(slug, providerName = "This provider") {
 
   const config = CATEGORY_LISTING_CONFIG[slug];
   const category = getHomeCategoryBySlug(slug);
-  if (!config || !category) return null;
+
+  // Always return usable demo data — never null — so tabs/booking stay filled.
+  if (!config || !category) {
+    const fallbackName = providerName || "This provider";
+    return {
+      services: DOCTOR_BOOKING_SERVICES.slice(0, 8).map((service, index) => ({
+        ...service,
+        id: `fallback_svc_${index + 1}`,
+      })),
+      packages: DOCTOR_WELLNESS_PACKAGES.map((pkg, index) => ({
+        ...pkg,
+        id: `fallback_pkg_${index + 1}`,
+      })),
+      gallery: DOCTOR_GALLERY,
+      aboutParagraphs: buildCategoryAbout("Service", fallbackName),
+      reels: DOCTOR_REELS,
+    };
+  }
 
   let data = categoryBookingDataCache.get(slug);
   if (!data) {
@@ -152,7 +204,14 @@ export function getCategoryBookingData(slug, providerName = "This provider") {
 }
 
 export function getCategoryPackageById(slug, packageId) {
-  const data = getCategoryBookingData(slug);
-  if (!data) return null;
-  return data.packages.find((pkg) => pkg.id === packageId) || null;
+  if (!packageId) return null;
+
+  if (slug) {
+    const data = getCategoryBookingData(slug);
+    const fromSlug = data?.packages?.find((pkg) => pkg.id === packageId);
+    if (fromSlug) return fromSlug;
+  }
+
+  // Fallback: resolve across all category catalogs (salon_pkg_1, fitness_pkg_2, …)
+  return getAllCategoryPackages().find((pkg) => pkg.id === packageId) || null;
 }

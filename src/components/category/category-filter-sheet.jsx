@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Loader2, LocateFixed, X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 
-import { LocationIcon } from "@/components/icons/location-icon";
+import { CurrentLocationIcon, LocationIcon } from "@/components/icons/location-icon";
 
 import { cn } from "@/lib/utils";
 
@@ -35,7 +35,7 @@ const PRICE_RANGE_DISPLAY = {
 function FilterSection({ title, children, className }) {
   return (
     <section className={cn("space-y-3", className)}>
-      <p className="text-foreground text-[15px] font-semibold leading-none">{title}</p>
+      <p className="text-foreground text-[15px] leading-none font-semibold">{title}</p>
       {children}
     </section>
   );
@@ -139,8 +139,8 @@ function SearchFilterFields({ draft, setDraft, priceRangeWrap = false }) {
             }
             placeholder="Current Location"
             className={cn(
-              "text-foreground placeholder:text-muted-foreground h-[3.25rem] w-full rounded-xl border border-border bg-background",
-              "pl-11 pr-12 text-sm focus-visible:border-primary/40 focus-visible:ring-primary/20 focus-visible:ring-2 focus-visible:outline-none",
+              "text-foreground placeholder:text-muted-foreground border-border bg-background h-[3.25rem] w-full rounded-xl border",
+              "focus-visible:border-primary/40 focus-visible:ring-primary/20 pr-12 pl-11 text-sm focus-visible:ring-2 focus-visible:outline-none",
             )}
           />
           <button
@@ -153,7 +153,7 @@ function SearchFilterFields({ draft, setDraft, priceRangeWrap = false }) {
             {isLocating ? (
               <Loader2 className="size-[1.125rem] animate-spin" />
             ) : (
-              <LocateFixed className="size-[1.125rem]" />
+              <CurrentLocationIcon className="size-5" />
             )}
           </button>
         </div>
@@ -162,7 +162,9 @@ function SearchFilterFields({ draft, setDraft, priceRangeWrap = false }) {
       <FilterSection title="Distance">
         <DistanceSlider
           value={draft.maxDistance}
-          onChange={(maxDistance) => setDraft((current) => ({ ...current, maxDistance }))}
+          onChange={(maxDistance) =>
+            setDraft((current) => ({ ...current, maxDistance }))
+          }
         />
       </FilterSection>
 
@@ -177,7 +179,9 @@ function SearchFilterFields({ draft, setDraft, priceRangeWrap = false }) {
             <PriceRangeChip
               key={option.value}
               active={draft.priceRange === option.value}
-              onClick={() => setDraft((current) => ({ ...current, priceRange: option.value }))}
+              onClick={() =>
+                setDraft((current) => ({ ...current, priceRange: option.value }))
+              }
             >
               {option.label}
             </PriceRangeChip>
@@ -246,17 +250,19 @@ export function CategoryFilterSheet({ open, onClose, filters, onApply }) {
       />
 
       {/* Mobile bottom sheet */}
-      <div className="relative flex w-full max-w-lg flex-col rounded-t-[1.375rem] bg-background shadow-[0_-8px_40px_rgba(15,23,42,0.12)] md:hidden">
+      <div className="bg-background relative flex w-full max-w-lg flex-col rounded-t-[1.375rem] shadow-[0_-8px_40px_rgba(15,23,42,0.12)] md:hidden">
         <div className="flex shrink-0 justify-center pt-3 pb-1">
           <span aria-hidden className="h-1 w-[2.75rem] rounded-full bg-[#D1D5DB]" />
         </div>
 
-        <div className="flex items-center justify-between px-5 pb-5 pt-2">
-          <h2 className="text-foreground text-[1.125rem] font-bold leading-none">Search Filters</h2>
+        <div className="flex items-center justify-between px-5 pt-2 pb-5">
+          <h2 className="text-foreground text-[1.125rem] leading-none font-bold">
+            Search Filters
+          </h2>
           <button
             type="button"
             onClick={onClose}
-            className="flex size-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-muted"
+            className="bg-muted text-muted-foreground hover:bg-muted flex size-9 items-center justify-center rounded-full transition-colors"
             aria-label="Close"
           >
             <X className="size-[1.125rem]" strokeWidth={2.25} />
@@ -267,11 +273,11 @@ export function CategoryFilterSheet({ open, onClose, filters, onApply }) {
           <SearchFilterFields draft={draft} setDraft={setDraft} />
         </div>
 
-        <div className="safe-bottom shrink-0 px-5 pb-6 pt-5">
+        <div className="shrink-0 px-5 pt-5 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))]">
           <button
             type="button"
             onClick={handleApply}
-            className="gradient-brand h-[3.25rem] w-full rounded-xl text-[15px] font-semibold text-white transition-opacity hover:opacity-95"
+            className="gradient-brand h-[3.25rem] w-full rounded-xl text-[15px] font-medium text-white transition-opacity hover:opacity-95 md:font-semibold"
           >
             Apply Filter
           </button>
@@ -279,13 +285,13 @@ export function CategoryFilterSheet({ open, onClose, filters, onApply }) {
       </div>
 
       {/* Desktop / webview centered modal — same fields */}
-      <div className="relative hidden w-full max-w-lg flex-col rounded-2xl bg-background shadow-2xl md:flex">
+      <div className="bg-background relative hidden w-full max-w-lg flex-col rounded-2xl shadow-2xl md:flex">
         <div className="flex items-center justify-between border-b px-5 py-4">
           <h2 className="text-foreground text-lg font-bold">Search Filters</h2>
           <button
             type="button"
             onClick={onClose}
-            className="flex size-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-muted"
+            className="bg-muted text-muted-foreground hover:bg-muted flex size-9 items-center justify-center rounded-full transition-colors"
             aria-label="Close"
           >
             <X className="size-[1.125rem]" strokeWidth={2.25} />
@@ -300,7 +306,7 @@ export function CategoryFilterSheet({ open, onClose, filters, onApply }) {
           <button
             type="button"
             onClick={handleApply}
-            className="gradient-brand h-[3.25rem] w-full rounded-xl text-[15px] font-semibold text-white transition-opacity hover:opacity-95"
+            className="gradient-brand h-[3.25rem] w-full rounded-xl text-[15px] font-medium text-white transition-opacity hover:opacity-95 md:font-semibold"
           >
             Apply Filter
           </button>
@@ -315,7 +321,9 @@ export function getSheetFilterTags(filters) {
 
   if (filters.maxDistance < DISTANCE_MAX) {
     const value =
-      filters.maxDistance % 1 === 0 ? filters.maxDistance : filters.maxDistance.toFixed(1);
+      filters.maxDistance % 1 === 0
+        ? filters.maxDistance
+        : filters.maxDistance.toFixed(1);
     tags.push({ key: "maxDistance", label: `Within ${value} km`, showMapPin: true });
   }
 
@@ -362,7 +370,11 @@ export function hasActiveCategoryFilters(filters, sheetFiltersApplied = false) {
   );
 }
 
-export function filterProvidersByCategoryFilters(list, filters, sheetFiltersApplied = false) {
+export function filterProvidersByCategoryFilters(
+  list,
+  filters,
+  sheetFiltersApplied = false,
+) {
   let next = [...list];
 
   if (filters.specialty && filters.specialty !== "All") {
@@ -370,11 +382,14 @@ export function filterProvidersByCategoryFilters(list, filters, sheetFiltersAppl
   }
 
   if (sheetFiltersApplied && filters.maxDistance < DISTANCE_MAX) {
-    next = next.filter((provider) => provider.distance * 1.60934 <= filters.maxDistance);
+    // listing distances are already stored in km
+    next = next.filter((provider) => provider.distance <= filters.maxDistance);
   }
 
   if (sheetFiltersApplied && filters.priceRange && filters.priceRange !== "any") {
-    next = next.filter((provider) => matchesPriceRange(provider.startingPrice, filters.priceRange));
+    next = next.filter((provider) =>
+      matchesPriceRange(provider.startingPrice, filters.priceRange),
+    );
   }
 
   return next;

@@ -4,19 +4,44 @@ import { toast } from "sonner";
 
 import { ProviderHeader } from "@/components/layout/provider-nav";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { FormField } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSettingsStore } from "@/store";
+import { providerSettings as defaultProviderSettings } from "@/mock/settings";
+import { useProviderSettingsStore } from "@/store";
+
+function mergeProviderSettings(settings) {
+  return {
+    notifications: {
+      ...defaultProviderSettings.notifications,
+      ...settings?.notifications,
+    },
+    business: {
+      ...defaultProviderSettings.business,
+      ...settings?.business,
+    },
+    payment: {
+      ...defaultProviderSettings.payment,
+      ...settings?.payment,
+    },
+  };
+}
 
 export default function ProviderSettingsPage() {
-  const { providerSettings, updateProviderSettings, isLoading } = useSettingsStore();
+  const { settings, updateSettings, isLoading } = useProviderSettingsStore();
+  const providerSettings = mergeProviderSettings(settings);
   const { notifications, business, payment } = providerSettings;
 
   const handleSave = async (section, data) => {
-    await updateProviderSettings({ [section]: { ...providerSettings[section], ...data } });
+    await updateSettings({ [section]: { ...providerSettings[section], ...data } });
     toast.success("Settings saved");
   };
 
@@ -40,12 +65,19 @@ export default function ProviderSettingsPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {Object.entries(notifications).map(([key, value]) => (
-                  <label key={key} className="flex items-center justify-between rounded-xl border p-4">
-                    <span className="text-sm font-medium capitalize">{key.replace(/([A-Z])/g, " $1")}</span>
+                  <label
+                    key={key}
+                    className="flex items-center justify-between rounded-xl border p-4"
+                  >
+                    <span className="text-sm font-medium capitalize">
+                      {key.replace(/([A-Z])/g, " $1")}
+                    </span>
                     <input
                       type="checkbox"
                       checked={value}
-                      onChange={(e) => handleSave("notifications", { [key]: e.target.checked })}
+                      onChange={(e) =>
+                        handleSave("notifications", { [key]: e.target.checked })
+                      }
                       className="size-4 rounded"
                     />
                   </label>
@@ -58,7 +90,9 @@ export default function ProviderSettingsPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Business Settings</CardTitle>
-                <CardDescription>Configure booking and scheduling rules</CardDescription>
+                <CardDescription>
+                  Configure booking and scheduling rules
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <label className="flex items-center justify-between rounded-xl border p-4">
@@ -66,7 +100,9 @@ export default function ProviderSettingsPage() {
                   <input
                     type="checkbox"
                     checked={business.autoAcceptBookings}
-                    onChange={(e) => handleSave("business", { autoAcceptBookings: e.target.checked })}
+                    onChange={(e) =>
+                      handleSave("business", { autoAcceptBookings: e.target.checked })
+                    }
                     className="size-4 rounded"
                   />
                 </label>
@@ -74,20 +110,28 @@ export default function ProviderSettingsPage() {
                   <Input
                     type="number"
                     defaultValue={business.bufferTime}
-                    onBlur={(e) => handleSave("business", { bufferTime: Number(e.target.value) })}
+                    onBlur={(e) =>
+                      handleSave("business", { bufferTime: Number(e.target.value) })
+                    }
                   />
                 </FormField>
                 <FormField label="Max daily bookings">
                   <Input
                     type="number"
                     defaultValue={business.maxDailyBookings}
-                    onBlur={(e) => handleSave("business", { maxDailyBookings: Number(e.target.value) })}
+                    onBlur={(e) =>
+                      handleSave("business", {
+                        maxDailyBookings: Number(e.target.value),
+                      })
+                    }
                   />
                 </FormField>
                 <FormField label="Cancellation policy">
                   <Select
                     value={business.cancellationPolicy}
-                    onValueChange={(v) => handleSave("business", { cancellationPolicy: v })}
+                    onValueChange={(v) =>
+                      handleSave("business", { cancellationPolicy: v })
+                    }
                     options={[
                       { value: "24_hours", label: "24 hours before" },
                       { value: "12_hours", label: "12 hours before" },
@@ -121,7 +165,9 @@ export default function ProviderSettingsPage() {
                 <FormField label="UPI ID" className="sm:col-span-2">
                   <Input defaultValue={payment.upi} readOnly />
                 </FormField>
-                <Button variant="outline" className="sm:col-span-2">Update Payment Info</Button>
+                <Button variant="outline" className="sm:col-span-2">
+                  Update Payment Info
+                </Button>
               </CardContent>
             </Card>
           </TabsContent>
@@ -142,7 +188,10 @@ export default function ProviderSettingsPage() {
                 <FormField label="Confirm Password">
                   <Input type="password" placeholder="••••••••" />
                 </FormField>
-                <Button loading={isLoading} onClick={() => toast.success("Password updated")}>
+                <Button
+                  loading={isLoading}
+                  onClick={() => toast.success("Password updated")}
+                >
                   Update Password
                 </Button>
               </CardContent>

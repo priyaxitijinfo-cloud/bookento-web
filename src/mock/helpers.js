@@ -1,22 +1,85 @@
 const FIRST_NAMES = [
-  "Aarav", "Vihaan", "Ananya", "Priya", "Rahul", "Sneha", "Karan", "Meera",
-  "Arjun", "Isha", "Rohan", "Neha", "Aditya", "Pooja", "Vikram", "Kavya",
-  "Dev", "Shreya", "Nikhil", "Tanvi", "Raj", "Divya", "Amit", "Nisha",
+  "Aarav",
+  "Vihaan",
+  "Ananya",
+  "Priya",
+  "Rahul",
+  "Sneha",
+  "Karan",
+  "Meera",
+  "Arjun",
+  "Isha",
+  "Rohan",
+  "Neha",
+  "Aditya",
+  "Pooja",
+  "Vikram",
+  "Kavya",
+  "Dev",
+  "Shreya",
+  "Nikhil",
+  "Tanvi",
+  "Raj",
+  "Divya",
+  "Amit",
+  "Nisha",
 ];
 
 const LAST_NAMES = [
-  "Sharma", "Patel", "Singh", "Kumar", "Gupta", "Reddy", "Mehta", "Joshi",
-  "Verma", "Iyer", "Nair", "Desai", "Kapoor", "Malhotra", "Chopra", "Bose",
+  "Sharma",
+  "Patel",
+  "Singh",
+  "Kumar",
+  "Gupta",
+  "Reddy",
+  "Mehta",
+  "Joshi",
+  "Verma",
+  "Iyer",
+  "Nair",
+  "Desai",
+  "Kapoor",
+  "Malhotra",
+  "Chopra",
+  "Bose",
 ];
 
 const BUSINESS_PREFIXES = [
-  "Elite", "Premium", "Royal", "Urban", "Pro", "Smart", "Golden", "Pure",
-  "Fresh", "Swift", "Bright", "Zen", "Nova", "Prime", "Bliss", "Glow",
+  "Elite",
+  "Premium",
+  "Royal",
+  "Urban",
+  "Pro",
+  "Smart",
+  "Golden",
+  "Pure",
+  "Fresh",
+  "Swift",
+  "Bright",
+  "Zen",
+  "Nova",
+  "Prime",
+  "Bliss",
+  "Glow",
 ];
 
 const BUSINESS_SUFFIXES = [
-  "Studio", "Spa", "Clinic", "Salon", "Care", "Hub", "Center", "Works",
-  "Lab", "House", "Point", "Zone", "Space", "Lounge", "Bar", "Shop",
+  "Studio",
+  "Spa",
+  "Clinic",
+  "Salon",
+  "Care",
+  "Hub",
+  "Center",
+  "Works",
+  "Lab",
+  "House",
+  "Point",
+  "Zone",
+  "Space",
+  "Lounge",
+  "Bar",
+  "Shop",
 ];
 
 const CITIES = [
@@ -83,17 +146,36 @@ export function reviewComment(index) {
   return pick(REVIEW_COMMENTS, index);
 }
 
+/** Stable instant for mock data — prevents SSR/client drift from Date.now() at import time. */
+export const MOCK_REFERENCE_MS = Date.parse("2026-08-10T12:00:00.000Z");
+
 export function isoDate(daysAgo = 0) {
-  const d = new Date();
-  d.setDate(d.getDate() - daysAgo);
-  return d.toISOString();
+  return new Date(MOCK_REFERENCE_MS - daysAgo * 86_400_000).toISOString();
 }
 
-export function timeSlot(hour) {
+export function mockNowIso() {
+  return new Date(MOCK_REFERENCE_MS).toISOString();
+}
+
+export function timeSlot(hour, minute = 0) {
   const h = hour % 24;
   const ampm = h >= 12 ? "PM" : "AM";
   const display = h % 12 || 12;
-  return `${display}:00 ${ampm}`;
+  const minStr = String(minute).padStart(2, "0");
+  return `${display}:${minStr} ${ampm}`;
+}
+
+export function generateHalfHourSlots(startHour = 9, endHour = 18) {
+  const slots = [];
+
+  for (let hour = startHour; hour <= endHour; hour++) {
+    slots.push({ hour, minute: 0 });
+    if (hour < endHour) {
+      slots.push({ hour, minute: 30 });
+    }
+  }
+
+  return slots;
 }
 
 export function paginate(items, page = 1, pageSize = 20) {

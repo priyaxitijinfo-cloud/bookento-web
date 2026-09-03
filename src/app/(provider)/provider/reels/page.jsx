@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { Eye, Heart, MessageCircle, Play, Share2, Trash2 } from "lucide-react";
+import { Eye, MessageCircle, Play, Share2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
+import { HeroHeartIcon } from "@/components/icons/hero-nav-icons";
 import { ProviderHeader } from "@/components/layout/provider-nav";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -33,7 +34,12 @@ export default function ProviderReelsPage() {
           {items.map((reel) => (
             <Card key={reel.id} className="group overflow-hidden">
               <div className="relative aspect-[9/16] max-h-72">
-                <Image src={reel.thumbnailUrl} alt={reel.caption} fill className="object-cover" />
+                <Image
+                  src={reel.thumbnailUrl}
+                  alt={reel.caption}
+                  fill
+                  className="object-cover"
+                />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity group-hover:opacity-100">
                   <div className="rounded-full bg-white/90 p-3">
                     <Play className="text-primary size-6 fill-current" />
@@ -45,16 +51,39 @@ export default function ProviderReelsPage() {
               </div>
               <CardContent className="p-3">
                 <p className="line-clamp-2 text-sm">{reel.caption}</p>
-                <p className="text-muted-foreground mt-1 text-xs">{formatRelativeTime(reel.createdAt)}</p>
+                <p className="text-muted-foreground mt-1 text-xs">
+                  {formatRelativeTime(reel.createdAt)}
+                </p>
                 <div className="mt-3 flex items-center justify-between text-xs">
-                  <span className="flex items-center gap-1"><Heart className="size-3.5" />{reel.likes}</span>
-                  <span className="flex items-center gap-1"><MessageCircle className="size-3.5" />{reel.comments}</span>
-                  <span className="flex items-center gap-1"><Share2 className="size-3.5" />{reel.shares}</span>
-                  <span className="flex items-center gap-1"><Eye className="size-3.5" />{reel.views}</span>
+                  <span className="flex items-center gap-1">
+                    <HeroHeartIcon
+                      tone="dark"
+                      className="text-muted-foreground size-3.5"
+                    />
+                    {reel.likes}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <MessageCircle className="size-3.5" />
+                    {reel.comments}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Share2 className="size-3.5" />
+                    {reel.shares}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Eye className="size-3.5" />
+                    {reel.views}
+                  </span>
                 </div>
                 <div className="mt-3 flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1">Edit</Button>
-                  <Button variant="ghost" size="sm" onClick={() => handleDelete(reel.id)}>
+                  <Button variant="outline" size="sm" className="flex-1">
+                    Edit
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDelete(reel.id)}
+                  >
                     <Trash2 className="size-3.5" />
                   </Button>
                 </div>

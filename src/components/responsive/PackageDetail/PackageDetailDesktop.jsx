@@ -1,12 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Heart, Share2 } from "lucide-react";
 
+import { HeroHeartIcon, HeroShareIcon } from "@/components/icons/hero-nav-icons";
 import { ProviderBookingSummaryBar } from "@/components/provider-booking/provider-booking-summary";
 import { DesktopLayout } from "@/components/responsive/layout";
 import { ResponsiveCard } from "@/components/responsive/layout/ResponsiveCard";
-import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/format.utils";
 
 import {
@@ -23,25 +22,29 @@ function DesktopPackageHeader({ onToggleSaved, onShare, saved }) {
   return (
     <div className="mx-auto flex h-[68px] w-full max-w-[90rem] items-center justify-between gap-6 px-6 lg:px-8">
       <div className="min-w-0">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Package</p>
-        <h1 className="truncate text-xl font-semibold text-foreground">Package Details</h1>
+        <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+          Package
+        </p>
+        <h1 className="text-foreground truncate text-xl font-semibold">
+          Package Details
+        </h1>
       </div>
       <div className="flex shrink-0 items-center gap-1">
         <button
           type="button"
           onClick={onToggleSaved}
-          className="flex size-10 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:bg-surface-page"
+          className="border-border bg-background text-foreground hover:bg-surface-page flex size-10 items-center justify-center rounded-full border transition-colors"
           aria-label={saved ? "Unsave package" : "Save package"}
         >
-          <Heart className={cn("size-5", saved && "fill-rose-500 text-rose-500")} />
+          <HeroHeartIcon tone="dark" filled={saved} className="size-5" />
         </button>
         <button
           type="button"
           onClick={onShare}
-          className="flex size-10 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:bg-surface-page"
+          className="border-border bg-background text-foreground hover:bg-surface-page flex size-10 items-center justify-center rounded-full border transition-colors"
           aria-label="Share package"
         >
-          <Share2 className="size-5" />
+          <HeroShareIcon tone="dark" className="size-5" />
         </button>
       </div>
     </div>
@@ -74,7 +77,13 @@ export function PackageDetailDesktop({
 
   return (
     <DesktopLayout
-      header={<DesktopPackageHeader saved={saved} onToggleSaved={onToggleSaved} onShare={onShare} />}
+      header={
+        <DesktopPackageHeader
+          saved={saved}
+          onToggleSaved={onToggleSaved}
+          onShare={onShare}
+        />
+      }
       maxWidth="wide"
     >
       <div className="grid gap-8 xl:grid-cols-[1fr_360px]">
@@ -88,7 +97,7 @@ export function PackageDetailDesktop({
 
           <section>
             <PackageSectionTitle
-              action={(
+              action={
                 <MonthNavigator
                   monthLabel={monthLabel}
                   onPrev={handlePrevDates}
@@ -96,7 +105,7 @@ export function PackageDetailDesktop({
                   disablePrev={!dateScrollEdges.canPrev}
                   disableNext={!dateScrollEdges.canNext}
                 />
-              )}
+              }
             >
               Select Date
             </PackageSectionTitle>
@@ -125,24 +134,30 @@ export function PackageDetailDesktop({
 
         <aside className="space-y-4 xl:sticky xl:top-24 xl:self-start">
           <ResponsiveCard>
-            <h3 className="text-lg font-semibold text-foreground">Package summary</h3>
+            <h3 className="text-foreground text-lg font-semibold">Package summary</h3>
             <div className="mt-4 space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Price</span>
-                <span className="font-semibold text-primary">{formatCurrency(pkg.price)}</span>
+                <span className="text-primary font-semibold">
+                  {formatCurrency(pkg.price)}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Original</span>
-                <span className="text-muted-foreground line-through">{formatCurrency(pkg.originalPrice)}</span>
+                <span className="text-muted-foreground line-through">
+                  {formatCurrency(pkg.originalPrice)}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Discount</span>
-                <span className="font-semibold text-emerald-600">{pkg.discountPercent}% off</span>
+                <span className="font-semibold text-emerald-600">
+                  {pkg.discountPercent}% off
+                </span>
               </div>
             </div>
           </ResponsiveCard>
 
-          <ResponsiveCard className="!p-0 overflow-hidden">
+          <ResponsiveCard className="overflow-hidden !p-0">
             <ProviderBookingSummaryBar
               provider={flowProvider}
               bookingPackage={pkg}
@@ -155,7 +170,7 @@ export function PackageDetailDesktop({
           <button
             type="button"
             onClick={() => router.back()}
-            className="w-full rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-surface-page"
+            className="border-border text-muted-foreground hover:bg-surface-page w-full rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors"
           >
             Go back
           </button>

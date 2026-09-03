@@ -1,7 +1,11 @@
 "use client";
 
+import {
+  CHAT_PAGE_MAIN_CLASS,
+  CHAT_PAGE_SHELL_CLASS,
+} from "@/components/chats/chat-workspace";
 import { UserPageShell } from "@/components/layout/user-page-shell";
-import { ROUTES } from "@/constants/routes.constants";
+import { cn } from "@/lib/utils";
 
 import { ChatThreadPanel } from "./chat-detail-parts";
 
@@ -11,6 +15,12 @@ export function ChatDetailMobile({
   isTyping,
   isLoading,
   onSend,
+  onSendVoice,
+  onSendAttachment,
+  onReact,
+  onDeleteMessage,
+  onPinMessage,
+  onForwardMessage,
   onCall,
   onVideoCall,
   onBack,
@@ -18,20 +28,28 @@ export function ChatDetailMobile({
   return (
     <UserPageShell
       title={conversation.participantName}
-      backHref={ROUTES.CHATS}
+      onBack={onBack}
       backLabel="Back to Chats"
-      containerVariant="browseWithBreadcrumb"
-      className="bg-surface-page h-dvh overflow-hidden pb-0"
+      hideMobileHeader
       showBottomNav={false}
-      mainClassName="overflow-hidden pb-0"
+      showBreadcrumb={false}
+      containerVariant="chat"
+      className={cn(CHAT_PAGE_SHELL_CLASS, "overflow-x-hidden !pb-0")}
+      mainClassName={CHAT_PAGE_MAIN_CLASS}
     >
-      <div className="-mx-4 -mt-3 flex h-[calc(100dvh-3.5rem)] flex-col overflow-hidden bg-background">
+      <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden bg-white">
         <ChatThreadPanel
           conversation={conversation}
           messages={messages}
           isTyping={isTyping}
           isLoading={isLoading}
           onSend={onSend}
+          onSendVoice={onSendVoice}
+          onSendAttachment={onSendAttachment}
+          onReact={onReact}
+          onDeleteMessage={onDeleteMessage}
+          onPinMessage={onPinMessage}
+          onForwardMessage={onForwardMessage}
           onCall={onCall}
           onVideoCall={onVideoCall}
           onBack={onBack}

@@ -2,12 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { ChevronRight, Mail, Pencil } from "lucide-react";
 import { toast } from "sonner";
 
 import {
   ProfileAddressesIcon,
+  ProfileChatsIcon,
+  ProfileEditIcon,
   ProfileHelpIcon,
   ProfileLanguagesIcon,
   ProfileLogoutIcon,
@@ -41,7 +44,7 @@ export function ProfileToggle({ checked, onChange, label }) {
     >
       <span
         className={cn(
-          "absolute top-0.5 left-0.5 size-5 rounded-full bg-background shadow-sm transition-transform",
+          "bg-background absolute top-0.5 left-0.5 size-5 rounded-full shadow-sm transition-transform",
           checked && "translate-x-5",
         )}
       />
@@ -52,11 +55,13 @@ export function ProfileToggle({ checked, onChange, label }) {
 export function ProfileSection({ title, children }) {
   return (
     <section>
-      <div className="mb-3 flex items-center gap-2">
-        <span className="section-title-bar" aria-hidden />
-        <h2 className="text-foreground text-base font-bold">{title}</h2>
+      <div className="mb-3 flex items-center gap-2 max-md:gap-0">
+        <span className="section-title-bar max-md:mr-1.5" aria-hidden />
+        <h2 className="text-foreground text-base font-semibold md:font-bold">
+          {title}
+        </h2>
       </div>
-      <div className="divide-border/60 divide-y overflow-hidden rounded-2xl bg-background shadow-card">
+      <div className="divide-border/60 bg-background shadow-card divide-y overflow-hidden rounded-2xl">
         {children}
       </div>
     </section>
@@ -74,11 +79,23 @@ export function ProfileMenuItem({
 }) {
   const inner = (
     <>
-      <div className={cn("flex size-10 shrink-0 items-center justify-center rounded-xl", iconWrapClass)}>
+      <div
+        className={cn(
+          "flex size-10 shrink-0 items-center justify-center rounded-xl",
+          iconWrapClass,
+        )}
+      >
         <Icon className={cn("size-[22px]", iconClass)} />
       </div>
-      <span className="text-foreground min-w-0 flex-1 text-left text-[15px] font-medium">{label}</span>
-      {trailing ?? <ChevronRight className="text-muted-foreground size-5 shrink-0" strokeWidth={2} />}
+      <span className="text-foreground min-w-0 flex-1 text-left text-[15px] font-medium">
+        {label}
+      </span>
+      {trailing ?? (
+        <ChevronRight
+          className="text-muted-foreground size-5 shrink-0"
+          strokeWidth={2}
+        />
+      )}
     </>
   );
 
@@ -105,25 +122,44 @@ export function ProfileMenuItem({
 }
 
 export function ProfileHeroCard({ profile, stats }) {
+  const router = useRouter();
+
+  const handleEditProfile = () => {
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 767px)").matches
+    ) {
+      router.push(ROUTES.PROFILE_EDIT);
+      return;
+    }
+    toast.message("Edit profile coming soon");
+  };
+
   return (
     <div className="gradient-brand relative overflow-hidden rounded-2xl p-4 shadow-[0_8px_24px_rgba(24,101,234,0.22)]">
       <div className="flex items-start gap-3">
-        <Avatar src={profile.avatar} name={profile.name} size="lg" className="ring-2 ring-white/30" />
+        <Avatar
+          src={profile.avatar}
+          name={profile.name}
+          size="lg"
+          className="ring-2 ring-white/30"
+        />
         <div className="min-w-0 flex-1 pt-0.5">
           <h2 className="truncate text-lg font-bold text-white">{profile.name}</h2>
           <p className="truncate text-sm text-white/85">{profile.email}</p>
         </div>
         <button
           type="button"
-          onClick={() => toast.message("Edit profile coming soon")}
-          className="flex size-9 shrink-0 items-center justify-center rounded-full bg-background/20 text-white transition-colors hover:bg-background/30"
+          onClick={handleEditProfile}
+          className="bg-background/20 hover:bg-background/30 flex size-9 shrink-0 items-center justify-center rounded-md border border-[#FFFFFF] text-white transition-colors md:rounded-full md:border-0"
           aria-label="Edit profile"
         >
-          <Pencil className="size-4" />
+          <ProfileEditIcon className="size-[18px] md:hidden" />
+          <Pencil className="hidden size-4 md:block" />
         </button>
       </div>
 
-      <div className="mt-4 grid grid-cols-3 rounded-xl bg-background/15 px-2 py-3 backdrop-blur-sm">
+      <div className="bg-background/15 mt-4 grid grid-cols-3 rounded-xl px-2 py-3 backdrop-blur-sm">
         {stats.map((stat, index) => (
           <div
             key={stat.label}
@@ -143,7 +179,9 @@ export function DesktopInlineSection({ title, children }) {
     <section>
       <div className="mb-4 flex items-center gap-2">
         <span className="section-title-bar" aria-hidden />
-        <h2 className="text-foreground text-base font-bold">{title}</h2>
+        <h2 className="text-foreground text-base font-semibold md:font-bold">
+          {title}
+        </h2>
       </div>
       <div className="divide-border/60 divide-y overflow-hidden rounded-xl border border-[#EEF2F7] bg-[#FAFBFD]">
         {children}
@@ -207,7 +245,7 @@ export function DesktopProfileSidebar({ profile, stats }) {
 
   return (
     <aside className="shrink-0 self-start">
-      <div className="overflow-hidden rounded-2xl bg-background shadow-card-hover">
+      <div className="bg-background shadow-card-hover overflow-hidden rounded-2xl">
         <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#EEF2F7]">
           <Image
             src={profile.avatar}
@@ -230,15 +268,17 @@ export function DesktopProfileSidebar({ profile, stats }) {
             type="button"
             onClick={handleEditPhotoClick}
             disabled={isUpdatingPhoto}
-            className="absolute top-4 right-4 flex size-10 items-center justify-center rounded-full bg-background/95 text-muted-foreground shadow-md backdrop-blur-sm transition-colors hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+            className="bg-background/95 text-muted-foreground hover:text-primary absolute top-4 right-4 flex size-10 items-center justify-center rounded-full shadow-md backdrop-blur-sm transition-colors disabled:cursor-not-allowed disabled:opacity-60"
             aria-label="Edit profile photo"
           >
             <Pencil className="size-4" />
           </button>
         </div>
 
-        <div className="border-t border-[#EEF2F7] bg-background px-5 py-5">
-          <h2 className="text-foreground text-xl font-bold leading-tight">{profile.name}</h2>
+        <div className="bg-background border-t border-[#EEF2F7] px-5 py-5">
+          <h2 className="text-foreground text-xl leading-tight font-bold">
+            {profile.name}
+          </h2>
           <div className="mt-3 space-y-2.5">
             <p className="text-muted-foreground flex min-w-0 items-center gap-2.5 text-sm">
               <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#EFF6FF] text-[#2563EB]">
@@ -258,8 +298,12 @@ export function DesktopProfileSidebar({ profile, stats }) {
                 index > 0 && "border-l border-[#EEF2F7]",
               )}
             >
-              <p className="text-foreground text-lg font-bold leading-none">{stat.value}</p>
-              <p className="text-muted-foreground mt-1.5 text-[11px] font-medium">{stat.label}</p>
+              <p className="text-foreground text-lg leading-none font-bold">
+                {stat.value}
+              </p>
+              <p className="text-muted-foreground mt-1.5 text-[11px] font-medium">
+                {stat.label}
+              </p>
             </div>
           ))}
         </div>
@@ -282,8 +326,27 @@ export function ProfileOverviewContent({
 
   const accountItems = (
     <>
-      <ProfileMenuItem href={appendFromParam(ROUTES.SAVED, fromKey)} label="Saved" icon={ProfileSavedIcon} iconWrapClass="bg-[#FCE7F3]" />
-      <ProfileMenuItem href={appendFromParam(ROUTES.ADDRESSES, fromKey)} label="My Addresses" icon={ProfileAddressesIcon} iconWrapClass="bg-[#EDE9FE]" />
+      <ProfileMenuItem
+        href={appendFromParam(ROUTES.SAVED, fromKey)}
+        label="Saved"
+        icon={ProfileSavedIcon}
+        iconWrapClass="bg-[#FCE7F3]"
+      />
+      <ProfileMenuItem
+        href={appendFromParam(ROUTES.ADDRESSES, fromKey)}
+        label="My Addresses"
+        icon={ProfileAddressesIcon}
+        iconWrapClass="bg-[#EDE9FE]"
+      />
+      {isDesktop ? (
+        <ProfileMenuItem
+          href={appendFromParam(ROUTES.CHATS, fromKey)}
+          label="Chats"
+          icon={ProfileChatsIcon}
+          iconWrapClass="bg-[#E0F2FE]"
+          iconClass="size-[18px]"
+        />
+      ) : null}
       <ProfileMenuItem
         label="Notification"
         icon={ProfileNotificationIcon}
@@ -296,24 +359,91 @@ export function ProfileOverviewContent({
           />
         }
       />
-      <ProfileMenuItem href={buildReelsRoute({ from: fromKey, view: "saved" })} label="Reels" icon={ProfileReelsIcon} iconWrapClass="bg-[#DBEAFE]" />
+      <ProfileMenuItem
+        href={buildReelsRoute({ from: fromKey, view: "saved" })}
+        label="Reels"
+        icon={ProfileReelsIcon}
+        iconWrapClass="bg-[#DBEAFE]"
+      />
     </>
   );
 
   const activityItems = (
     <>
-      <ProfileMenuItem href={appendFromParam(ROUTES.WALLET, fromKey)} label="My Wallet" icon={ProfileWalletIcon} iconWrapClass="bg-[#FFE8E8]" />
-      <ProfileMenuItem href={appendFromParam(ROUTES.REVIEWS, fromKey)} label="Reviews you've left" icon={ProfileReviewsIcon} iconWrapClass="bg-[#FCE7F3]" />
-      <ProfileMenuItem href={appendFromParam(ROUTES.REFERRALS, fromKey)} label="Credits & referrals" icon={ProfileReferralsIcon} iconWrapClass="bg-[#DBEAFE]" />
+      <ProfileMenuItem
+        href={appendFromParam(ROUTES.WALLET, fromKey)}
+        label="My Wallet"
+        icon={ProfileWalletIcon}
+        iconWrapClass="bg-[#FFE8E8]"
+      />
+      <ProfileMenuItem
+        href={appendFromParam(ROUTES.REVIEWS, fromKey)}
+        label="Reviews you've left"
+        icon={ProfileReviewsIcon}
+        iconWrapClass="bg-[#FCE7F3]"
+      />
+      <ProfileMenuItem
+        href={appendFromParam(ROUTES.REFERRALS, fromKey)}
+        label="Credits & referrals"
+        icon={ProfileReferralsIcon}
+        iconWrapClass="bg-[#DBEAFE]"
+      />
     </>
   );
 
   const preferenceItems = (
     <>
-      <ProfileMenuItem href={languagesHref} label="Languages" icon={ProfileLanguagesIcon} iconWrapClass="bg-[#EDE9FE]" />
-      <ProfileMenuItem label="Privacy & data" icon={ProfilePrivacyIcon} iconWrapClass="bg-[#FEE2E2]" onClick={() => onPlaceholder("Privacy & data")} />
-      <ProfileMenuItem label="Terms & conditions" icon={ProfileTermsIcon} iconWrapClass="bg-[#FCE7F3]" onClick={() => onPlaceholder("Terms & conditions")} />
-      <ProfileMenuItem label="Help center" icon={ProfileHelpIcon} iconWrapClass="bg-[#DBEAFE]" onClick={() => onPlaceholder("Help center")} />
+      <ProfileMenuItem
+        href={languagesHref}
+        label="Languages"
+        icon={ProfileLanguagesIcon}
+        iconWrapClass="bg-[#EDE9FE]"
+      />
+      {isDesktop ? (
+        <ProfileMenuItem
+          label="Privacy & data"
+          icon={ProfilePrivacyIcon}
+          iconWrapClass="bg-[#FEE2E2]"
+          onClick={() => onPlaceholder("Privacy & data")}
+        />
+      ) : (
+        <ProfileMenuItem
+          href={appendFromParam(ROUTES.PRIVACY, fromKey)}
+          label="Privacy & data"
+          icon={ProfilePrivacyIcon}
+          iconWrapClass="bg-[#FEE2E2]"
+        />
+      )}
+      {isDesktop ? (
+        <ProfileMenuItem
+          label="Terms & conditions"
+          icon={ProfileTermsIcon}
+          iconWrapClass="bg-[#FCE7F3]"
+          onClick={() => onPlaceholder("Terms & conditions")}
+        />
+      ) : (
+        <ProfileMenuItem
+          href={appendFromParam(ROUTES.TERMS, fromKey)}
+          label="Terms & conditions"
+          icon={ProfileTermsIcon}
+          iconWrapClass="bg-[#FCE7F3]"
+        />
+      )}
+      {isDesktop ? (
+        <ProfileMenuItem
+          label="Help center"
+          icon={ProfileHelpIcon}
+          iconWrapClass="bg-[#DBEAFE]"
+          onClick={() => onPlaceholder("Help center")}
+        />
+      ) : (
+        <ProfileMenuItem
+          href={appendFromParam(ROUTES.HELP, fromKey)}
+          label="Help center"
+          icon={ProfileHelpIcon}
+          iconWrapClass="bg-[#DBEAFE]"
+        />
+      )}
     </>
   );
 
@@ -328,7 +458,12 @@ export function ProfileOverviewContent({
           : "bg-[#FFF1F2] hover:bg-[#FFE4E6]",
       )}
     >
-      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FB7185] to-[#F43F5E]">
+      <div
+        className={cn(
+          "flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br",
+          isDesktop ? "from-[#FB7185] to-[#F43F5E]" : "from-[#FDA769] to-[#FC5B7D]",
+        )}
+      >
         <ProfileLogoutIcon className="size-[22px]" />
       </div>
       <span className="text-foreground text-[15px] font-medium">Sign out</span>

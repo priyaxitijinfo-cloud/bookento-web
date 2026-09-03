@@ -3,11 +3,16 @@
 import { useEffect, useRef } from "react";
 
 import { DOCTOR_WELLNESS_PACKAGES } from "@/constants/doctor-booking.constants";
+import { ReelsSideIcon } from "@/components/icons/reels-header-icons";
+import { cn } from "@/lib/utils";
 
 function resolveLinkedPackage(reel) {
   const packageId = reel.packageId || reel.linkedPackageId;
   if (packageId) {
-    return DOCTOR_WELLNESS_PACKAGES.find((pkg) => pkg.id === packageId) ?? DOCTOR_WELLNESS_PACKAGES[0];
+    return (
+      DOCTOR_WELLNESS_PACKAGES.find((pkg) => pkg.id === packageId) ??
+      DOCTOR_WELLNESS_PACKAGES[0]
+    );
   }
   return DOCTOR_WELLNESS_PACKAGES[0];
 }
@@ -19,9 +24,17 @@ export function ReelSlide({
   muted,
   slideHeight,
   onBookNow,
+  onProviderClick,
+  flushBottom = false,
 }) {
   const videoRef = useRef(null);
   const linkedPackage = resolveLinkedPackage(reel);
+
+  const handleMobilePackageClick = () => {
+    if (typeof window === "undefined") return;
+    if (!window.matchMedia("(max-width: 767px)").matches) return;
+    onBookNow(linkedPackage.id);
+  };
 
   useEffect(() => {
     const video = videoRef.current;
@@ -55,7 +68,7 @@ export function ReelSlide({
 
   return (
     <div
-      className="relative w-full shrink-0 snap-start snap-always snap-stop-always"
+      className="snap-stop-always relative w-full shrink-0 snap-start snap-always"
       style={{ height: slideHeight > 0 ? slideHeight : "100%" }}
     >
       <div className="pointer-events-none absolute inset-0 bg-zinc-950">
@@ -78,37 +91,124 @@ export function ReelSlide({
             preload={isActive ? "auto" : "metadata"}
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/25" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/30" />
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 px-4 pb-4">
-        <div className="mb-2.5 flex items-center gap-2">
-          <div className="size-8 shrink-0 overflow-hidden rounded-full border-2 border-white">
-            <img src={provider.avatar} alt={provider.businessName} className="size-full object-cover" />
-          </div>
-          <span className="inline-flex items-center rounded-full bg-black/40 px-2.5 py-0.5 backdrop-blur-md">
-            <span className="text-xs font-normal text-white/95">
-              @{reel.handle || provider.businessName}
-            </span>
-          </span>
+      <div
+        className={cn(
+          "pointer-events-none absolute inset-x-0 bottom-0 z-10 px-4 max-md:pt-6 md:pb-4",
+          flushBottom
+            ? "max-md:pb-[calc(1rem+env(safe-area-inset-bottom,0px))]"
+            : "pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))]",
+          isActive
+            ? "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:z-50 max-md:mx-auto max-md:max-w-md"
+            : "max-md:hidden",
+        )}
+      >
+        <div
+          className={cn(
+            !flushBottom && "max-md:-translate-y-[26px]",
+            flushBottom && "max-md:pr-14",
+          )}
+        >
+          {onProviderClick ? (
+            <button
+              type="button"
+              data-no-reel-tap
+              onClick={() => onProviderClick()}
+              className="pointer-events-auto mb-2.5 flex w-fit items-center gap-2 text-left max-md:mb-1 max-md:cursor-pointer md:pointer-events-none"
+            >
+              <div className="size-8 shrink-0 overflow-hidden rounded-full border-2 border-white max-md:size-[34px]">
+                <img
+                  src={provider.avatar}
+                  alt={provider.businessName}
+                  className="size-full object-cover"
+                />
+              </div>
+              <span className="inline-flex items-center rounded-full bg-black/40 px-2.5 py-0.5 backdrop-blur-md max-md:rounded-md max-md:px-3 max-md:py-1.5">
+                <span className="text-xs font-normal text-white/95">
+                  @{reel.handle || provider.businessName}
+                </span>
+              </span>
+            </button>
+          ) : (
+            <div className="mb-2.5 flex items-center gap-2 max-md:mb-1">
+              <div className="size-8 shrink-0 overflow-hidden rounded-full border-2 border-white max-md:size-[34px]">
+                <img
+                  src={provider.avatar}
+                  alt={provider.businessName}
+                  className="size-full object-cover"
+                />
+              </div>
+              <span className="inline-flex items-center rounded-full bg-black/40 px-2.5 py-0.5 backdrop-blur-md max-md:rounded-md max-md:px-3 max-md:py-1.5">
+                <span className="text-xs font-normal text-white/95">
+                  @{reel.handle || provider.businessName}
+                </span>
+              </span>
+            </div>
+          )}
+
+          {onProviderClick ? (
+            <button
+              type="button"
+              data-no-reel-tap
+              onClick={() => onProviderClick()}
+              className="pointer-events-auto mb-0 w-full text-left max-md:cursor-pointer md:pointer-events-none md:cursor-default"
+            >
+              <h3 className="text-base leading-snug font-semibold text-white">
+                {reel.title}
+              </h3>
+              <p className="mt-1 line-clamp-2 text-sm leading-relaxed font-normal text-white/85 max-md:mt-0.5">
+                {reel.caption}
+              </p>
+            </button>
+          ) : (
+            <>
+              <h3 className="text-base leading-snug font-semibold text-white">
+                {reel.title}
+              </h3>
+              <p className="mt-1 line-clamp-2 text-sm leading-relaxed font-normal text-white/85 max-md:mt-0.5">
+                {reel.caption}
+              </p>
+            </>
+          )}
         </div>
 
-        <h3 className="text-base font-semibold leading-snug text-white">{reel.title}</h3>
-        <p className="mt-1 line-clamp-2 text-sm font-normal leading-relaxed text-white/85">{reel.caption}</p>
-
         {linkedPackage && (
-          <div className="pointer-events-auto mt-3 overflow-hidden rounded-xl bg-background p-4 shadow-[0_8px_32px_rgba(15,23,42,0.12)]">
-            <div className="flex items-start gap-3">
+          <div
+            data-no-reel-tap
+            role="button"
+            tabIndex={0}
+            onClick={handleMobilePackageClick}
+            onKeyDown={(event) => {
+              if (event.key !== "Enter" && event.key !== " ") return;
+              event.preventDefault();
+              handleMobilePackageClick();
+            }}
+            className={cn(
+              "bg-background pointer-events-auto mt-3 overflow-hidden rounded-xl p-4 shadow-[0_8px_32px_rgba(15,23,42,0.12)] max-md:mt-1.5 max-md:cursor-pointer md:cursor-default",
+              !flushBottom && "max-md:-translate-y-[26px]",
+            )}
+          >
+            <div className="flex items-start gap-3 max-md:items-center">
               <div className="size-16 shrink-0 overflow-hidden rounded-xl">
-                <img src={linkedPackage.image} alt={linkedPackage.name} className="size-full object-cover" />
+                <img
+                  src={linkedPackage.image}
+                  alt={linkedPackage.name}
+                  className="size-full object-cover"
+                />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="line-clamp-2 text-base font-semibold leading-snug text-[#1E293B]">
+                <p className="line-clamp-2 text-base leading-snug font-semibold text-[#1E293B] max-md:text-[18px]">
                   {linkedPackage.name}
                 </p>
                 <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
-                  <span className="text-base font-semibold text-[#2563EB]">₹{linkedPackage.price}</span>
-                  <span className="text-sm font-normal text-[#94A3B8] line-through">₹{linkedPackage.originalPrice}</span>
+                  <span className="text-base font-semibold text-[#2563EB] max-md:text-[15px]">
+                    ₹{linkedPackage.price}
+                  </span>
+                  <span className="text-sm font-normal text-[#94A3B8] line-through max-md:text-[13px]">
+                    ₹{linkedPackage.originalPrice}
+                  </span>
                   <span className="rounded-full bg-[#FDF2F8] px-2 py-0.5 text-xs font-medium text-[#E11D48]">
                     {linkedPackage.discountPercent}% OFF
                   </span>
@@ -117,11 +217,27 @@ export function ReelSlide({
             </div>
             <button
               type="button"
-              onClick={() => onBookNow(linkedPackage.id)}
-              className="mt-3 flex w-full items-center justify-center gap-0.5 rounded-xl bg-[#F43F5E] py-3 text-sm font-semibold text-white transition-colors hover:bg-[#E11D48]"
+              data-no-reel-tap
+              onClick={(event) => {
+                event.stopPropagation();
+                onBookNow(linkedPackage.id);
+              }}
+              className="mt-3 flex w-full items-center justify-center gap-0.5 rounded-xl bg-[#F43F5E] py-3 text-sm font-semibold text-white transition-colors hover:bg-[#E11D48] max-md:hidden"
             >
               Book Now
               <span className="text-white/75">&gt;&gt;&gt;</span>
+            </button>
+            <button
+              type="button"
+              data-no-reel-tap
+              onClick={(event) => {
+                event.stopPropagation();
+                onBookNow(linkedPackage.id);
+              }}
+              className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#F43F5E] py-3 text-sm font-semibold text-white transition-colors hover:bg-[#E11D48] md:hidden"
+            >
+              Book Now
+              <ReelsSideIcon className="h-[11px] w-5 text-white" />
             </button>
           </div>
         )}

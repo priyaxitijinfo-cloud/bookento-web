@@ -1,7 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Heart, Share2 } from "lucide-react";
+import { ArrowLeft, Share2 } from "lucide-react";
+
+import { HeroHeartIcon } from "@/components/icons/hero-nav-icons";
 
 import { ProviderBookingSummaryBar } from "@/components/provider-booking/provider-booking-summary";
 import { cn } from "@/lib/utils";
@@ -42,31 +44,37 @@ export function PackageDetailTablet({
 
   return (
     <div className="min-h-dvh bg-[#ECEEF2]">
-      <div className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col bg-surface-page pb-32">
-        <header className="safe-top sticky top-0 z-30 border-b border-border/60 bg-background">
+      <div className="bg-surface-page mx-auto flex min-h-dvh w-full max-w-5xl flex-col pb-32">
+        <header className="safe-top border-border/60 bg-background sticky top-0 z-30 border-b">
           <div className="flex h-14 w-full items-center gap-2 px-6">
             <button
               type="button"
               onClick={() => router.back()}
-              className="flex size-9 shrink-0 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted"
+              className="text-foreground hover:bg-muted flex size-9 shrink-0 items-center justify-center rounded-full transition-colors"
               aria-label="Go back"
             >
               <ArrowLeft className="size-5" />
             </button>
-            <h1 className="min-w-0 flex-1 text-base font-bold md:text-left">Packages Details</h1>
+            <h1 className="min-w-0 flex-1 text-base font-semibold md:text-left md:font-bold">
+              Packages Details
+            </h1>
             <div className="flex shrink-0 items-center gap-0.5">
               <button
                 type="button"
                 onClick={onToggleSaved}
-                className="flex size-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted"
+                className="text-foreground hover:bg-muted flex size-9 items-center justify-center rounded-full transition-colors"
                 aria-label={saved ? "Unsave package" : "Save package"}
               >
-                <Heart className={cn("size-5", saved && "fill-rose-500 text-rose-500")} />
+                <HeroHeartIcon
+                  tone="dark"
+                  filled={saved}
+                  className="text-foreground size-5"
+                />
               </button>
               <button
                 type="button"
                 onClick={onShare}
-                className="flex size-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted"
+                className="text-foreground hover:bg-muted flex size-9 items-center justify-center rounded-full transition-colors"
                 aria-label="Share package"
               >
                 <Share2 className="size-5" />
@@ -75,7 +83,7 @@ export function PackageDetailTablet({
           </div>
         </header>
 
-        <main className="flex-1 w-full space-y-6 px-6 py-6">
+        <main className="w-full flex-1 space-y-6 px-6 py-6">
           <PackageInfoCard pkg={pkg} theme={theme} />
 
           <div className="grid gap-6 md:grid-cols-2">
@@ -98,7 +106,7 @@ export function PackageDetailTablet({
 
           <section>
             <PackageSectionTitle
-              action={(
+              action={
                 <MonthNavigator
                   monthLabel={monthLabel}
                   onPrev={handlePrevDates}
@@ -106,7 +114,7 @@ export function PackageDetailTablet({
                   disablePrev={!dateScrollEdges.canPrev}
                   disableNext={!dateScrollEdges.canNext}
                 />
-              )}
+              }
             >
               Select Date
             </PackageSectionTitle>

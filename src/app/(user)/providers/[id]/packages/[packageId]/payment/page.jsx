@@ -3,20 +3,26 @@
 import { Suspense } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 
-import { BookingPaymentView, resolveBookingPackage } from "@/components/provider-booking/booking-payment-view";
+import {
+  BookingPaymentView,
+  resolveBookingPackage,
+} from "@/components/provider-booking/booking-payment-view";
 import { getProviderById } from "@/mock/providers";
 
 function PackagePaymentContent() {
   const { id, packageId } = useParams();
   const searchParams = useSearchParams();
   const categorySlug = searchParams.get("from");
-  const isDoctorFlow = categorySlug === "doctor";
 
   const provider = getProviderById(id);
-  const pkg = resolveBookingPackage(packageId);
+  const pkg = resolveBookingPackage(packageId, null, categorySlug);
 
   if (!provider || !pkg) {
-    return <div className="flex min-h-dvh items-center justify-center">Payment details not found</div>;
+    return (
+      <div className="flex min-h-dvh items-center justify-center">
+        Payment details not found
+      </div>
+    );
   }
 
   const flowProvider = {
@@ -29,7 +35,7 @@ function PackagePaymentContent() {
   return (
     <BookingPaymentView
       provider={flowProvider}
-      isDoctorFlow={isDoctorFlow}
+      categorySlug={categorySlug}
       bookingPackage={pkg}
     />
   );
@@ -37,7 +43,11 @@ function PackagePaymentContent() {
 
 export default function PackagePaymentPage() {
   return (
-    <Suspense fallback={<div className="flex min-h-dvh items-center justify-center">Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="flex min-h-dvh items-center justify-center">Loading...</div>
+      }
+    >
       <PackagePaymentContent />
     </Suspense>
   );

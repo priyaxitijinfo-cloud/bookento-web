@@ -1,9 +1,5 @@
+import { HeroHeartIcon } from "@/components/icons/hero-nav-icons";
 import { cn } from "@/lib/utils";
-
-export const WISHLIST_ICONS = {
-  active: "/icons/06.svg",
-  inactive: "/icons/01.svg",
-};
 
 export function ProviderWishlistButton({ isSaved, onToggle, className }) {
   return (
@@ -15,18 +11,16 @@ export function ProviderWishlistButton({ isSaved, onToggle, className }) {
         onToggle?.();
       }}
       className={cn(
-        "flex size-9 items-center justify-center rounded-full bg-muted shadow-sm transition-colors hover:bg-muted",
+        "bg-muted hover:bg-muted flex size-9 items-center justify-center rounded-full shadow-sm transition-colors",
         className,
       )}
       aria-label={isSaved ? "Remove from saved" : "Save provider"}
       aria-pressed={isSaved}
     >
-      <img
-        src={isSaved ? WISHLIST_ICONS.active : WISHLIST_ICONS.inactive}
-        alt=""
-        draggable={false}
-        className="size-[18px] object-contain"
-        aria-hidden
+      <HeroHeartIcon
+        tone="dark"
+        filled={isSaved}
+        className="size-[18px] text-[#4D5972]"
       />
     </button>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { SearchIcon } from "@/components/icons/search-icon";
 
 import { AddAddressButton } from "@/components/addresses/add-address-button";
 import { AddressListView } from "@/components/addresses/address-list-view";
@@ -15,9 +15,9 @@ function LocationMapPreview({ latitude, longitude, label }) {
 
   return (
     <ResponsiveCard className="sticky top-24 overflow-hidden !p-0">
-      <div className="border-b border-border px-5 py-4">
-        <h2 className="text-sm font-semibold text-foreground">Map preview</h2>
-        <p className="mt-0.5 text-xs text-muted-foreground">{label}</p>
+      <div className="border-border border-b px-5 py-4">
+        <h2 className="text-foreground text-sm font-semibold">Map preview</h2>
+        <p className="text-muted-foreground mt-0.5 text-xs">{label}</p>
       </div>
       <div className="relative aspect-[4/3] w-full bg-[#111827]">
         <iframe
@@ -47,20 +47,20 @@ export function LocationDesktop({
   return (
     <DesktopLayout
       maxWidth="wide"
-      header={(
+      header={
         <DesktopBreadcrumbBar
           backHref={ROUTES.PROFILE}
           backLabel="Back to Profile"
           currentLabel="My Addresses"
           rightAction={<AddAddressButton onClick={onAddFlow} />}
         />
-      )}
+      }
     >
       <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
         <div className="min-w-0 space-y-6">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Select Location</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <h1 className="text-foreground text-2xl font-bold">Select Location</h1>
+            <p className="text-muted-foreground mt-1 text-sm">
               Manage saved addresses for bookings and home visits
             </p>
           </div>
@@ -68,10 +68,12 @@ export function LocationDesktop({
           <button
             type="button"
             onClick={onSearchFocus}
-            className="border-border/70 flex h-11 w-full max-w-xl items-center gap-3 rounded-full border bg-background px-4 text-left shadow-card"
+            className="border-border/70 bg-background shadow-card flex h-11 w-full max-w-xl items-center gap-3 rounded-full border px-4 text-left"
           >
-            <Search className="text-muted-foreground size-4 shrink-0" />
-            <span className="text-muted-foreground truncate text-sm">Search an area or address</span>
+            <SearchIcon className="text-muted-foreground size-4 shrink-0" />
+            <span className="text-muted-foreground truncate text-sm">
+              Search an area or address
+            </span>
           </button>
 
           <AddressListView

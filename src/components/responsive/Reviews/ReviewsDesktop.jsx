@@ -1,27 +1,32 @@
 "use client";
 
-import { DesktopBreadcrumbBar } from "@/components/layout/desktop-breadcrumb-bar";
-import { DesktopLayout } from "@/components/responsive/layout";
-import { ResponsiveCard } from "@/components/responsive/layout/ResponsiveCard";
+import { UserPageShell } from "@/components/layout/user-page-shell";
 import { ROUTES } from "@/constants/routes.constants";
 
-import { ReviewsContent } from "./reviews-parts";
+import { ReviewsEmptyStateDesktop, ReviewsMobileFeed } from "./reviews-parts";
 
-export function ReviewsDesktop({ userReviews, providerMap }) {
+export function ReviewsDesktop({ userReviews }) {
+  const isEmpty = userReviews.length === 0;
+
   return (
-    <DesktopLayout
-      maxWidth="narrow"
-      header={(
-        <DesktopBreadcrumbBar
-          backHref={ROUTES.PROFILE}
-          backLabel="Back to Profile"
-          currentLabel="My Reviews"
-        />
-      )}
+    <UserPageShell
+      title="Reviews"
+      backHref={ROUTES.PROFILE}
+      backLabel="Back to Profile"
+      showBottomNav={false}
+      showDesktopHeader={true}
+      showBreadcrumb={true}
+      containerVariant="browseWithBreadcrumb"
+      className="md:!bg-[#F7F8FC]"
+      mainClassName="mx-auto w-full max-w-7xl px-6 !pt-0 pb-12"
     >
-      <ResponsiveCard>
-        <ReviewsContent userReviews={userReviews} providerMap={providerMap} />
-      </ResponsiveCard>
-    </DesktopLayout>
+      <div className="overflow-hidden sm:p-0">
+        {isEmpty ? (
+          <ReviewsEmptyStateDesktop className="!pt-8 !pb-8" />
+        ) : (
+          <ReviewsMobileFeed reviews={userReviews} />
+        )}
+      </div>
+    </UserPageShell>
   );
 }

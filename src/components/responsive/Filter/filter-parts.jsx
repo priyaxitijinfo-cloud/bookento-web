@@ -21,7 +21,12 @@ export function FilterActiveBar({ filters, onRemove, onClearAll, className }) {
   );
 }
 
-export function FilterSpecialtyChips({ filters, activeFilter, onChange, contained = false }) {
+export function FilterSpecialtyChips({
+  filters,
+  activeFilter,
+  onChange,
+  contained = false,
+}) {
   return (
     <CategoryFilterChips
       filters={filters}
@@ -55,16 +60,27 @@ export function FilterProviderResults({
     return (
       <ResponsiveGrid cols={4} gap="md">
         {providers.map((provider) => (
-          <CategoryProviderGridCard key={provider.listingKey ?? provider.id} provider={provider} />
+          <CategoryProviderGridCard
+            key={provider.listingKey ?? provider.id}
+            provider={provider}
+          />
         ))}
       </ResponsiveGrid>
     );
   }
 
   return (
-    <div className={cn("flex flex-col gap-3", variant === "tablet" && "md:grid md:grid-cols-2 md:gap-4")}>
+    <div
+      className={cn(
+        "flex flex-col gap-3",
+        variant === "tablet" && "md:grid md:grid-cols-2 md:gap-4",
+      )}
+    >
       {providers.map((provider) => (
-        <CategoryProviderListCard key={provider.listingKey ?? provider.id} provider={provider} />
+        <CategoryProviderListCard
+          key={provider.listingKey ?? provider.id}
+          provider={provider}
+        />
       ))}
     </div>
   );
@@ -73,12 +89,12 @@ export function FilterProviderResults({
 export function FilterPanelHeader({ title = "Filters", onClose }) {
   return (
     <div className="mb-4 flex items-center justify-between gap-3">
-      <h2 className="text-foreground text-base font-bold">{title}</h2>
+      <h2 className="text-foreground text-base font-semibold md:font-bold">{title}</h2>
       {onClose ? (
         <button
           type="button"
           onClick={onClose}
-          className="text-muted-foreground hover:text-foreground flex size-8 items-center justify-center rounded-full transition-colors hover:bg-muted"
+          className="text-muted-foreground hover:text-foreground hover:bg-muted flex size-8 items-center justify-center rounded-full transition-colors"
           aria-label="Close filters"
         >
           <X className="size-4" />

@@ -1,9 +1,10 @@
 "use client";
 
-import { Search } from "lucide-react";
-
 import { ChatFilterTabs } from "@/components/chats/chat-filter-tabs";
 import { ChatList } from "@/components/chats/chat-list";
+import { ChatMobileSearchBar } from "@/components/chats/chat-mobile-search-bar";
+import { SearchInput } from "@/components/responsive/Search/SearchMobile";
+import { MOBILE_PAGE_INSET_ALIGN_ACTION_CLASS } from "@/lib/layout/mobile-header.constants";
 import { cn } from "@/lib/utils";
 
 export function ChatInboxPanel({
@@ -13,40 +14,64 @@ export function ChatInboxPanel({
   search,
   onSearchChange,
   searchOpen = false,
+  onSearchClose,
   counts,
   activeId,
   className,
   showTitle = false,
+  showSearch = false,
   emptyTitle,
   emptyDescription,
 }) {
-  const showSearchField = searchOpen || Boolean(search) || showTitle;
+  const showSearchField = showSearch || searchOpen || Boolean(search) || showTitle;
+
+  const handleSearchClose = () => {
+    onSearchChange("");
+    onSearchClose?.();
+  };
 
   return (
-    <div className={cn("flex min-h-0 flex-col bg-background", className)}>
-      <div className="shrink-0 space-y-3 border-b border-[#EEF2F7] px-4 py-3 md:space-y-4 md:px-5 md:py-5">
+    <div
+      className={cn(
+        "bg-background flex min-h-0 flex-col max-md:h-full max-md:flex-1 max-md:bg-transparent",
+        className,
+      )}
+    >
+      {searchOpen ? (
+        <ChatMobileSearchBar
+          value={search}
+          onChange={onSearchChange}
+          onClose={handleSearchClose}
+        />
+      ) : null}
+
+      <div
+        className={cn(
+          "shrink-0 max-md:pb-3",
+          "max-md:pt-4",
+          MOBILE_PAGE_INSET_ALIGN_ACTION_CLASS,
+          "md:space-y-3 md:space-y-3.5 md:border-b md:border-[#EEF2F7] md:px-4 md:py-4",
+        )}
+      >
         {showTitle ? (
-          <h1 className="text-foreground text-xl font-bold tracking-tight md:text-2xl">Chat</h1>
+          <h2 className="text-foreground text-lg font-bold tracking-tight md:text-xl">
+            Chat
+          </h2>
         ) : null}
 
         {showSearchField ? (
-          <div className="relative">
-            <Search className="text-muted-foreground absolute left-3.5 top-1/2 size-4 -translate-y-1/2" />
-            <input
-              type="search"
-              value={search}
-              onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Search conversations..."
-              autoFocus={searchOpen && !showTitle}
-              className="border-border/70 bg-[#F8FAFC] placeholder:text-muted-foreground h-11 w-full rounded-xl border pr-4 pl-10 text-sm outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-primary/20"
-            />
-          </div>
+          <SearchInput
+            className="hidden md:block"
+            query={search}
+            onChange={(event) => onSearchChange(event.target.value)}
+            placeholder="Search conversations..."
+          />
         ) : null}
 
         <ChatFilterTabs value={filter} onChange={onFilterChange} counts={counts} />
       </div>
 
-      <div className="scrollbar-hide min-h-0 flex-1 overflow-y-auto md:px-2 md:py-2">
+      <div className="scrollbar-hide min-h-0 flex-1 overflow-y-auto overscroll-contain max-md:bg-transparent max-md:px-0 max-md:py-0 max-md:pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] md:bg-white md:px-2 md:pt-[10px] md:pb-2">
         <ChatList
           conversations={conversations}
           activeId={activeId}

@@ -95,3 +95,96 @@ body.address-places-pac .pac-item > span:not(.pac-icon):not(.pac-item-query) {
   font-weight: 400;
   color: #64748b;
 }
+
+/* Mobile address search — reference Select Location results list */
+@media (max-width: 767px) {
+  body.address-search-mobile .pac-container {
+    margin-top: 0;
+    padding: 0;
+    max-height: min(420px, 55vh);
+    border: 1px solid #f2f2f2 !important;
+    border-radius: 16px;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  body.address-search-mobile .pac-container::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  body.address-search-mobile .pac-item {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    grid-template-rows: auto auto;
+    gap: 2px 12px;
+    align-items: start;
+    min-height: 0;
+    width: 100%;
+    margin: 0 !important;
+    padding: 14px 16px;
+    border: none !important;
+    border-bottom: none !important;
+    position: relative;
+  }
+
+  body.address-search-mobile .pac-item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: #f2f2f2;
+  }
+
+  body.address-search-mobile .pac-item:last-child {
+    border-bottom: none;
+  }
+
+  body.address-search-mobile .pac-item:hover,
+  body.address-search-mobile .pac-item-selected {
+    background-color: #fff;
+  }
+
+  body.address-search-mobile .pac-icon {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    align-self: start;
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px;
+    margin: 0 !important;
+    margin-top: 2px !important;
+    background: transparent !important;
+    background-image: none !important;
+    border-radius: 0;
+  }
+
+  body.address-search-mobile .pac-icon::after {
+    width: 24px;
+    height: 24px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M10.3561 1.98505C11.551 1.74514 12.7848 1.77365 13.9675 2.06805C15.1499 2.36244 16.2522 2.9153 17.195 3.68719L17.3054 3.77802C18.2301 4.56614 18.9704 5.5484 19.4665 6.65887C19.9825 7.814 20.2225 9.07358 20.1686 10.3376C20.1147 11.6016 19.7685 12.8361 19.1559 13.9431C18.5434 15.05 17.6816 15.9994 16.6393 16.7165L16.6218 16.7282C15.0685 17.8571 13.7737 19.3039 12.822 20.9714L12.1511 22.0886C12.1356 22.1143 12.1137 22.1362 12.0876 22.1511C12.0613 22.1659 12.0309 22.1735 12.0007 22.1735C11.9706 22.1735 11.9409 22.1659 11.9147 22.1511C11.8885 22.1362 11.8668 22.1144 11.8513 22.0886L11.1511 20.9245L11.1432 20.9128L10.9362 20.5905C9.88716 18.9995 8.56322 17.6067 7.02509 16.4782C5.78181 15.5242 4.83846 14.2332 4.30829 12.7585C3.77809 11.2836 3.68348 9.68721 4.03485 8.15985C4.38623 6.63248 5.16932 5.23815 6.29071 4.14325C7.41119 3.04928 8.82228 2.30025 10.3561 1.98505Z' stroke='%23036BFB' stroke-width='1.65'/%3E%3Cpath d='M11.4453 6.76904C11.9964 6.65942 12.5677 6.7152 13.0869 6.93018C13.6061 7.14524 14.05 7.50978 14.3622 7.97705C14.6745 8.44436 14.8417 8.99412 14.8417 9.55615C14.8416 10.3097 14.5416 11.0321 14.0087 11.5649C13.4759 12.0978 12.7535 12.3979 11.9999 12.3979C11.4379 12.3979 10.8881 12.2307 10.4208 11.9185C9.95357 11.6062 9.58903 11.1623 9.37396 10.6431C9.15898 10.1239 9.1032 9.55259 9.21283 9.00146C9.32248 8.45025 9.59277 7.94379 9.99017 7.54639C10.3876 7.14898 10.894 6.87869 11.4453 6.76904Z' stroke='%23036BFB' stroke-width='1.65'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+
+  body.address-search-mobile .pac-item-query {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  body.address-search-mobile .pac-item-query .pac-matched {
+    font-weight: 600;
+    color: #111827;
+  }
+
+  body.address-search-mobile .pac-item > span:not(.pac-icon):not(.pac-item-query) {
+    font-size: 12px;
+    line-height: 1.45;
+    color: #64748b;
+  }
+}

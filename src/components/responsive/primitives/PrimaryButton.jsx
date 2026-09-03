@@ -24,10 +24,10 @@ export function PrimaryButton({
     <button
       type={type}
       className={cn(
-        "inline-flex h-12 items-center justify-center rounded-xl px-5 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 disabled:pointer-events-none disabled:opacity-50",
+        "focus-visible:ring-primary/40 inline-flex h-12 items-center justify-center rounded-xl px-5 text-sm font-medium transition-all focus-visible:ring-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 md:font-semibold",
         variants[variant] || variants.primary,
         fullWidth && "w-full",
-        className
+        className,
       )}
       {...props}
     >
