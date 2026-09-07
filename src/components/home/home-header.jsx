@@ -193,10 +193,7 @@ export function HomeHeader({ embedded = false }) {
               <span className="hidden text-sm font-medium text-[#0F1B2D] xl:inline">
                 Hi, {firstName}
               </span>
-              <ChevronDown
-                className="hidden size-3.5 text-[#98A2B3] xl:inline"
-                aria-hidden
-              />
+              <ChevronDown className="hidden size-3.5 text-[#98A2B3] xl:inline" aria-hidden />
             </Link>
           </div>
         </div>

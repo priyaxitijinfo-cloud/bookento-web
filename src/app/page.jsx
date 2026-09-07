@@ -8,7 +8,7 @@ import { CategoryGrid } from "@/components/home/category-grid";
 import { HeroSection } from "@/components/home/hero-section";
 import { HomeHeader } from "@/components/home/home-header";
 import { PopularServicesShowcase } from "@/components/home/popular-services-showcase";
-import { SectionHeader } from "@/components/home/section-header";
+import { SectionHeader, DesktopSectionHeading } from "@/components/home/section-header";
 import { SpecialPackagesShowcase } from "@/components/home/special-packages-showcase";
 import { TopRatedProviderCard } from "@/components/home/top-rated-provider-card";
 import { UpcomingAppointmentCard } from "@/components/home/upcoming-appointment-card";
@@ -52,7 +52,7 @@ export default function HomePage() {
       <main
         className={cn(
           HOME_PAGE_CONTAINER,
-          "relative z-10 space-y-8 pt-4 pb-4 md:mt-10 md:space-y-12 md:pt-6 md:pb-6",
+          "relative z-10 pt-4 pb-4 space-y-8 md:mt-10 md:space-y-12 md:pt-6 md:pb-6",
         )}
       >
         <div className="md:hidden">
@@ -61,19 +61,37 @@ export default function HomePage() {
 
         <section
           id="categories"
-          className="scroll-mt-28 md:overflow-visible max-md:[&_h2]:gap-0.5"
+          className="scroll-mt-28 max-md:[&_h2]:gap-0.5 md:overflow-visible"
         >
           <SectionHeader title="Category" className="md:hidden" />
+          <DesktopSectionHeading
+            badge="Our Services"
+            title="All Your Services"
+            highlight="In One Place"
+          />
           <CategoryGrid />
         </section>
 
         <section id="offers" className="scroll-mt-28">
-          <SectionHeader title="Offers & Promotions" className="hidden md:flex" />
+          <DesktopSectionHeading
+            badge="Offers"
+            title="Exclusive Deals"
+            highlight="Just For You"
+          />
           <BannerShowcase />
         </section>
 
         <section id="professionals" className="scroll-mt-28">
-          <SectionHeader title="Top Rated Professionals" href={ROUTES.PROVIDERS} />
+          <SectionHeader
+            title="Top Rated Professionals"
+            href={ROUTES.PROVIDERS}
+            className="md:hidden"
+          />
+          <DesktopSectionHeading
+            badge="Professionals"
+            title="Top Rated"
+            highlight="Professionals"
+          />
 
           <MobileScrollRow className="md:hidden">
             {topRated.map((p) => (

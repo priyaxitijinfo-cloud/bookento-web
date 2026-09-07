@@ -1,6 +1,6 @@
 "use client";
 
-import { SectionHeader } from "@/components/home/section-header";
+import { SectionHeader, DesktopSectionHeading } from "@/components/home/section-header";
 import { MobileScrollRow } from "@/components/home/horizontal-scroll";
 import { ServiceCard } from "@/components/home/service-card";
 import {
@@ -12,7 +12,16 @@ import { ROUTES } from "@/constants/routes.constants";
 export function PopularServicesShowcase() {
   return (
     <section>
-      <SectionHeader title="Popular Services" href={ROUTES.SERVICES} />
+      <SectionHeader
+        title="Popular Services"
+        href={ROUTES.SERVICES}
+        className="md:hidden"
+      />
+      <DesktopSectionHeading
+        badge="Popular"
+        title="Most Booked"
+        highlight="Services"
+      />
 
       <MobileScrollRow className="md:hidden">
         {HOME_POPULAR_SERVICES.map((svc, i) => (

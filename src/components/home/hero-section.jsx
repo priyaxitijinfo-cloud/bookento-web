@@ -87,12 +87,16 @@ export function HeroSection({ className }) {
   };
 
   const suggestionHref = (provider) =>
-    buildCategoryProviderDetailUrl(provider.id, provider.categorySlug, provider);
+    buildCategoryProviderDetailUrl(
+      provider.id,
+      provider.categorySlug,
+      provider,
+    );
 
   return (
     <section
       className={cn(
-        "relative isolate z-20 w-full",
+        "relative z-20 isolate w-full",
         "min-h-[calc(34rem-60px)] lg:min-h-[calc(38rem-60px)] xl:min-h-[calc(42rem-60px)]",
         className,
       )}
@@ -187,11 +191,7 @@ export function HeroSection({ className }) {
                   >
                     <span className="relative size-11 shrink-0 overflow-hidden rounded-xl bg-[#F4F7FB]">
                       <Image
-                        src={
-                          provider.avatar ||
-                          provider.coverImage ||
-                          "/images/app-icon.jpg"
-                        }
+                        src={provider.avatar || provider.coverImage || "/images/app-icon.jpg"}
                         alt=""
                         fill
                         className="object-cover"

@@ -24,3 +24,23 @@ export function SectionHeader({ title, href, className }) {
     </div>
   );
 }
+
+/** Desktop-only marketplace heading: pill + two-tone title */
+export function DesktopSectionHeading({ badge, title, highlight, className }) {
+  return (
+    <div className={cn("mb-6 hidden text-center md:block", className)}>
+      <span className="inline-flex items-center rounded-full bg-[#EAF1FF] px-3.5 py-1 text-[13px] font-semibold text-[#1865EA]">
+        {badge}
+      </span>
+      <h2 className="mt-1.5 text-[1.625rem] leading-tight font-bold tracking-tight text-[#0F1B2D] lg:text-[1.875rem]">
+        {title}
+        {highlight ? (
+          <>
+            {" "}
+            <span className="text-[#1865EA]">{highlight}</span>
+          </>
+        ) : null}
+      </h2>
+    </div>
+  );
+}

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { SectionHeader } from "@/components/home/section-header";
+import { SectionHeader, DesktopSectionHeading } from "@/components/home/section-header";
 import { MobileScrollRow } from "@/components/home/horizontal-scroll";
 import { providerPackageRoute, ROUTES } from "@/constants/routes.constants";
 import { getFeaturedPackages } from "@/mock/packages";
@@ -125,7 +125,12 @@ function SpecialPackageCard({ pkg }) {
 export function SpecialPackagesShowcase({ className }) {
   return (
     <section className={className}>
-      <SectionHeader title="Special Packages" />
+      <SectionHeader title="Special Packages" className="md:hidden" />
+      <DesktopSectionHeading
+        badge="Packages"
+        title="Special Packages"
+        highlight="For You"
+      />
 
       <MobileScrollRow className="md:hidden">
         {PACKAGES.map((pkg) => (
