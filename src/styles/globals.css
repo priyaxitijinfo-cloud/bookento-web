@@ -49,6 +49,7 @@
 
   --font-sans: var(--font-poppins);
   --font-mono: var(--font-poppins);
+  --font-script: var(--font-caveat);
 
   --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04);
   --shadow-card-hover: 0 4px 16px 0 rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.04);

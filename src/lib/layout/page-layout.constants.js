@@ -48,6 +48,10 @@ export const PAGE_X_PADDING = "px-4 md:px-6";
 /** Canonical vertical section spacing */
 export const SECTION_SPACING = "space-y-4 md:space-y-6";
 
+/** Home page shared content width — header, hero, and sections stay aligned */
+export const HOME_PAGE_CONTAINER =
+  "mx-auto w-full px-4 md:max-w-[calc(96rem-60px)] md:px-[4.875rem] xl:px-[5.875rem]";
+
 export const PAGE_CONTAINER_VARIANTS = {
   browse: `page-container mx-auto pt-4 pb-4 md:pt-6 md:pb-6`,
   browseWithBreadcrumb: `page-container mx-auto pt-4 pb-4 md:pt-2 md:pb-6`,

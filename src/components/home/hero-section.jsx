@@ -1,101 +1,233 @@
 "use client";
 
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ArrowRight, Search } from "lucide-react";
 
-import { TODAY_APPOINTMENT } from "@/constants/home-appointment";
-import { appointmentDetailRoute } from "@/constants/routes.constants";
+import {
+  ROUTES,
+  buildCategoryProviderDetailUrl,
+  categoryListingRoute,
+} from "@/constants/routes.constants";
+import { HOME_PAGE_CONTAINER } from "@/lib/layout/page-layout.constants";
+import { getGlobalSearchProviders } from "@/lib/search/search-providers";
+import { useDebounce } from "@/hooks/use-debounce";
 import { cn } from "@/lib/utils";
 
+const QUICK_SEARCHES = [
+  { label: "Haircut", href: categoryListingRoute("salon") },
+  { label: "Massage", href: categoryListingRoute("salon") },
+  { label: "Home Cleaning", href: categoryListingRoute("homecare") },
+  { label: "Personal Training", href: categoryListingRoute("fitness") },
+  { label: "Teeth Cleaning", href: categoryListingRoute("doctor") },
+];
+
+const SUGGESTION_LIMIT = 8;
+
+function filterSuggestions(providers, term) {
+  const query = term.trim().toLowerCase();
+  if (query.length < 1) return [];
+
+  return providers
+    .filter((provider) => {
+      const name = provider.businessName?.toLowerCase() || "";
+      const specialty = provider.specialty?.toLowerCase() || "";
+      const city = provider.city?.toLowerCase() || "";
+      const categoryName = provider.categoryName?.toLowerCase() || "";
+      return (
+        name.includes(query) ||
+        specialty.includes(query) ||
+        city.includes(query) ||
+        categoryName.includes(query)
+      );
+    })
+    .slice(0, SUGGESTION_LIMIT);
+}
+
 /**
- * Web hero — same banner as the app (UpcomingAppointmentCard) home strip.
+ * Desktop discovery hero — lifestyle marketplace banner.
+ * Mobile uses UpcomingAppointmentCard instead.
  */
 export function HeroSection({ className }) {
+  const router = useRouter();
+  const wrapRef = useRef(null);
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+  const debouncedQuery = useDebounce(query, 150);
+
+  const providers = useMemo(() => getGlobalSearchProviders(), []);
+  const suggestions = useMemo(
+    () => filterSuggestions(providers, debouncedQuery),
+    [providers, debouncedQuery],
+  );
+
+  const showSuggestions = open && query.trim().length > 0 && suggestions.length > 0;
+
+  useEffect(() => {
+    const onPointerDown = (event) => {
+      if (!wrapRef.current?.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onPointerDown);
+    return () => document.removeEventListener("mousedown", onPointerDown);
+  }, []);
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+    setOpen(false);
+    const term = query.trim();
+    if (term) {
+      router.push(`${ROUTES.SEARCH}?q=${encodeURIComponent(term)}`);
+    } else {
+      router.push(ROUTES.SEARCH);
+    }
+  };
+
+  const suggestionHref = (provider) =>
+    buildCategoryProviderDetailUrl(provider.id, provider.categorySlug, provider);
+
   return (
-    <Link
-      href={appointmentDetailRoute(TODAY_APPOINTMENT.id)}
+    <section
       className={cn(
-        "group relative flex min-h-[14rem] w-full overflow-hidden rounded-2xl p-6 shadow-[0_12px_32px_rgba(240,61,78,0.28)] sm:min-h-[15rem] sm:p-7 md:min-h-[16.5rem] md:p-8",
+        "relative isolate z-20 w-full",
+        "min-h-[calc(34rem-60px)] lg:min-h-[calc(38rem-60px)] xl:min-h-[calc(42rem-60px)]",
         className,
       )}
     >
-      <img
-        src="/icons/bg02.jpg"
-        alt=""
-        className="pointer-events-none absolute inset-0 size-full object-cover"
-        aria-hidden
-        draggable={false}
-      />
-
-      <div className="relative z-10 flex max-w-[55%] min-w-0 flex-1 flex-col lg:max-w-[48%]">
-        <span className="inline-flex w-fit rounded-md bg-white px-2.5 py-[5px] text-[11px] font-semibold text-[#F03D4E] md:px-3 md:py-1.5 md:text-xs">
-          Today
-        </span>
-
-        <h1 className="mt-3 text-[1.75rem] leading-[1.15] font-bold tracking-tight text-white sm:text-[2rem] md:mt-4 md:text-[2.35rem] lg:text-[2.5rem]">
-          Hair Spa &amp;
-          <br />
-          Facial Combo
-        </h1>
-
-        <div className="mt-3 inline-flex w-fit max-w-full items-center gap-2 rounded-full border border-white/40 bg-white/18 px-3 py-1.5 text-[11px] font-medium text-white backdrop-blur-[2px] md:mt-4 md:gap-2.5 md:px-3.5 md:py-2 md:text-sm">
-          <span className="inline-flex items-center gap-1.5">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="size-3.5 shrink-0 md:size-4"
-              aria-hidden
-            >
-              <path
-                d="M8.99994 2C7.61547 2 6.26209 2.41054 5.11095 3.17971C3.95981 3.94888 3.0626 5.04213 2.53279 6.32121C2.00297 7.6003 1.86435 9.00776 2.13445 10.3656C2.40454 11.7235 3.07123 12.9708 4.05019 13.9497C5.02916 14.9287 6.27644 15.5954 7.63431 15.8655C8.99217 16.1356 10.3996 15.997 11.6787 15.4672C12.9578 14.9373 14.0511 14.0401 14.8202 12.889C15.5894 11.7378 15.9999 10.3845 15.9999 9C15.9977 7.14416 15.2595 5.36495 13.9473 4.05267C12.635 2.74039 10.8558 2.00219 8.99994 2ZM11.3589 11.359C11.2396 11.4783 11.0778 11.5453 10.909 11.5453C10.7403 11.5453 10.5785 11.4783 10.4591 11.359L8.55003 9.44991C8.43068 9.33059 8.36361 9.16876 8.36358 9V5.18182C8.36358 5.01304 8.43062 4.85118 8.54996 4.73184C8.6693 4.6125 8.83117 4.54545 8.99994 4.54545C9.16871 4.54545 9.33058 4.6125 9.44992 4.73184C9.56926 4.85118 9.6363 5.01304 9.6363 5.18182V8.73654L11.3589 10.4592C11.4782 10.5785 11.5453 10.7403 11.5453 10.9091C11.5453 11.0778 11.4782 11.2397 11.3589 11.359Z"
-                fill="#FFFFFF"
-              />
-            </svg>
-            {TODAY_APPOINTMENT.time}
-          </span>
-          <span className="h-3 w-px bg-white/45 md:h-3.5" aria-hidden />
-          <span className="inline-flex items-center gap-1.5">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="size-3.5 shrink-0 md:size-4"
-              aria-hidden
-            >
-              <path
-                d="M12.2858 11.4898C15.2766 11.4898 17.7012 9.07765 17.7012 6.10208C17.7012 3.12652 15.2766 0.714355 12.2858 0.714355C9.29498 0.714355 6.87044 3.12652 6.87044 6.10208C6.87044 9.07765 9.29498 11.4898 12.2858 11.4898Z"
-                fill="#FFFFFF"
-              />
-              <path
-                d="M15.1063 13.7348H9.4653C6.19352 13.7348 3.48584 16.4287 3.48584 19.6838C3.48584 20.4695 3.8243 21.1429 4.50122 21.4797C5.5166 22.0409 7.773 22.7144 12.2858 22.7144C16.7986 22.7144 19.055 22.0409 20.0704 21.4797C20.6345 21.1429 21.0858 20.4695 21.0858 19.6838C21.0858 16.3164 18.3781 13.7348 15.1063 13.7348Z"
-                fill="#FFFFFF"
-              />
-            </svg>
-            {TODAY_APPOINTMENT.visitType}
-          </span>
-        </div>
-
-        <span className="mt-auto inline-flex w-fit items-center gap-1.5 rounded-full bg-white px-4 py-2.5 text-xs font-semibold text-[#111827] shadow-sm transition-transform group-hover:scale-[1.02] md:mt-6 md:px-5 md:py-3 md:text-sm">
-          View Details
-          <ArrowRight className="size-3.5 md:size-4" />
-        </span>
+      {/* Lifestyle background — soft left wash + portrait right */}
+      <div className="absolute inset-0 overflow-hidden">
+        <Image
+          src="/images/desktop-hero-spa.png"
+          alt=""
+          fill
+          priority
+          quality={95}
+          className="object-cover object-center"
+          sizes="100vw"
+        />
+        {/* Soft left wash so dark copy stays readable */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.28) 32%, transparent 58%)",
+          }}
+        />
       </div>
 
-      <Image
-        src="/icons/appointment-calendar-web.png"
-        alt=""
-        width={220}
-        height={220}
-        className="pointer-events-none absolute right-4 bottom-3 z-[1] h-[11rem] w-[11rem] object-contain sm:right-6 sm:h-[12.5rem] sm:w-[12.5rem] md:right-8 md:bottom-4 md:h-[14rem] md:w-[14rem] lg:h-[15rem] lg:w-[15rem]"
-        aria-hidden
-        priority
-      />
-    </Link>
+      <div
+        className={cn(
+          HOME_PAGE_CONTAINER,
+          "relative z-10 flex h-full min-h-[inherit] flex-col justify-center py-10 md:py-12",
+        )}
+      >
+        <div className="max-w-xl pt-2 lg:pt-4">
+          <p className="text-primary text-[11px] font-semibold tracking-[0.18em] uppercase">
+            Your everyday service partner
+          </p>
+          <h1 className="text-foreground mt-3 text-[2.35rem] leading-[1.12] font-bold tracking-tight lg:text-[2.85rem] xl:text-[3.15rem]">
+            Book the services you love, effortlessly.
+          </h1>
+          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-[#667085] lg:text-base">
+            Discover trusted professionals near you for all your lifestyle needs.
+          </p>
+
+          <div ref={wrapRef} className="relative z-50 mt-8 w-full max-w-xl">
+            <form
+              onSubmit={handleSearch}
+              className={cn(
+                "flex w-full items-stretch overflow-hidden rounded-full bg-white shadow-[0_10px_40px_-12px_rgba(15,23,42,0.22)]",
+                "ring-1 ring-[#E8ECF2] transition-[box-shadow,ring-color]",
+                (showSuggestions || open) && "ring-[#D0D5DD]",
+              )}
+            >
+              <label className="flex min-w-0 flex-1 items-center gap-2.5 px-4 py-2.5 sm:px-5">
+                <Search className="size-4 shrink-0 text-[#98A2B3]" aria-hidden />
+                <input
+                  type="search"
+                  name="q"
+                  value={query}
+                  onChange={(event) => {
+                    setQuery(event.target.value);
+                    setOpen(true);
+                  }}
+                  onFocus={() => setOpen(true)}
+                  placeholder="What service are you looking for?"
+                  className="min-w-0 flex-1 bg-transparent text-sm text-[#0F1B2D] outline-none placeholder:text-[#98A2B3]"
+                  aria-label="Search for a service"
+                  aria-autocomplete="list"
+                  aria-expanded={showSuggestions}
+                  autoComplete="off"
+                />
+              </label>
+              <button
+                type="submit"
+                className="gradient-brand m-1.5 inline-flex shrink-0 items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_-6px_rgba(24,101,234,0.45)] transition-opacity hover:opacity-95"
+              >
+                Search
+                <ArrowRight className="size-4" aria-hidden />
+              </button>
+            </form>
+
+            {showSuggestions ? (
+              <div
+                role="listbox"
+                className="scrollbar-hide absolute top-[calc(100%+0.5rem)] right-0 left-0 z-50 max-h-72 overflow-y-auto rounded-2xl border border-[#E8ECF2] bg-white shadow-[0_16px_40px_-12px_rgba(15,23,42,0.28)]"
+              >
+                {suggestions.map((provider) => (
+                  <Link
+                    key={`${provider.categorySlug}-${provider.id}`}
+                    href={suggestionHref(provider)}
+                    role="option"
+                    onClick={() => setOpen(false)}
+                    className="hover:bg-accent flex items-center gap-3 border-b border-[#F0F2F5] px-4 py-3 transition-colors last:border-b-0"
+                  >
+                    <span className="relative size-11 shrink-0 overflow-hidden rounded-xl bg-[#F4F7FB]">
+                      <Image
+                        src={
+                          provider.avatar ||
+                          provider.coverImage ||
+                          "/images/app-icon.jpg"
+                        }
+                        alt=""
+                        fill
+                        className="object-cover"
+                        sizes="44px"
+                      />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="text-foreground block truncate text-sm font-semibold">
+                        {provider.businessName}
+                      </span>
+                      <span className="text-muted-foreground mt-0.5 block truncate text-xs">
+                        {[provider.specialty, provider.categoryName]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            ) : null}
+          </div>
+
+          <div className="mt-5 flex flex-wrap items-center gap-2">
+            <span className="text-xs font-medium text-[#98A2B3]">Popular:</span>
+            {QUICK_SEARCHES.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="hover:border-primary/40 hover:text-primary rounded-full border border-[#E4E7EC] bg-white/80 px-3 py-1.5 text-xs font-medium text-[#475467] backdrop-blur-sm transition-all"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

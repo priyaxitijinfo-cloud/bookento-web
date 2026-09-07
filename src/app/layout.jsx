@@ -1,5 +1,5 @@
 import { APP_CONFIG } from "@/config/app.config";
-import { poppins } from "@/lib/fonts";
+import { caveat, poppins } from "@/lib/fonts";
 import { AppProviders } from "@/providers/app-providers";
 
 import "@/styles/globals.css";
@@ -22,7 +22,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={poppins.variable}>
+    <html lang="en" className={`${poppins.variable} ${caveat.variable}`}>
       <body className={`${poppins.className} font-sans antialiased`}>
         <AppProviders>{children}</AppProviders>
       </body>

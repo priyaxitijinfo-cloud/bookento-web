@@ -16,7 +16,7 @@ import { MobileScrollRow } from "@/components/home/horizontal-scroll";
 import { ROUTES } from "@/constants/routes.constants";
 import { setBackFromSource } from "@/lib/navigation/back-navigation";
 import {
-  PAGE_CONTAINER_VARIANTS,
+  HOME_PAGE_CONTAINER,
   PAGE_SHELL_CLASS,
 } from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
@@ -43,25 +43,36 @@ export default function HomePage() {
     }));
 
   return (
-    <div className={cn(PAGE_SHELL_CLASS, "overflow-x-hidden md:pb-8")}>
+    <div className={cn(PAGE_SHELL_CLASS, "max-md:overflow-x-hidden md:pb-10")}>
       <HomeHeader />
-      <main className={cn(PAGE_CONTAINER_VARIANTS.wide, "space-y-8 md:space-y-10")}>
+
+      {/* Desktop full-bleed marketplace hero */}
+      <HeroSection className="hidden md:block" />
+
+      <main
+        className={cn(
+          HOME_PAGE_CONTAINER,
+          "relative z-10 space-y-8 pt-4 pb-4 md:mt-10 md:space-y-12 md:pt-6 md:pb-6",
+        )}
+      >
         <div className="md:hidden">
           <UpcomingAppointmentCard />
         </div>
-        <HeroSection className="hidden md:block" />
 
-        <section className="max-md:[&_h2]:gap-0.5">
-          <SectionHeader title="Category" />
+        <section
+          id="categories"
+          className="scroll-mt-28 md:overflow-visible max-md:[&_h2]:gap-0.5"
+        >
+          <SectionHeader title="Category" className="md:hidden" />
           <CategoryGrid />
         </section>
 
-        <section>
+        <section id="offers" className="scroll-mt-28">
           <SectionHeader title="Offers & Promotions" className="hidden md:flex" />
           <BannerShowcase />
         </section>
 
-        <section>
+        <section id="professionals" className="scroll-mt-28">
           <SectionHeader title="Top Rated Professionals" href={ROUTES.PROVIDERS} />
 
           <MobileScrollRow className="md:hidden">
