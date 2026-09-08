@@ -275,7 +275,7 @@
   }
 
   .pb-nav {
-    @apply pb-20;
+    @apply pb-20 md:pb-0;
   }
 
   .pb-nav-tall {
@@ -403,5 +403,31 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes testimonial-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@layer utilities {
+  .animate-testimonial-marquee {
+    animation: testimonial-marquee 42s linear infinite;
+  }
+
+  .animate-testimonial-marquee:hover,
+  .group\/marquee:hover .animate-testimonial-marquee {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-testimonial-marquee {
+      animation: none;
+    }
   }
 }

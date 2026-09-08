@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { HOME_CATEGORIES } from "@/constants/home-categories";
-import { CategoryIcon, CategoryItem, MoreCategoryItem } from "@/components/home/category-item";
+import { CategoryItem, MoreCategoryItem } from "@/components/home/category-item";
 import { categoryListingRoute } from "@/constants/routes.constants";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +23,11 @@ const MOBILE_CATEGORY_SLUGS = [
 const DESKTOP_VISIBLE = 6;
 const DESKTOP_GAP_PX = 14;
 const LOOP_TRACKS = 3;
+const DESKTOP_ICON_SIZE_PX = 38;
+
+function getDesktopCategoryIconSrc(slug) {
+  return `/icons/categories/${slug}.svg`;
+}
 
 function getTrackWidth(scroller) {
   const child = scroller.children[HOME_CATEGORIES.length];
@@ -30,42 +35,57 @@ function getTrackWidth(scroller) {
   return child.offsetLeft - scroller.children[0].offsetLeft;
 }
 
-/** Border slightly softer than the category box color */
-function getCategoryBorderColor(bgClass) {
-  const match = bgClass.match(/#[0-9A-Fa-f]{6}/);
-  if (!match) return "#E8ECF2";
-  const hex = match[0].slice(1);
-  // Mix ~40% toward white — light border that still matches the pastel
-  const channel = (start) => {
-    const c = parseInt(hex.slice(start, start + 2), 16);
-    return Math.round(c + (255 - c) * 0.4);
-  };
-  const r = channel(0);
-  const g = channel(2);
-  const b = channel(4);
+/** Soft vertical gradient from a solid category tile color */
+function shadeHex(hex, amount) {
+  const raw = hex.replace("#", "");
+  const channel = (start) => parseInt(raw.slice(start, start + 2), 16);
+  const r = Math.round(channel(0) * (1 - amount));
+  const g = Math.round(channel(2) * (1 - amount));
+  const b = Math.round(channel(4) * (1 - amount));
   return `#${[r, g, b].map((n) => n.toString(16).padStart(2, "0")).join("")}`;
 }
 
-/** Desktop-only tile — light pastel box, icon hover only */
+/** Desktop-only tile — pastel card + bright solid icon badge (custom SVG) */
 function DesktopCategoryTile({ category }) {
+  const labelHoverColor = shadeHex(category.iconTile, 0.28);
+  const iconSrc = getDesktopCategoryIconSrc(category.slug);
+
   return (
     <Link
       href={categoryListingRoute(category.slug)}
       className={cn(
-        "group relative flex h-[8.5rem] w-full flex-col items-center justify-center gap-3.5 rounded-2xl border border-solid px-3",
+        "group relative flex h-[8.5rem] w-full flex-col items-center justify-center gap-3.5 rounded-2xl border-[0.5px] border-solid border-[#EEF1F5] px-3",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1865EA]/35",
         category.bg,
       )}
-      style={{ borderColor: getCategoryBorderColor(category.bg) }}
+      style={{ "--category-label-hover": labelHoverColor }}
     >
       <span
         aria-hidden
         className="pointer-events-none absolute inset-0 rounded-[0.9rem] bg-white/45"
       />
-      <span className="relative inline-flex transition-transform duration-200 ease-out group-hover:scale-110">
-        <CategoryIcon category={category} />
+      <span
+        className="relative flex size-[3.5rem] items-center justify-center rounded-[0.95rem] transition-transform duration-200 ease-out group-hover:scale-110"
+        style={{ backgroundColor: category.iconTile }}
+      >
+        <span
+          aria-hidden
+          className="inline-block shrink-0 bg-white"
+          style={{
+            width: DESKTOP_ICON_SIZE_PX,
+            height: DESKTOP_ICON_SIZE_PX,
+            WebkitMaskImage: `url(${iconSrc})`,
+            maskImage: `url(${iconSrc})`,
+            WebkitMaskSize: "contain",
+            maskSize: "contain",
+            WebkitMaskRepeat: "no-repeat",
+            maskRepeat: "no-repeat",
+            WebkitMaskPosition: "center",
+            maskPosition: "center",
+          }}
+        />
       </span>
-      <p className="relative w-full truncate text-center text-[13px] font-medium tracking-tight text-[#1A2332] transition-colors duration-200 group-hover:text-[#1865EA]">
+      <p className="relative w-full truncate text-center text-[15px] font-medium tracking-tight text-[#1A2332] transition-colors duration-200 group-hover:text-[var(--category-label-hover)]">
         {category.name}
       </p>
     </Link>

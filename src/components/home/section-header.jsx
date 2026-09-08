@@ -25,19 +25,45 @@ export function SectionHeader({ title, href, className }) {
   );
 }
 
-/** Desktop-only marketplace heading: pill + two-tone title */
-export function DesktopSectionHeading({ badge, title, highlight, className }) {
+/** Desktop-only marketplace heading: lined label + gradient second line */
+export function DesktopSectionHeading({
+  badge,
+  title,
+  highlight,
+  className,
+  align = "center",
+}) {
+  const isLeft = align === "left";
+
   return (
-    <div className={cn("mb-6 hidden text-center md:block", className)}>
-      <span className="inline-flex items-center rounded-full bg-[#EAF1FF] px-3.5 py-1 text-[13px] font-semibold text-[#1865EA]">
-        {badge}
-      </span>
-      <h2 className="mt-1.5 text-[1.625rem] leading-tight font-bold tracking-tight text-[#0F1B2D] lg:text-[1.875rem]">
+    <div
+      className={cn(
+        "mb-6 hidden md:block",
+        isLeft ? "text-left" : "text-center",
+        className,
+      )}
+    >
+      <div
+        className={cn(
+          "flex items-center gap-3",
+          isLeft ? "justify-start" : "mx-auto justify-center",
+        )}
+      >
+        <span aria-hidden className="h-px w-10 bg-[#C9D3E2]" />
+        <span className="text-[12px] font-semibold tracking-[0.22em] text-[#1865EA] uppercase">
+          {badge}
+        </span>
+        {!isLeft ? <span aria-hidden className="h-px w-10 bg-[#C9D3E2]" /> : null}
+      </div>
+
+      <h2 className="mt-4 text-[calc(2.15rem-6px)] leading-[1.08] font-bold tracking-tight text-[#0F1B2D] lg:text-[calc(2.6rem-6px)]">
         {title}
         {highlight ? (
           <>
-            {" "}
-            <span className="text-[#1865EA]">{highlight}</span>
+            <br />
+            <span className="bg-[linear-gradient(105deg,#1865EA_0%,#58A1FF_100%)] bg-clip-text text-transparent">
+              {highlight}
+            </span>
           </>
         ) : null}
       </h2>

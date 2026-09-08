@@ -97,7 +97,7 @@ export function HeroSection({ className }) {
     <section
       className={cn(
         "relative z-20 isolate w-full",
-        "min-h-[calc(34rem-60px)] lg:min-h-[calc(38rem-60px)] xl:min-h-[calc(42rem-60px)]",
+        "min-h-[calc(34rem-60px+10px)] lg:min-h-[calc(38rem-60px+10px)] xl:min-h-[calc(42rem-60px+10px)]",
         className,
       )}
     >

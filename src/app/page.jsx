@@ -3,13 +3,19 @@
 import { useEffect } from "react";
 
 import { UserBottomNav } from "@/components/layout/user-nav";
+import { AppDownloadShowcase } from "@/components/home/app-download-showcase";
 import { BannerShowcase } from "@/components/home/banner-showcase";
 import { CategoryGrid } from "@/components/home/category-grid";
+import { DesktopTopRatedScroll } from "@/components/home/desktop-top-rated-scroll";
+import { FeaturePromoBanner } from "@/components/home/feature-promo-banner";
+import { FaqShowcase } from "@/components/home/faq-showcase";
 import { HeroSection } from "@/components/home/hero-section";
+import { HomeFooter } from "@/components/home/home-footer";
 import { HomeHeader } from "@/components/home/home-header";
 import { PopularServicesShowcase } from "@/components/home/popular-services-showcase";
 import { SectionHeader, DesktopSectionHeading } from "@/components/home/section-header";
 import { SpecialPackagesShowcase } from "@/components/home/special-packages-showcase";
+import { TestimonialsShowcase } from "@/components/home/testimonials-showcase";
 import { TopRatedProviderCard } from "@/components/home/top-rated-provider-card";
 import { UpcomingAppointmentCard } from "@/components/home/upcoming-appointment-card";
 import { MobileScrollRow } from "@/components/home/horizontal-scroll";
@@ -27,6 +33,10 @@ const TOP_RATED_CARDS = [
   { image: "/images/top-rated-premium-spa.png", categorySlug: "salon" },
   { image: "/images/top-rated-royal-clinic.png", categorySlug: "doctor" },
   { image: "/images/top-rated-urban-salon.png", categorySlug: "salon" },
+  { image: "/images/nearby-glow-salon.png", categorySlug: "salon" },
+  { image: "/images/nearby-serene-spa.png", categorySlug: "salon" },
+  { image: "/images/nearby-bright-dental.png", categorySlug: "doctor" },
+  { image: "/images/nearby-fitzone-gym.png", categorySlug: "fitness" },
 ];
 
 export default function HomePage() {
@@ -42,8 +52,10 @@ export default function HomePage() {
       categorySlug: TOP_RATED_CARDS[index].categorySlug,
     }));
 
+  const mobileTopRated = topRated.slice(0, 4);
+
   return (
-    <div className={cn(PAGE_SHELL_CLASS, "max-md:overflow-x-hidden md:pb-10")}>
+    <div className={cn(PAGE_SHELL_CLASS, "max-md:overflow-x-hidden md:pb-0")}>
       <HomeHeader />
 
       {/* Desktop full-bleed marketplace hero */}
@@ -52,7 +64,7 @@ export default function HomePage() {
       <main
         className={cn(
           HOME_PAGE_CONTAINER,
-          "relative z-10 pt-4 pb-4 space-y-8 md:mt-10 md:space-y-12 md:pt-6 md:pb-6",
+          "relative z-10 pt-4 pb-4 space-y-8 md:mt-[100px] md:space-y-[100px] md:pt-0 md:pb-0",
         )}
       >
         <div className="md:hidden">
@@ -72,7 +84,7 @@ export default function HomePage() {
           <CategoryGrid />
         </section>
 
-        <section id="offers" className="scroll-mt-28">
+        <section id="offers" className="scroll-mt-28 md:hidden">
           <DesktopSectionHeading
             badge="Offers"
             title="Exclusive Deals"
@@ -81,48 +93,57 @@ export default function HomePage() {
           <BannerShowcase />
         </section>
 
-        <section id="professionals" className="scroll-mt-28">
-          <SectionHeader
-            title="Top Rated Professionals"
-            href={ROUTES.PROVIDERS}
-            className="md:hidden"
-          />
-          <DesktopSectionHeading
-            badge="Professionals"
-            title="Top Rated"
-            highlight="Professionals"
-          />
+        <section
+          id="professionals"
+          className={cn(
+            "scroll-mt-28",
+            "md:relative md:left-1/2 md:w-screen md:max-w-[100vw] md:-translate-x-1/2",
+            "md:border-y md:border-[#E8EDF5] md:bg-[#F7F8FA] md:py-10",
+          )}
+        >
+          <div className="md:mx-auto md:w-full md:max-w-[calc(96rem-60px)] md:px-[4.875rem] xl:px-[5.875rem]">
+            <SectionHeader
+              title="Top Rated Professionals"
+              href={ROUTES.PROVIDERS}
+              className="md:hidden"
+            />
 
-          <MobileScrollRow className="md:hidden">
-            {topRated.map((p) => (
-              <div
-                key={p.id}
-                className="w-[calc((100vw-4.25rem)/2)] shrink-0 snap-start"
-              >
-                <TopRatedProviderCard
-                  provider={p}
-                  compact
-                  categorySlug={p.categorySlug}
-                />
-              </div>
-            ))}
-          </MobileScrollRow>
+            <MobileScrollRow className="md:hidden">
+              {mobileTopRated.map((p) => (
+                <div
+                  key={p.id}
+                  className="w-[calc((100vw-4.25rem)/2)] shrink-0 snap-start"
+                >
+                  <TopRatedProviderCard
+                    provider={p}
+                    compact
+                    categorySlug={p.categorySlug}
+                  />
+                </div>
+              ))}
+            </MobileScrollRow>
 
-          <div className="hidden gap-3 md:grid md:grid-cols-4 md:gap-4">
-            {topRated.map((p) => (
-              <TopRatedProviderCard
-                key={p.id}
-                provider={p}
-                categorySlug={p.categorySlug}
-              />
-            ))}
+            <DesktopTopRatedScroll providers={topRated} />
           </div>
         </section>
 
+        <SpecialPackagesShowcase className="max-md:hidden" />
+
         <PopularServicesShowcase />
 
-        <SpecialPackagesShowcase />
+        <SpecialPackagesShowcase className="md:hidden" />
+
+        <FeaturePromoBanner />
+
+        <TestimonialsShowcase />
+
+        <FaqShowcase />
+
+        <AppDownloadShowcase />
       </main>
+
+      <HomeFooter />
+
       <UserBottomNav />
     </div>
   );

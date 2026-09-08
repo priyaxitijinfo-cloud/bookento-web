@@ -3,14 +3,21 @@ import Link from "next/link";
 import { categoryListingRoute, ROUTES } from "@/constants/routes.constants";
 import { cn } from "@/lib/utils";
 
-export function CategoryIcon({ category, compact = false, fullPage = false }) {
+export function CategoryIcon({
+  category,
+  compact = false,
+  fullPage = false,
+  tone = "brand",
+  className,
+}) {
   return (
     <span
       aria-hidden
       className={cn(
         "inline-block shrink-0 bg-current",
-        category.iconColor,
+        tone === "white" ? "text-white" : category.iconColor,
         fullPage ? "size-[42px]" : compact ? "size-9" : "size-10 sm:size-11",
+        className,
       )}
       style={{
         WebkitMaskImage: `url(${category.iconImage})`,

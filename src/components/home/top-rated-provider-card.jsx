@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Star } from "lucide-react";
+import { MapPin, Star } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 import {
@@ -8,10 +8,12 @@ import {
   providerDetailRoute,
 } from "@/constants/routes.constants";
 import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/utils/format.utils";
 
 export function TopRatedProviderCard({
   provider,
   compact = false,
+  desktop = false,
   categorySlug = "salon",
 }) {
   const bookNowHref = (() => {
@@ -21,6 +23,80 @@ export function TopRatedProviderCard({
     const separator = base.includes("?") ? "&" : "?";
     return `${base}${separator}backFrom=home`;
   })();
+
+  if (desktop) {
+    return (
+      <article className="flex h-full flex-col rounded-xl border border-[#E8EDF5] bg-white p-3 shadow-[0_1px_3px_rgba(15,23,42,0.04)]">
+        <div className="group relative aspect-[4/3] overflow-hidden rounded-xl bg-[#EEF2F7]">
+          <Link
+            href={providerDetailRoute(provider.id)}
+            className="absolute inset-0"
+            aria-label={`View ${provider.businessName}`}
+          >
+            <Image
+              src={provider.coverImage || provider.avatar}
+              alt={provider.businessName}
+              fill
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.05]"
+              sizes="(min-width: 768px) 22vw, 50vw"
+            />
+          </Link>
+
+          <span className="absolute right-2.5 bottom-2.5 z-10 inline-flex items-center gap-1 rounded-md bg-white/95 px-2 py-1 text-xs font-semibold text-[#0F1B2D] shadow-sm">
+            <Star className="size-3 fill-amber-400 text-amber-400" />
+            {provider.rating}
+          </span>
+        </div>
+
+        <div className="flex flex-1 flex-col pt-3.5">
+          <div className="space-y-1.5">
+            <Link href={providerDetailRoute(provider.id)} className="block">
+              <h3 className="line-clamp-1 text-[15px] leading-snug font-bold text-[#0F1B2D]">
+                {provider.businessName}
+              </h3>
+            </Link>
+
+            <p className="line-clamp-1 text-[13px] leading-snug text-[#66758A]">
+              {provider.specialty}
+            </p>
+
+            <div className="flex items-center gap-1 pt-0.5 text-[13px] leading-snug text-[#66758A]">
+              <MapPin className="size-3.5 shrink-0 text-[#94A3B8]" strokeWidth={2} />
+              <span className="truncate">
+                {[
+                  provider.city,
+                  provider.distance != null ? `${provider.distance} km` : null,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-2.5 border-t border-[#EEF2F7] pt-2.5">
+            <div className="flex items-center justify-between gap-3">
+              <p className="min-w-0 text-[17px] leading-none font-bold text-[#0F1B2D]">
+                {provider.startingPrice != null
+                  ? formatCurrency(provider.startingPrice)
+                  : "—"}
+              </p>
+              <Link
+                href={bookNowHref}
+                className={cn(
+                  "gradient-brand shrink-0 rounded-lg px-3.5 py-2",
+                  "text-[13px] font-semibold text-white",
+                  "transition-opacity hover:opacity-95",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1865EA]/35",
+                )}
+              >
+                Book now
+              </Link>
+            </div>
+          </div>
+        </div>
+      </article>
+    );
+  }
 
   return (
     <Card className="shadow-card hover:shadow-card-hover h-full overflow-hidden border-0 p-0 transition-all">
