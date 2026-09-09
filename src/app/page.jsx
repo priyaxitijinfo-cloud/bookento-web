@@ -18,6 +18,7 @@ import { SpecialPackagesShowcase } from "@/components/home/special-packages-show
 import { TestimonialsShowcase } from "@/components/home/testimonials-showcase";
 import { TopRatedProviderCard } from "@/components/home/top-rated-provider-card";
 import { UpcomingAppointmentCard } from "@/components/home/upcoming-appointment-card";
+import { VideosShowcase } from "@/components/home/videos-showcase";
 import { MobileScrollRow } from "@/components/home/horizontal-scroll";
 import { ROUTES } from "@/constants/routes.constants";
 import { setBackFromSource } from "@/lib/navigation/back-navigation";
@@ -64,7 +65,7 @@ export default function HomePage() {
       <main
         className={cn(
           HOME_PAGE_CONTAINER,
-          "relative z-10 pt-4 pb-4 space-y-8 md:mt-[100px] md:space-y-[100px] md:pt-0 md:pb-0",
+          "relative z-10 space-y-8 pt-4 pb-4 md:mt-[100px] md:space-y-[100px] md:pt-0 md:pb-0",
         )}
       >
         <div className="md:hidden">
@@ -73,7 +74,7 @@ export default function HomePage() {
 
         <section
           id="categories"
-          className="scroll-mt-28 max-md:[&_h2]:gap-0.5 md:overflow-visible"
+          className="scroll-mt-28 md:overflow-visible max-md:[&_h2]:gap-0.5"
         >
           <SectionHeader title="Category" className="md:hidden" />
           <DesktopSectionHeading
@@ -127,11 +128,13 @@ export default function HomePage() {
           </div>
         </section>
 
-        <SpecialPackagesShowcase className="max-md:hidden" />
+        <SpecialPackagesShowcase id="packages" className="scroll-mt-28 max-md:hidden" />
 
         <PopularServicesShowcase />
 
         <SpecialPackagesShowcase className="md:hidden" />
+
+        <VideosShowcase />
 
         <FeaturePromoBanner />
 

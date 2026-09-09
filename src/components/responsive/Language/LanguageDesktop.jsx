@@ -16,14 +16,14 @@ export function LanguageDesktop({ backHref, selectedCode, onSelect, onSave, savi
       showBreadcrumb={true}
       containerVariant="browseWithBreadcrumb"
       className="bg-surface-page md:!bg-surface-page hidden md:block"
-      mainClassName="mx-auto max-w-lg px-4 pb-28 md:max-w-7xl md:px-6"
+      mainClassName="mx-auto max-w-lg px-4 pb-28 md:max-w-[calc(96rem-60px)] md:px-[4.875rem] xl:px-[5.875rem]"
     >
       <div className="mx-auto w-full max-w-2xl space-y-3 md:max-w-none">
         <LanguageMobileOptionsList selectedCode={selectedCode} onSelect={onSelect} />
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-[#E6EAF2] bg-white px-4 py-4 md:px-6">
-        <div className="mx-auto w-full max-w-lg md:max-w-7xl">
+      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-[#E6EAF2] bg-white px-4 py-4 md:px-[4.875rem] xl:px-[5.875rem]">
+        <div className="mx-auto w-full max-w-lg md:max-w-[calc(96rem-60px)]">
           <button
             type="button"
             onClick={onSave}

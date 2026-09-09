@@ -16,7 +16,7 @@ export function ReferralsDesktop({ referralCode, onCopy }) {
       showBreadcrumb={true}
       containerVariant="browseWithBreadcrumb"
       className="md:!bg-[#F7F8FC]"
-      mainClassName="mx-auto w-full max-w-7xl !pt-0 px-6 pb-12"
+      mainClassName="mx-auto w-full max-w-[calc(96rem-60px)] px-[4.875rem] xl:px-[5.875rem] !pt-0 pb-12"
     >
       <div className="w-full">
         <ReferralsMobileContent referralCode={referralCode} onCopy={onCopy} />

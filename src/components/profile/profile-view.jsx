@@ -501,7 +501,7 @@ function ProfileDesktopView({
         <HomeHeader />
       </div>
 
-      <div className="mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col overflow-hidden px-4 pt-8 pb-4 md:px-6 md:pb-4">
+      <div className="mx-auto flex min-h-0 w-full max-w-[calc(96rem-60px)] flex-1 flex-col overflow-hidden px-4 pt-8 pb-4 md:px-[4.875rem] md:pb-4 xl:px-[5.875rem]">
         <div className="grid min-h-0 flex-1 gap-4 overflow-hidden lg:grid-cols-[280px_minmax(0,1fr)] lg:grid-rows-1 lg:items-stretch xl:grid-cols-[320px_minmax(0,1fr)] xl:gap-6">
           <DesktopProfileSidebar profile={profile} stats={stats} />
 

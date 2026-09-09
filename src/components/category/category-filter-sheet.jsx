@@ -66,7 +66,14 @@ function DistanceSlider({ value, onChange }) {
   const displayValue = value % 1 === 0 ? value : value.toFixed(1);
 
   return (
-    <div className="pt-1">
+    <div className="space-y-3 pt-1">
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-muted-foreground text-sm">Within</span>
+        <span className="text-primary text-sm font-semibold tabular-nums">
+          {displayValue} km
+        </span>
+      </div>
+
       <input
         type="range"
         min={DISTANCE_MIN}
@@ -79,28 +86,33 @@ function DistanceSlider({ value, onChange }) {
           background: `linear-gradient(to right, #1865EA 0%, #1865EA ${percent}%, #E5E7EB ${percent}%, #E5E7EB 100%)`,
         }}
         aria-label="Maximum distance"
+        aria-valuetext={`${displayValue} kilometers`}
       />
 
-      <div className="relative mt-4 h-4 text-xs leading-none">
-        <span className="text-muted-foreground absolute left-0">0.5 km</span>
-        <span
-          className="text-primary absolute -translate-x-1/2 font-semibold"
-          style={{ left: `${percent}%` }}
-        >
-          {displayValue} km
-        </span>
-        <span className="text-muted-foreground absolute right-0">20 km+</span>
+      <div className="text-muted-foreground flex justify-between text-xs leading-none">
+        <span>0.5 km</span>
+        <span>20 km+</span>
       </div>
     </div>
   );
 }
 
-function SearchFilterFields({ draft, setDraft, priceRangeWrap = false }) {
+export function SearchFilterFields({
+  draft,
+  setDraft,
+  priceRangeWrap = false,
+  showLocation = true,
+}) {
   const [isLocating, setIsLocating] = useState(false);
 
   const handleUseCurrentLocation = useCallback(() => {
+    // Optimistic fill so the field always responds on click
+    setDraft((current) => ({
+      ...current,
+      location: "Current Location",
+    }));
+
     if (!navigator.geolocation) {
-      setDraft((current) => ({ ...current, location: "Current Location" }));
       toast.message("Location set to current area");
       return;
     }
@@ -118,9 +130,8 @@ function SearchFilterFields({ draft, setDraft, priceRangeWrap = false }) {
         toast.success("Current location applied");
       },
       () => {
-        setDraft((current) => ({ ...current, location: "Current Location" }));
         setIsLocating(false);
-        toast.error("Could not detect location. Using current area instead.");
+        toast.message("Using current area");
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 },
     );
@@ -128,36 +139,42 @@ function SearchFilterFields({ draft, setDraft, priceRangeWrap = false }) {
 
   return (
     <div className="space-y-7">
-      <FilterSection title="Location">
-        <div className="relative">
-          <LocationIcon className="text-muted-foreground pointer-events-none absolute top-1/2 left-4 size-[1.125rem] -translate-y-1/2" />
-          <input
-            type="text"
-            value={draft.location}
-            onChange={(event) =>
-              setDraft((current) => ({ ...current, location: event.target.value }))
-            }
-            placeholder="Current Location"
-            className={cn(
-              "text-foreground placeholder:text-muted-foreground border-border bg-background h-[3.25rem] w-full rounded-xl border",
-              "focus-visible:border-primary/40 focus-visible:ring-primary/20 pr-12 pl-11 text-sm focus-visible:ring-2 focus-visible:outline-none",
-            )}
-          />
-          <button
-            type="button"
-            onClick={handleUseCurrentLocation}
-            disabled={isLocating}
-            className="text-primary absolute top-1/2 right-4 -translate-y-1/2 transition-opacity hover:opacity-80 disabled:opacity-60"
-            aria-label="Use current location"
-          >
-            {isLocating ? (
-              <Loader2 className="size-[1.125rem] animate-spin" />
-            ) : (
-              <CurrentLocationIcon className="size-5" />
-            )}
-          </button>
-        </div>
-      </FilterSection>
+      {showLocation ? (
+        <FilterSection title="Location">
+          <div className="relative z-10">
+            <LocationIcon className="text-muted-foreground pointer-events-none absolute top-1/2 left-4 z-10 size-[1.125rem] -translate-y-1/2" />
+            <input
+              type="text"
+              name="listing-location"
+              autoComplete="street-address"
+              value={draft.location ?? ""}
+              onChange={(event) => {
+                const next = event.target.value;
+                setDraft((current) => ({ ...current, location: next }));
+              }}
+              placeholder="Enter area or city"
+              className={cn(
+                "text-foreground placeholder:text-muted-foreground border-border bg-background relative z-0 h-[3.25rem] w-full rounded-xl border",
+                "focus-visible:border-primary/40 focus-visible:ring-primary/20 pr-12 pl-11 text-sm focus-visible:ring-2 focus-visible:outline-none",
+              )}
+            />
+            <button
+              type="button"
+              onClick={handleUseCurrentLocation}
+              disabled={isLocating}
+              className="text-primary absolute top-1/2 right-3 z-20 flex size-9 -translate-y-1/2 items-center justify-center rounded-lg transition-opacity hover:bg-[#EEF4FF] hover:opacity-100 disabled:opacity-60"
+              aria-label="Use current location"
+              title="Use current location"
+            >
+              {isLocating ? (
+                <Loader2 className="size-[1.125rem] animate-spin" />
+              ) : (
+                <CurrentLocationIcon className="size-5" />
+              )}
+            </button>
+          </div>
+        </FilterSection>
+      ) : null}
 
       <FilterSection title="Distance">
         <DistanceSlider

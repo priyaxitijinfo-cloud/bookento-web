@@ -13,10 +13,10 @@ import { HOME_PAGE_CONTAINER } from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
 
 const DESKTOP_NAV = [
-  { href: ROUTES.SERVICES, label: "Explore Services" },
   { href: "/#categories", label: "Categories" },
-  { href: "/#offers", label: "Offers" },
   { href: "/#professionals", label: "Professionals" },
+  { href: "/#packages", label: "Packages" },
+  { href: "/#popular", label: "Popular" },
 ];
 
 export function HomeHeader({ embedded = false }) {
@@ -156,29 +156,6 @@ export function HomeHeader({ embedded = false }) {
             >
               <HeroHeartIcon tone="dark" className="size-5" />
             </Link>
-            <Link
-              href={ROUTES.NOTIFICATIONS}
-              aria-label="Notifications"
-              className="hover:bg-accent hover:text-primary relative flex size-10 items-center justify-center rounded-full text-[#667085] transition-colors"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden
-                className="size-5 shrink-0"
-              >
-                <path
-                  d="M14.5769 18.5C14.8104 18.5001 14.9995 18.6893 14.9998 18.9229C14.9998 18.9735 14.9914 19.0244 14.9724 19.0713C14.515 20.199 13.3563 21 11.9998 21C10.6433 20.9999 9.48541 20.1989 9.02807 19.0713C9.00904 19.0243 8.99975 18.9735 8.99975 18.9229C8.99999 18.6893 9.18995 18.5 9.42358 18.5H14.5769ZM11.9998 3C15.2288 3 17.9458 5.49083 18.3201 8.79395L18.6648 11.8389C18.7505 12.5952 19.0578 13.3068 19.5447 13.8799C20.5781 15.0962 19.739 17 18.1697 17H5.82983C4.2607 16.9998 3.42247 15.0961 4.45581 13.8799C4.94257 13.3068 5.24897 12.5951 5.33471 11.8389L5.67944 8.79395C6.05364 5.49088 8.77083 3.00013 11.9998 3Z"
-                  fill="currentColor"
-                />
-              </svg>
-              {unreadCount > 0 ? (
-                <span className="absolute top-1.5 right-1.5 flex size-4 items-center justify-center rounded-full bg-[#F04438] text-[9px] font-bold text-white ring-2 ring-white">
-                  {unreadCount > 9 ? "9+" : unreadCount}
-                </span>
-              ) : null}
-            </Link>
 
             <Link
               href={ROUTES.PROFILE}
@@ -193,7 +170,10 @@ export function HomeHeader({ embedded = false }) {
               <span className="hidden text-sm font-medium text-[#0F1B2D] xl:inline">
                 Hi, {firstName}
               </span>
-              <ChevronDown className="hidden size-3.5 text-[#98A2B3] xl:inline" aria-hidden />
+              <ChevronDown
+                className="hidden size-3.5 text-[#98A2B3] xl:inline"
+                aria-hidden
+              />
             </Link>
           </div>
         </div>

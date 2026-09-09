@@ -51,7 +51,7 @@ export function ProviderDetailDesktop({
           />
         </div>
 
-        <div className="mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col px-4 pt-0 pb-4 md:px-6 md:pt-1 md:pb-4">
+        <div className="mx-auto flex min-h-0 w-full max-w-[calc(96rem-60px)] flex-1 flex-col px-4 pt-0 pb-4 md:px-[4.875rem] md:pt-1 md:pb-4 xl:px-[5.875rem]">
           <div className="grid min-h-0 flex-1 gap-6 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)]">
             <aside className="hidden min-h-0 overflow-y-auto lg:block">
               <DoctorProfileSidebar

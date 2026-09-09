@@ -148,7 +148,7 @@ export function HelpView() {
       containerVariant="browseWithBreadcrumb"
       className="bg-surface-page md:!bg-surface-page max-md:!pb-0"
       headerClassName="max-md:border-transparent"
-      mainClassName="mx-auto max-w-lg px-4 pb-28 pt-2 max-md:!pt-4 md:max-w-7xl md:px-6"
+      mainClassName="mx-auto max-w-lg px-4 pb-28 pt-2 max-md:!pt-4 md:max-w-[calc(96rem-60px)] md:px-[4.875rem] xl:px-[5.875rem]"
     >
       <div className="space-y-7">
         <label className="flex flex-col gap-2.5 md:gap-[14px]">
@@ -233,7 +233,7 @@ export function HelpView() {
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-20 bg-white px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:border-t md:border-[#E6EAF2] md:px-6 md:py-4 md:pb-4">
-        <div className="mx-auto w-full max-w-lg md:max-w-7xl">
+        <div className="mx-auto w-full max-w-lg md:max-w-[calc(96rem-60px)]">
           <button
             type="button"
             onClick={handleSubmit}

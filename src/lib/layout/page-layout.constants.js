@@ -28,8 +28,9 @@ export const DESKTOP_HEADER_OFFSET_CLASS = "pt-1.5";
 export const BREADCRUMB_WRAP_CLASS =
   "bg-surface-page/95 backdrop-blur supports-[backdrop-filter]:bg-surface-page/90";
 
+/** Matches landing / HomeHeader content width on web */
 export const BREADCRUMB_INNER_CLASS =
-  "mx-auto flex h-12 max-w-7xl items-center gap-3 px-4 md:px-6";
+  "mx-auto flex h-12 w-full items-center gap-3 px-4 md:max-w-[calc(96rem-60px)] md:px-[4.875rem] xl:px-[5.875rem]";
 
 export const BREADCRUMB_LINK_CLASS =
   "text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm font-medium transition-colors";
@@ -42,20 +43,30 @@ export const BREADCRUMB_BOTTOM_OFFSET_CLASS = "pb-1.5";
 export const DESKTOP_HEADER_HEIGHT = "4.25rem";
 export const DESKTOP_BREADCRUMB_HEIGHT = "3rem";
 
-/** Canonical horizontal padding: mobile 16px, desktop 24px */
-export const PAGE_X_PADDING = "px-4 md:px-6";
+/** Canonical horizontal padding: mobile 16px, desktop matches landing */
+export const PAGE_X_PADDING = "px-4 md:px-[4.875rem] xl:px-[5.875rem]";
 
 /** Canonical vertical section spacing */
 export const SECTION_SPACING = "space-y-4 md:space-y-6";
 
-/** Home page shared content width — header, hero, and sections stay aligned */
+/**
+ * Home + under-page shared content width — header, hero, and sections stay aligned.
+ * Mobile: px-4. Web: landing header container.
+ */
 export const HOME_PAGE_CONTAINER =
   "mx-auto w-full px-4 md:max-w-[calc(96rem-60px)] md:px-[4.875rem] xl:px-[5.875rem]";
+
+/** Alias — user under-pages use the same web container as landing */
+export const USER_PAGE_CONTAINER = HOME_PAGE_CONTAINER;
+
+/** Desktop-only width/padding token (compose with mobile base classes) */
+export const DESKTOP_PAGE_CONTAINER =
+  "md:max-w-[calc(96rem-60px)] md:px-[4.875rem] xl:px-[5.875rem]";
 
 export const PAGE_CONTAINER_VARIANTS = {
   browse: `page-container mx-auto pt-4 pb-4 md:pt-6 md:pb-6`,
   browseWithBreadcrumb: `page-container mx-auto pt-4 pb-4 md:pt-2 md:pb-6`,
-  chat: "mx-auto flex h-full min-h-0 w-full max-w-7xl flex-1 flex-col overflow-hidden px-4 pb-0 pt-0 max-md:max-w-none max-md:!px-0 max-md:h-full md:px-6 md:pt-0 md:pb-5",
+  chat: `mx-auto flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden px-4 pb-0 pt-0 max-md:max-w-none max-md:!px-0 max-md:h-full ${DESKTOP_PAGE_CONTAINER} md:pt-0 md:pb-5`,
   wide: `page-container-wide mx-auto pt-4 pb-4 md:pt-6 md:pb-6`,
   narrow: `page-container-narrow mx-auto pt-4 pb-6 md:py-6`,
   profile: `page-container-wide mx-auto py-6 md:py-8`,

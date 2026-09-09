@@ -179,7 +179,7 @@ export function BookingDetailsView({ appointment: initialAppointment }) {
 
   const actionBar = (
     <div className="safe-bottom fixed inset-x-0 bottom-0 z-40 border-t border-[#EEF2F7] bg-white">
-      <div className="mx-auto w-full max-w-lg px-4 py-3 md:max-w-7xl md:px-6 md:py-4">
+      <div className="mx-auto w-full max-w-lg px-4 py-3 md:max-w-[calc(96rem-60px)] md:px-[4.875rem] md:py-4 xl:px-[5.875rem]">
         <div className="flex w-full gap-3">
           {isActive ? (
             <>
@@ -313,7 +313,7 @@ export function BookingDetailsView({ appointment: initialAppointment }) {
           }
         />
 
-        <main className="mx-auto w-full max-w-lg space-y-5 px-4 py-5 md:max-w-7xl md:space-y-6 md:px-6 md:py-6">
+        <main className="mx-auto w-full max-w-lg space-y-5 px-4 py-5 md:max-w-[calc(96rem-60px)] md:space-y-6 md:px-[4.875rem] md:py-6 xl:px-[5.875rem]">
           <section className="overflow-hidden rounded-2xl border border-[#E6EAF2] bg-white shadow-[0_2px_12px_rgba(24,39,75,0.04)]">
             <div className="p-4 md:p-5">
               <div className="flex flex-col items-center text-center">

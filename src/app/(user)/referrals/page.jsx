@@ -30,7 +30,7 @@ export default function ReferralsPage() {
           showBreadcrumb={true}
           containerVariant="browseWithBreadcrumb"
           className="md:!bg-[#F7F8FC]"
-          mainClassName="mx-auto w-full max-w-lg !pt-0 md:max-w-7xl md:px-6 md:!pt-0 md:pb-12"
+          mainClassName="mx-auto w-full max-w-lg !pt-0 md:max-w-[calc(96rem-60px)] md:px-[4.875rem] xl:px-[5.875rem] md:!pt-0 md:pb-12"
         >
           <div className="w-full">
             <ReferralsMobileContent

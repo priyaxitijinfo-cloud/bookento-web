@@ -36,7 +36,7 @@ function StoreBadge({ href, ariaLabel, eyebrow, label, icon }) {
         "inline-flex h-12 items-center gap-2.5 rounded-[9px] bg-white px-3.5",
         "shadow-[0_8px_20px_-12px_rgba(0,0,0,0.45)]",
         "transition-transform duration-200 hover:-translate-y-0.5",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70",
+        "focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:outline-none",
       )}
     >
       {icon}
@@ -56,7 +56,8 @@ function PhoneMockup({ src, alt, className }) {
   return (
     <div
       className={cn(
-        "relative w-[10.5rem] shrink-0 drop-shadow-[0_22px_40px_rgba(0,0,0,0.45)]",
+        "relative w-[10.5rem] shrink-0 overflow-hidden rounded-[2.75rem]",
+        "drop-shadow-[0_22px_40px_rgba(0,0,0,0.45)]",
         className,
       )}
     >
@@ -66,7 +67,7 @@ function PhoneMockup({ src, alt, className }) {
         width={336}
         height={684}
         className="h-auto w-full object-contain"
-        sizes="168px"
+        sizes="240px"
       />
     </div>
   );
@@ -154,12 +155,12 @@ export function AppDownloadShowcase({ className }) {
             <PhoneMockup
               src="/images/app-mockups/home-phone.jpg"
               alt="Bookento home screen"
-              className="z-20 w-[13.5rem] -translate-y-[calc(42%-60px)]"
+              className="z-20 w-[15rem] -translate-y-[calc(42%-60px)]"
             />
             <PhoneMockup
               src="/images/app-mockups/doctors-phone.png"
               alt="Bookento doctors screen"
-              className="z-10 w-[13.5rem] translate-y-[calc(42%-60px)]"
+              className="z-10 w-[15rem] translate-y-[calc(42%-60px)]"
             />
           </div>
         </div>

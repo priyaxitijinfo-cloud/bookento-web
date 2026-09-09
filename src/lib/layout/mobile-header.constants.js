@@ -7,15 +7,15 @@ export const MOBILE_HEADER_DESKTOP_CLASS = "md:border-border md:bg-card";
 
 /** Inner row — matches reference spacing and height. */
 export const MOBILE_HEADER_INNER_CLASS =
-  "mx-auto flex h-14 w-full max-w-lg items-center gap-2 px-4 md:max-w-7xl md:px-6";
+  "mx-auto flex h-14 w-full max-w-lg items-center gap-2 px-4 md:max-w-[calc(96rem-60px)] md:px-[4.875rem] xl:px-[5.875rem]";
 
 /** Shared horizontal inset — align page sections with the mobile header title. */
 export const MOBILE_PAGE_INSET_CLASS =
-  "mx-auto w-full max-w-lg px-4 md:max-w-7xl md:px-6";
+  "mx-auto w-full max-w-lg px-4 md:max-w-[calc(96rem-60px)] md:px-[4.875rem] xl:px-[5.875rem]";
 
 /** Same left inset as header; right inset matches header action buttons (`-mr-1`). */
 export const MOBILE_PAGE_INSET_ALIGN_ACTION_CLASS =
-  "mx-auto w-full max-w-lg pl-4 pr-3 -mr-1 md:mx-auto md:max-w-7xl md:px-6 md:mr-auto";
+  "mx-auto w-full max-w-lg pl-4 pr-3 -mr-1 md:mx-auto md:max-w-[calc(96rem-60px)] md:px-[4.875rem] xl:px-[5.875rem] md:mr-auto";
 
 /** 8px gap between back arrow and title on mobile headers. */
 export const MOBILE_HEADER_BACK_TITLE_GAP = "gap-2";

@@ -6,7 +6,7 @@ function DefaultBreakpointFallback() {
   return (
     <div className="bg-background min-h-dvh" aria-hidden>
       <div className="border-border h-14 border-b" />
-      <div className="mx-auto max-w-7xl space-y-4 px-4 py-6 md:px-6">
+      <div className="mx-auto w-full max-w-lg space-y-4 px-4 py-6 md:max-w-[calc(96rem-60px)] md:px-[4.875rem] xl:px-[5.875rem]">
         <div className="bg-muted h-10 w-64 max-w-full animate-pulse rounded-lg" />
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {Array.from({ length: 8 }).map((_, i) => (

@@ -18,7 +18,7 @@ export function ReviewsDesktop({ userReviews }) {
       showBreadcrumb={true}
       containerVariant="browseWithBreadcrumb"
       className="md:!bg-[#F7F8FC]"
-      mainClassName="mx-auto w-full max-w-7xl px-6 !pt-0 pb-12"
+      mainClassName="mx-auto w-full max-w-[calc(96rem-60px)] px-[4.875rem] xl:px-[5.875rem] !pt-0 pb-12"
     >
       <div className="overflow-hidden sm:p-0">
         {isEmpty ? (

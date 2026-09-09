@@ -78,7 +78,7 @@ export function DoctorListingPageSkeleton() {
   return (
     <div className={PAGE_SHELL_CLASS}>
       <div className="border-border h-14 border-b" />
-      <div className="mx-auto max-w-lg space-y-4 px-4 py-4 md:max-w-7xl md:px-6 md:py-6">
+      <div className="mx-auto max-w-lg space-y-4 px-4 py-4 md:max-w-[calc(96rem-60px)] md:px-[4.875rem] md:py-6 xl:px-[5.875rem]">
         <div className="flex gap-2.5 overflow-hidden py-2.5">
           {Array.from({ length: 4 }).map((_, i) => (
             <div

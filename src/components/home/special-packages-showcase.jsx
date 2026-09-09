@@ -122,9 +122,9 @@ function SpecialPackageCard({ pkg }) {
   );
 }
 
-export function SpecialPackagesShowcase({ className }) {
+export function SpecialPackagesShowcase({ className, id }) {
   return (
-    <section className={className}>
+    <section id={id} className={className}>
       <SectionHeader title="Special Packages" className="md:hidden" />
       <DesktopSectionHeading
         badge="Packages"

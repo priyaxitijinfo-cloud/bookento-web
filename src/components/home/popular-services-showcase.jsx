@@ -11,17 +11,13 @@ import { ROUTES } from "@/constants/routes.constants";
 
 export function PopularServicesShowcase() {
   return (
-    <section>
+    <section id="popular" className="scroll-mt-28">
       <SectionHeader
         title="Popular Services"
         href={ROUTES.SERVICES}
         className="md:hidden"
       />
-      <DesktopSectionHeading
-        badge="Popular"
-        title="Most Booked"
-        highlight="Services"
-      />
+      <DesktopSectionHeading badge="Popular" title="Most Booked" highlight="Services" />
 
       <MobileScrollRow className="md:hidden">
         {HOME_POPULAR_SERVICES.map((svc, i) => (

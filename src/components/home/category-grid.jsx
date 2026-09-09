@@ -45,25 +45,36 @@ function shadeHex(hex, amount) {
   return `#${[r, g, b].map((n) => n.toString(16).padStart(2, "0")).join("")}`;
 }
 
-/** Desktop-only tile — pastel card + bright solid icon badge (custom SVG) */
+/** Light pastel of icon tile color for the desktop card background */
+function lightenHex(hex, mix = 0.88) {
+  const raw = hex.replace("#", "");
+  const channel = (start) => parseInt(raw.slice(start, start + 2), 16);
+  const blend = (c) => Math.round(c + (255 - c) * mix);
+  return `#${[blend(channel(0)), blend(channel(2)), blend(channel(4))]
+    .map((n) => n.toString(16).padStart(2, "0"))
+    .join("")}`;
+}
+
+/** Desktop-only tile — pastel card from icon color + bright solid icon badge */
 function DesktopCategoryTile({ category }) {
   const labelHoverColor = shadeHex(category.iconTile, 0.28);
+  const cardBg = lightenHex(category.iconTile, 0.93);
+  const cardBorder = lightenHex(category.iconTile, 0.86);
   const iconSrc = getDesktopCategoryIconSrc(category.slug);
 
   return (
     <Link
       href={categoryListingRoute(category.slug)}
       className={cn(
-        "group relative flex h-[8.5rem] w-full flex-col items-center justify-center gap-3.5 rounded-2xl border-[0.5px] border-solid border-[#EEF1F5] px-3",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1865EA]/35",
-        category.bg,
+        "group relative flex h-[8.5rem] w-full flex-col items-center justify-center gap-3.5 rounded-2xl border-[0.5px] border-solid px-3",
+        "focus-visible:ring-2 focus-visible:ring-[#1865EA]/35 focus-visible:outline-none",
       )}
-      style={{ "--category-label-hover": labelHoverColor }}
+      style={{
+        backgroundColor: cardBg,
+        borderColor: cardBorder,
+        "--category-label-hover": labelHoverColor,
+      }}
     >
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 rounded-[0.9rem] bg-white/45"
-      />
       <span
         className="relative flex size-[3.5rem] items-center justify-center rounded-[0.95rem] transition-transform duration-200 ease-out group-hover:scale-110"
         style={{ backgroundColor: category.iconTile }}
@@ -104,7 +115,7 @@ function ArrowButton({ label, onClick, side }) {
         "shadow-[0_4px_14px_-4px_rgba(15,23,42,0.18)]",
         "transition-colors duration-200",
         "hover:border-[#1865EA]/30 hover:text-[#1865EA]",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1865EA]/30",
+        "focus-visible:ring-2 focus-visible:ring-[#1865EA]/30 focus-visible:outline-none",
         side === "left" ? "left-0 -translate-x-1/2" : "right-0 translate-x-1/2",
       )}
     >
@@ -218,11 +229,11 @@ function DesktopCategoryScroll() {
       {/* Soft edge fades — depth without clipping card shadows awkwardly */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-2 left-0 z-10 w-8 bg-gradient-to-r from-background to-transparent"
+        className="from-background pointer-events-none absolute inset-y-2 left-0 z-10 w-8 bg-gradient-to-r to-transparent"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-2 right-0 z-10 w-8 bg-gradient-to-l from-background to-transparent"
+        className="from-background pointer-events-none absolute inset-y-2 right-0 z-10 w-8 bg-gradient-to-l to-transparent"
       />
 
       <ArrowButton

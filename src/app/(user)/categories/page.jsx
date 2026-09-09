@@ -14,7 +14,7 @@ export default function CategoriesPage() {
     <div className={PAGE_SHELL_CLASS}>
       <MobileHeader title="Category" showBack backLabel="Go back" />
 
-      <main className="mx-auto max-w-lg px-4 py-4 md:max-w-7xl md:px-4 md:py-6">
+      <main className="mx-auto max-w-lg px-4 py-4 md:max-w-[calc(96rem-60px)] md:px-[4.875rem] md:py-6 xl:px-[5.875rem]">
         <div className="grid grid-cols-3 gap-2.5 md:hidden">
           {HOME_CATEGORIES.map((category) => (
             <CategoryItem key={category.slug} category={category} fullPage />
