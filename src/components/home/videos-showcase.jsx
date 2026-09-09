@@ -2,40 +2,16 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Heart, MessageCircle } from "lucide-react";
 
 import { ROUTES } from "@/constants/routes.constants";
 import { cn } from "@/lib/utils";
 import { reels } from "@/mock/reels";
 import { formatCompactNumber } from "@/utils/format.utils";
 
-const DEVICE_REELS = reels.slice(0, 3);
+const SHOWCASE_REELS = reels.slice(0, 8);
 
-const DEVICE_POSE = [
-  {
-    rotate: "-8deg",
-    y: "1.75rem",
-    scale: 0.9,
-    z: 10,
-    delay: "0ms",
-  },
-  {
-    rotate: "0deg",
-    y: "0",
-    scale: 1.05,
-    z: 30,
-    delay: "80ms",
-  },
-  {
-    rotate: "8deg",
-    y: "1.75rem",
-    scale: 0.9,
-    z: 10,
-    delay: "160ms",
-  },
-];
-
-function PhoneMockup({ reel, pose, play, className }) {
+function ReelPanel({ reel, play }) {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -53,110 +29,69 @@ function PhoneMockup({ reel, pose, play, className }) {
   }, [play]);
 
   return (
-    <div
+    <Link
+      href={`${ROUTES.REELS}?view=all`}
+      aria-label={`Watch ${reel.title}`}
       className={cn(
-        "relative w-[10.25rem] shrink-0 transition-transform duration-700 ease-out lg:w-[11.5rem] xl:w-[12.25rem]",
-        className,
+        "relative aspect-[9/16] w-[11rem] shrink-0 overflow-hidden rounded-[1.25rem]",
+        "ring-1 ring-black/10 lg:w-[12rem] xl:w-[12.75rem]",
+        "shadow-[0_20px_40px_-26px_rgba(15,23,42,0.5)]",
+        "transition-[transform,box-shadow] duration-400 ease-out",
+        "hover:-translate-y-1.5 hover:shadow-[0_28px_48px_-24px_rgba(24,101,234,0.32)]",
       )}
-      style={{
-        transform: `translateY(${pose.y}) rotate(${pose.rotate}) scale(${pose.scale})`,
-        zIndex: pose.z,
-        transitionDelay: pose.delay,
-      }}
     >
-      {/* Device shell */}
+      <video
+        ref={videoRef}
+        src={reel.videoUrl}
+        className="absolute inset-0 size-full object-cover"
+        muted
+        playsInline
+        loop
+        preload="metadata"
+        aria-hidden
+      />
+
       <div
-        className={cn(
-          "relative aspect-[9/19] rounded-[2rem] bg-[#111827] p-[0.42rem]",
-          "shadow-[0_32px_60px_-28px_rgba(15,23,42,0.65),inset_0_0_0_1px_rgba(255,255,255,0.08)]",
-          "ring-1 ring-black/40",
-        )}
-      >
-        {/* Side buttons */}
-        <span
-          aria-hidden
-          className="absolute top-[18%] -left-[3px] h-10 w-[3px] rounded-l-full bg-[#1F2937]"
-        />
-        <span
-          aria-hidden
-          className="absolute top-[28%] -left-[3px] h-14 w-[3px] rounded-l-full bg-[#1F2937]"
-        />
-        <span
-          aria-hidden
-          className="absolute top-[24%] -right-[3px] h-16 w-[3px] rounded-r-full bg-[#1F2937]"
-        />
+        aria-hidden
+        className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-black/20"
+      />
 
-        {/* Screen */}
-        <div className="relative h-full overflow-hidden rounded-[1.55rem] bg-black">
-          {/* Dynamic island */}
-          <div
-            aria-hidden
-            className="absolute top-2.5 left-1/2 z-20 h-5 w-[4.25rem] -translate-x-1/2 rounded-full bg-black"
+      <div className="absolute inset-x-0 bottom-0 p-3">
+        <div className="flex items-center gap-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={reel.providerAvatar}
+            alt=""
+            className="size-6 rounded-full object-cover ring-1 ring-white/80"
           />
-
-          <video
-            ref={videoRef}
-            src={reel.videoUrl}
-            className="absolute inset-0 size-full object-cover"
-            muted
-            playsInline
-            loop
-            preload="metadata"
-            aria-hidden
-          />
-
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/25"
-          />
-
-          {/* Status-style top meta */}
-          <div className="absolute top-9 right-0 left-0 z-10 flex items-center justify-between px-3.5">
-            <span className="rounded-full bg-white/15 px-2 py-0.5 text-[9px] font-semibold tracking-wide text-white uppercase backdrop-blur-md">
-              Reel
-            </span>
-            <span className="text-[10px] font-medium text-white/80">
-              {formatCompactNumber(reel.views)}
-            </span>
+          <div className="min-w-0">
+            <p className="truncate text-[11px] font-semibold text-white">
+              @{reel.handle || reel.providerName}
+            </p>
+            <p className="truncate text-[10px] text-white/75">{reel.title}</p>
           </div>
+        </div>
 
-          {/* Bottom provider chip */}
-          <div className="absolute inset-x-0 bottom-0 z-10 p-3.5">
-            <div className="flex items-center gap-2.5">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={reel.providerAvatar}
-                alt=""
-                width={32}
-                height={32}
-                className="size-8 rounded-full object-cover ring-2 ring-white/35"
-              />
-              <div className="min-w-0">
-                <p className="truncate text-[12px] font-semibold text-white">
-                  {reel.providerName}
-                </p>
-                <p className="truncate text-[10px] text-white/65">{reel.title}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Home indicator */}
-          <span
-            aria-hidden
-            className="absolute bottom-1.5 left-1/2 z-20 h-1 w-16 -translate-x-1/2 rounded-full bg-white/40"
-          />
+        <div className="mt-2 flex items-center gap-2.5 text-[10px] font-medium text-white/85">
+          <span className="inline-flex items-center gap-1">
+            <Heart className="size-3" aria-hidden />
+            {formatCompactNumber(reel.likes || 0)}
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <MessageCircle className="size-3" aria-hidden />
+            {formatCompactNumber(reel.comments || 0)}
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
-/**
- * Desktop-only — 3 phone mockups with playing reels.
- */
+/** Desktop-only — copy left, infinite scroll on the right */
 export function VideosShowcase({ className }) {
   const stageRef = useRef(null);
   const [inView, setInView] = useState(false);
+  const loop = [...SHOWCASE_REELS, ...SHOWCASE_REELS];
 
   useEffect(() => {
     const node = stageRef.current;
@@ -164,7 +99,7 @@ export function VideosShowcase({ className }) {
 
     const observer = new IntersectionObserver(
       ([entry]) => setInView(entry.isIntersecting),
-      { threshold: 0.3 },
+      { threshold: 0.25 },
     );
     observer.observe(node);
     return () => observer.disconnect();
@@ -180,18 +115,14 @@ export function VideosShowcase({ className }) {
         className,
       )}
     >
-      <div className="relative overflow-hidden border-y border-[#E8EDF5] bg-[#F7F8FA]">
+      <div className="relative overflow-x-clip border-y border-[#E8EDF5] bg-[#F7F8FA]">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(24,101,234,0.1)_0%,transparent_52%)]"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute bottom-0 left-1/2 h-32 w-[55%] -translate-x-1/2 rounded-[100%] bg-[#1865EA]/12 blur-3xl"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_78%_35%,rgba(24,101,234,0.1)_0%,transparent_52%)]"
         />
 
         <div className="relative mx-auto w-full max-w-[calc(96rem-60px)] px-[4.875rem] py-14 xl:px-[5.875rem] xl:py-16">
-          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.2fr)] lg:gap-8 xl:gap-12">
+          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.35fr)] lg:gap-10 xl:gap-14">
             <div className="max-w-md">
               <div className="flex items-center gap-3">
                 <span aria-hidden className="h-px w-10 bg-[#C9D3E2]" />
@@ -201,15 +132,15 @@ export function VideosShowcase({ className }) {
               </div>
 
               <h2 className="mt-4 text-[calc(2.15rem-4px)] leading-[1.08] font-bold tracking-tight text-[#0F1B2D] lg:text-[2.5rem]">
-                Watch on device.
+                See the work.
                 <span className="mt-1 block bg-[linear-gradient(105deg,#1865EA_0%,#58A1FF_100%)] bg-clip-text text-transparent">
-                  Book with confidence.
+                  Then book it.
                 </span>
               </h2>
 
               <p className="mt-3 text-[15px] leading-relaxed text-[#667085]">
-                Real reels from Bookento pros — playing live in phone mockups, just like
-                the app.
+                Real reels from Bookento providers — watch what they do, then book the
+                same package in a tap.
               </p>
 
               <Link
@@ -226,16 +157,26 @@ export function VideosShowcase({ className }) {
 
             <div
               ref={stageRef}
-              className="relative flex items-end justify-center gap-3 pb-2 lg:justify-end lg:gap-5 xl:gap-6"
+              className="group/videos-marquee relative min-w-0 overflow-hidden py-2"
             >
-              {DEVICE_REELS.map((reel, index) => (
-                <PhoneMockup
-                  key={reel.id}
-                  reel={reel}
-                  pose={DEVICE_POSE[index]}
-                  play={inView}
-                />
-              ))}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-[#F7F8FA] to-transparent"
+              />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-[#F7F8FA] to-transparent"
+              />
+
+              <div className="animate-videos-marquee flex w-max items-center gap-3.5 py-3 lg:gap-4">
+                {loop.map((reel, index) => (
+                  <ReelPanel
+                    key={`${reel.id}-${index < SHOWCASE_REELS.length ? "a" : "b"}`}
+                    reel={reel}
+                    play={inView && index < SHOWCASE_REELS.length}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>

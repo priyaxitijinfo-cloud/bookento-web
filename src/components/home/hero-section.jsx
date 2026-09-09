@@ -14,6 +14,7 @@ import {
 import { HOME_PAGE_CONTAINER } from "@/lib/layout/page-layout.constants";
 import { getGlobalSearchProviders } from "@/lib/search/search-providers";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useWebLocale } from "@/hooks/use-web-locale";
 import { cn } from "@/lib/utils";
 
 const QUICK_SEARCHES = [
@@ -53,6 +54,7 @@ function filterSuggestions(providers, term) {
 export function HeroSection({ className }) {
   const router = useRouter();
   const wrapRef = useRef(null);
+  const { t } = useWebLocale();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const debouncedQuery = useDebounce(query, 150);
@@ -87,16 +89,12 @@ export function HeroSection({ className }) {
   };
 
   const suggestionHref = (provider) =>
-    buildCategoryProviderDetailUrl(
-      provider.id,
-      provider.categorySlug,
-      provider,
-    );
+    buildCategoryProviderDetailUrl(provider.id, provider.categorySlug, provider);
 
   return (
     <section
       className={cn(
-        "relative z-20 isolate w-full",
+        "relative isolate z-20 w-full",
         "min-h-[calc(34rem-60px+10px)] lg:min-h-[calc(38rem-60px+10px)] xl:min-h-[calc(42rem-60px+10px)]",
         className,
       )}
@@ -130,13 +128,13 @@ export function HeroSection({ className }) {
       >
         <div className="max-w-xl pt-2 lg:pt-4">
           <p className="text-primary text-[11px] font-semibold tracking-[0.18em] uppercase">
-            Your everyday service partner
+            {t("heroEyebrow")}
           </p>
           <h1 className="text-foreground mt-3 text-[2.35rem] leading-[1.12] font-bold tracking-tight lg:text-[2.85rem] xl:text-[3.15rem]">
-            Book the services you love, effortlessly.
+            {t("heroTitle")}
           </h1>
           <p className="mt-4 max-w-md text-[15px] leading-relaxed text-[#667085] lg:text-base">
-            Discover trusted professionals near you for all your lifestyle needs.
+            {t("heroSubtitle")}
           </p>
 
           <div ref={wrapRef} className="relative z-50 mt-8 w-full max-w-xl">
@@ -159,9 +157,9 @@ export function HeroSection({ className }) {
                     setOpen(true);
                   }}
                   onFocus={() => setOpen(true)}
-                  placeholder="What service are you looking for?"
+                  placeholder={t("heroSearchPlaceholder")}
                   className="min-w-0 flex-1 bg-transparent text-sm text-[#0F1B2D] outline-none placeholder:text-[#98A2B3]"
-                  aria-label="Search for a service"
+                  aria-label={t("heroSearchPlaceholder")}
                   aria-autocomplete="list"
                   aria-expanded={showSuggestions}
                   autoComplete="off"
@@ -171,7 +169,7 @@ export function HeroSection({ className }) {
                 type="submit"
                 className="gradient-brand m-1.5 inline-flex shrink-0 items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_-6px_rgba(24,101,234,0.45)] transition-opacity hover:opacity-95"
               >
-                Search
+                {t("heroSearch")}
                 <ArrowRight className="size-4" aria-hidden />
               </button>
             </form>
@@ -191,7 +189,11 @@ export function HeroSection({ className }) {
                   >
                     <span className="relative size-11 shrink-0 overflow-hidden rounded-xl bg-[#F4F7FB]">
                       <Image
-                        src={provider.avatar || provider.coverImage || "/images/app-icon.jpg"}
+                        src={
+                          provider.avatar ||
+                          provider.coverImage ||
+                          "/images/app-icon.jpg"
+                        }
                         alt=""
                         fill
                         className="object-cover"

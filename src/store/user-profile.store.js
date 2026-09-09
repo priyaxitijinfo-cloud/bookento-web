@@ -17,13 +17,40 @@ export const useUserProfileStore = create(
         updateProfile: async (data) => {
           set({ isLoading: true });
           await delay(600);
-          set((s) => ({ profile: { ...s.profile, ...data }, isLoading: false }));
+          set((s) => ({
+            profile: {
+              ...s.profile,
+              ...data,
+              preferences: {
+                ...s.profile.preferences,
+                ...(data.preferences || {}),
+              },
+            },
+            isLoading: false,
+          }));
           return { success: true };
+        },
+
+        /** Instant language switch for web header — no delay */
+        setLanguage: (language) => {
+          set((s) => ({
+            profile: {
+              ...s.profile,
+              preferences: {
+                ...s.profile.preferences,
+                language,
+              },
+            },
+          }));
         },
 
         addAddress: async (address) => {
           await delay(400);
-          const newAddr = { ...address, id: `addr_${Date.now()}`, userId: currentUser.id };
+          const newAddr = {
+            ...address,
+            id: `addr_${Date.now()}`,
+            userId: currentUser.id,
+          };
           set((s) => ({ addresses: [...s.addresses, newAddr] }));
           return newAddr;
         },

@@ -71,7 +71,7 @@ export function FeaturePromoBanner({ className }) {
               bookings before the drop ends.
             </p>
 
-            <div className="mt-7 flex flex-wrap items-center gap-3">
+            <div className="mt-7">
               <Link
                 href={ROUTES.PROVIDERS}
                 className={cn(
@@ -87,18 +87,6 @@ export function FeaturePromoBanner({ className }) {
                   <ArrowUpRight className="size-3.5" strokeWidth={2.4} />
                 </span>
               </Link>
-
-              <div className="flex items-center gap-2 text-[12px] text-white/45">
-                <span className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-1">
-                  Salon
-                </span>
-                <span className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-1">
-                  Spa
-                </span>
-                <span className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-1">
-                  Home
-                </span>
-              </div>
             </div>
           </div>
 

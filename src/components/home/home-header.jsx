@@ -2,32 +2,183 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronDown, MapPin } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 import { HeroHeartIcon } from "@/components/icons/hero-nav-icons";
 import { SearchIcon } from "@/components/icons/search-icon";
 import { Avatar } from "@/components/ui/avatar";
 import { ROUTES } from "@/constants/routes.constants";
-import { useNotificationStore, useProfileStore } from "@/store";
+import { useWebLocale } from "@/hooks/use-web-locale";
+import { getWebMessages } from "@/lib/i18n/web-messages";
 import { HOME_PAGE_CONTAINER } from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
+import { useNotificationStore, useProfileStore } from "@/store";
+import { toast } from "sonner";
 
 const DESKTOP_NAV = [
-  { href: "/#categories", label: "Categories" },
-  { href: "/#professionals", label: "Professionals" },
-  { href: "/#packages", label: "Packages" },
-  { href: "/#popular", label: "Popular" },
+  { href: "/#categories", labelKey: "navCategories" },
+  { href: "/#professionals", labelKey: "navProfessionals" },
+  { href: "/#packages", labelKey: "navPackages" },
+  { href: "/#popular", labelKey: "navPopular" },
 ];
 
+/** Header language dropdown — reference-style 2-column flag grid */
+const HEADER_LANGUAGE_OPTIONS = [
+  { code: "en", label: "English", flag: "us" },
+  { code: "id", label: "Indonesian", flag: "id" },
+  { code: "it", label: "Italian", flag: "it" },
+  { code: "te", label: "Telugu", flag: "in" },
+  { code: "ta", label: "Tamil", flag: "in" },
+  { code: "sw", label: "Swahili", flag: "ke" },
+  { code: "tr", label: "Turkish", flag: "tr" },
+  { code: "ko", label: "Korean", flag: "kr" },
+  { code: "pt", label: "Portuguese", flag: "pt" },
+  { code: "zh", label: "Chinese", flag: "cn" },
+  { code: "es", label: "Spanish", flag: "es" },
+  { code: "ru", label: "Russian", flag: "ru" },
+  { code: "hi", label: "Hindi", flag: "in" },
+  { code: "de", label: "German", flag: "de" },
+  { code: "fr", label: "French", flag: "fr" },
+  { code: "ar", label: "Arabic", flag: "sa" },
+  { code: "ja", label: "Japanese", flag: "jp" },
+  { code: "bn", label: "Bengali", flag: "bd" },
+];
+
+function LanguageFlag({ code, label, size = "sm" }) {
+  const dim = size === "md" ? 28 : 20;
+  return (
+    <span
+      className={cn(
+        "relative shrink-0 overflow-hidden rounded-full bg-[#EEF2F7] ring-1 ring-[#E5E7EB]",
+        size === "md" ? "size-7" : "size-5",
+      )}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={`https://flagcdn.com/w80/${code}.png`}
+        alt=""
+        width={dim}
+        height={dim}
+        className="size-full object-cover"
+        draggable={false}
+        aria-hidden
+      />
+      <span className="sr-only">{label} flag</span>
+    </span>
+  );
+}
+
+/** Desktop-only language selector — 2-column flag dropdown */
+function LanguageDropdown({ selectedCode, onSelect }) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef(null);
+
+  const selected =
+    HEADER_LANGUAGE_OPTIONS.find((option) => option.code === selectedCode) ||
+    HEADER_LANGUAGE_OPTIONS[0];
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const onPointerDown = (event) => {
+      if (!rootRef.current?.contains(event.target)) setOpen(false);
+    };
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  return (
+    <div ref={rootRef} className="relative hidden xl:block">
+      <button
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => setOpen((current) => !current)}
+        className={cn(
+          "inline-flex items-center gap-2 rounded-full border border-[#E8ECF2] bg-[#FAFBFC] px-2.5 py-1.5",
+          "text-sm font-medium text-[#475467] transition-colors",
+          "hover:border-primary/30 hover:text-primary",
+          open && "border-primary/30 text-primary",
+        )}
+      >
+        <LanguageFlag code={selected.flag} label={selected.label} />
+        <span className="max-w-[7.5rem] truncate">{selected.label}</span>
+        <ChevronDown
+          className={cn(
+            "size-3.5 shrink-0 opacity-50 transition-transform",
+            open && "rotate-180",
+          )}
+          aria-hidden
+        />
+      </button>
+
+      {open ? (
+        <div
+          role="listbox"
+          aria-label="Choose language"
+          className={cn(
+            "absolute top-[calc(100%+0.5rem)] right-0 z-50 w-[22rem]",
+            "rounded-2xl border border-[#E8ECF2] bg-white p-2",
+            "shadow-[0_16px_40px_-16px_rgba(15,23,42,0.28)]",
+          )}
+        >
+          <div className="scrollbar-hide grid max-h-72 grid-cols-2 gap-1 overflow-y-auto pr-1">
+            {HEADER_LANGUAGE_OPTIONS.map((option) => {
+              const active = selected.code === option.code;
+              return (
+                <button
+                  key={option.code}
+                  type="button"
+                  role="option"
+                  aria-selected={active}
+                  onClick={() => {
+                    onSelect(option.code);
+                    setOpen(false);
+                  }}
+                  className={cn(
+                    "flex items-center gap-2.5 rounded-xl px-2.5 py-2.5 text-left transition-colors",
+                    active
+                      ? "bg-[#EAF1FF] text-[#1865EA]"
+                      : "text-[#0F1B2D] hover:bg-[#F5F7FA]",
+                  )}
+                >
+                  <LanguageFlag code={option.flag} label={option.label} size="md" />
+                  <span className="truncate text-sm font-medium">{option.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 export function HomeHeader({ embedded = false }) {
-  const { profile, addresses } = useProfileStore();
+  const { profile, addresses, setLanguage } = useProfileStore();
   const unreadCount = useNotificationStore((state) => state.unreadCount("user"));
+  const { t } = useWebLocale();
   const defaultAddress = addresses.find((address) => address.isDefault) || addresses[0];
   const addressLabel = defaultAddress
     ? [defaultAddress.addressLine1, defaultAddress.city].filter(Boolean).join(", ")
     : "Add delivery address";
-  const cityLabel = defaultAddress?.city || "Ahmedabad";
   const firstName = profile?.name?.split(" ")[0] || "User";
+  const selectedLanguage = profile?.preferences?.language ?? "en";
+
+  const handleSelectLanguage = (code) => {
+    if (code === selectedLanguage) return;
+    setLanguage(code);
+    toast.success(getWebMessages(code).languageUpdated);
+  };
 
   return (
     <header
@@ -130,24 +281,20 @@ export function HomeHeader({ embedded = false }) {
           >
             {DESKTOP_NAV.map((item) => (
               <Link
-                key={item.label}
+                key={item.href}
                 href={item.href}
                 className="hover:bg-accent hover:text-primary rounded-full px-3.5 py-2 text-sm font-medium text-[#667085] transition-colors"
               >
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             ))}
           </nav>
 
           <div className="ml-auto flex items-center gap-2 lg:ml-0 lg:gap-2.5">
-            <Link
-              href={ROUTES.ADDRESSES}
-              className="hover:border-primary/30 hover:text-primary hidden items-center gap-1.5 rounded-full border border-[#E8ECF2] bg-[#FAFBFC] px-3 py-1.5 text-sm font-medium text-[#475467] transition-colors xl:inline-flex"
-            >
-              <MapPin className="text-primary size-3.5" aria-hidden />
-              {cityLabel}
-              <ChevronDown className="size-3.5 opacity-50" aria-hidden />
-            </Link>
+            <LanguageDropdown
+              selectedCode={selectedLanguage}
+              onSelect={handleSelectLanguage}
+            />
 
             <Link
               href={ROUTES.SAVED}
@@ -168,7 +315,7 @@ export function HomeHeader({ embedded = false }) {
                 className="ring-1 ring-[#E8ECF2]"
               />
               <span className="hidden text-sm font-medium text-[#0F1B2D] xl:inline">
-                Hi, {firstName}
+                {t("hiUser", { name: firstName })}
               </span>
               <ChevronDown
                 className="hidden size-3.5 text-[#98A2B3] xl:inline"
