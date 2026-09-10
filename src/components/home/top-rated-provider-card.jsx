@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Star } from "lucide-react";
+import { ArrowUpRight, MapPin, Star } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 import {
@@ -83,13 +83,18 @@ export function TopRatedProviderCard({
               <Link
                 href={bookNowHref}
                 className={cn(
-                  "gradient-brand shrink-0 rounded-lg px-3.5 py-2",
+                  "group gradient-brand inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5",
                   "text-[13px] font-semibold text-white",
                   "transition-opacity hover:opacity-95",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1865EA]/35",
+                  "focus-visible:ring-2 focus-visible:ring-[#1865EA]/35 focus-visible:outline-none",
                 )}
               >
                 Book now
+                <ArrowUpRight
+                  className="size-[19px] transition-transform duration-200 group-hover:rotate-12"
+                  strokeWidth={2.4}
+                  aria-hidden
+                />
               </Link>
             </div>
           </div>

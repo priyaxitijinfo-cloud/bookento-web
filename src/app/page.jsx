@@ -8,6 +8,7 @@ import { BannerShowcase } from "@/components/home/banner-showcase";
 import { CategoryGrid } from "@/components/home/category-grid";
 import { DesktopTopRatedScroll } from "@/components/home/desktop-top-rated-scroll";
 import { FeaturePromoBanner } from "@/components/home/feature-promo-banner";
+import { FeaturesShowcase } from "@/components/home/features-showcase";
 import { FaqShowcase } from "@/components/home/faq-showcase";
 import { HeroSection } from "@/components/home/hero-section";
 import { HomeFooter } from "@/components/home/home-footer";
@@ -137,6 +138,8 @@ export default function HomePage() {
         <VideosShowcase />
 
         <FeaturePromoBanner />
+
+        <FeaturesShowcase />
 
         <TestimonialsShowcase />
 

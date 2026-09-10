@@ -13,6 +13,7 @@ const EN = {
   heroSearchPlaceholder: "What service are you looking for?",
   heroSearch: "Search",
   languageUpdated: "Language updated",
+  login: "Login",
 };
 
 const HI = {
@@ -28,6 +29,7 @@ const HI = {
   heroSearchPlaceholder: "आप कौन सी सेवा ढूंढ रहे हैं?",
   heroSearch: "खोजें",
   languageUpdated: "भाषा अपडेट हो गई",
+  login: "लॉगिन",
 };
 
 const ES = {

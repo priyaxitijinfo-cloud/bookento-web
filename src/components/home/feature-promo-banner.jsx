@@ -90,36 +90,27 @@ export function FeaturePromoBanner({ className }) {
             </div>
           </div>
 
-          {/* Deal spotlight — circular photo + glass badge */}
+          {/* Right visual — full-bleed photo, no floating badges */}
           <div className="relative hidden h-full min-h-[17rem] lg:block" aria-hidden>
-            <div className="absolute top-1/2 left-1/2 size-[17.5rem] -translate-x-1/2 -translate-y-1/2">
-              <div className="absolute inset-0 rounded-full border border-white/10" />
-              <div className="absolute inset-4 rounded-full border border-[#1865EA]/35" />
-              <div className="absolute inset-8 overflow-hidden rounded-full border border-white/20 shadow-[0_28px_50px_-20px_rgba(0,0,0,0.65)]">
+            <div className="absolute inset-y-0 right-0 -mr-12 w-[calc(100%+1.5rem)] overflow-hidden lg:-mr-12">
+              <div className="absolute inset-0">
                 <Image
                   src="/images/promo-summer-spa.png"
-                  alt="Spa and wellness offer"
+                  alt=""
                   fill
-                  className="object-cover object-[center_28%]"
-                  sizes="280px"
+                  className="object-cover object-[center_22%]"
+                  sizes="(min-width: 1024px) 40vw, 0px"
+                  priority={false}
                 />
               </div>
-              <div className="absolute -top-1 -right-2 size-16 rounded-full bg-[#1865EA]/30 blur-2xl" />
-              <div className="absolute -bottom-2 -left-3 size-20 rounded-full bg-[#58A1FF]/20 blur-2xl" />
+              {/* Blend into dark panel so photo feels part of the banner */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#08101C] via-[#08101C]/55 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#08101C]/70 via-transparent to-[#08101C]/25" />
             </div>
 
-            <div className="absolute top-[12%] right-[4%] z-20 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 shadow-[0_18px_40px_-18px_rgba(0,0,0,0.7)] backdrop-blur-md">
-              <p className="text-[10px] font-semibold tracking-[0.18em] text-[#7EB6FF] uppercase">
-                Save up to
-              </p>
-              <p className="mt-0.5 text-[2.35rem] leading-none font-bold tracking-tight text-white">
-                40%
-              </p>
-            </div>
-
-            <div className="absolute bottom-[14%] left-[2%] z-20 rounded-full border border-white/10 bg-[#0C1628]/85 px-3.5 py-1.5 text-[12px] font-medium text-white/80 backdrop-blur-sm">
-              Spa · Salon · Home
-            </div>
+            <p className="absolute right-2 bottom-1 z-10 text-[6.5rem] leading-none font-bold tracking-tighter text-white/[0.07] select-none lg:text-[7.5rem]">
+              40%
+            </p>
           </div>
         </div>
       </div>

@@ -34,10 +34,10 @@ function ReelPanel({ reel, play }) {
       aria-label={`Watch ${reel.title}`}
       className={cn(
         "relative aspect-[9/16] w-[11rem] shrink-0 overflow-hidden rounded-[1.25rem]",
-        "ring-1 ring-black/10 lg:w-[12rem] xl:w-[12.75rem]",
-        "shadow-[0_20px_40px_-26px_rgba(15,23,42,0.5)]",
-        "transition-[transform,box-shadow] duration-400 ease-out",
-        "hover:-translate-y-1.5 hover:shadow-[0_28px_48px_-24px_rgba(24,101,234,0.32)]",
+        "ring-1 ring-[#D0D5DD]/70 lg:w-[12rem] xl:w-[12.75rem]",
+        "shadow-[0_14px_28px_-18px_rgba(15,23,42,0.35)]",
+        "transition-[transform,box-shadow] duration-300 ease-out",
+        "hover:-translate-y-1 hover:shadow-[0_20px_36px_-18px_rgba(24,101,234,0.28)]",
       )}
     >
       <video
@@ -157,18 +157,13 @@ export function VideosShowcase({ className }) {
 
             <div
               ref={stageRef}
-              className="group/videos-marquee relative min-w-0 overflow-hidden py-2"
+              className={cn(
+                "group/videos-marquee relative min-w-0 overflow-hidden py-4",
+                "[mask-image:linear-gradient(90deg,transparent_0%,#000_10%,#000_90%,transparent_100%)]",
+                "[-webkit-mask-image:linear-gradient(90deg,transparent_0%,#000_10%,#000_90%,transparent_100%)]",
+              )}
             >
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-[#F7F8FA] to-transparent"
-              />
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-[#F7F8FA] to-transparent"
-              />
-
-              <div className="animate-videos-marquee flex w-max items-center gap-3.5 py-3 lg:gap-4">
+              <div className="animate-videos-marquee flex w-max items-center gap-3.5 py-1 lg:gap-4">
                 {loop.map((reel, index) => (
                   <ReelPanel
                     key={`${reel.id}-${index < SHOWCASE_REELS.length ? "a" : "b"}`}

@@ -13,7 +13,7 @@ import { useWebLocale } from "@/hooks/use-web-locale";
 import { getWebMessages } from "@/lib/i18n/web-messages";
 import { HOME_PAGE_CONTAINER } from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
-import { useNotificationStore, useProfileStore } from "@/store";
+import { useNotificationStore, useProfileStore, useUserAuthStore } from "@/store";
 import { toast } from "sonner";
 
 const DESKTOP_NAV = [
@@ -165,6 +165,7 @@ function LanguageDropdown({ selectedCode, onSelect }) {
 
 export function HomeHeader({ embedded = false }) {
   const { profile, addresses, setLanguage } = useProfileStore();
+  const { isAuthenticated, isGuest } = useUserAuthStore();
   const unreadCount = useNotificationStore((state) => state.unreadCount("user"));
   const { t } = useWebLocale();
   const defaultAddress = addresses.find((address) => address.isDefault) || addresses[0];
@@ -173,6 +174,7 @@ export function HomeHeader({ embedded = false }) {
     : "Add delivery address";
   const firstName = profile?.name?.split(" ")[0] || "User";
   const selectedLanguage = profile?.preferences?.language ?? "en";
+  const showDesktopLogin = !isAuthenticated || isGuest;
 
   const handleSelectLanguage = (code) => {
     if (code === selectedLanguage) return;
@@ -304,24 +306,37 @@ export function HomeHeader({ embedded = false }) {
               <HeroHeartIcon tone="dark" className="size-5" />
             </Link>
 
-            <Link
-              href={ROUTES.PROFILE}
-              className="ml-1 flex items-center gap-2 rounded-full py-1 pr-1 pl-1 transition-colors hover:bg-[#F5F7FA]"
-            >
-              <Avatar
-                src={profile.avatar}
-                name={profile.name}
-                size="sm"
-                className="ring-1 ring-[#E8ECF2]"
-              />
-              <span className="hidden text-sm font-medium text-[#0F1B2D] xl:inline">
-                {t("hiUser", { name: firstName })}
-              </span>
-              <ChevronDown
-                className="hidden size-3.5 text-[#98A2B3] xl:inline"
-                aria-hidden
-              />
-            </Link>
+            {showDesktopLogin ? (
+              <Link
+                href={ROUTES.USER_LOGIN}
+                className={cn(
+                  "ml-1 inline-flex h-10 min-w-[5.5rem] items-center justify-center rounded-full px-5",
+                  "gradient-brand text-sm font-semibold text-white shadow-[0_8px_20px_-10px_rgba(24,101,234,0.65)]",
+                  "transition-[opacity,transform] hover:opacity-95 active:scale-[0.98]",
+                )}
+              >
+                {t("login")}
+              </Link>
+            ) : (
+              <Link
+                href={ROUTES.PROFILE}
+                className="ml-1 flex items-center gap-2 rounded-full py-1 pr-1 pl-1 transition-colors hover:bg-[#F5F7FA]"
+              >
+                <Avatar
+                  src={profile.avatar}
+                  name={profile.name}
+                  size="sm"
+                  className="ring-1 ring-[#E8ECF2]"
+                />
+                <span className="hidden text-sm font-medium text-[#0F1B2D] xl:inline">
+                  {t("hiUser", { name: firstName })}
+                </span>
+                <ChevronDown
+                  className="hidden size-3.5 text-[#98A2B3] xl:inline"
+                  aria-hidden
+                />
+              </Link>
+            )}
           </div>
         </div>
       </div>
