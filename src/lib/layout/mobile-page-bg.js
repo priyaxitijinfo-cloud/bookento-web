@@ -1,5 +1,6 @@
 const AUTH_PATH_PREFIXES = [
   "/login",
+  "/register",
   "/verify-otp",
   "/forgot-password",
   "/reset-password",

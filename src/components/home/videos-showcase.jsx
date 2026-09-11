@@ -1,18 +1,34 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, Heart, MessageCircle } from "lucide-react";
+import {
+  ArrowUpRight,
+  BookmarkCheck,
+  Eye,
+  Heart,
+  MessageCircle,
+  PlayCircle,
+  Share2,
+  Sparkles,
+} from "lucide-react";
 
-import { ROUTES } from "@/constants/routes.constants";
+import { useWebLocale } from "@/hooks/use-web-locale";
+import { buildReelsRoute } from "@/lib/navigation/back-navigation";
 import { cn } from "@/lib/utils";
 import { reels } from "@/mock/reels";
 import { formatCompactNumber } from "@/utils/format.utils";
 
-const SHOWCASE_REELS = reels.slice(0, 8);
+/** Use full mock set so the strip stays longer before looping */
+const SHOWCASE_REELS = reels;
+const HOLD_MS = 1800;
+const SLIDE_MS = 600;
+const DRAG_THRESHOLD_PX = 48;
+const ALL_REELS_HREF = buildReelsRoute({ from: "home", view: "all" });
 
-function ReelPanel({ reel, play }) {
+function ReelPanel({ reel, play, isCenter, onPause, popularBadge, suppressClickRef }) {
   const videoRef = useRef(null);
+  const handle = reel.handle || reel.providerName;
 
   useEffect(() => {
     const video = videoRef.current;
@@ -26,18 +42,29 @@ function ReelPanel({ reel, play }) {
     }
 
     video.pause();
-  }, [play]);
+  }, [play, reel.id]);
 
   return (
     <Link
-      href={`${ROUTES.REELS}?view=all`}
+      href={ALL_REELS_HREF}
+      draggable={false}
       aria-label={`Watch ${reel.title}`}
+      onClick={(event) => {
+        if (suppressClickRef?.current) {
+          event.preventDefault();
+          suppressClickRef.current = false;
+        }
+      }}
+      onMouseEnter={() => onPause(true)}
+      onMouseLeave={() => onPause(false)}
       className={cn(
-        "relative aspect-[9/16] w-[11rem] shrink-0 overflow-hidden rounded-[1.25rem]",
-        "ring-1 ring-[#D0D5DD]/70 lg:w-[12rem] xl:w-[12.75rem]",
-        "shadow-[0_14px_28px_-18px_rgba(15,23,42,0.35)]",
-        "transition-[transform,box-shadow] duration-300 ease-out",
-        "hover:-translate-y-1 hover:shadow-[0_20px_36px_-18px_rgba(24,101,234,0.28)]",
+        "relative aspect-[2/3] w-[var(--panel)] shrink-0 overflow-hidden rounded-[1.35rem]",
+        "origin-center bg-[#111827] ring-1 ring-[#D0D5DD]/70",
+        "transition-[transform,opacity] duration-[600ms] ease-[cubic-bezier(0.25,0.8,0.25,1)]",
+        "select-none",
+        isCenter
+          ? "z-20 scale-[1.06] opacity-100 ring-[#1865EA]/40"
+          : "z-10 scale-[0.94] opacity-75",
       )}
     >
       <video
@@ -53,45 +80,114 @@ function ReelPanel({ reel, play }) {
 
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-black/20"
+        className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/25"
       />
 
-      <div className="absolute inset-x-0 bottom-0 p-3">
-        <div className="flex items-center gap-2">
+      <div className="absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-2 p-2.5">
+        <div className="min-w-0">
+          {reel.isPopular ? (
+            <span className="inline-flex rounded-full bg-white/15 px-2 py-0.5 text-[9px] font-semibold text-white backdrop-blur-md">
+              {popularBadge}
+            </span>
+          ) : null}
+        </div>
+        <span className="inline-flex items-center gap-1 rounded-full bg-black/35 px-1.5 py-0.5 text-[9px] font-medium text-white backdrop-blur-md">
+          <Eye className="size-2.5" aria-hidden />
+          {formatCompactNumber(reel.views || 0)}
+        </span>
+      </div>
+
+      <div className="absolute top-[34%] right-1.5 z-10 flex flex-col items-center gap-2.5">
+        <div className="flex flex-col items-center gap-0.5">
+          <span className="inline-flex size-7 items-center justify-center rounded-full bg-black/30 backdrop-blur-md">
+            <Heart className="size-3.5 text-white" aria-hidden />
+          </span>
+          <span className="text-[9px] font-semibold text-white drop-shadow">
+            {formatCompactNumber(reel.likes || 0)}
+          </span>
+        </div>
+        <div className="flex flex-col items-center gap-0.5">
+          <span className="inline-flex size-7 items-center justify-center rounded-full bg-black/30 backdrop-blur-md">
+            <MessageCircle className="size-3.5 text-white" aria-hidden />
+          </span>
+          <span className="text-[9px] font-semibold text-white drop-shadow">
+            {formatCompactNumber(reel.comments || 0)}
+          </span>
+        </div>
+        <div className="flex flex-col items-center gap-0.5">
+          <span className="inline-flex size-7 items-center justify-center rounded-full bg-black/30 backdrop-blur-md">
+            <Share2 className="size-3.5 text-white" aria-hidden />
+          </span>
+          <span className="text-[9px] font-semibold text-white drop-shadow">
+            {formatCompactNumber(reel.shares || 0)}
+          </span>
+        </div>
+      </div>
+
+      <div className="absolute inset-x-0 bottom-0 z-10 p-2.5 pr-8">
+        <div className="mb-1.5 flex items-center gap-1.5">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={reel.providerAvatar}
             alt=""
             className="size-6 rounded-full object-cover ring-1 ring-white/80"
           />
-          <div className="min-w-0">
-            <p className="truncate text-[11px] font-semibold text-white">
-              @{reel.handle || reel.providerName}
-            </p>
-            <p className="truncate text-[10px] text-white/75">{reel.title}</p>
-          </div>
+          <span className="truncate rounded-md bg-black/40 px-1.5 py-0.5 text-[10px] font-medium text-white backdrop-blur-md">
+            @{handle}
+          </span>
         </div>
 
-        <div className="mt-2 flex items-center gap-2.5 text-[10px] font-medium text-white/85">
-          <span className="inline-flex items-center gap-1">
-            <Heart className="size-3" aria-hidden />
-            {formatCompactNumber(reel.likes || 0)}
-          </span>
-          <span className="inline-flex items-center gap-1">
-            <MessageCircle className="size-3" aria-hidden />
-            {formatCompactNumber(reel.comments || 0)}
-          </span>
-        </div>
+        <p className="line-clamp-1 text-[11px] leading-tight font-semibold text-white">
+          {reel.title}
+        </p>
+        <p className="mt-0.5 line-clamp-2 text-[9px] leading-snug text-white/85">
+          {reel.caption}
+        </p>
+        {Array.isArray(reel.hashtags) && reel.hashtags.length > 0 ? (
+          <p className="mt-1 line-clamp-1 text-[9px] text-[#9EC5FF]">
+            {reel.hashtags.slice(0, 3).join(" ")}
+          </p>
+        ) : null}
       </div>
     </Link>
   );
 }
 
-/** Desktop-only — copy left, infinite scroll on the right */
+/** Desktop-only — center focus hold + smooth slide, seamless infinite loop */
 export function VideosShowcase({ className }) {
+  const { t } = useWebLocale();
   const stageRef = useRef(null);
+  const trackRef = useRef(null);
+  const dragRef = useRef({ active: false, startX: 0, delta: 0 });
+  const suppressClickRef = useRef(false);
   const [inView, setInView] = useState(false);
-  const loop = [...SHOWCASE_REELS, ...SHOWCASE_REELS];
+  const [activeIndex, setActiveIndex] = useState(1);
+  const [paused, setPaused] = useState(false);
+  const [animate, setAnimate] = useState(true);
+  const [dragPx, setDragPx] = useState(0);
+  const [dragging, setDragging] = useState(false);
+
+  const count = SHOWCASE_REELS.length;
+  /** Duplicate once so we can slide past the last into a clone, then snap back */
+  const loopReels = [...SHOWCASE_REELS, ...SHOWCASE_REELS];
+
+  const videoPoints = [
+    {
+      icon: PlayCircle,
+      title: t("videosPoint1Title"),
+      desc: t("videosPoint1Desc"),
+    },
+    {
+      icon: Sparkles,
+      title: t("videosPoint2Title"),
+      desc: t("videosPoint2Desc"),
+    },
+    {
+      icon: BookmarkCheck,
+      title: t("videosPoint3Title"),
+      desc: t("videosPoint3Desc"),
+    },
+  ];
 
   useEffect(() => {
     const node = stageRef.current;
@@ -104,6 +200,83 @@ export function VideosShowcase({ className }) {
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (!inView || paused || dragging || count < 2) return undefined;
+
+    const timer = window.setTimeout(() => {
+      setAnimate(true);
+      setActiveIndex((current) => current + 1);
+    }, HOLD_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [inView, paused, dragging, count, activeIndex]);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return undefined;
+
+    const onEnd = (event) => {
+      if (event.target !== track) return;
+      if (activeIndex < count) return;
+      setAnimate(false);
+      setActiveIndex(activeIndex % count);
+    };
+
+    track.addEventListener("transitionend", onEnd);
+    return () => track.removeEventListener("transitionend", onEnd);
+  }, [activeIndex, count]);
+
+  const endDrag = () => {
+    if (!dragRef.current.active) return;
+
+    const delta = dragRef.current.delta;
+    dragRef.current.active = false;
+    setDragging(false);
+    setDragPx(0);
+    setAnimate(true);
+
+    if (Math.abs(delta) < DRAG_THRESHOLD_PX) return;
+
+    suppressClickRef.current = true;
+
+    if (delta < 0) {
+      setActiveIndex((current) => current + 1);
+      return;
+    }
+
+    setActiveIndex((current) => {
+      if (current > 0) return current - 1;
+      return count - 1;
+    });
+  };
+
+  const onPointerDown = (event) => {
+    if (event.button !== 0) return;
+    dragRef.current = { active: true, startX: event.clientX, delta: 0 };
+    setDragging(true);
+    setPaused(true);
+    setAnimate(false);
+    setDragPx(0);
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+  };
+
+  const onPointerMove = (event) => {
+    if (!dragRef.current.active) return;
+    const delta = event.clientX - dragRef.current.startX;
+    dragRef.current.delta = delta;
+    setDragPx(delta);
+  };
+
+  const onPointerUp = (event) => {
+    if (!dragRef.current.active) return;
+    try {
+      event.currentTarget.releasePointerCapture?.(event.pointerId);
+    } catch {
+      /* already released */
+    }
+    endDrag();
+  };
 
   return (
     <section
@@ -121,36 +294,56 @@ export function VideosShowcase({ className }) {
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_78%_35%,rgba(24,101,234,0.1)_0%,transparent_52%)]"
         />
 
-        <div className="relative mx-auto w-full max-w-[calc(96rem-60px)] px-[4.875rem] py-14 xl:px-[5.875rem] xl:py-16">
-          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.35fr)] lg:gap-10 xl:gap-14">
+        <div className="relative mx-auto w-full max-w-[calc(96rem-60px)] px-[4.875rem] py-9 xl:px-[5.875rem] xl:py-11">
+          <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.35fr)] lg:gap-10 xl:gap-14">
             <div className="max-w-md">
               <div className="flex items-center gap-3">
                 <span aria-hidden className="h-px w-10 bg-[#C9D3E2]" />
                 <span className="text-[12px] font-semibold tracking-[0.22em] text-[#1865EA] uppercase">
-                  Videos
+                  {t("videosBadge")}
                 </span>
               </div>
 
               <h2 className="mt-4 text-[calc(2.15rem-4px)] leading-[1.08] font-bold tracking-tight text-[#0F1B2D] lg:text-[2.5rem]">
-                See the work.
+                {t("videosTitle")}
                 <span className="mt-1 block bg-[linear-gradient(105deg,#1865EA_0%,#58A1FF_100%)] bg-clip-text text-transparent">
-                  Then book it.
+                  {t("videosHighlight")}
                 </span>
               </h2>
 
               <p className="mt-3 text-[15px] leading-relaxed text-[#667085]">
-                Real reels from Bookento providers — watch what they do, then book the
-                same package in a tap.
+                {t("videosBody")}
               </p>
 
+              <ul className="mt-6 space-y-3.5">
+                {videoPoints.map((point) => {
+                  const Icon = point.icon;
+                  return (
+                    <li key={point.title} className="flex gap-3">
+                      <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl bg-white text-[#1865EA] shadow-[0_1px_3px_rgba(15,23,42,0.06)] ring-1 ring-[#E8EDF5]">
+                        <Icon className="size-4" strokeWidth={2.1} aria-hidden />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-[14px] leading-snug font-semibold text-[#0F1B2D]">
+                          {point.title}
+                        </p>
+                        <p className="mt-0.5 text-[13px] leading-snug text-[#667085]">
+                          {point.desc}
+                        </p>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+
               <Link
-                href={`${ROUTES.REELS}?view=all`}
+                href={ALL_REELS_HREF}
                 className={cn(
-                  "gradient-brand mt-8 inline-flex items-center gap-2 rounded-full px-5 py-2.5",
+                  "gradient-brand mt-7 inline-flex items-center gap-2 rounded-full px-5 py-2.5",
                   "text-sm font-semibold text-white transition-opacity hover:opacity-95",
                 )}
               >
-                Watch all reels
+                {t("videosCta")}
                 <ArrowUpRight className="size-4" aria-hidden />
               </Link>
             </div>
@@ -158,17 +351,43 @@ export function VideosShowcase({ className }) {
             <div
               ref={stageRef}
               className={cn(
-                "group/videos-marquee relative min-w-0 overflow-hidden py-4",
-                "[mask-image:linear-gradient(90deg,transparent_0%,#000_10%,#000_90%,transparent_100%)]",
-                "[-webkit-mask-image:linear-gradient(90deg,transparent_0%,#000_10%,#000_90%,transparent_100%)]",
+                "relative ml-auto min-w-0 overflow-hidden py-6",
+                "[--gap:1.15rem] [--panel:14.5rem] xl:[--gap:1.35rem] xl:[--panel:15.75rem]",
+                "w-[calc(var(--panel)*2.2+var(--gap)*2)] max-w-full",
+                "[mask-image:linear-gradient(90deg,transparent_0%,#000_12%,#000_88%,transparent_100%)]",
+                "[-webkit-mask-image:linear-gradient(90deg,transparent_0%,#000_12%,#000_88%,transparent_100%)]",
+                dragging ? "cursor-grabbing" : "cursor-grab",
               )}
+              onMouseEnter={() => setPaused(true)}
+              onMouseLeave={() => {
+                if (!dragRef.current.active) setPaused(false);
+              }}
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={onPointerUp}
+              onPointerCancel={onPointerUp}
             >
-              <div className="animate-videos-marquee flex w-max items-center gap-3.5 py-1 lg:gap-4">
-                {loop.map((reel, index) => (
+              <div
+                ref={trackRef}
+                className="flex w-max items-center gap-[var(--gap)] py-2 will-change-transform"
+                style={{
+                  marginLeft: "calc(50% - (var(--panel) / 2))",
+                  transform: `translateX(calc(-${activeIndex} * (var(--panel) + var(--gap)) + ${dragPx}px))`,
+                  transition:
+                    animate && !dragging
+                      ? `transform ${SLIDE_MS}ms cubic-bezier(0.25, 0.8, 0.25, 1)`
+                      : "none",
+                }}
+              >
+                {loopReels.map((reel, index) => (
                   <ReelPanel
-                    key={`${reel.id}-${index < SHOWCASE_REELS.length ? "a" : "b"}`}
+                    key={`${reel.id}-${index}`}
                     reel={reel}
-                    play={inView && index < SHOWCASE_REELS.length}
+                    isCenter={index === activeIndex}
+                    play={inView && index === activeIndex && !paused && !dragging}
+                    onPause={setPaused}
+                    popularBadge={t("popularBadgeShort")}
+                    suppressClickRef={suppressClickRef}
                   />
                 ))}
               </div>

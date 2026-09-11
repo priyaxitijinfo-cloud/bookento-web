@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Bookmark } from "lucide-react";
 
 import { HomeHeader } from "@/components/home/home-header";
@@ -187,6 +188,19 @@ export function ShortsDesktop({
   playerRef,
   breadcrumbProps,
 }) {
+  /** Desktop all-reels: show full gallery grid first, then open player on click */
+  const [allPlayerOpen, setAllPlayerOpen] = useState(false);
+  const showAllReelsGrid = !isSavedView && !allPlayerOpen;
+
+  const openAllReel = (index) => {
+    setActiveIndex(index);
+    setAllPlayerOpen(true);
+  };
+
+  const closeAllPlayer = () => {
+    setAllPlayerOpen(false);
+  };
+
   if (showSavedGrid) {
     return (
       <DesktopLayout
@@ -235,28 +249,95 @@ export function ShortsDesktop({
     );
   }
 
+  if (showAllReelsGrid) {
+    return (
+      <DesktopLayout
+        maxWidth="wide"
+        showHeaderBorder={false}
+        contentClassName="md:!pt-0 lg:!pt-0"
+        containerClassName="md:!pt-0"
+        header={
+          <>
+            <HomeHeader embedded />
+            <DesktopBreadcrumbBar
+              backHref={back.href}
+              backLabel={back.label}
+              currentLabel={pageTitle}
+            />
+          </>
+        }
+      >
+        {!hasHydrated ? (
+          <ResponsiveGrid mobile={2} tablet={3} desktop={5} gap="gap-3">
+            {Array.from({ length: 10 }).map((_, index) => (
+              <SkeletonCard key={index} className="aspect-[3/4] rounded-2xl" />
+            ))}
+          </ResponsiveGrid>
+        ) : visibleReels.length === 0 ? (
+          <EmptyState
+            icon={Bookmark}
+            title="No reels yet"
+            description="New provider reels will show up here."
+          />
+        ) : (
+          <SavedReelsGrid
+            className="grid grid-cols-5 gap-3"
+            variant="desktop"
+            savedReels={visibleReels}
+            savedIds={savedIds}
+            onSelectReel={openAllReel}
+            onToggleSave={onToggleSave}
+          />
+        )}
+      </DesktopLayout>
+    );
+  }
+
+  const desktopFeedPlayerProps = !isSavedView
+    ? {
+        ...feedPlayerProps,
+        onBack: closeAllPlayer,
+        backLabel: "Back to all reels",
+        backHref: undefined,
+      }
+    : feedPlayerProps;
+
   return (
     <DesktopLayout
       maxWidth="wide"
-      showHeaderBorder={isSavedView && savedPlayerOpen ? false : undefined}
+      showHeaderBorder={
+        (isSavedView && savedPlayerOpen) || allPlayerOpen ? false : undefined
+      }
       header={
         <>
-          {isSavedView && savedPlayerOpen ? <HomeHeader embedded /> : null}
-          <DesktopBreadcrumbBar {...breadcrumbProps} />
+          {(isSavedView && savedPlayerOpen) || allPlayerOpen ? (
+            <HomeHeader embedded />
+          ) : null}
+          <DesktopBreadcrumbBar
+            {...(allPlayerOpen
+              ? {
+                  currentLabel: pageTitle,
+                  onBack: closeAllPlayer,
+                  backLabel: "Back to all reels",
+                }
+              : breadcrumbProps)}
+          />
         </>
       }
       contentClassName={
-        isSavedView && savedPlayerOpen
+        (isSavedView && savedPlayerOpen) || allPlayerOpen
           ? "min-h-[calc(100dvh-4.25rem-3rem)] md:!pt-0 lg:!pt-0"
           : "min-h-[calc(100dvh-4.25rem-3rem)]"
       }
-      containerClassName={isSavedView && savedPlayerOpen ? "md:!pt-0" : undefined}
+      containerClassName={
+        (isSavedView && savedPlayerOpen) || allPlayerOpen ? "md:!pt-0" : undefined
+      }
     >
       <ShortsPlayerSection
         hasHydrated={hasHydrated}
         visibleReels={visibleReels}
         playerEnabled={playerEnabled}
-        playerProps={isSavedView ? savedPlayerProps : feedPlayerProps}
+        playerProps={isSavedView ? savedPlayerProps : desktopFeedPlayerProps}
         playerRef={playerRef}
         activeIndex={activeIndex}
         setActiveIndex={setActiveIndex}

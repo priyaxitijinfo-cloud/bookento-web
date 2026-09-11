@@ -1,6 +1,7 @@
 export const ROUTES = {
   HOME: "/",
   USER_LOGIN: "/login",
+  USER_REGISTER: "/register",
   REELS: "/reels",
   APPOINTMENTS: "/appointments",
   CHATS: "/chats",
@@ -57,6 +58,7 @@ export const ROUTES = {
 
 export const GUEST_ROUTES = [
   ROUTES.USER_LOGIN,
+  ROUTES.USER_REGISTER,
   ROUTES.PROVIDER_LOGIN,
   ROUTES.PROVIDER_REGISTER,
   ROUTES.FORGOT_PASSWORD,
@@ -69,6 +71,7 @@ export const GUEST_ROUTES = [
 
 export const USER_GUEST_ROUTES = [
   ROUTES.USER_LOGIN,
+  ROUTES.USER_REGISTER,
   ROUTES.FORGOT_PASSWORD,
   ROUTES.VERIFY_OTP,
   ROUTES.RESET_PASSWORD,

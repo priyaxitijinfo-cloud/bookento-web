@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 
+import { useWebLocale } from "@/hooks/use-web-locale";
 import { cn } from "@/lib/utils";
 
 function AppleIcon({ className }) {
@@ -75,6 +76,8 @@ function PhoneMockup({ src, alt, className }) {
 
 /** Desktop-only app download — radar / signal creative banner */
 export function AppDownloadShowcase({ className }) {
+  const { t } = useWebLocale();
+
   return (
     <section
       aria-label="Download Bookento app"
@@ -115,34 +118,33 @@ export function AppDownloadShowcase({ className }) {
                 <span className="relative inline-flex size-2 rounded-full bg-[#58A1FF]" />
               </span>
               <span className="text-[11px] font-semibold tracking-[0.16em] text-white/70 uppercase">
-                Live on stores
+                {t("appLive")}
               </span>
             </div>
 
             <h2 className="mt-5 text-[2.55rem] leading-[1.05] font-bold tracking-tight text-white lg:text-[3rem]">
-              Catch every
+              {t("appTitle1")}
               <br />
-              booking signal.
+              {t("appTitle2")}
             </h2>
 
             <p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/60">
-              Bookento on your phone means faster discovery, clearer slots, and
-              reminders that actually show up.
+              {t("appBody")}
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <StoreBadge
                 href="#"
-                ariaLabel="Download on the App Store"
-                eyebrow="Download on the"
-                label="App Store"
+                ariaLabel={`${t("appStoreEyebrow")} ${t("appStoreName")}`}
+                eyebrow={t("appStoreEyebrow")}
+                label={t("appStoreName")}
                 icon={<AppleIcon className="size-[34px] text-black" />}
               />
               <StoreBadge
                 href="#"
-                ariaLabel="Get it on Google Play"
-                eyebrow="GET IT ON"
-                label="Google Play"
+                ariaLabel={`${t("playEyebrow")} ${t("playName")}`}
+                eyebrow={t("playEyebrow")}
+                label={t("playName")}
                 icon={<PlayColorIcon className="size-[26px]" />}
               />
             </div>

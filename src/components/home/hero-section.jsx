@@ -18,13 +18,49 @@ import { useWebLocale } from "@/hooks/use-web-locale";
 import { cn } from "@/lib/utils";
 
 const QUICK_SEARCHES = [
-  { label: "Haircut", href: categoryListingRoute("salon") },
-  { label: "Massage", href: categoryListingRoute("salon") },
-  { label: "Home Cleaning", href: categoryListingRoute("homecare") },
-  { label: "Personal Training", href: categoryListingRoute("fitness") },
-  { label: "Teeth Cleaning", href: categoryListingRoute("doctor") },
+  { labelKey: "chipHaircut", href: categoryListingRoute("salon") },
+  { labelKey: "chipMassage", href: categoryListingRoute("salon") },
+  { labelKey: "chipHomeCleaning", href: categoryListingRoute("homecare") },
+  { labelKey: "chipPersonalTraining", href: categoryListingRoute("fitness") },
+  { labelKey: "chipTeethCleaning", href: categoryListingRoute("doctor") },
 ];
 
+const HERO_SLIDES = [
+  {
+    id: "spa",
+    image: "/images/desktop-hero-spa.png",
+    focus: "object-[center_40%]",
+    eyebrowKey: "heroEyebrow",
+    titleKey: "heroTitle",
+    subtitleKey: "heroSubtitle",
+  },
+  {
+    id: "salon",
+    image: "/images/desktop-hero-salon-hd.jpg",
+    focus: "object-[72%_38%]",
+    eyebrowKey: "heroSlide2Eyebrow",
+    titleKey: "heroSlide2Title",
+    subtitleKey: "heroSlide2Subtitle",
+  },
+  {
+    id: "health",
+    image: "/images/desktop-hero-health-hd.jpg",
+    focus: "object-[74%_36%]",
+    eyebrowKey: "heroSlide3Eyebrow",
+    titleKey: "heroSlide3Title",
+    subtitleKey: "heroSlide3Subtitle",
+  },
+  {
+    id: "home",
+    image: "/images/desktop-hero-home-hd.jpg",
+    focus: "object-[70%_40%]",
+    eyebrowKey: "heroSlide4Eyebrow",
+    titleKey: "heroSlide4Title",
+    subtitleKey: "heroSlide4Subtitle",
+  },
+];
+
+const AUTO_MS = 5500;
 const SUGGESTION_LIMIT = 8;
 
 function filterSuggestions(providers, term) {
@@ -48,7 +84,7 @@ function filterSuggestions(providers, term) {
 }
 
 /**
- * Desktop discovery hero — lifestyle marketplace banner.
+ * Desktop discovery hero — 4-slide lifestyle carousel.
  * Mobile uses UpcomingAppointmentCard instead.
  */
 export function HeroSection({ className }) {
@@ -57,6 +93,8 @@ export function HeroSection({ className }) {
   const { t } = useWebLocale();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
   const debouncedQuery = useDebounce(query, 150);
 
   const providers = useMemo(() => getGlobalSearchProviders(), []);
@@ -66,6 +104,7 @@ export function HeroSection({ className }) {
   );
 
   const showSuggestions = open && query.trim().length > 0 && suggestions.length > 0;
+  const slide = HERO_SLIDES[active] ?? HERO_SLIDES[0];
 
   useEffect(() => {
     const onPointerDown = (event) => {
@@ -76,6 +115,18 @@ export function HeroSection({ className }) {
     document.addEventListener("mousedown", onPointerDown);
     return () => document.removeEventListener("mousedown", onPointerDown);
   }, []);
+
+  useEffect(() => {
+    if (paused || showSuggestions) return undefined;
+    const timer = window.setTimeout(() => {
+      setActive((current) => (current + 1) % HERO_SLIDES.length);
+    }, AUTO_MS);
+    return () => window.clearTimeout(timer);
+  }, [active, paused, showSuggestions]);
+
+  const goTo = (index) => {
+    setActive((index + HERO_SLIDES.length) % HERO_SLIDES.length);
+  };
 
   const handleSearch = (event) => {
     event.preventDefault();
@@ -95,27 +146,44 @@ export function HeroSection({ className }) {
     <section
       className={cn(
         "relative isolate z-20 w-full",
-        "min-h-[calc(34rem-60px+10px)] lg:min-h-[calc(38rem-60px+10px)] xl:min-h-[calc(42rem-60px+10px)]",
+        // Desktop hero height (web only)
+        "min-h-[630px] lg:min-h-[662px] xl:min-h-[694px]",
         className,
       )}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      aria-roledescription="carousel"
+      aria-label="Featured services"
     >
-      {/* Lifestyle background — soft left wash + portrait right */}
+      {/* Crossfading lifestyle backgrounds */}
       <div className="absolute inset-0 overflow-hidden">
-        <Image
-          src="/images/desktop-hero-spa.png"
-          alt=""
-          fill
-          priority
-          quality={95}
-          className="object-cover object-center"
-          sizes="100vw"
-        />
-        {/* Soft left wash so dark copy stays readable */}
+        {HERO_SLIDES.map((item, index) => (
+          <div
+            key={item.id}
+            className={cn(
+              "absolute inset-0 transition-opacity duration-700 ease-out",
+              index === active ? "opacity-100" : "opacity-0",
+            )}
+            aria-hidden={index !== active}
+          >
+            <Image
+              src={item.image}
+              alt=""
+              fill
+              priority={index === 0}
+              unoptimized
+              quality={100}
+              className={cn("object-cover", item.focus || "object-center")}
+              sizes="100vw"
+              draggable={false}
+            />
+          </div>
+        ))}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.28) 32%, transparent 58%)",
+              "linear-gradient(90deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.1) 28%, transparent 52%)",
           }}
         />
       </div>
@@ -127,15 +195,26 @@ export function HeroSection({ className }) {
         )}
       >
         <div className="max-w-xl pt-2 lg:pt-4">
-          <p className="text-primary text-[11px] font-semibold tracking-[0.18em] uppercase">
-            {t("heroEyebrow")}
-          </p>
-          <h1 className="text-foreground mt-3 text-[2.35rem] leading-[1.12] font-bold tracking-tight lg:text-[2.85rem] xl:text-[3.15rem]">
-            {t("heroTitle")}
-          </h1>
-          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-[#667085] lg:text-base">
-            {t("heroSubtitle")}
-          </p>
+          <div className="min-h-[10.5rem] lg:min-h-[11.5rem]">
+            <p
+              key={`${slide.id}-eyebrow`}
+              className="text-primary animate-[fade-in_0.45s_ease-out] text-[11px] font-semibold tracking-[0.18em] uppercase"
+            >
+              {t(slide.eyebrowKey)}
+            </p>
+            <h1
+              key={`${slide.id}-title`}
+              className="text-foreground mt-3 animate-[fade-in_0.5s_ease-out] text-[2.35rem] leading-[1.12] font-bold tracking-tight lg:text-[2.85rem] xl:text-[3.15rem]"
+            >
+              {t(slide.titleKey)}
+            </h1>
+            <p
+              key={`${slide.id}-subtitle`}
+              className="mt-4 max-w-md animate-[fade-in_0.55s_ease-out] text-[15px] leading-relaxed text-[#667085] lg:text-base"
+            >
+              {t(slide.subtitleKey)}
+            </p>
+          </div>
 
           <div ref={wrapRef} className="relative z-50 mt-8 w-full max-w-xl">
             <form
@@ -217,17 +296,44 @@ export function HeroSection({ className }) {
           </div>
 
           <div className="mt-5 flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-[#98A2B3]">Popular:</span>
+            <span className="text-xs font-medium text-[#98A2B3]">
+              {t("popularLabel")}
+            </span>
             {QUICK_SEARCHES.map((item) => (
               <Link
-                key={item.label}
+                key={item.labelKey}
                 href={item.href}
                 className="hover:border-primary/40 hover:text-primary rounded-full border border-[#E4E7EC] bg-white/80 px-3 py-1.5 text-xs font-medium text-[#475467] backdrop-blur-sm transition-all"
               >
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             ))}
           </div>
+        </div>
+      </div>
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-3 z-20 flex justify-center md:bottom-4">
+        <div
+          className="pointer-events-auto flex items-center gap-2"
+          role="tablist"
+          aria-label="Hero slides"
+        >
+          {HERO_SLIDES.map((item, index) => (
+            <button
+              key={item.id}
+              type="button"
+              role="tab"
+              aria-selected={index === active}
+              aria-label={`Go to slide ${index + 1}`}
+              onClick={() => goTo(index)}
+              className={cn(
+                "h-2 rounded-full transition-all duration-300",
+                index === active
+                  ? "w-7 bg-[#1865EA]"
+                  : "w-2 bg-white/70 hover:bg-white",
+              )}
+            />
+          ))}
         </div>
       </div>
     </section>

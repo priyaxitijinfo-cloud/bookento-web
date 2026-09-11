@@ -158,7 +158,7 @@
     padding-top: env(safe-area-inset-top, 0px);
   }
 
-  /** Soft blue gradient page background — mobile only (do not paint desktop) */
+  /** Soft blue gradient page background â€” mobile only (do not paint desktop) */
   .mobile-page-bg {
     background: transparent;
   }
@@ -228,7 +228,7 @@
     @apply bg-primary mr-2 inline-block h-5 w-1 shrink-0 rounded-full;
   }
 
-  /* Compatibility aliases kept for existing class references — match original scale */
+  /* Compatibility aliases kept for existing class references â€” match original scale */
   .text-page-title {
     @apply text-foreground text-2xl font-bold tracking-tight;
   }
@@ -261,7 +261,7 @@
     @apply space-y-6;
   }
 
-  /** Page content containers — align with landing header on web */
+  /** Page content containers â€” align with landing header on web */
   .page-container {
     @apply mx-auto w-full max-w-lg px-4 md:max-w-[calc(96rem-60px)] md:px-[4.875rem] xl:px-[5.875rem];
   }
@@ -433,6 +433,27 @@
   }
 }
 
+@keyframes promo-pan {
+  from {
+    transform: scale(1.05) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.12) translate3d(-1.5%, -1%, 0);
+  }
+}
+
+@keyframes promo-sheen {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: translateY(-50%) translateX(0) rotate(-18deg);
+  }
+  50% {
+    opacity: 0.45;
+    transform: translateY(-50%) translateX(18%) rotate(-18deg);
+  }
+}
+
 @layer utilities {
   .animate-testimonial-marquee {
     animation: testimonial-marquee 42s linear infinite;
@@ -444,7 +465,7 @@
   }
 
   .animate-videos-marquee {
-    animation: videos-marquee 40s linear infinite;
+    animation: videos-marquee 32s linear infinite;
   }
 
   .group\/videos-marquee:hover .animate-videos-marquee {
@@ -455,15 +476,29 @@
     animation: videos-story-progress 4.5s linear forwards;
   }
 
+  .animate-promo-pan {
+    animation: promo-pan 18s ease-in-out infinite alternate;
+  }
+
+  .animate-promo-sheen {
+    animation: promo-sheen 7s ease-in-out infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .animate-testimonial-marquee,
     .animate-videos-marquee,
-    .animate-videos-story-progress {
+    .animate-videos-story-progress,
+    .animate-promo-pan,
+    .animate-promo-sheen {
       animation: none;
     }
 
     .animate-videos-story-progress {
       width: 100%;
+    }
+
+    .animate-promo-pan {
+      transform: scale(1.05);
     }
   }
 }

@@ -33,3 +33,6 @@ export const mockAuthSessions = {
 };
 
 export const VALID_OTP = ["111111", "123456"];
+
+/** Existing mock accounts skip the registration form after OTP. */
+export const EXISTING_USER_PHONES = [currentUser.phone.replace(/\D/g, "").slice(-10)];

@@ -95,10 +95,7 @@ const TESTIMONIALS = [
 
 function Stars({ rating }) {
   return (
-    <div
-      className="flex items-center gap-0.5"
-      aria-label={`${rating} out of 5 stars`}
-    >
+    <div className="flex items-center gap-0.5" aria-label={`${rating} out of 5 stars`}>
       {Array.from({ length: 5 }, (_, i) => (
         <Star
           key={i}
@@ -160,7 +157,7 @@ function ReviewCard({ item }) {
 
         <span
           aria-hidden
-          className="pointer-events-none absolute top-3 right-4 select-none text-[4.5rem] leading-none font-serif"
+          className="pointer-events-none absolute top-3 right-4 font-serif text-[4.5rem] leading-none select-none"
           style={{ color: item.tint, opacity: 0.22 }}
         >
           “
@@ -211,7 +208,7 @@ export function TestimonialsShowcase({ className }) {
     <section
       id="testimonials"
       className={cn(
-        "scroll-mt-28 hidden md:block",
+        "hidden scroll-mt-28 md:block",
         "md:relative md:left-1/2 md:w-screen md:max-w-[100vw] md:-translate-x-1/2",
         "md:py-0",
         className,
@@ -219,9 +216,9 @@ export function TestimonialsShowcase({ className }) {
     >
       <div className="md:mx-auto md:w-full md:max-w-[calc(96rem-60px)] md:px-[4.875rem] xl:px-[5.875rem]">
         <DesktopSectionHeading
-          badge="Testimonials"
-          title="Heard it from"
-          highlight="the people who booked."
+          badgeKey="testimonialsBadge"
+          titleKey="testimonialsTitle"
+          highlightKey="testimonialsHighlight"
         />
       </div>
 

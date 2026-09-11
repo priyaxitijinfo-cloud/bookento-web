@@ -2,13 +2,13 @@
 
 import { Suspense } from "react";
 
-import { UserLoginForm } from "@/features/auth/components/user-login-form";
+import { UserRegisterForm } from "@/features/auth/components/user-register-form";
 import { PageLoader } from "@/components/ui/skeleton";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   return (
     <Suspense fallback={<PageLoader />}>
-      <UserLoginForm />
+      <UserRegisterForm />
     </Suspense>
   );
 }

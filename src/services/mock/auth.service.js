@@ -9,8 +9,14 @@ export async function login(email, password, role = USER_ROLES.USER) {
   await delay(800);
   return {
     success: true,
-    data: role === USER_ROLES.PROVIDER ? mockAuthSessions.provider : mockAuthSessions.user,
+    data:
+      role === USER_ROLES.PROVIDER ? mockAuthSessions.provider : mockAuthSessions.user,
   };
+}
+
+export async function sendOtp() {
+  await delay(800);
+  return { success: true };
 }
 
 export async function register(data) {

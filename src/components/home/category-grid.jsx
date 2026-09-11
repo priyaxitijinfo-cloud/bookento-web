@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { HOME_CATEGORIES } from "@/constants/home-categories";
 import { CategoryItem, MoreCategoryItem } from "@/components/home/category-item";
 import { categoryListingRoute } from "@/constants/routes.constants";
+import { useWebLocale } from "@/hooks/use-web-locale";
 import { cn } from "@/lib/utils";
 
 const MOBILE_CATEGORY_SLUGS = [
@@ -24,6 +25,24 @@ const DESKTOP_VISIBLE = 6;
 const DESKTOP_GAP_PX = 14;
 const LOOP_TRACKS = 3;
 const DESKTOP_ICON_SIZE_PX = 38;
+
+const CATEGORY_NAME_KEYS = {
+  doctor: "catDoctor",
+  salon: "catSalon",
+  fitness: "catFitness",
+  tutoring: "catTutoring",
+  "pet-care": "catPetCare",
+  homecare: "catHomecare",
+  "kids-care": "catKidsCare",
+  plumbing: "catPlumbing",
+  automotive: "catAutomotive",
+  gardening: "catGardening",
+  cooking: "catCooking",
+  events: "catEvents",
+  carpenter: "catCarpenter",
+  renovation: "catRenovation",
+  shooting: "catShooting",
+};
 
 function getDesktopCategoryIconSrc(slug) {
   return `/icons/categories/${slug}.svg`;
@@ -57,10 +76,13 @@ function lightenHex(hex, mix = 0.88) {
 
 /** Desktop-only tile — pastel card from icon color + bright solid icon badge */
 function DesktopCategoryTile({ category }) {
+  const { t } = useWebLocale();
   const labelHoverColor = shadeHex(category.iconTile, 0.28);
   const cardBg = lightenHex(category.iconTile, 0.93);
   const cardBorder = lightenHex(category.iconTile, 0.86);
   const iconSrc = getDesktopCategoryIconSrc(category.slug);
+  const nameKey = CATEGORY_NAME_KEYS[category.slug];
+  const label = nameKey ? t(nameKey) : category.name;
 
   return (
     <Link
@@ -97,7 +119,7 @@ function DesktopCategoryTile({ category }) {
         />
       </span>
       <p className="relative w-full truncate text-center text-[15px] font-medium tracking-tight text-[#1A2332] transition-colors duration-200 group-hover:text-[var(--category-label-hover)]">
-        {category.name}
+        {label}
       </p>
     </Link>
   );

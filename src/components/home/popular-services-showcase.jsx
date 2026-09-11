@@ -17,7 +17,11 @@ export function PopularServicesShowcase() {
         href={ROUTES.SERVICES}
         className="md:hidden"
       />
-      <DesktopSectionHeading badge="Popular" title="Most Booked" highlight="Services" />
+      <DesktopSectionHeading
+        badgeKey="popularBadge"
+        titleKey="popularTitle"
+        highlightKey="popularHighlight"
+      />
 
       <MobileScrollRow className="md:hidden">
         {HOME_POPULAR_SERVICES.map((svc, i) => (
@@ -27,9 +31,9 @@ export function PopularServicesShowcase() {
         ))}
       </MobileScrollRow>
 
-      <div className="hidden gap-3 md:grid md:grid-cols-4 md:gap-4">
+      <div className="hidden gap-5 md:grid md:grid-cols-4 md:gap-5 xl:gap-6">
         {WEB_HOME_POPULAR_SERVICES.map((svc, i) => (
-          <ServiceCard key={svc.id} service={svc} index={i} />
+          <ServiceCard key={svc.id} service={svc} index={i} desktop />
         ))}
       </div>
     </section>

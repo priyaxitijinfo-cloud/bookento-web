@@ -1,14 +1,32 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, MapPin, Star } from "lucide-react";
+import { ArrowUpRight, Clock, MapPin, Star } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
+import { SERVICE_MODE_LABELS } from "@/constants/category-listing.constants";
 import {
   buildCategoryProviderDetailUrl,
   providerDetailRoute,
 } from "@/constants/routes.constants";
+import { useWebLocale } from "@/hooks/use-web-locale";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/format.utils";
+
+function getDesktopModeTags(serviceModes = []) {
+  const tags = [];
+  const seen = new Set();
+
+  for (const mode of serviceModes) {
+    const config = SERVICE_MODE_LABELS[mode];
+    if (!config || seen.has(config.label)) continue;
+    seen.add(config.label);
+    tags.push({ key: mode, ...config });
+  }
+
+  return tags.slice(0, 2);
+}
 
 export function TopRatedProviderCard({
   provider,
@@ -16,6 +34,8 @@ export function TopRatedProviderCard({
   desktop = false,
   categorySlug = "salon",
 }) {
+  const { t } = useWebLocale();
+
   const bookNowHref = (() => {
     const base = categorySlug
       ? buildCategoryProviderDetailUrl(provider.id, categorySlug, provider)
@@ -25,8 +45,17 @@ export function TopRatedProviderCard({
   })();
 
   if (desktop) {
+    const modeTags = getDesktopModeTags(provider.serviceModes);
+    const subtitle =
+      provider.specialty || provider.categoryName || "Trusted professional";
+    const description =
+      provider.description ||
+      (provider.ownerName
+        ? `Led by ${provider.ownerName} · premium service nearby`
+        : null);
+
     return (
-      <article className="flex h-full flex-col rounded-xl border border-[#E8EDF5] bg-white p-3 shadow-[0_1px_3px_rgba(15,23,42,0.04)]">
+      <article className="flex h-full flex-col rounded-xl border border-[#E8EDF5] bg-white px-3.5 pt-3.5 pb-5 shadow-[0_1px_3px_rgba(15,23,42,0.04)] transition-shadow duration-300 hover:shadow-[0_10px_28px_rgba(15,23,42,0.08)]">
         <div className="group relative aspect-[4/3] overflow-hidden rounded-xl bg-[#EEF2F7]">
           <Link
             href={providerDetailRoute(provider.id)}
@@ -49,31 +78,61 @@ export function TopRatedProviderCard({
         </div>
 
         <div className="flex flex-1 flex-col pt-3.5">
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 pb-2.5">
             <Link href={providerDetailRoute(provider.id)} className="block">
               <h3 className="line-clamp-1 text-[15px] leading-snug font-bold text-[#0F1B2D]">
                 {provider.businessName}
               </h3>
             </Link>
 
-            <p className="line-clamp-1 text-[13px] leading-snug text-[#66758A]">
-              {provider.specialty}
+            <p className="line-clamp-1 text-[13px] leading-snug font-medium text-[#4B5C73]">
+              {subtitle}
             </p>
 
-            <div className="flex items-center gap-1 pt-0.5 text-[13px] leading-snug text-[#66758A]">
-              <MapPin className="size-3.5 shrink-0 text-[#94A3B8]" strokeWidth={2} />
-              <span className="truncate">
-                {[
-                  provider.city,
-                  provider.distance != null ? `${provider.distance} km` : null,
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
+            {description ? (
+              <p className="line-clamp-2 text-[12px] leading-relaxed text-[#8A95A8]">
+                {description}
+              </p>
+            ) : null}
+
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 pt-0.5 text-[13px] leading-snug text-[#66758A]">
+              <span className="inline-flex min-w-0 items-center gap-1">
+                <MapPin className="size-3.5 shrink-0 text-[#94A3B8]" strokeWidth={2} />
+                <span className="truncate">
+                  {[
+                    provider.city,
+                    provider.distance != null ? `${provider.distance} km` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </span>
               </span>
+              {provider.appointmentDuration != null ? (
+                <span className="inline-flex shrink-0 items-center gap-1">
+                  <Clock className="size-3.5 text-[#94A3B8]" strokeWidth={2} />
+                  {provider.appointmentDuration} min
+                </span>
+              ) : null}
             </div>
+
+            {modeTags.length > 0 ? (
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {modeTags.map((tag) => (
+                  <span
+                    key={tag.key}
+                    className={cn(
+                      "rounded-md px-2 py-0.5 text-[10px] font-medium",
+                      tag.className,
+                    )}
+                  >
+                    {tag.label}
+                  </span>
+                ))}
+              </div>
+            ) : null}
           </div>
 
-          <div className="mt-2.5 border-t border-[#EEF2F7] pt-2.5">
+          <div className="mt-auto border-t border-[#EEF2F7] pt-2.5">
             <div className="flex items-center justify-between gap-3">
               <p className="min-w-0 text-[17px] leading-none font-bold text-[#0F1B2D]">
                 {provider.startingPrice != null
@@ -83,15 +142,15 @@ export function TopRatedProviderCard({
               <Link
                 href={bookNowHref}
                 className={cn(
-                  "group gradient-brand inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5",
+                  "group gradient-brand inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2",
                   "text-[13px] font-semibold text-white",
                   "transition-opacity hover:opacity-95",
                   "focus-visible:ring-2 focus-visible:ring-[#1865EA]/35 focus-visible:outline-none",
                 )}
               >
-                Book now
+                {t("bookNow")}
                 <ArrowUpRight
-                  className="size-[19px] transition-transform duration-200 group-hover:rotate-12"
+                  className="size-[18px] transition-transform duration-200 group-hover:rotate-12"
                   strokeWidth={2.4}
                   aria-hidden
                 />

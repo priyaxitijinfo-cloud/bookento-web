@@ -35,7 +35,7 @@ function NavButton({ label, onClick, side }) {
         "border border-[#DCE3EE] bg-white text-[#243044]",
         "transition-colors duration-150",
         "hover:border-[#1865EA] hover:text-[#1865EA]",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1865EA]/25",
+        "focus-visible:ring-2 focus-visible:ring-[#1865EA]/25 focus-visible:outline-none",
       )}
     >
       {side === "left" ? (
@@ -164,9 +164,9 @@ export function DesktopTopRatedScroll({ providers }) {
     <div className="hidden md:block">
       <div className="mb-6 flex items-end justify-between gap-6">
         <DesktopSectionHeading
-          badge="Professionals"
-          title="Top Rated"
-          highlight="Professionals"
+          badgeKey="professionalsBadge"
+          titleKey="professionalsTitle"
+          highlightKey="professionalsHighlight"
           align="left"
           className="mb-0"
         />

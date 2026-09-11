@@ -5,6 +5,7 @@ import Link from "next/link";
 import { SectionHeader, DesktopSectionHeading } from "@/components/home/section-header";
 import { MobileScrollRow } from "@/components/home/horizontal-scroll";
 import { providerPackageRoute, ROUTES } from "@/constants/routes.constants";
+import { useWebLocale } from "@/hooks/use-web-locale";
 import { getFeaturedPackages } from "@/mock/packages";
 import { formatCurrency } from "@/utils/format.utils";
 import { cn } from "@/lib/utils";
@@ -13,6 +14,9 @@ const FEATURED_PACKAGES = getFeaturedPackages(3);
 
 const PACKAGE_DISPLAY = [
   {
+    titleKey: "packageSalonTitle",
+    subtitleKey: "packageSalonSubtitle",
+    discountKey: "packageSave20",
     name: "Salon Care Combo",
     servicesText: "Hair Spa + Facial + Manicure",
     price: 1499,
@@ -26,6 +30,9 @@ const PACKAGE_DISPLAY = [
     overlayClass: null,
   },
   {
+    titleKey: "packageHomeTitle",
+    subtitleKey: "packageHomeSubtitle",
+    discountKey: "packageSave20",
     name: "Home Cleaning Packages",
     servicesText: "4 Visits / Month",
     price: 999,
@@ -39,6 +46,9 @@ const PACKAGE_DISPLAY = [
     overlayClass: null,
   },
   {
+    titleKey: "packagePetTitle",
+    subtitleKey: "packagePetSubtitle",
+    discountKey: "packageSave20",
     name: "Pet Care Package",
     servicesText: "Grooming + Bath + Nail Trim",
     price: 799,
@@ -64,7 +74,14 @@ const PACKAGES = PACKAGE_DISPLAY.map((display, index) => {
   };
 });
 
-function SpecialPackageCard({ pkg }) {
+function SpecialPackageCard({ pkg, translate = false }) {
+  const { t } = useWebLocale();
+  const name = translate && pkg.titleKey ? t(pkg.titleKey) : pkg.name;
+  const servicesText =
+    translate && pkg.subtitleKey ? t(pkg.subtitleKey) : pkg.servicesText;
+  const discountLabel =
+    translate && pkg.discountKey ? t(pkg.discountKey) : pkg.discountLabel;
+
   return (
     <Link
       href={pkg.href}
@@ -76,7 +93,7 @@ function SpecialPackageCard({ pkg }) {
     >
       <img
         src={pkg.image}
-        alt={pkg.name}
+        alt={name}
         className={cn(
           "absolute inset-0 size-full transition-transform duration-500 ease-out group-hover:scale-[1.03]",
           pkg.imageClass,
@@ -94,10 +111,10 @@ function SpecialPackageCard({ pkg }) {
             pkg.badgeClass,
           )}
         >
-          {pkg.discountLabel}
+          {discountLabel}
         </span>
         <h3 className="text-foreground mt-2 line-clamp-1 text-base leading-tight font-bold">
-          {pkg.name}
+          {name}
         </h3>
         <p
           className={cn(
@@ -105,7 +122,7 @@ function SpecialPackageCard({ pkg }) {
             pkg.subtitleClass,
           )}
         >
-          {pkg.servicesText}
+          {servicesText}
         </p>
         <div className="mt-auto pt-3">
           <div className="bg-background inline-flex items-center gap-2 rounded-lg px-3 py-1.5 shadow-sm">
@@ -127,9 +144,9 @@ export function SpecialPackagesShowcase({ className, id }) {
     <section id={id} className={className}>
       <SectionHeader title="Special Packages" className="md:hidden" />
       <DesktopSectionHeading
-        badge="Packages"
-        title="Special Packages"
-        highlight="For You"
+        badgeKey="packagesBadge"
+        titleKey="packagesTitle"
+        highlightKey="packagesHighlight"
       />
 
       <MobileScrollRow className="md:hidden">
@@ -142,7 +159,7 @@ export function SpecialPackagesShowcase({ className, id }) {
 
       <div className="hidden gap-3 md:grid md:grid-cols-3 md:gap-4">
         {PACKAGES.map((pkg) => (
-          <SpecialPackageCard key={pkg.id} pkg={pkg} />
+          <SpecialPackageCard key={pkg.id} pkg={pkg} translate />
         ))}
       </div>
     </section>

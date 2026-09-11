@@ -1,28 +1,28 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
 
-import {
-  categoryListingRoute,
-  ROUTES,
-} from "@/constants/routes.constants";
+import { categoryListingRoute, ROUTES } from "@/constants/routes.constants";
+import { useWebLocale } from "@/hooks/use-web-locale";
 import { HOME_PAGE_CONTAINER } from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
 
 const COMPANY_LINKS = [
-  { href: ROUTES.HOME, label: "About" },
-  { href: ROUTES.SERVICES, label: "Services" },
-  { href: ROUTES.PROVIDERS, label: "Professionals" },
-  { href: ROUTES.PROVIDER_REGISTER, label: "Become a Provider" },
-  { href: ROUTES.HELP, label: "Help Center" },
+  { href: ROUTES.HOME, labelKey: "footerAbout" },
+  { href: ROUTES.SERVICES, labelKey: "footerServices" },
+  { href: ROUTES.PROVIDERS, labelKey: "footerProfessionals" },
+  { href: ROUTES.PROVIDER_REGISTER, labelKey: "footerBecomeProvider" },
+  { href: ROUTES.HELP, labelKey: "footerHelp" },
 ];
 
 const CATEGORY_LINKS = [
-  { slug: "doctor", label: "Doctor" },
-  { slug: "salon", label: "Salon" },
-  { slug: "fitness", label: "Fitness" },
-  { slug: "homecare", label: "Homecare" },
-  { slug: "pet-care", label: "Pet Care" },
+  { slug: "doctor", labelKey: "catDoctor" },
+  { slug: "salon", labelKey: "catSalon" },
+  { slug: "fitness", labelKey: "catFitness" },
+  { slug: "homecare", labelKey: "catHomecare" },
+  { slug: "pet-care", labelKey: "catPetCare" },
 ];
 
 const CONTACT_ITEMS = [
@@ -48,43 +48,49 @@ const CONTACT_ITEMS = [
 
 /** Desktop-only landing footer — reference layout, Bookento content */
 export function HomeFooter({ className }) {
+  const { t } = useWebLocale();
+
   return (
     <footer
-      className={cn("mt-6 hidden bg-[#F5F8FC] md:mt-[100px] md:block", className)}
+      className={cn(
+        "mt-6 hidden border-t border-[#E8EDF5] bg-[#F5F8FC] md:mt-[70px] md:block",
+        className,
+      )}
     >
       <div className={cn(HOME_PAGE_CONTAINER, "pt-14 pb-8")}>
         <div className="grid grid-cols-[minmax(0,1.45fr)_repeat(3,minmax(0,1fr))] gap-10 lg:gap-16">
           {/* Brand */}
           <div className="max-w-[17.5rem]">
-            <Link href={ROUTES.HOME} className="inline-flex items-center gap-2.5">
+            <Link href={ROUTES.HOME} className="inline-flex items-center gap-3">
               <Image
                 src="/images/app-icon.jpg"
                 alt="Bookento"
-                width={40}
-                height={40}
-                className="size-10 rounded-[0.65rem] shadow-sm"
+                width={52}
+                height={52}
+                className="size-[3.25rem] rounded-[0.8rem] shadow-sm"
               />
-              <span className="text-[1.2rem] font-bold tracking-tight text-[#0F1B2D]">
+              <span className="text-[1.45rem] font-bold tracking-tight text-[#0F1B2D]">
                 Bookento
               </span>
             </Link>
             <p className="mt-4 text-[14px] leading-[1.65] text-[#6B7A90]">
-              Book trusted professionals for salon, spa, home care, fitness, and
-              more — all in one place for your everyday needs.
+              {t("footerTagline")}
             </p>
           </div>
 
           {/* Company */}
           <div>
-            <p className="text-[15px] font-semibold text-[#0F1B2D]">Company</p>
+            <p className="text-[15px] font-semibold text-[#0F1B2D]">
+              {t("footerCompany")}
+            </p>
             <ul className="mt-5 space-y-3">
               {COMPANY_LINKS.map((link) => (
-                <li key={link.label}>
+                <li key={link.labelKey}>
                   <Link
                     href={link.href}
                     className="text-[14px] text-[#6B7A90] transition-colors hover:text-[#1865EA]"
                   >
-                    {link.label}
+                    {t(link.labelKey)}
                   </Link>
                 </li>
               ))}
@@ -93,7 +99,9 @@ export function HomeFooter({ className }) {
 
           {/* Categories */}
           <div>
-            <p className="text-[15px] font-semibold text-[#0F1B2D]">Categories</p>
+            <p className="text-[15px] font-semibold text-[#0F1B2D]">
+              {t("footerCategories")}
+            </p>
             <ul className="mt-5 space-y-3">
               {CATEGORY_LINKS.map((link) => (
                 <li key={link.slug}>
@@ -101,7 +109,7 @@ export function HomeFooter({ className }) {
                     href={categoryListingRoute(link.slug)}
                     className="text-[14px] text-[#6B7A90] transition-colors hover:text-[#1865EA]"
                   >
-                    {link.label}
+                    {t(link.labelKey)}
                   </Link>
                 </li>
               ))}
@@ -110,7 +118,9 @@ export function HomeFooter({ className }) {
 
           {/* Contact */}
           <div>
-            <p className="text-[15px] font-semibold text-[#0F1B2D]">Contact Us</p>
+            <p className="text-[15px] font-semibold text-[#0F1B2D]">
+              {t("footerContact")}
+            </p>
             <ul className="mt-5 space-y-4">
               {CONTACT_ITEMS.map((item) => {
                 const Icon = item.icon;
@@ -147,16 +157,16 @@ export function HomeFooter({ className }) {
           </div>
         </div>
 
-        <div className="mt-14 flex items-center justify-between gap-4">
+        <div className="mt-14 flex items-center justify-between gap-4 border-t border-[#E8EDF5] pt-6">
           <p className="text-[13px] text-[#8A96A8]">
-            Copyright © {new Date().getFullYear()} Bookento. All Rights Reserved
+            {t("footerCopyright", { year: new Date().getFullYear() })}
           </p>
           <div className="flex items-center gap-2 text-[13px] text-[#8A96A8]">
             <Link
               href={ROUTES.PRIVACY}
               className="transition-colors hover:text-[#1865EA]"
             >
-              Privacy Policy
+              {t("footerPrivacy")}
             </Link>
             <span aria-hidden className="text-[#C0C8D4]">
               ·
@@ -165,7 +175,7 @@ export function HomeFooter({ className }) {
               href={ROUTES.TERMS}
               className="transition-colors hover:text-[#1865EA]"
             >
-              Terms & Conditions
+              {t("footerTerms")}
             </Link>
           </div>
         </div>

@@ -29,6 +29,7 @@ import {
 } from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
 import { getTrendingProviders } from "@/mock/providers";
+import { getServicesByProvider } from "@/mock/services";
 
 const TOP_RATED_CARDS = [
   { image: "/images/top-rated-elite-studio.png", categorySlug: "salon" },
@@ -48,11 +49,15 @@ export default function HomePage() {
 
   const topRated = getTrendingProviders(10)
     .slice(0, TOP_RATED_CARDS.length)
-    .map((provider, index) => ({
-      ...provider,
-      coverImage: TOP_RATED_CARDS[index].image,
-      categorySlug: TOP_RATED_CARDS[index].categorySlug,
-    }));
+    .map((provider, index) => {
+      const primaryService = getServicesByProvider(provider.id)[0];
+      return {
+        ...provider,
+        coverImage: TOP_RATED_CARDS[index].image,
+        categorySlug: TOP_RATED_CARDS[index].categorySlug,
+        appointmentDuration: primaryService?.duration ?? 20 + (index % 4) * 10,
+      };
+    });
 
   const mobileTopRated = topRated.slice(0, 4);
 
@@ -66,7 +71,7 @@ export default function HomePage() {
       <main
         className={cn(
           HOME_PAGE_CONTAINER,
-          "relative z-10 space-y-8 pt-4 pb-4 md:mt-[100px] md:space-y-[100px] md:pt-0 md:pb-0",
+          "relative z-10 space-y-8 pt-4 pb-4 md:mt-[70px] md:space-y-[70px] md:pt-0 md:pb-0",
         )}
       >
         <div className="md:hidden">
@@ -79,9 +84,9 @@ export default function HomePage() {
         >
           <SectionHeader title="Category" className="md:hidden" />
           <DesktopSectionHeading
-            badge="Our Services"
-            title="All Your Services"
-            highlight="In One Place"
+            badgeKey="servicesBadge"
+            titleKey="servicesTitle"
+            highlightKey="servicesHighlight"
           />
           <CategoryGrid />
         </section>

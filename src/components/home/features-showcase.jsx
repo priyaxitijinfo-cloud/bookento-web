@@ -11,65 +11,65 @@ import {
   Zap,
 } from "lucide-react";
 
+import { DesktopSectionHeading } from "@/components/home/section-header";
+import { useWebLocale } from "@/hooks/use-web-locale";
 import { cn } from "@/lib/utils";
 
 const FEATURES = [
   {
-    title: "Instant Booking",
-    description:
-      "Book appointments in seconds with real-time availability and instant confirmation.",
+    titleKey: "featureInstantTitle",
+    descKey: "featureInstantDesc",
     icon: Zap,
-    tile: "bg-[linear-gradient(160deg,#1A6BFF_0%,#4B93FF_100%)] shadow-[0_10px_18px_-10px_rgba(26,107,255,0.7)]",
+    tile: "bg-[linear-gradient(160deg,#1865EA_0%,#4B93FF_100%)] shadow-[0_10px_18px_-10px_rgba(24,101,234,0.7)]",
   },
   {
-    title: "Real-Time Availability",
-    description:
-      "See live schedules and book slots that work perfectly for your calendar.",
+    titleKey: "featureAvailabilityTitle",
+    descKey: "featureAvailabilityDesc",
     icon: Clock3,
-    tile: "bg-[linear-gradient(160deg,#12B76A_0%,#32D583_100%)] shadow-[0_10px_18px_-10px_rgba(18,183,106,0.65)]",
+    tile: "bg-[linear-gradient(160deg,#039855_0%,#32D583_100%)] shadow-[0_10px_18px_-10px_rgba(3,152,85,0.65)]",
   },
   {
-    title: "Video Consultation",
-    description: "Connect with professionals remotely through secure HD video calls.",
+    titleKey: "featureVideoTitle",
+    descKey: "featureVideoDesc",
     icon: Video,
     tile: "bg-[linear-gradient(160deg,#7A5AF8_0%,#9B8AFB_100%)] shadow-[0_10px_18px_-10px_rgba(122,90,248,0.65)]",
   },
   {
-    title: "In-App Chat",
-    description: "Message your service providers directly for questions and updates.",
+    titleKey: "featureChatTitle",
+    descKey: "featureChatDesc",
     icon: MessageCircleMore,
-    tile: "bg-[linear-gradient(160deg,#F79009_0%,#FDB022_100%)] shadow-[0_10px_18px_-10px_rgba(247,144,9,0.65)]",
+    tile: "bg-[linear-gradient(160deg,#EF6820_0%,#FDB022_100%)] shadow-[0_10px_18px_-10px_rgba(239,104,32,0.65)]",
   },
   {
-    title: "Online Payments",
-    description:
-      "Secure payment processing with multiple options and instant receipts.",
+    titleKey: "featurePaymentsTitle",
+    descKey: "featurePaymentsDesc",
     icon: CreditCard,
-    tile: "bg-[linear-gradient(160deg,#15B79E_0%,#2ED3B7_100%)] shadow-[0_10px_18px_-10px_rgba(21,183,158,0.65)]",
+    tile: "bg-[linear-gradient(160deg,#0BA5EC_0%,#36BFFA_100%)] shadow-[0_10px_18px_-10px_rgba(11,165,236,0.65)]",
   },
   {
-    title: "Smart Reminders",
-    description: "Never miss an appointment with push notifications and SMS alerts.",
+    titleKey: "featureRemindersTitle",
+    descKey: "featureRemindersDesc",
     icon: Bell,
-    tile: "bg-[linear-gradient(160deg,#EE46BC_0%,#F670C7_100%)] shadow-[0_10px_18px_-10px_rgba(238,70,188,0.6)]",
+    tile: "bg-[linear-gradient(160deg,#DD2590_0%,#F670C7_100%)] shadow-[0_10px_18px_-10px_rgba(221,37,144,0.6)]",
   },
   {
-    title: "Digital Prescriptions",
-    description:
-      "Receive and store digital prescriptions securely in your health vault.",
+    titleKey: "featureRxTitle",
+    descKey: "featureRxDesc",
     icon: FileHeart,
-    tile: "bg-[linear-gradient(160deg,#6172F3_0%,#8098F9_100%)] shadow-[0_10px_18px_-10px_rgba(97,114,243,0.65)]",
+    tile: "bg-[linear-gradient(160deg,#E11D48_0%,#FB7185_100%)] shadow-[0_10px_18px_-10px_rgba(225,29,72,0.6)]",
   },
   {
-    title: "Ratings & Reviews",
-    description: "Make informed decisions with verified reviews from real customers.",
+    titleKey: "featureRatingsTitle",
+    descKey: "featureRatingsDesc",
     icon: Star,
-    tile: "bg-[linear-gradient(160deg,#FDB022_0%,#FEC84B_100%)] shadow-[0_10px_18px_-10px_rgba(253,176,34,0.65)]",
+    tile: "bg-[linear-gradient(160deg,#CA8A04_0%,#FACC15_100%)] shadow-[0_10px_18px_-10px_rgba(202,138,4,0.65)]",
   },
 ];
 
-/** Desktop-only features grid for the home landing page */
+/** Desktop-only features grid — matches landing section heading language */
 export function FeaturesShowcase({ className }) {
+  const { t } = useWebLocale();
+
   return (
     <section
       id="features"
@@ -98,27 +98,18 @@ export function FeaturesShowcase({ className }) {
         />
 
         <div className="relative mx-auto w-full max-w-[calc(96rem-60px)] px-[4.875rem] py-14 xl:px-[5.875rem] xl:py-16">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex rounded-full bg-white/80 px-3.5 py-1 text-[12px] font-semibold text-[#1865EA] shadow-[0_1px_0_rgba(24,101,234,0.08)] ring-1 ring-[#D7E4FA]">
-              Features
-            </span>
+          <DesktopSectionHeading
+            badgeKey="featuresBadge"
+            titleKey="featuresTitle"
+            highlightKey="featuresHighlight"
+          />
 
-            <h2 className="mt-5 text-[calc(2.15rem-4px)] leading-[1.12] font-bold tracking-tight text-[#0F1B2D] lg:text-[2.5rem]">
-              Everything You Need To{" "}
-              <span className="text-[#1865EA]">Manage Appointments</span>
-            </h2>
-
-            <p className="mx-auto mt-3 max-w-xl text-[15px] leading-relaxed text-[#667085]">
-              Powerful tools designed for both customers and service providers.
-            </p>
-          </div>
-
-          <div className="mt-10 grid grid-cols-4 gap-5 xl:gap-6">
+          <div className="grid grid-cols-4 gap-5 xl:gap-6">
             {FEATURES.map((feature) => {
               const Icon = feature.icon;
               return (
                 <article
-                  key={feature.title}
+                  key={feature.titleKey}
                   className={cn(
                     "rounded-2xl border border-white/80 bg-white/95 p-5 xl:p-6",
                     "shadow-[0_12px_32px_-20px_rgba(15,23,42,0.28)] backdrop-blur-sm",
@@ -128,7 +119,7 @@ export function FeaturesShowcase({ className }) {
                 >
                   <span
                     className={cn(
-                      "inline-flex size-11 items-center justify-center rounded-[0.85rem] text-white",
+                      "inline-flex size-11 items-center justify-center rounded-[0.55rem] text-white",
                       feature.tile,
                     )}
                   >
@@ -136,10 +127,10 @@ export function FeaturesShowcase({ className }) {
                   </span>
 
                   <h3 className="mt-4 text-[15px] font-bold tracking-tight text-[#0F1B2D] xl:text-base">
-                    {feature.title}
+                    {t(feature.titleKey)}
                   </h3>
                   <p className="mt-2 text-[13px] leading-relaxed text-[#667085] xl:text-[14px]">
-                    {feature.description}
+                    {t(feature.descKey)}
                   </p>
                 </article>
               );
