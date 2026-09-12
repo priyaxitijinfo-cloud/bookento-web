@@ -173,7 +173,11 @@ export function HeroSection({ className }) {
               priority={index === 0}
               unoptimized
               quality={100}
-              className={cn("object-cover", item.focus || "object-center")}
+              className={cn(
+                "object-cover will-change-transform",
+                item.focus || "object-center",
+                index === active && "hero-bg-zoom",
+              )}
               sizes="100vw"
               draggable={false}
             />

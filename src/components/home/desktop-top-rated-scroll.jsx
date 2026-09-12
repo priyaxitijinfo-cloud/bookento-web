@@ -162,7 +162,7 @@ export function DesktopTopRatedScroll({ providers }) {
 
   return (
     <div className="hidden md:block">
-      <div className="mb-6 flex items-end justify-between gap-6">
+      <div className="mb-2 flex items-end justify-between gap-6">
         <DesktopSectionHeading
           badgeKey="professionalsBadge"
           titleKey="professionalsTitle"
@@ -187,13 +187,13 @@ export function DesktopTopRatedScroll({ providers }) {
 
       <div
         ref={scrollerRef}
-        className="scrollbar-hide flex overflow-x-auto overscroll-x-contain pb-1"
+        className="scrollbar-hide -mx-1 flex overflow-x-auto overscroll-x-contain px-2 pt-2 pb-6"
         style={{ gap: GAP_PX }}
       >
         {loopItems.map(({ provider, track }) => (
           <div
             key={`${track}-${provider.id}`}
-            className="shrink-0"
+            className="shrink-0 py-1"
             style={{ width: tileWidth, minWidth: tileWidth }}
           >
             <TopRatedProviderCard

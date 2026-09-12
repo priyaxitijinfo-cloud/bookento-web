@@ -13,7 +13,8 @@ const TESTIMONIALS = [
     place: "Mumbai",
     service: "Salon & Spa",
     rating: 5,
-    quote: "Booked a spa session in minutes. Premium from start to finish.",
+    quote:
+      "Booked a spa session in minutes. The therapist was on time, the room felt premium, and checkout was seamless from start to finish.",
     photo:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=240&q=80",
     tint: "#1FA7A0",
@@ -27,7 +28,8 @@ const TESTIMONIALS = [
     place: "Ahmedabad",
     service: "Home Cleaning",
     rating: 5,
-    quote: "Weekly cleaning without the chase. Booking just works.",
+    quote:
+      "Weekly cleaning without chasing anyone. I pick a slot, confirm the package, and the team shows up prepared every time.",
     photo:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=240&q=80",
     tint: "#F08A3A",
@@ -41,7 +43,8 @@ const TESTIMONIALS = [
     place: "Bangalore",
     service: "Doctor Visit",
     rating: 5,
-    quote: "Found a clinic, checked reviews, booked the same day.",
+    quote:
+      "Found a clinic nearby, checked real reviews, and booked the same day. Clear slots and no phone tag made the visit easy.",
     photo:
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=240&q=80",
     tint: "#1865EA",
@@ -55,7 +58,8 @@ const TESTIMONIALS = [
     place: "Pune",
     service: "Fitness",
     rating: 5,
-    quote: "Switched trainers in one evening. Clear slots, honest ratings.",
+    quote:
+      "Switched trainers in one evening. Honest ratings, clear packages, and reminders that actually helped me stay consistent.",
     photo:
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=240&q=80",
     tint: "#E07A5F",
@@ -69,7 +73,8 @@ const TESTIMONIALS = [
     place: "Surat",
     service: "Pet Care",
     rating: 5,
-    quote: "Grooming booked in seconds. My dog’s new favorite visit.",
+    quote:
+      "Grooming booked in seconds with photos of past work. My dog’s new favorite visit — and I love the transparent pricing.",
     photo:
       "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=240&q=80",
     tint: "#0EA5C8",
@@ -83,7 +88,8 @@ const TESTIMONIALS = [
     place: "Delhi",
     service: "Tutoring",
     rating: 5,
-    quote: "Found a great tutor nearby. Scheduling felt effortless.",
+    quote:
+      "Found a great tutor nearby with strong reviews. Scheduling felt effortless and progress updates keep us on track.",
     photo:
       "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=240&q=80",
     tint: "#3D9B5F",
@@ -166,7 +172,7 @@ function ReviewCard({ item }) {
         <div className="relative z-10">
           <Stars rating={item.rating} />
 
-          <p className="mt-3 min-h-[4.5rem] text-[14.5px] leading-snug font-semibold tracking-tight text-[#0F1B2D]">
+          <p className="mt-3 min-h-[4.5rem] text-[14.5px] leading-snug font-semibold tracking-tight text-[#0F1B2D] md:font-medium">
             {item.quote}
           </p>
 

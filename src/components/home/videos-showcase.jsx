@@ -70,6 +70,7 @@ function ReelPanel({ reel, play, isCenter, onPause, popularBadge, suppressClickR
       <video
         ref={videoRef}
         src={reel.videoUrl}
+        poster={reel.poster || reel.thumbnailUrl}
         className="absolute inset-0 size-full object-cover"
         muted
         playsInline
@@ -320,7 +321,7 @@ export function VideosShowcase({ className }) {
                   const Icon = point.icon;
                   return (
                     <li key={point.title} className="flex gap-3">
-                      <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl bg-white text-[#1865EA] shadow-[0_1px_3px_rgba(15,23,42,0.06)] ring-1 ring-[#E8EDF5]">
+                      <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#EAF1FF] text-[#1865EA] ring-1 ring-[#D6E4FF]">
                         <Icon className="size-4" strokeWidth={2.1} aria-hidden />
                       </span>
                       <div className="min-w-0">

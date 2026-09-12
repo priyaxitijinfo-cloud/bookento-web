@@ -386,13 +386,39 @@
   }
 }
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
   }
-  to {
-    opacity: 1;
+  100% {
+    background-position: -200% 0;
   }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    #eef1f6 0%,
+    #f7f8fb 40%,
+    #e8ecf3 60%,
+    #eef1f6 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.35s ease-in-out infinite;
+}
+
+@keyframes hero-bg-zoom {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+.hero-bg-zoom {
+  animation: hero-bg-zoom 5.5s ease-in-out infinite;
 }
 
 @keyframes slide-up {

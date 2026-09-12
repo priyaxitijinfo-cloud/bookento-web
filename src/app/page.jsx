@@ -32,14 +32,54 @@ import { getTrendingProviders } from "@/mock/providers";
 import { getServicesByProvider } from "@/mock/services";
 
 const TOP_RATED_CARDS = [
-  { image: "/images/top-rated-elite-studio.png", categorySlug: "salon" },
-  { image: "/images/top-rated-premium-spa.png", categorySlug: "salon" },
-  { image: "/images/top-rated-royal-clinic.png", categorySlug: "doctor" },
-  { image: "/images/top-rated-urban-salon.png", categorySlug: "salon" },
-  { image: "/images/nearby-glow-salon.png", categorySlug: "salon" },
-  { image: "/images/nearby-serene-spa.png", categorySlug: "salon" },
-  { image: "/images/nearby-bright-dental.png", categorySlug: "doctor" },
-  { image: "/images/nearby-fitzone-gym.png", categorySlug: "fitness" },
+  {
+    image: "/images/top-rated-elite-studio.png",
+    categorySlug: "salon",
+    description:
+      "Signature cuts and styling with senior stylists — transparent pricing and easy reschedule.",
+  },
+  {
+    image: "/images/top-rated-premium-spa.png",
+    categorySlug: "salon",
+    description:
+      "Full-body spa rituals and massage therapies designed for deep recovery and calm.",
+  },
+  {
+    image: "/images/top-rated-royal-clinic.png",
+    categorySlug: "doctor",
+    description:
+      "Trusted clinic care with clear slots, verified doctors, and patient-first reviews.",
+  },
+  {
+    image: "/images/top-rated-urban-salon.png",
+    categorySlug: "salon",
+    description:
+      "Colour, grooming, and blowouts in a modern studio — book the look you want nearby.",
+  },
+  {
+    image: "/images/nearby-glow-salon.png",
+    categorySlug: "salon",
+    description:
+      "Glow-ups, facials, and finishing touches from highly rated beauty professionals.",
+  },
+  {
+    image: "/images/nearby-serene-spa.png",
+    categorySlug: "salon",
+    description:
+      "Quiet spa suites with curated therapies — perfect for weekday resets and weekends.",
+  },
+  {
+    image: "/images/nearby-bright-dental.png",
+    categorySlug: "doctor",
+    description:
+      "Gentle dental cleaning and check-ups with clear plans and same-week availability.",
+  },
+  {
+    image: "/images/nearby-fitzone-gym.png",
+    categorySlug: "fitness",
+    description:
+      "Personal training and strength coaching — home or studio sessions that fit your week.",
+  },
 ];
 
 export default function HomePage() {
@@ -50,11 +90,13 @@ export default function HomePage() {
   const topRated = getTrendingProviders(10)
     .slice(0, TOP_RATED_CARDS.length)
     .map((provider, index) => {
+      const card = TOP_RATED_CARDS[index];
       const primaryService = getServicesByProvider(provider.id)[0];
       return {
         ...provider,
-        coverImage: TOP_RATED_CARDS[index].image,
-        categorySlug: TOP_RATED_CARDS[index].categorySlug,
+        coverImage: card.image,
+        categorySlug: card.categorySlug,
+        description: card.description || provider.description,
         appointmentDuration: primaryService?.duration ?? 20 + (index % 4) * 10,
       };
     });
@@ -91,12 +133,14 @@ export default function HomePage() {
           <CategoryGrid />
         </section>
 
-        <section id="offers" className="scroll-mt-28 md:hidden">
+        <section id="offers" className="scroll-mt-28">
           <DesktopSectionHeading
             badge="Offers"
             title="Exclusive Deals"
             highlight="Just For You"
+            className="max-md:hidden"
           />
+          <SectionHeader title="Offers" className="md:hidden" />
           <BannerShowcase />
         </section>
 
@@ -105,7 +149,8 @@ export default function HomePage() {
           className={cn(
             "scroll-mt-28",
             "md:relative md:left-1/2 md:w-screen md:max-w-[100vw] md:-translate-x-1/2",
-            "md:border-y md:border-[#E8EDF5] md:bg-[#F7F8FA] md:py-10",
+            "md:overflow-visible md:border-y md:border-[#E2EAF5] md:py-10",
+            "md:bg-[radial-gradient(120%_80%_at_50%_-10%,#E8F1FF_0%,#F5F8FC_45%,#EEF3F9_100%)]",
           )}
         >
           <div className="md:mx-auto md:w-full md:max-w-[calc(96rem-60px)] md:px-[4.875rem] xl:px-[5.875rem]">

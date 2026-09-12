@@ -55,7 +55,7 @@ export function TopRatedProviderCard({
         : null);
 
     return (
-      <article className="flex h-full flex-col rounded-xl border border-[#E8EDF5] bg-white px-3.5 pt-3.5 pb-5 shadow-[0_1px_3px_rgba(15,23,42,0.04)] transition-shadow duration-300 hover:shadow-[0_10px_28px_rgba(15,23,42,0.08)]">
+      <article className="flex h-full flex-col rounded-xl border border-[#E8EDF5] bg-white px-3.5 pt-3.5 pb-5 shadow-[0_1px_3px_rgba(15,23,42,0.04)]">
         <div className="group relative aspect-[4/3] overflow-hidden rounded-xl bg-[#EEF2F7]">
           <Link
             href={providerDetailRoute(provider.id)}

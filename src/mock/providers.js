@@ -33,6 +33,21 @@ export const currentUser = {
 export const mockProviders = Array.from({ length: 100 }, (_, i) => {
   const ownerName = personName(i + 5);
   const loc = ["Mumbai", "Delhi", "Bangalore", "Hyderabad", "Chennai", "Pune"][i % 6];
+  const specialty = [
+    "Hair Styling",
+    "Spa Therapy",
+    "Dental Care",
+    "Fitness",
+    "Home Services",
+  ][i % 5];
+  const descriptions = {
+    "Hair Styling": `Modern cuts, colour, and grooming in ${loc}. Book trusted stylists with clear slots and transparent pricing.`,
+    "Spa Therapy": `Relaxing spa rituals and massage therapies in ${loc}. Unwind with certified therapists and premium products.`,
+    "Dental Care": `Gentle dental check-ups and cleanings in ${loc}. Clear treatment plans, trusted reviews, and easy booking.`,
+    Fitness: `Personal training and wellness coaching in ${loc}. Goal-based sessions with verified fitness pros nearby.`,
+    "Home Services": `Reliable home cleaning and lifestyle help in ${loc}. Vetted professionals for everyday tasks you can trust.`,
+  };
+
   return {
     id: generateId("provider", i + 1),
     userId: generateId("user", i + 100),
@@ -42,15 +57,9 @@ export const mockProviders = Array.from({ length: 100 }, (_, i) => {
     phone: `+91 9${String(700000000 + i).slice(0, 9)}`,
     avatar: avatarUrl(`provider-${i}`),
     coverImage: coverUrl(`cover-${i}`, 1200, 400),
-    description: `Award-winning service provider in ${loc} with ${3 + (i % 10)} years of experience. We deliver premium quality services with customer satisfaction as our top priority.`,
+    description: descriptions[specialty],
     categoryId: `cat_${String((i % 30) + 1).padStart(4, "0")}`,
-    specialty: [
-      "Hair Styling",
-      "Spa Therapy",
-      "Dental Care",
-      "Fitness",
-      "Home Services",
-    ][i % 5],
+    specialty,
     status: i < 95 ? PROVIDER_STATUS.APPROVED : PROVIDER_STATUS.PENDING,
     rating: Number((3.5 + (i % 15) * 0.1).toFixed(1)),
     totalReviews: 20 + (i % 180),

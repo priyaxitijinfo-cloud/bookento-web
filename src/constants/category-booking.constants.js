@@ -11,7 +11,72 @@ import {
   DOCTOR_WELLNESS_PACKAGES,
 } from "@/constants/doctor-booking.constants";
 import { getHomeCategoryBySlug } from "@/constants/home-categories";
-import { imageUrl } from "@/mock/helpers";
+
+/** Local gallery pools so category profiles never show broken remote images */
+const CATEGORY_GALLERY_POOLS = {
+  salon: [
+    "/images/top-rated-urban-salon.png",
+    "/images/nearby-glow-salon.png",
+    "/images/popular-haircut.png",
+    "/images/promo-selfcare-spa.jpg",
+    "/images/nearby-serene-spa.png",
+    "/images/popular-massage.png",
+  ],
+  fitness: [
+    "/images/nearby-fitzone-gym.png",
+    "/images/popular-fitness.png",
+    "/images/desktop-hero-health-hd.jpg",
+    "/images/nearby-urban-wellness.png",
+    "/images/popular-fitness.png",
+    "/images/nearby-fitzone-gym.png",
+  ],
+  doctor: [
+    "/images/doctor-gallery/gallery-1.png",
+    "/images/doctor-gallery/gallery-2.png",
+    "/images/doctor-gallery/gallery-3.png",
+    "/images/doctor-gallery/gallery-4.png",
+    "/images/doctor-gallery/gallery-5.png",
+    "/images/doctor-gallery/gallery-6.png",
+    "/images/doctor-gallery/gallery-7.png",
+  ],
+  "pet-care": [
+    "/images/promo-pet-grooming.jpg",
+    "/images/special-package-pet-care.png",
+    "/images/nearby-pure-home-care.png",
+    "/images/promo-pet-grooming.jpg",
+    "/images/special-package-pet-care.png",
+    "/images/nearby-serene-spa.png",
+  ],
+  homecare: [
+    "/images/nearby-pure-home-care.png",
+    "/images/special-package-home-cleaning.png",
+    "/images/desktop-hero-home-hd.jpg",
+    "/images/nearby-pure-home-care.png",
+    "/images/special-package-home-cleaning.png",
+    "/images/promo-selfcare-spa.jpg",
+  ],
+  default: [
+    "/images/doctor-gallery/gallery-1.png",
+    "/images/doctor-gallery/gallery-2.png",
+    "/images/doctor-gallery/gallery-3.png",
+    "/images/doctor-gallery/gallery-4.png",
+    "/images/doctor-gallery/gallery-5.png",
+    "/images/doctor-gallery/gallery-6.png",
+  ],
+};
+
+function galleryPoolForSlug(slug) {
+  if (CATEGORY_GALLERY_POOLS[slug]) return CATEGORY_GALLERY_POOLS[slug];
+  if (slug?.includes("salon") || slug?.includes("spa"))
+    return CATEGORY_GALLERY_POOLS.salon;
+  if (slug?.includes("pet")) return CATEGORY_GALLERY_POOLS["pet-care"];
+  if (slug?.includes("home") || slug?.includes("plumb") || slug?.includes("clean")) {
+    return CATEGORY_GALLERY_POOLS.homecare;
+  }
+  if (slug?.includes("fit") || slug?.includes("gym"))
+    return CATEGORY_GALLERY_POOLS.fitness;
+  return CATEGORY_GALLERY_POOLS.default;
+}
 
 const SERVICE_BLUEPRINT = [
   { label: "Consultation", duration: 30, price: 450, originalPrice: 799 },
@@ -109,10 +174,11 @@ function buildCategoryGallery(slug, categoryName) {
     "Client lounge",
     "Team at work",
   ];
+  const pool = galleryPoolForSlug(slug);
 
   return captions.map((caption, index) => ({
     id: `${slug}_gal_${index + 1}`,
-    url: imageUrl(`${slug}-gallery-${index}`, 800, 600),
+    url: pool[index % pool.length],
     caption,
     featured: index === 0,
   }));

@@ -21,6 +21,7 @@ const DESKTOP_NAV = [
   { href: "/#professionals", labelKey: "navProfessionals" },
   { href: "/#packages", labelKey: "navPackages" },
   { href: "/#popular", labelKey: "navPopular" },
+  { href: "/#videos", labelKey: "navVideos" },
 ];
 
 /** Header language dropdown — reference-style 2-column flag grid */

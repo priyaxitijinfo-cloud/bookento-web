@@ -1,14 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, Clock, Star } from "lucide-react";
+import { Clapperboard, Star, Trophy } from "lucide-react";
+import { toast } from "sonner";
 
+import { HeroHeartIcon } from "@/components/icons/hero-nav-icons";
 import { formatDuration } from "@/constants/popular-services";
 import {
   categoryListingRoute,
   providerDetailRoute,
 } from "@/constants/routes.constants";
 import { useWebLocale } from "@/hooks/use-web-locale";
+import { useSavedProvidersStore } from "@/store";
 import { formatCurrency } from "@/utils/format.utils";
 import { cn } from "@/lib/utils";
 
@@ -19,72 +22,102 @@ const IMAGE_FOCUS = [
   "object-[center_20%]",
 ];
 
-/** Web-only — image gallery + floating dock (not poster overlay / not white card) */
-function DesktopPopularServiceTile({ service, title, duration, href, imageFocus }) {
-  const { t } = useWebLocale();
+function BadgeIcon({ tone }) {
+  if (tone === "star") {
+    return <Star className="size-3.5 fill-amber-400 text-amber-400" />;
+  }
+  if (tone === "featured") {
+    return <Clapperboard className="size-3.5 text-[#6366F1]" strokeWidth={2.2} />;
+  }
+  return <Trophy className="size-3.5 text-[#7C3AED]" strokeWidth={2.2} />;
+}
+
+function formatReviews(count) {
+  if (!count && count !== 0) return null;
+  return new Intl.NumberFormat("en-IN").format(count);
+}
+
+/** Web-only — reference marketplace card (image + details below) */
+function DesktopPopularServiceTile({ service, title, href, imageFocus }) {
+  const displayTitle = service.providerName || title;
+  const location = service.location || service.tagline || null;
+  const categoryLabel = service.categoryLabel || null;
+  const reviews = formatReviews(service.reviewCount);
+  const saveId = service.id;
+  const isSaved = useSavedProvidersStore((state) =>
+    saveId ? state.savedIds.includes(saveId) : false,
+  );
+  const toggleSaved = useSavedProvidersStore((state) => state.toggleSaved);
+
+  const handleToggleSave = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!saveId) return;
+
+    const isNowSaved = toggleSaved(saveId);
+    toast.success(isNowSaved ? "Saved to favorites" : "Removed from saved");
+  };
 
   return (
     <article className="group flex h-full flex-col">
-      <Link href={href} className="flex h-full flex-col" aria-label={`Book ${title}`}>
-        <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-[#EEF2F7]">
+      <Link
+        href={href}
+        className="flex h-full flex-col"
+        aria-label={`View ${displayTitle}`}
+      >
+        <div className="relative aspect-[4/3] overflow-hidden rounded-[1.25rem] bg-[#EEF2F7]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={service.image}
-            alt={title}
+            alt={displayTitle}
             className={cn(
-              "absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.045]",
+              "absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]",
               imageFocus,
             )}
             loading="lazy"
             decoding="async"
           />
 
-          <div
-            aria-hidden
-            className="absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,rgba(15,23,42,0.18)_100%)]"
-          />
+          {service.badge ? (
+            <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-1.5 text-[11px] font-semibold text-[#0F1B2D] shadow-sm backdrop-blur-sm">
+              <BadgeIcon tone={service.badgeTone} />
+              {service.badge}
+            </span>
+          ) : null}
 
-          <span className="absolute top-3.5 right-3.5 z-10 inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-semibold text-[#0F1B2D] shadow-sm backdrop-blur-sm">
-            <Star className="size-3 fill-amber-400 text-amber-400" />
-            {service.rating}
-          </span>
+          <button
+            type="button"
+            aria-label={isSaved ? "Remove from saved" : "Save provider"}
+            aria-pressed={isSaved}
+            className="absolute top-3 right-3 z-10 flex size-9 items-center justify-center rounded-full bg-black/25 text-white backdrop-blur-md transition-colors hover:bg-black/35"
+            onClick={handleToggleSave}
+          >
+            <HeroHeartIcon tone="hero" filled={isSaved} className="size-4" />
+          </button>
+        </div>
 
-          <div className="absolute inset-x-3 bottom-3 z-10 rounded-2xl bg-white/95 p-3.5 shadow-[0_10px_28px_-12px_rgba(15,23,42,0.35)] backdrop-blur-md">
-            <h3 className="line-clamp-2 text-[15px] leading-snug font-bold text-[#0F1B2D]">
-              {title}
+        <div className="flex flex-1 flex-col pt-3">
+          <div className="flex items-start justify-between gap-3">
+            <h3 className="line-clamp-2 min-w-0 flex-1 text-[0.98rem] leading-snug font-bold text-[#0F1B2D]">
+              {displayTitle}
             </h3>
-
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-[#66758A]">
-              {service.providerName ? (
-                <span className="line-clamp-1 font-medium">{service.providerName}</span>
-              ) : null}
-              {service.providerName && duration ? (
-                <span className="text-[#D0D5DD]" aria-hidden>
-                  ·
-                </span>
-              ) : null}
-              {duration ? (
-                <span className="inline-flex items-center gap-1">
-                  <Clock className="size-3 shrink-0" strokeWidth={2.25} />
-                  {duration}
-                </span>
-              ) : null}
-            </div>
-
-            <div className="mt-3 flex items-center justify-between gap-3">
-              <p className="text-[1.05rem] leading-none font-bold text-[#0F1B2D]">
-                {formatCurrency(service.price)}
-              </p>
-              <span className="gradient-brand inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-semibold text-white shadow-[0_6px_16px_-6px_rgba(24,101,234,0.55)]">
-                {t("bookNow")}
-                <ArrowUpRight
-                  className="size-3.5 transition-transform duration-300 group-hover:rotate-12"
-                  strokeWidth={2.4}
-                  aria-hidden
-                />
-              </span>
-            </div>
+            <span className="inline-flex shrink-0 items-center gap-1 pt-0.5 text-[0.92rem] font-bold text-[#0F1B2D]">
+              <Star className="size-3.5 fill-amber-400 text-amber-400" />
+              {service.rating}
+            </span>
           </div>
+
+          {location ? (
+            <p className="mt-1.5 line-clamp-2 text-[12px] leading-snug text-[#6B7A8D]">
+              {location}
+            </p>
+          ) : null}
+
+          <p className="mt-1 line-clamp-1 text-[12px] text-[#6B7A8D]">
+            {[categoryLabel, reviews ? `${reviews} reviews` : null]
+              .filter(Boolean)
+              .join(" · ")}
+          </p>
         </div>
       </Link>
     </article>
@@ -107,7 +140,6 @@ export function ServiceCard({ service, index = 0, desktop = false }) {
       <DesktopPopularServiceTile
         service={service}
         title={title}
-        duration={duration}
         href={href}
         imageFocus={imageFocus}
       />

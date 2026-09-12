@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { HOME_CATEGORIES } from "@/constants/home-categories";
 import { CategoryItem, MoreCategoryItem } from "@/components/home/category-item";
@@ -22,9 +22,9 @@ const MOBILE_CATEGORY_SLUGS = [
 
 /** Desktop: 6 visible tiles */
 const DESKTOP_VISIBLE = 6;
-const DESKTOP_GAP_PX = 14;
+const DESKTOP_GAP_PX = 18;
 const LOOP_TRACKS = 3;
-const DESKTOP_ICON_SIZE_PX = 38;
+const DESKTOP_ICON_SIZE_PX = 36;
 
 const CATEGORY_NAME_KEYS = {
   doctor: "catDoctor",
@@ -44,6 +44,43 @@ const CATEGORY_NAME_KEYS = {
   shooting: "catShooting",
 };
 
+const CATEGORY_DESC_KEYS = {
+  doctor: "catDescDoctor",
+  salon: "catDescSalon",
+  fitness: "catDescFitness",
+  tutoring: "catDescTutoring",
+  "pet-care": "catDescPetCare",
+  homecare: "catDescHomecare",
+  "kids-care": "catDescKidsCare",
+  plumbing: "catDescPlumbing",
+  automotive: "catDescAutomotive",
+  gardening: "catDescGardening",
+  cooking: "catDescCooking",
+  events: "catDescEvents",
+  carpenter: "catDescCarpenter",
+  renovation: "catDescRenovation",
+  shooting: "catDescShooting",
+};
+
+/** Desktop-only unique hues — no adjacent / duplicate card colors */
+const DESKTOP_CATEGORY_COLORS = {
+  doctor: "#37B8FF",
+  salon: "#FF4766",
+  fitness: "#5EB12D",
+  tutoring: "#FFAF2A",
+  "pet-care": "#6357FF",
+  homecare: "#E046FF",
+  "kids-care": "#FF37B8",
+  plumbing: "#C47A1A",
+  automotive: "#3B82F6",
+  gardening: "#10B981",
+  cooking: "#0EA5E9",
+  events: "#14B8A6",
+  carpenter: "#A16207",
+  renovation: "#F97316",
+  shooting: "#D946EF",
+};
+
 function getDesktopCategoryIconSrc(slug) {
   return `/icons/categories/${slug}.svg`;
 }
@@ -54,7 +91,6 @@ function getTrackWidth(scroller) {
   return child.offsetLeft - scroller.children[0].offsetLeft;
 }
 
-/** Soft vertical gradient from a solid category tile color */
 function shadeHex(hex, amount) {
   const raw = hex.replace("#", "");
   const channel = (start) => parseInt(raw.slice(start, start + 2), 16);
@@ -64,7 +100,6 @@ function shadeHex(hex, amount) {
   return `#${[r, g, b].map((n) => n.toString(16).padStart(2, "0")).join("")}`;
 }
 
-/** Light pastel of icon tile color for the desktop card background */
 function lightenHex(hex, mix = 0.88) {
   const raw = hex.replace("#", "");
   const channel = (start) => parseInt(raw.slice(start, start + 2), 16);
@@ -74,53 +109,87 @@ function lightenHex(hex, mix = 0.88) {
     .join("")}`;
 }
 
-/** Desktop-only tile — pastel card from icon color + bright solid icon badge */
+function CategoryIconMask({ slug, size, className, style }) {
+  const iconSrc = getDesktopCategoryIconSrc(slug);
+  return (
+    <span
+      aria-hidden
+      className={cn("inline-block shrink-0", className)}
+      style={{
+        width: size,
+        height: size,
+        WebkitMaskImage: `url(${iconSrc})`,
+        maskImage: `url(${iconSrc})`,
+        WebkitMaskSize: "contain",
+        maskSize: "contain",
+        WebkitMaskRepeat: "no-repeat",
+        maskRepeat: "no-repeat",
+        WebkitMaskPosition: "center",
+        maskPosition: "center",
+        ...style,
+      }}
+    />
+  );
+}
+
+/** Desktop-only — pastel service card matching reference */
 function DesktopCategoryTile({ category }) {
   const { t } = useWebLocale();
-  const labelHoverColor = shadeHex(category.iconTile, 0.28);
-  const cardBg = lightenHex(category.iconTile, 0.93);
-  const cardBorder = lightenHex(category.iconTile, 0.86);
-  const iconSrc = getDesktopCategoryIconSrc(category.slug);
+  const accent = DESKTOP_CATEGORY_COLORS[category.slug] || category.iconTile;
+  const cardBg = lightenHex(accent, 0.95);
+  const arrowBg = lightenHex(accent, 0.88);
+  const arrowColor = shadeHex(accent, 0.05);
   const nameKey = CATEGORY_NAME_KEYS[category.slug];
+  const descKey = CATEGORY_DESC_KEYS[category.slug];
   const label = nameKey ? t(nameKey) : category.name;
+  const description = descKey ? t(descKey) : "";
 
   return (
     <Link
       href={categoryListingRoute(category.slug)}
       className={cn(
-        "group relative flex h-[8.5rem] w-full flex-col items-center justify-center gap-3.5 rounded-2xl border-[0.5px] border-solid px-3",
+        "group relative flex h-[calc(14.5rem-10px)] w-full flex-col overflow-hidden rounded-[1.35rem] border-[3px] border-white p-5 pb-14",
+        "shadow-[0_10px_24px_-8px_rgba(15,23,42,0.14)]",
         "focus-visible:ring-2 focus-visible:ring-[#1865EA]/35 focus-visible:outline-none",
       )}
-      style={{
-        backgroundColor: cardBg,
-        borderColor: cardBorder,
-        "--category-label-hover": labelHoverColor,
-      }}
+      style={{ backgroundColor: cardBg }}
     >
       <span
-        className="relative flex size-[3.5rem] items-center justify-center rounded-[0.95rem] transition-transform duration-200 ease-out group-hover:scale-110"
-        style={{ backgroundColor: category.iconTile }}
+        className="relative z-10 flex aspect-square size-14 shrink-0 items-center justify-center rounded-xl shadow-sm transition-transform duration-300 group-hover:scale-105"
+        style={{ backgroundColor: accent }}
       >
-        <span
-          aria-hidden
-          className="inline-block shrink-0 bg-white"
-          style={{
-            width: DESKTOP_ICON_SIZE_PX,
-            height: DESKTOP_ICON_SIZE_PX,
-            WebkitMaskImage: `url(${iconSrc})`,
-            maskImage: `url(${iconSrc})`,
-            WebkitMaskSize: "contain",
-            maskSize: "contain",
-            WebkitMaskRepeat: "no-repeat",
-            maskRepeat: "no-repeat",
-            WebkitMaskPosition: "center",
-            maskPosition: "center",
-          }}
+        <CategoryIconMask
+          slug={category.slug}
+          size={DESKTOP_ICON_SIZE_PX}
+          className="bg-white"
         />
       </span>
-      <p className="relative w-full truncate text-center text-[15px] font-medium tracking-tight text-[#1A2332] transition-colors duration-200 group-hover:text-[var(--category-label-hover)]">
+
+      <h3 className="relative z-10 mt-3 text-[1.05rem] leading-snug font-bold tracking-tight text-[#0F1B2D]">
         {label}
-      </p>
+      </h3>
+
+      {description ? (
+        <p className="relative z-10 mt-1.5 line-clamp-3 text-[12px] leading-relaxed text-[#6B7A8D]">
+          {description}
+        </p>
+      ) : null}
+
+      <span
+        className="absolute bottom-4 left-5 z-10 inline-flex aspect-square size-9 shrink-0 items-center justify-center rounded-full"
+        style={{ backgroundColor: arrowBg, color: arrowColor }}
+        aria-hidden
+      >
+        <ArrowRight className="size-4" strokeWidth={2.4} />
+      </span>
+
+      {/* Faint watermark icon */}
+      <CategoryIconMask
+        slug={category.slug}
+        size={72}
+        className="pointer-events-none absolute -right-1 -bottom-1 opacity-[0.04]"
+        style={{ backgroundColor: accent }}
+      />
     </Link>
   );
 }
@@ -132,13 +201,13 @@ function ArrowButton({ label, onClick, side }) {
       aria-label={label}
       onClick={onClick}
       className={cn(
-        "absolute top-1/2 z-20 flex size-9 -translate-y-1/2 items-center justify-center rounded-full",
+        "absolute top-1/2 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full",
         "border border-[#E6EAF0] bg-white text-[#3D4A5C]",
-        "shadow-[0_4px_14px_-4px_rgba(15,23,42,0.18)]",
+        "shadow-[0_6px_18px_-4px_rgba(15,23,42,0.16)]",
         "transition-colors duration-200",
         "hover:border-[#1865EA]/30 hover:text-[#1865EA]",
         "focus-visible:ring-2 focus-visible:ring-[#1865EA]/30 focus-visible:outline-none",
-        side === "left" ? "left-0 -translate-x-1/2" : "right-0 translate-x-1/2",
+        side === "left" ? "left-0" : "right-0",
       )}
     >
       {side === "left" ? (
@@ -247,15 +316,15 @@ function DesktopCategoryScroll() {
   const tileWidth = `calc((100% - ${(DESKTOP_VISIBLE - 1) * DESKTOP_GAP_PX}px) / ${DESKTOP_VISIBLE})`;
 
   return (
-    <div className="relative">
-      {/* Soft edge fades — depth without clipping card shadows awkwardly */}
+    <div className="relative overflow-visible px-5">
+      {/* Soft edge fades — keep arrows clear of card text */}
       <div
         aria-hidden
-        className="from-background pointer-events-none absolute inset-y-2 left-0 z-10 w-8 bg-gradient-to-r to-transparent"
+        className="from-background pointer-events-none absolute inset-y-5 left-0 z-10 w-12 bg-gradient-to-r to-transparent"
       />
       <div
         aria-hidden
-        className="from-background pointer-events-none absolute inset-y-2 right-0 z-10 w-8 bg-gradient-to-l to-transparent"
+        className="from-background pointer-events-none absolute inset-y-5 right-0 z-10 w-12 bg-gradient-to-l to-transparent"
       />
 
       <ArrowButton
@@ -271,19 +340,33 @@ function DesktopCategoryScroll() {
 
       <div
         ref={scrollerRef}
-        className="scrollbar-hide flex overflow-x-auto overscroll-x-contain px-1 py-3"
+        className="scrollbar-hide flex overflow-x-auto overscroll-x-contain px-1 py-7"
         style={{ gap: DESKTOP_GAP_PX }}
       >
         {loopItems.map(({ category, track }) => (
           <div
             key={`${track}-${category.slug}`}
-            className="shrink-0"
+            className="shrink-0 py-1"
             style={{ width: tileWidth, minWidth: tileWidth }}
           >
             <DesktopCategoryTile category={category} />
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function DesktopCategoriesShowcase() {
+  return (
+    <div className="relative hidden md:block">
+      {/* Soft atmosphere */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-10 left-1/2 h-56 w-[70%] -translate-x-1/2 rounded-full bg-[#EAF1FF]/55 blur-3xl"
+      />
+
+      <DesktopCategoryScroll />
     </div>
   );
 }
@@ -307,9 +390,7 @@ export function CategoryGrid() {
         </div>
       </div>
 
-      <div className="hidden md:block">
-        <DesktopCategoryScroll />
-      </div>
+      <DesktopCategoriesShowcase />
     </>
   );
 }
