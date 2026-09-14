@@ -490,6 +490,38 @@
   }
 }
 
+@keyframes online-consult-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes online-consult-orb {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate3d(18px, 10px, 0) scale(1.08);
+    opacity: 0.9;
+  }
+}
+
+@keyframes online-consult-wave {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-6px);
+  }
+}
+
 @layer utilities {
   .animate-testimonial-marquee {
     animation: testimonial-marquee 42s linear infinite;
@@ -524,13 +556,33 @@
     animation: feature-promo-float 4.2s ease-in-out infinite;
   }
 
+  .online-consult-float {
+    animation: online-consult-float 4.6s ease-in-out infinite;
+  }
+
+  .online-consult-float-delayed {
+    animation: online-consult-float 5.2s ease-in-out 0.45s infinite;
+  }
+
+  .online-consult-orb {
+    animation: online-consult-orb 7s ease-in-out infinite;
+  }
+
+  .online-consult-wave {
+    animation: online-consult-wave 8s ease-in-out infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .animate-testimonial-marquee,
     .animate-videos-marquee,
     .animate-videos-story-progress,
     .animate-promo-pan,
     .animate-promo-sheen,
-    .feature-promo-float {
+    .feature-promo-float,
+    .online-consult-float,
+    .online-consult-float-delayed,
+    .online-consult-orb,
+    .online-consult-wave {
       animation: none;
     }
 

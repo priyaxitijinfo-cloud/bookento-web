@@ -25,17 +25,17 @@ export function FeaturePromoBanner({ className }) {
           <p className="text-[12px] font-semibold tracking-[0.18em] text-[#1865EA] uppercase">
             {t("promoSectionKicker")}
           </p>
-          <h2 className="mt-2 flex flex-wrap items-baseline gap-x-2 overflow-visible text-[1.85rem] leading-[1.12] font-bold tracking-tight text-[#0F1B2D] sm:text-[2.15rem] md:leading-[1.2] lg:text-[2.45rem]">
-            <span>{t("promoSectionTitle")}</span>
+          <h2 className="mt-2 flex flex-wrap items-baseline gap-x-2 overflow-visible text-[1.85rem] leading-[1.12] font-bold tracking-tight text-[#0F1B2D] sm:text-[2.15rem] md:flex-nowrap md:items-center md:gap-x-2.5 md:leading-none lg:text-[2.45rem]">
+            <span className="md:whitespace-nowrap">{t("promoSectionTitle")}</span>
             {/* Mobile: solid script color */}
             <span className="font-script text-[1.15em] font-semibold text-[#1865EA] md:hidden">
               {highlight}
             </span>
-            {/* Desktop: SVG gradient — avoids bg-clip-text cutting Caveat glyphs */}
+            {/* Desktop: SVG gradient — aligned to title baseline */}
             <svg
-              className="font-script hidden h-[1.4em] overflow-visible md:inline"
-              style={{ width: `${Math.max(highlight.length * 0.58, 2.4)}em` }}
-              viewBox={`0 0 ${Math.max(highlight.length * 34, 100)} 76`}
+              className="font-script hidden h-[1.05em] shrink-0 overflow-visible md:block"
+              style={{ width: `${Math.max(highlight.length * 0.52, 2.2)}em` }}
+              viewBox={`0 0 ${Math.max(highlight.length * 34, 100)} 58`}
               role="img"
               aria-label={highlight}
               preserveAspectRatio="xMinYMid meet"
@@ -55,11 +55,11 @@ export function FeaturePromoBanner({ className }) {
                 </linearGradient>
               </defs>
               <text
-                x="6"
-                y="54"
+                x="4"
+                y="46"
                 fill="url(#promo-today-gradient)"
                 fontFamily="var(--font-caveat), Caveat, cursive"
-                fontSize="56"
+                fontSize="52"
                 fontWeight="600"
               >
                 {highlight}
