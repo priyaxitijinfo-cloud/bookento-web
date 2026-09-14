@@ -480,6 +480,16 @@
   }
 }
 
+@keyframes feature-promo-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
 @layer utilities {
   .animate-testimonial-marquee {
     animation: testimonial-marquee 42s linear infinite;
@@ -510,12 +520,17 @@
     animation: promo-sheen 7s ease-in-out infinite;
   }
 
+  .feature-promo-float {
+    animation: feature-promo-float 4.2s ease-in-out infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .animate-testimonial-marquee,
     .animate-videos-marquee,
     .animate-videos-story-progress,
     .animate-promo-pan,
-    .animate-promo-sheen {
+    .animate-promo-sheen,
+    .feature-promo-float {
       animation: none;
     }
 

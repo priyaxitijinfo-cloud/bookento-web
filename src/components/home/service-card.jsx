@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Clapperboard, Star, Trophy } from "lucide-react";
+import { ArrowRight, Clapperboard, Star, Trophy } from "lucide-react";
 import { toast } from "sonner";
 
 import { HeroHeartIcon } from "@/components/icons/hero-nav-icons";
@@ -39,6 +39,7 @@ function formatReviews(count) {
 
 /** Web-only — reference marketplace card (image + details below) */
 function DesktopPopularServiceTile({ service, title, href, imageFocus }) {
+  const { t } = useWebLocale();
   const displayTitle = service.providerName || title;
   const location = service.location || service.tagline || null;
   const categoryLabel = service.categoryLabel || null;
@@ -118,6 +119,11 @@ function DesktopPopularServiceTile({ service, title, href, imageFocus }) {
               .filter(Boolean)
               .join(" · ")}
           </p>
+
+          <span className="mt-3 inline-flex items-center gap-1 text-[14px] font-semibold text-[#1865EA]">
+            {t("popularCollectionExplore")}
+            <ArrowRight className="size-4" strokeWidth={2.4} aria-hidden />
+          </span>
         </div>
       </Link>
     </article>

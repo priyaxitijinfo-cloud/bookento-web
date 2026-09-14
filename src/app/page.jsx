@@ -14,6 +14,7 @@ import { HeroSection } from "@/components/home/hero-section";
 import { HomeFooter } from "@/components/home/home-footer";
 import { HomeHeader } from "@/components/home/home-header";
 import { PopularServicesShowcase } from "@/components/home/popular-services-showcase";
+import { BookingSimpleShowcase } from "@/components/home/booking-simple-showcase";
 import { SectionHeader, DesktopSectionHeading } from "@/components/home/section-header";
 import { SpecialPackagesShowcase } from "@/components/home/special-packages-showcase";
 import { TestimonialsShowcase } from "@/components/home/testimonials-showcase";
@@ -182,6 +183,8 @@ export default function HomePage() {
         <SpecialPackagesShowcase id="packages" className="scroll-mt-28 max-md:hidden" />
 
         <PopularServicesShowcase />
+
+        <BookingSimpleShowcase />
 
         <SpecialPackagesShowcase className="md:hidden" />
 

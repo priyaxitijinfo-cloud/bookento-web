@@ -1,5 +1,8 @@
 "use client";
 
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+
 import { SectionHeader, DesktopSectionHeading } from "@/components/home/section-header";
 import { MobileScrollRow } from "@/components/home/horizontal-scroll";
 import { ServiceCard } from "@/components/home/service-card";
@@ -8,9 +11,12 @@ import {
   WEB_HOME_POPULAR_SERVICES,
 } from "@/constants/popular-services";
 import { ROUTES } from "@/constants/routes.constants";
+import { useWebLocale } from "@/hooks/use-web-locale";
 import { cn } from "@/lib/utils";
 
 export function PopularServicesShowcase() {
+  const { t } = useWebLocale();
+
   return (
     <section
       id="popular"
@@ -26,11 +32,24 @@ export function PopularServicesShowcase() {
           href={ROUTES.SERVICES}
           className="md:hidden"
         />
-        <DesktopSectionHeading
-          badgeKey="popularBadge"
-          titleKey="popularTitle"
-          highlightKey="popularHighlight"
-        />
+
+        {/* Web: popular services heading + explore all */}
+        <div className="mb-6 hidden items-end justify-between gap-6 md:flex">
+          <DesktopSectionHeading
+            badgeKey="popularBadge"
+            titleKey="popularTitle"
+            highlightKey="popularHighlight"
+            align="left"
+            className="mb-0"
+          />
+          <Link
+            href={ROUTES.SERVICES}
+            className="mb-1 inline-flex shrink-0 items-center gap-1.5 text-[15px] font-semibold text-[#1865EA] focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-[#1865EA]/40 focus-visible:outline-none"
+          >
+            {t("popularServicesSeeAll")}
+            <ArrowRight className="size-4" strokeWidth={2.4} aria-hidden />
+          </Link>
+        </div>
 
         <MobileScrollRow className="md:hidden">
           {HOME_POPULAR_SERVICES.map((svc, i) => (
