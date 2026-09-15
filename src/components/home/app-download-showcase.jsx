@@ -34,18 +34,18 @@ function StoreBadge({ href, ariaLabel, eyebrow, label, icon }) {
       rel="noreferrer"
       aria-label={ariaLabel}
       className={cn(
-        "inline-flex h-12 items-center gap-2.5 rounded-[9px] bg-white px-3.5",
-        "shadow-[0_8px_20px_-12px_rgba(0,0,0,0.45)]",
+        "inline-flex h-[3.15rem] items-center gap-2.5 rounded-[10px] bg-[#0F1B2D] px-3.5",
+        "shadow-[0_10px_24px_-14px_rgba(15,27,45,0.55)]",
         "transition-transform duration-200 hover:-translate-y-0.5",
-        "focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:outline-none",
+        "focus-visible:ring-2 focus-visible:ring-[#1865EA]/40 focus-visible:outline-none",
       )}
     >
       {icon}
-      <span className="pr-1 text-left leading-none text-black">
-        <span className="block text-[9px] font-medium tracking-wide text-black/70">
+      <span className="pr-1 text-left leading-none text-white">
+        <span className="block text-[9px] font-medium tracking-wide text-white/75">
           {eyebrow}
         </span>
-        <span className="mt-0.5 block text-[16px] font-semibold tracking-tight text-black">
+        <span className="mt-0.5 block text-[15px] font-semibold tracking-tight">
           {label}
         </span>
       </span>
@@ -53,82 +53,59 @@ function StoreBadge({ href, ariaLabel, eyebrow, label, icon }) {
   );
 }
 
-function PhoneMockup({ src, alt, className }) {
-  return (
-    <div
-      className={cn(
-        "relative w-[10.5rem] shrink-0 overflow-hidden rounded-[2.75rem]",
-        "drop-shadow-[0_22px_40px_rgba(0,0,0,0.45)]",
-        className,
-      )}
-    >
-      <Image
-        src={src}
-        alt={alt}
-        width={336}
-        height={684}
-        className="h-auto w-full object-contain"
-        sizes="240px"
-      />
-    </div>
-  );
-}
-
-/** Desktop-only app download — radar / signal creative banner */
+/** Desktop-only app download — light reference-style banner */
 export function AppDownloadShowcase({ className }) {
   const { t } = useWebLocale();
 
   return (
-    <section
-      aria-label="Download Bookento app"
-      className={cn("hidden md:block", className)}
-    >
-      <div className="relative isolate overflow-hidden rounded-[1.75rem] bg-[#07111F]">
+    <section aria-label={t("appAria")} className={cn("hidden md:block", className)}>
+      <div
+        className={cn(
+          "relative isolate overflow-hidden rounded-[1.75rem]",
+          "bg-[#F0F7FF] ring-1 ring-[#D7E8FA]",
+        )}
+      >
+        {/* Soft wave atmosphere */}
         <div
           aria-hidden
-          className="pointer-events-none absolute top-1/2 left-[68%] size-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.07]"
+          className="pointer-events-none absolute inset-0 opacity-[0.55]"
+          style={{
+            backgroundImage:
+              "radial-gradient(ellipse 120% 60% at 20% 0%, rgba(88,161,255,0.16), transparent 55%), radial-gradient(ellipse 90% 50% at 90% 100%, rgba(122,90,248,0.1), transparent 50%)",
+          }}
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute top-1/2 left-[68%] size-[24rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.09]"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute top-1/2 left-[68%] size-[14rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#1865EA]/35"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute top-1/2 left-[68%] size-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#1865EA]/20 blur-xl"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute top-1/2 left-[68%] size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#58A1FF] shadow-[0_0_24px_rgba(88,161,255,0.9)]"
-        />
-
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 right-0 w-[55%] bg-[radial-gradient(ellipse_at_70%_50%,rgba(24,101,234,0.35)_0%,transparent_70%)]"
+          className="pointer-events-none absolute inset-x-0 top-[18%] h-24 opacity-[0.35]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(100deg, transparent 0 18px, rgba(255,255,255,0.55) 18px 19px, transparent 19px 40px)",
+          }}
         />
 
-        <div className="relative z-10 grid min-h-[20rem] grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] items-center gap-8 px-9 py-10 lg:min-h-[calc(26rem-90px)] lg:px-12 lg:py-12">
-          <div className="max-w-lg">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 backdrop-blur-sm">
-              <span className="relative flex size-2">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#58A1FF] opacity-60" />
-                <span className="relative inline-flex size-2 rounded-full bg-[#58A1FF]" />
-              </span>
-              <span className="text-[11px] font-semibold tracking-[0.16em] text-white/70 uppercase">
-                {t("appLive")}
-              </span>
-            </div>
+        <p
+          className={cn(
+            "font-script absolute top-6 right-8 z-20 hidden max-w-[9rem] text-right text-[1.55rem] leading-tight font-semibold text-[#1B3A5F] lg:block",
+          )}
+        >
+          {t("appScript1")}
+          <span className="relative mt-0.5 block">
+            {t("appScript2")}
+            <span
+              aria-hidden
+              className="absolute right-0 -bottom-1 left-[10%] h-[0.32rem] rounded-full bg-[#C6F405]"
+            />
+          </span>
+        </p>
 
-            <h2 className="mt-5 text-[2.55rem] leading-[1.05] font-bold tracking-tight text-white lg:text-[3rem]">
-              {t("appTitle1")}
-              <br />
-              {t("appTitle2")}
+        <div className="relative z-10 grid min-h-[20rem] grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] items-center gap-6 px-9 pt-10 pb-0 lg:min-h-[22rem] lg:gap-8 lg:px-12 lg:pt-11">
+          <div className="max-w-lg pb-10 lg:pb-11">
+            <h2 className="text-[2.35rem] leading-[1.08] font-bold tracking-tight text-[#0F1B2D] lg:text-[2.75rem]">
+              <span className="block">{t("appTitle1")}</span>
+              <span className="mt-1 block text-[#1865EA]">{t("appTitle2")}</span>
             </h2>
 
-            <p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/60">
+            <p className="mt-4 max-w-md text-[15px] leading-relaxed text-[#5B6B82]">
               {t("appBody")}
             </p>
 
@@ -138,32 +115,34 @@ export function AppDownloadShowcase({ className }) {
                 ariaLabel={`${t("appStoreEyebrow")} ${t("appStoreName")}`}
                 eyebrow={t("appStoreEyebrow")}
                 label={t("appStoreName")}
-                icon={<AppleIcon className="size-[34px] text-black" />}
+                icon={<AppleIcon className="size-[28px] text-white" />}
               />
               <StoreBadge
                 href="#"
                 ariaLabel={`${t("playEyebrow")} ${t("playName")}`}
                 eyebrow={t("playEyebrow")}
                 label={t("playName")}
-                icon={<PlayColorIcon className="size-[26px]" />}
+                icon={<PlayColorIcon className="size-[24px]" />}
               />
             </div>
           </div>
 
           <div
-            className="relative hidden h-[calc(26rem-90px)] items-center justify-center gap-5 lg:flex"
+            className="relative flex h-full min-h-[18rem] items-end justify-center lg:min-h-[20rem]"
             aria-hidden
           >
-            <PhoneMockup
-              src="/images/app-mockups/home-phone.jpg"
-              alt="Bookento home screen"
-              className="z-20 w-[15rem] -translate-y-[calc(42%-60px)]"
-            />
-            <PhoneMockup
-              src="/images/app-mockups/doctors-phone.png"
-              alt="Bookento doctors screen"
-              className="z-10 w-[15rem] translate-y-[calc(42%-60px)]"
-            />
+            <div className="relative mb-[-180px] w-full max-w-[26rem] drop-shadow-[0_22px_40px_rgba(24,101,234,0.18)] lg:max-w-[28rem]">
+              <Image
+                src="/images/app-mockups/app-phones.png"
+                alt=""
+                width={796}
+                height={926}
+                className="h-auto w-full object-contain object-bottom"
+                sizes="(min-width: 1280px) 448px, 40vw"
+                priority
+                unoptimized
+              />
+            </div>
           </div>
         </div>
       </div>

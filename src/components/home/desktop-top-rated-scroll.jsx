@@ -1,15 +1,41 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { DesktopSectionHeading } from "@/components/home/section-header";
 import { TopRatedProviderCard } from "@/components/home/top-rated-provider-card";
+import { useWebLocale } from "@/hooks/use-web-locale";
 import { cn } from "@/lib/utils";
 
 const VISIBLE = 4;
 const GAP_PX = 20;
 const LOOP_TRACKS = 3;
+
+const FILTERS = [
+  { id: "recommended", labelKey: "prosFilterRecommended" },
+  { id: "available_today", labelKey: "prosFilterAvailableToday" },
+  { id: "online", labelKey: "prosFilterOnline" },
+  { id: "under_1000", labelKey: "prosFilterUnder1000" },
+];
+
+function filterProviders(providers, filterId) {
+  switch (filterId) {
+    case "available_today":
+      return providers.filter(
+        (p) => p.isNearby || (typeof p.distance === "number" && p.distance <= 3),
+      );
+    case "online":
+      return providers.filter((p) => p.serviceModes?.includes("online"));
+    case "under_1000":
+      return providers.filter(
+        (p) => typeof p.startingPrice === "number" && p.startingPrice <= 1000,
+      );
+    case "recommended":
+    default:
+      return providers;
+  }
+}
 
 function getTrackWidth(scroller, itemCount) {
   const child = scroller.children[itemCount];
@@ -49,14 +75,21 @@ function NavButton({ label, onClick, side }) {
 
 /** Desktop-only professionals strip — page scroll of exactly 4 full cards */
 export function DesktopTopRatedScroll({ providers }) {
+  const { t } = useWebLocale();
+  const [activeFilter, setActiveFilter] = useState("recommended");
   const scrollerRef = useRef(null);
   const jumpingRef = useRef(false);
   const settleTimerRef = useRef(null);
   const readyRef = useRef(false);
 
-  const itemCount = providers.length;
+  const filteredProviders = useMemo(() => {
+    const next = filterProviders(providers, activeFilter);
+    return next.length > 0 ? next : providers;
+  }, [providers, activeFilter]);
+
+  const itemCount = filteredProviders.length;
   const loopItems = Array.from({ length: LOOP_TRACKS }, (_, track) =>
-    providers.map((provider) => ({ provider, track })),
+    filteredProviders.map((provider) => ({ provider, track })),
   ).flat();
 
   const tileWidth = `calc((100% - ${(VISIBLE - 1) * GAP_PX}px) / ${VISIBLE})`;
@@ -92,6 +125,8 @@ export function DesktopTopRatedScroll({ providers }) {
     const el = scrollerRef.current;
     if (!el || itemCount === 0) return;
 
+    readyRef.current = false;
+
     const placeInMiddle = () => {
       const trackWidth = getTrackWidth(el, itemCount);
       if (trackWidth <= 0) return;
@@ -125,7 +160,7 @@ export function DesktopTopRatedScroll({ providers }) {
       el.removeEventListener("scrollend", normalizeLoop);
       window.removeEventListener("resize", onResize);
     };
-  }, [itemCount]);
+  }, [itemCount, activeFilter]);
 
   const scrollByPage = (direction) => {
     const el = scrollerRef.current;
@@ -162,7 +197,7 @@ export function DesktopTopRatedScroll({ providers }) {
 
   return (
     <div className="hidden md:block">
-      <div className="mb-2 flex items-end justify-between gap-6">
+      <div className="flex items-end justify-between gap-6">
         <DesktopSectionHeading
           badgeKey="professionalsBadge"
           titleKey="professionalsTitle"
@@ -186,8 +221,36 @@ export function DesktopTopRatedScroll({ providers }) {
       </div>
 
       <div
+        className="mt-5 mb-5 flex flex-wrap items-center gap-2"
+        role="tablist"
+        aria-label={t("prosFilterAria")}
+      >
+        {FILTERS.map((filter) => {
+          const active = activeFilter === filter.id;
+          return (
+            <button
+              key={filter.id}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => setActiveFilter(filter.id)}
+              className={cn(
+                "rounded-full px-5 py-[0.55rem] text-[13px] font-semibold tracking-tight transition-all duration-200",
+                "focus-visible:ring-2 focus-visible:ring-[#1865EA]/30 focus-visible:ring-offset-2 focus-visible:outline-none",
+                active
+                  ? "gradient-brand text-white ring-1 ring-[#1865EA]/35"
+                  : "bg-white text-[#5B6B82] ring-1 ring-[#DCE3EE] hover:bg-[#F5F8FC] hover:text-[#314158] hover:ring-[#C9D6EA]",
+              )}
+            >
+              {t(filter.labelKey)}
+            </button>
+          );
+        })}
+      </div>
+
+      <div
         ref={scrollerRef}
-        className="scrollbar-hide -mx-1 flex overflow-x-auto overscroll-x-contain px-2 pt-2 pb-6"
+        className="scrollbar-hide -mx-1 flex overflow-x-auto overscroll-x-contain px-2 pb-4"
         style={{ gap: GAP_PX }}
       >
         {loopItems.map(({ provider, track }) => (

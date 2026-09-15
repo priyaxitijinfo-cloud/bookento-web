@@ -1,344 +1,241 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Search } from "lucide-react";
 
-import {
-  ROUTES,
-  buildCategoryProviderDetailUrl,
-  categoryListingRoute,
-} from "@/constants/routes.constants";
+import { ROUTES } from "@/constants/routes.constants";
 import { HOME_PAGE_CONTAINER } from "@/lib/layout/page-layout.constants";
-import { getGlobalSearchProviders } from "@/lib/search/search-providers";
-import { useDebounce } from "@/hooks/use-debounce";
 import { useWebLocale } from "@/hooks/use-web-locale";
 import { cn } from "@/lib/utils";
 
-const QUICK_SEARCHES = [
-  { labelKey: "chipHaircut", href: categoryListingRoute("salon") },
-  { labelKey: "chipMassage", href: categoryListingRoute("salon") },
-  { labelKey: "chipHomeCleaning", href: categoryListingRoute("homecare") },
-  { labelKey: "chipPersonalTraining", href: categoryListingRoute("fitness") },
-  { labelKey: "chipTeethCleaning", href: categoryListingRoute("doctor") },
-];
+const AUTO_MS = 4200;
 
-const HERO_SLIDES = [
+/** icons/Rectangle 3464116.svg — slant ≈ atan(90/770) */
+const HERO_SKEW_DEG = 6.67;
+const HERO_PANEL_RADIUS = "1.35rem";
+
+/** Four panels — rightmost is the newly added home-care column */
+const HERO_PANELS = [
   {
-    id: "spa",
-    image: "/images/desktop-hero-spa.png",
-    focus: "object-[center_40%]",
-    eyebrowKey: "heroEyebrow",
-    titleKey: "heroTitle",
-    subtitleKey: "heroSubtitle",
+    id: "healthcare",
+    labelKey: "heroPanelHealthcare",
+    images: [
+      "/images/desktop-hero-health-wellness.jpg",
+      "/images/hero-panel-doctor.png",
+      "/images/desktop-hero-health-hd.jpg",
+    ],
+    focuses: ["object-[60%_35%]", "object-[72%_28%]", "object-[62%_28%]"],
   },
   {
-    id: "salon",
-    image: "/images/desktop-hero-salon-hd.jpg",
-    focus: "object-[72%_38%]",
-    eyebrowKey: "heroSlide2Eyebrow",
-    titleKey: "heroSlide2Title",
-    subtitleKey: "heroSlide2Subtitle",
+    id: "beauty",
+    labelKey: "heroPanelBeauty",
+    images: [
+      "/images/hero-panel-beauty.png",
+      "/images/desktop-hero-salon-hd.jpg",
+      "/images/hero-panel-spa.png",
+    ],
+    focuses: ["object-[70%_30%]", "object-[68%_32%]", "object-[72%_35%]"],
   },
   {
-    id: "health",
-    image: "/images/desktop-hero-health-hd.jpg",
-    focus: "object-[74%_36%]",
-    eyebrowKey: "heroSlide3Eyebrow",
-    titleKey: "heroSlide3Title",
-    subtitleKey: "heroSlide3Subtitle",
+    id: "expert",
+    labelKey: "heroPanelExpert",
+    images: [
+      "/images/hero-panel-consult.png",
+      "/images/hero-panel-fitness.png",
+      "/images/desktop-hero-spa-hd.jpg",
+    ],
+    focuses: ["object-[72%_28%]", "object-[70%_32%]", "object-[65%_30%]"],
   },
   {
     id: "home",
-    image: "/images/desktop-hero-home-hd.jpg",
-    focus: "object-[70%_40%]",
-    eyebrowKey: "heroSlide4Eyebrow",
-    titleKey: "heroSlide4Title",
-    subtitleKey: "heroSlide4Subtitle",
+    labelKey: "heroPanelHome",
+    images: [
+      "/images/desktop-hero-home-hd.jpg",
+      "/images/desktop-hero-spa.png",
+      "/images/desktop-hero-spa.jpg",
+    ],
+    focuses: ["object-[65%_30%]", "object-[70%_35%]", "object-[68%_32%]"],
   },
 ];
 
-const AUTO_MS = 5500;
-const SUGGESTION_LIMIT = 8;
+function HeroImagePanel({ panel, activeIndex, wide }) {
+  const { t } = useWebLocale();
+  const [frame, setFrame] = useState(0);
 
-function filterSuggestions(providers, term) {
-  const query = term.trim().toLowerCase();
-  if (query.length < 1) return [];
+  useEffect(() => {
+    const timer = window.setInterval(
+      () => {
+        setFrame((current) => (current + 1) % panel.images.length);
+      },
+      AUTO_MS + activeIndex * 450,
+    );
+    return () => window.clearInterval(timer);
+  }, [panel.images.length, activeIndex]);
 
-  return providers
-    .filter((provider) => {
-      const name = provider.businessName?.toLowerCase() || "";
-      const specialty = provider.specialty?.toLowerCase() || "";
-      const city = provider.city?.toLowerCase() || "";
-      const categoryName = provider.categoryName?.toLowerCase() || "";
-      return (
-        name.includes(query) ||
-        specialty.includes(query) ||
-        city.includes(query) ||
-        categoryName.includes(query)
-      );
-    })
-    .slice(0, SUGGESTION_LIMIT);
+  return (
+    <div
+      className={cn("relative h-full min-h-0 min-w-0", wide ? "flex-[1.75]" : "flex-1")}
+    >
+      <div
+        className="relative h-full w-full overflow-hidden"
+        style={{
+          borderRadius: HERO_PANEL_RADIUS,
+          transform: `skewX(-${HERO_SKEW_DEG}deg)`,
+        }}
+      >
+        <div
+          className="relative h-full w-[128%]"
+          style={{ transform: `skewX(${HERO_SKEW_DEG}deg) translateX(-11%)` }}
+        >
+          {panel.images.map((src, index) => (
+            <div
+              key={`${panel.id}-${src}`}
+              className={cn(
+                "absolute inset-0 transition-opacity duration-700 ease-in-out",
+                index === frame ? "z-[1] opacity-100" : "z-0 opacity-0",
+              )}
+              aria-hidden={index !== frame}
+            >
+              <Image
+                src={src}
+                alt=""
+                fill
+                priority={activeIndex === 0 && index === 0}
+                unoptimized
+                className={cn("object-cover", panel.focuses[index] || "object-center")}
+                sizes={
+                  wide
+                    ? "(min-width: 1280px) 400px, 36vw"
+                    : "(min-width: 1280px) 240px, 22vw"
+                }
+                draggable={false}
+              />
+            </div>
+          ))}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/50 to-transparent"
+          />
+        </div>
+      </div>
+
+      <span className="pointer-events-none absolute inset-x-0 bottom-5 z-10 flex justify-center">
+        <span className="rounded-full bg-white px-3.5 py-1.5 text-[12px] font-semibold whitespace-nowrap text-[#0F1B2D] shadow-sm">
+          {t(panel.labelKey)}
+        </span>
+      </span>
+    </div>
+  );
 }
 
 /**
- * Desktop discovery hero — 4-slide lifestyle carousel.
+ * Desktop discovery hero — left copy + search, right equal panels with names.
  * Mobile uses UpcomingAppointmentCard instead.
  */
 export function HeroSection({ className }) {
-  const router = useRouter();
-  const wrapRef = useRef(null);
   const { t } = useWebLocale();
+  const router = useRouter();
   const [query, setQuery] = useState("");
-  const [open, setOpen] = useState(false);
-  const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const debouncedQuery = useDebounce(query, 150);
-
-  const providers = useMemo(() => getGlobalSearchProviders(), []);
-  const suggestions = useMemo(
-    () => filterSuggestions(providers, debouncedQuery),
-    [providers, debouncedQuery],
-  );
-
-  const showSuggestions = open && query.trim().length > 0 && suggestions.length > 0;
-  const slide = HERO_SLIDES[active] ?? HERO_SLIDES[0];
+  const [wordIndex, setWordIndex] = useState(0);
 
   useEffect(() => {
-    const onPointerDown = (event) => {
-      if (!wrapRef.current?.contains(event.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", onPointerDown);
-    return () => document.removeEventListener("mousedown", onPointerDown);
+    const timer = window.setInterval(() => {
+      setWordIndex((current) => (current + 1) % HERO_PANELS.length);
+    }, AUTO_MS);
+    return () => window.clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    if (paused || showSuggestions) return undefined;
-    const timer = window.setTimeout(() => {
-      setActive((current) => (current + 1) % HERO_SLIDES.length);
-    }, AUTO_MS);
-    return () => window.clearTimeout(timer);
-  }, [active, paused, showSuggestions]);
+  const activeWord = HERO_PANELS[wordIndex] ?? HERO_PANELS[0];
 
-  const goTo = (index) => {
-    setActive((index + HERO_SLIDES.length) % HERO_SLIDES.length);
-  };
-
-  const handleSearch = (event) => {
-    event.preventDefault();
-    setOpen(false);
-    const term = query.trim();
-    if (term) {
-      router.push(`${ROUTES.SEARCH}?q=${encodeURIComponent(term)}`);
-    } else {
-      router.push(ROUTES.SEARCH);
-    }
-  };
-
-  const suggestionHref = (provider) =>
-    buildCategoryProviderDetailUrl(provider.id, provider.categorySlug, provider);
+  function goSearch(value = query) {
+    const q = value.trim();
+    router.push(q ? `${ROUTES.SEARCH}?q=${encodeURIComponent(q)}` : ROUTES.SEARCH);
+  }
 
   return (
     <section
       className={cn(
-        "relative isolate z-20 w-full",
-        // Desktop hero height (web only)
-        "min-h-[630px] lg:min-h-[662px] xl:min-h-[694px]",
+        "relative isolate z-20 hidden w-full overflow-hidden md:block",
+        "min-h-[680px] bg-white lg:min-h-[720px] xl:min-h-[760px]",
         className,
       )}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      aria-roledescription="carousel"
-      aria-label="Featured services"
+      aria-label={t("heroAria")}
     >
-      {/* Crossfading lifestyle backgrounds */}
-      <div className="absolute inset-0 overflow-hidden">
-        {HERO_SLIDES.map((item, index) => (
-          <div
-            key={item.id}
-            className={cn(
-              "absolute inset-0 transition-opacity duration-700 ease-out",
-              index === active ? "opacity-100" : "opacity-0",
-            )}
-            aria-hidden={index !== active}
-          >
-            <Image
-              src={item.image}
-              alt=""
-              fill
-              priority={index === 0}
-              unoptimized
-              quality={100}
-              className={cn(
-                "object-cover will-change-transform",
-                item.focus || "object-center",
-                index === active && "hero-bg-zoom",
-              )}
-              sizes="100vw"
-              draggable={false}
-            />
-          </div>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(90%_70%_at_100%_0%,rgba(24,101,234,0.06),transparent_55%)]"
+      />
+
+      {/* All panels — same top/bottom inset + same gap */}
+      <div
+        className="absolute top-[15px] right-0 bottom-[15px] left-[4%] z-[1] flex items-stretch gap-5 lg:left-[3%] xl:left-[2%]"
+        aria-hidden
+      >
+        {HERO_PANELS.map((panel, index) => (
+          <HeroImagePanel
+            key={panel.id}
+            panel={panel}
+            activeIndex={index}
+            wide={index === 0}
+          />
         ))}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(90deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.1) 28%, transparent 52%)",
-          }}
-        />
       </div>
 
       <div
         className={cn(
           HOME_PAGE_CONTAINER,
-          "relative z-10 flex h-full min-h-[inherit] flex-col justify-center py-10 md:py-12",
+          "relative z-10 grid h-full min-h-[inherit] items-center lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.4fr)]",
         )}
       >
-        <div className="max-w-xl pt-2 lg:pt-4">
-          <div className="min-h-[10.5rem] lg:min-h-[11.5rem]">
-            <p
-              key={`${slide.id}-eyebrow`}
-              className="text-primary animate-[fade-in_0.45s_ease-out] text-[11px] font-semibold tracking-[0.18em] uppercase"
-            >
-              {t(slide.eyebrowKey)}
-            </p>
-            <h1
-              key={`${slide.id}-title`}
-              className="text-foreground mt-3 animate-[fade-in_0.5s_ease-out] text-[2.35rem] leading-[1.12] font-bold tracking-tight lg:text-[2.85rem] xl:text-[3.15rem]"
-            >
-              {t(slide.titleKey)}
-            </h1>
-            <p
-              key={`${slide.id}-subtitle`}
-              className="mt-4 max-w-md animate-[fade-in_0.55s_ease-out] text-[15px] leading-relaxed text-[#667085] lg:text-base"
-            >
-              {t(slide.subtitleKey)}
-            </p>
-          </div>
-
-          <div ref={wrapRef} className="relative z-50 mt-8 w-full max-w-xl">
-            <form
-              onSubmit={handleSearch}
-              className={cn(
-                "flex w-full items-stretch overflow-hidden rounded-full bg-white shadow-[0_10px_40px_-12px_rgba(15,23,42,0.22)]",
-                "ring-1 ring-[#E8ECF2] transition-[box-shadow,ring-color]",
-                (showSuggestions || open) && "ring-[#D0D5DD]",
-              )}
-            >
-              <label className="flex min-w-0 flex-1 items-center gap-2.5 px-4 py-2.5 sm:px-5">
-                <Search className="size-4 shrink-0 text-[#98A2B3]" aria-hidden />
-                <input
-                  type="search"
-                  name="q"
-                  value={query}
-                  onChange={(event) => {
-                    setQuery(event.target.value);
-                    setOpen(true);
-                  }}
-                  onFocus={() => setOpen(true)}
-                  placeholder={t("heroSearchPlaceholder")}
-                  className="min-w-0 flex-1 bg-transparent text-sm text-[#0F1B2D] outline-none placeholder:text-[#98A2B3]"
-                  aria-label={t("heroSearchPlaceholder")}
-                  aria-autocomplete="list"
-                  aria-expanded={showSuggestions}
-                  autoComplete="off"
-                />
-              </label>
-              <button
-                type="submit"
-                className="gradient-brand m-1.5 inline-flex shrink-0 items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_-6px_rgba(24,101,234,0.45)] transition-opacity hover:opacity-95"
-              >
-                {t("heroSearch")}
-                <ArrowRight className="size-4" aria-hidden />
-              </button>
-            </form>
-
-            {showSuggestions ? (
-              <div
-                role="listbox"
-                className="scrollbar-hide absolute top-[calc(100%+0.5rem)] right-0 left-0 z-50 max-h-72 overflow-y-auto rounded-2xl border border-[#E8ECF2] bg-white shadow-[0_16px_40px_-12px_rgba(15,23,42,0.28)]"
-              >
-                {suggestions.map((provider) => (
-                  <Link
-                    key={`${provider.categorySlug}-${provider.id}`}
-                    href={suggestionHref(provider)}
-                    role="option"
-                    onClick={() => setOpen(false)}
-                    className="hover:bg-accent flex items-center gap-3 border-b border-[#F0F2F5] px-4 py-3 transition-colors last:border-b-0"
-                  >
-                    <span className="relative size-11 shrink-0 overflow-hidden rounded-xl bg-[#F4F7FB]">
-                      <Image
-                        src={
-                          provider.avatar ||
-                          provider.coverImage ||
-                          "/images/app-icon.jpg"
-                        }
-                        alt=""
-                        fill
-                        className="object-cover"
-                        sizes="44px"
-                      />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="text-foreground block truncate text-sm font-semibold">
-                        {provider.businessName}
-                      </span>
-                      <span className="text-muted-foreground mt-0.5 block truncate text-xs">
-                        {[provider.specialty, provider.categoryName]
-                          .filter(Boolean)
-                          .join(" · ")}
-                      </span>
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            ) : null}
-          </div>
-
-          <div className="mt-5 flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-[#98A2B3]">
-              {t("popularLabel")}
+        <div className="relative z-20 flex max-w-xl flex-col justify-center py-10 lg:py-12">
+          <p className="text-[11px] font-semibold tracking-[0.18em] text-[#1865EA] uppercase">
+            {t("heroEyebrow")}
+          </p>
+          <h1 className="mt-3 max-w-[16ch] text-[2.45rem] leading-[1.08] font-bold tracking-tight text-[#0F1B2D] lg:text-[3rem] xl:text-[3.35rem]">
+            <span className="block">
+              {t("heroTitleLead") || "Your home, handled by"}
             </span>
-            {QUICK_SEARCHES.map((item) => (
-              <Link
-                key={item.labelKey}
-                href={item.href}
-                className="hover:border-primary/40 hover:text-primary rounded-full border border-[#E4E7EC] bg-white/80 px-3 py-1.5 text-xs font-medium text-[#475467] backdrop-blur-sm transition-all"
-              >
-                {t(item.labelKey)}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
+            <span className="mt-1 block text-[#1865EA] transition-opacity duration-500">
+              {t(activeWord.labelKey)}.
+            </span>
+          </h1>
+          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-[#667085] lg:text-base">
+            {t("heroSubtitle")}
+          </p>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-3 z-20 flex justify-center md:bottom-4">
-        <div
-          className="pointer-events-auto flex items-center gap-2"
-          role="tablist"
-          aria-label="Hero slides"
-        >
-          {HERO_SLIDES.map((item, index) => (
-            <button
-              key={item.id}
-              type="button"
-              role="tab"
-              aria-selected={index === active}
-              aria-label={`Go to slide ${index + 1}`}
-              onClick={() => goTo(index)}
-              className={cn(
-                "h-2 rounded-full transition-all duration-300",
-                index === active
-                  ? "w-7 bg-[#1865EA]"
-                  : "w-2 bg-white/70 hover:bg-white",
-              )}
+          <form
+            className="mt-8 flex w-full max-w-lg items-center gap-2 rounded-full bg-white/95 py-1.5 pr-1.5 pl-4 shadow-[0_10px_30px_rgba(15,27,45,0.10)] ring-1 ring-[#E8EDF5] backdrop-blur-sm"
+            onSubmit={(event) => {
+              event.preventDefault();
+              goSearch();
+            }}
+          >
+            <Search
+              className="size-4 shrink-0 text-[#98A2B3]"
+              strokeWidth={2.2}
+              aria-hidden
             />
-          ))}
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={t("heroSearchPlaceholder")}
+              className="min-w-0 flex-1 bg-transparent text-[14px] text-[#0F1B2D] outline-none placeholder:text-[#98A2B3]"
+              aria-label={t("heroSearchPlaceholder")}
+            />
+            <button
+              type="submit"
+              className="gradient-brand inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2.5 text-[13px] font-semibold text-white transition-opacity hover:opacity-95"
+            >
+              {t("heroSearch")}
+              <ArrowRight className="size-3.5" strokeWidth={2.4} aria-hidden />
+            </button>
+          </form>
         </div>
+
+        <div className="hidden lg:block" aria-hidden />
       </div>
     </section>
   );

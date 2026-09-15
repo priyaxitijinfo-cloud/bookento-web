@@ -46,7 +46,7 @@ export function ServicePromoCard({
       href={href}
       className={cn(
         "relative flex min-h-[11.5rem] flex-1 overflow-hidden rounded-[1.65rem]",
-        "shadow-[0_14px_30px_-20px_rgba(15,27,45,0.3)] ring-1",
+        "ring-1",
         "focus-visible:ring-2 focus-visible:ring-[#1865EA]/40 focus-visible:ring-offset-2 focus-visible:outline-none",
         style.bg,
         style.ring,

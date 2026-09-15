@@ -78,10 +78,10 @@ export function FeaturePromoBanner({ className }) {
       </div>
 
       {/* Cards grid */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)] md:gap-5">
-        <HeroCard className="min-h-[22rem] lg:min-h-[26rem]" />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)] md:items-stretch md:gap-5">
+        <HeroCard className="min-h-[22rem] md:aspect-[806/472] md:h-auto md:min-h-0" />
 
-        <div className="flex flex-col gap-4 md:min-h-[22rem] lg:min-h-[26rem] lg:gap-5">
+        <div className="flex flex-col gap-4 md:h-full lg:gap-5">
           <ServicePromoCard
             href={categoryListingRoute("doctor")}
             tone="doctor"
@@ -90,6 +90,7 @@ export function FeaturePromoBanner({ className }) {
             description={t("promoDoctorBody")}
             backgroundImage="/images/promo-doctor-banner-v2.png"
             backgroundPosition="object-[78%_center]"
+            className="md:flex-1"
             illustration={
               <DoctorIllustration className="h-[95%] w-auto max-w-none translate-x-2" />
             }
@@ -102,6 +103,7 @@ export function FeaturePromoBanner({ className }) {
             description={t("promoSalonBody")}
             backgroundImage="/images/promo-salon-banner-v2.png"
             backgroundPosition="object-[82%_center]"
+            className="md:flex-1"
             illustration={
               <SalonIllustration className="h-[95%] w-auto max-w-none translate-x-2" />
             }
