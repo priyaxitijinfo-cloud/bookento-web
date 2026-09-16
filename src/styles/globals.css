@@ -455,6 +455,108 @@
   }
 }
 
+@keyframes hero-word-mark-in {
+  from {
+    opacity: 0;
+    transform: scaleX(0.35);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes hero-word-caret-blink {
+  0%,
+  48% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.hero-word-in {
+  position: relative;
+  display: inline-block;
+  min-width: 3ch;
+  padding-bottom: 0.1rem;
+  transition: color 0.35s ease;
+}
+
+.hero-word-typed {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.hero-word-gradient {
+  background-size: 100% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.hero-word-caret {
+  display: inline-block;
+  width: 0.11em;
+  height: 0.88em;
+  margin-left: 0.05em;
+  vertical-align: -0.06em;
+  border-radius: 1px;
+  animation: hero-word-caret-blink 0.75s steps(1) infinite;
+}
+
+.hero-word-caret--hide {
+  animation: none;
+  opacity: 0;
+  width: 0;
+  margin: 0;
+}
+
+.hero-word-mark-wrap {
+  display: block;
+  margin-top: 0.28rem;
+  min-height: 0.55rem;
+  opacity: 0;
+  transform: scaleX(0.35);
+  transform-origin: left center;
+  transition: none;
+}
+
+.hero-word-mark-wrap--show {
+  animation: hero-word-mark-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-word-mark {
+  display: block;
+  overflow: visible;
+  transform-origin: left center;
+}
+
+.hero-word-mark--line {
+  width: 4.5rem;
+  height: 0.28rem;
+  border-radius: 999px;
+}
+
+.hero-word-mark--curve,
+.hero-word-mark--brush,
+.hero-word-mark--wave,
+.hero-word-mark--dots,
+.hero-word-mark--zigzag,
+.hero-word-mark--double,
+.hero-word-mark--arc {
+  width: 5.75rem;
+  height: 0.7rem;
+}
+
+.hero-word-mark--dots {
+  width: 4.75rem;
+}
+
 @keyframes testimonial-marquee {
   from {
     transform: translateX(0);

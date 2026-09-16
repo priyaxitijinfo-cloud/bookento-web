@@ -9,7 +9,7 @@ import { useWebLocale } from "@/hooks/use-web-locale";
 import { cn } from "@/lib/utils";
 
 /** icons/Rectangle 3464120.svg — soft diagonal media frame */
-const MEDIA_CLIP = "polygon(16% 0%, 100% 0%, 100% 100%, 0% 100%)";
+const MEDIA_CLIP = "polygon(8% 0%, 100% 0%, 100% 100%, 0% 100%)";
 
 const POINTS = [
   { icon: ShieldCheck, key: "onlineConsultTrust1Title" },
@@ -35,7 +35,7 @@ export function OnlineConsultationsBanner({ className }) {
       )}
     >
       <div className="relative overflow-hidden bg-[#0B1B32]">
-        <div className="relative grid min-h-[22rem] lg:min-h-[26rem] lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.12fr)] xl:min-h-[28rem]">
+        <div className="relative grid min-h-[22rem] md:min-h-[28rem] lg:min-h-[30rem] lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.28fr)] xl:min-h-[32rem]">
           {/* Copy — navy panel */}
           <div
             className={cn(
@@ -43,7 +43,7 @@ export function OnlineConsultationsBanner({ className }) {
               "px-9 py-12 md:px-[4.875rem] lg:py-14 xl:px-[5.875rem] xl:py-16",
             )}
           >
-            <div className="max-w-xl">
+            <div className="max-w-xl md:translate-x-10">
               <p className="text-[11px] font-semibold tracking-[0.18em] text-[#7EB6FF] uppercase">
                 {t("onlineConsultEyebrow")}
               </p>

@@ -31,40 +31,18 @@ export function FeaturePromoBanner({ className }) {
             <span className="font-script text-[1.15em] font-semibold text-[#1865EA] md:hidden">
               {highlight}
             </span>
-            {/* Desktop: SVG gradient — aligned to title baseline */}
-            <svg
-              className="font-script hidden h-[1.05em] shrink-0 overflow-visible md:block"
-              style={{ width: `${Math.max(highlight.length * 0.52, 2.2)}em` }}
-              viewBox={`0 0 ${Math.max(highlight.length * 34, 100)} 58`}
-              role="img"
+            {/* Desktop: larger gradient script — extra end pad so “?” isn’t clipped by bg-clip-text */}
+            <span
+              className={cn(
+                "font-script hidden overflow-visible font-semibold md:inline-block",
+                "bg-gradient-to-r from-[#1865EA] via-[#DD2590] to-[#FF6B4A]",
+                "bg-clip-text text-transparent",
+                "pr-[0.28em] pb-[0.12em] text-[1.55em] leading-none lg:text-[1.65em]",
+              )}
               aria-label={highlight}
-              preserveAspectRatio="xMinYMid meet"
             >
-              <defs>
-                <linearGradient
-                  id="promo-today-gradient"
-                  x1="0%"
-                  y1="0%"
-                  x2="100%"
-                  y2="0%"
-                >
-                  <stop offset="0%" stopColor="#1865EA" />
-                  <stop offset="40%" stopColor="#7A5AF8" />
-                  <stop offset="75%" stopColor="#DD2590" />
-                  <stop offset="100%" stopColor="#FF6B4A" />
-                </linearGradient>
-              </defs>
-              <text
-                x="4"
-                y="46"
-                fill="url(#promo-today-gradient)"
-                fontFamily="var(--font-caveat), Caveat, cursive"
-                fontSize="52"
-                fontWeight="600"
-              >
-                {highlight}
-              </text>
-            </svg>
+              {highlight}
+            </span>
           </h2>
         </div>
         <p className="inline-flex items-center gap-1.5 text-sm font-medium text-[#5B6B82]">

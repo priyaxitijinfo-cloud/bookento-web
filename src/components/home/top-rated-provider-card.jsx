@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { CalendarClock, Star } from "lucide-react";
 
+import { HeroHeartIcon } from "@/components/icons/hero-nav-icons";
 import { Card } from "@/components/ui/card";
 import {
   buildCategoryProviderDetailUrl,
@@ -91,14 +92,7 @@ export function TopRatedProviderCard({
               "focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:outline-none",
             )}
           >
-            <Image
-              src="/icons/Heart.svg"
-              alt=""
-              width={16}
-              height={16}
-              className="size-4"
-              aria-hidden
-            />
+            <HeroHeartIcon tone="hero" className="size-[18px]" />
           </button>
         </div>
 

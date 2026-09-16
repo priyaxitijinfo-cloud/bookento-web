@@ -93,7 +93,11 @@ function DesktopPopularServiceTile({ service, title, href, imageFocus }) {
             className="absolute top-3 right-3 z-10 flex size-9 items-center justify-center rounded-full bg-black/25 text-white backdrop-blur-md transition-colors hover:bg-black/35"
             onClick={handleToggleSave}
           >
-            <HeroHeartIcon tone="hero" filled={isSaved} className="size-4" />
+            <HeroHeartIcon
+              tone="hero"
+              filled={isSaved}
+              className="size-4 md:size-[18px]"
+            />
           </button>
         </div>
 

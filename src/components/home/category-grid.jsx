@@ -4,7 +4,12 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
-import { HOME_CATEGORIES } from "@/constants/home-categories";
+import {
+  HOME_CATEGORIES,
+  HOME_CATEGORY_ACCENTS,
+  lightenHex,
+  shadeHex,
+} from "@/constants/home-categories";
 import { CategoryItem, MoreCategoryItem } from "@/components/home/category-item";
 import { categoryListingRoute } from "@/constants/routes.constants";
 import { useWebLocale } from "@/hooks/use-web-locale";
@@ -63,23 +68,7 @@ const CATEGORY_DESC_KEYS = {
 };
 
 /** Desktop-only unique hues — no adjacent / duplicate card colors */
-const DESKTOP_CATEGORY_COLORS = {
-  doctor: "#37B8FF",
-  salon: "#FF4766",
-  fitness: "#5EB12D",
-  tutoring: "#FFAF2A",
-  "pet-care": "#6357FF",
-  homecare: "#E046FF",
-  "kids-care": "#FF37B8",
-  plumbing: "#C47A1A",
-  automotive: "#3B82F6",
-  gardening: "#10B981",
-  cooking: "#0EA5E9",
-  events: "#14B8A6",
-  carpenter: "#A16207",
-  renovation: "#F97316",
-  shooting: "#D946EF",
-};
+const DESKTOP_CATEGORY_COLORS = HOME_CATEGORY_ACCENTS;
 
 function getDesktopCategoryIconSrc(slug) {
   return `/icons/categories/${slug}.svg`;
@@ -89,24 +78,6 @@ function getTrackWidth(scroller) {
   const child = scroller.children[HOME_CATEGORIES.length];
   if (!child) return 0;
   return child.offsetLeft - scroller.children[0].offsetLeft;
-}
-
-function shadeHex(hex, amount) {
-  const raw = hex.replace("#", "");
-  const channel = (start) => parseInt(raw.slice(start, start + 2), 16);
-  const r = Math.round(channel(0) * (1 - amount));
-  const g = Math.round(channel(2) * (1 - amount));
-  const b = Math.round(channel(4) * (1 - amount));
-  return `#${[r, g, b].map((n) => n.toString(16).padStart(2, "0")).join("")}`;
-}
-
-function lightenHex(hex, mix = 0.88) {
-  const raw = hex.replace("#", "");
-  const channel = (start) => parseInt(raw.slice(start, start + 2), 16);
-  const blend = (c) => Math.round(c + (255 - c) * mix);
-  return `#${[blend(channel(0)), blend(channel(2)), blend(channel(4))]
-    .map((n) => n.toString(16).padStart(2, "0"))
-    .join("")}`;
 }
 
 function CategoryIconMask({ slug, size, className, style }) {
