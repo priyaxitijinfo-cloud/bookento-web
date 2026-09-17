@@ -50,7 +50,7 @@ export function PageLoader() {
 /** Desktop home wireframe while mock/API content settles */
 export function HomePageSkeleton() {
   return (
-    <div className="hidden space-y-[70px] md:block" aria-hidden>
+    <div className="hidden space-y-[50px] md:block" aria-hidden>
       {/* Categories */}
       <section className="space-y-5">
         <div className="space-y-2">

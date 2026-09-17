@@ -79,8 +79,8 @@ export function FeaturePromoBanner({ className }) {
             eyebrow={t("promoSalonEyebrow")}
             title={t("promoSalonTitle")}
             description={t("promoSalonBody")}
-            backgroundImage="/images/promo-salon-banner-v2.png"
-            backgroundPosition="object-[82%_center]"
+            backgroundImage="/images/promo-salon-banner-v5.png"
+            backgroundPosition="object-[70%_center]"
             className="md:flex-1"
             illustration={
               <SalonIllustration className="h-[95%] w-auto max-w-none translate-x-2" />

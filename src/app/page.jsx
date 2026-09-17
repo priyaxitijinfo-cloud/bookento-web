@@ -114,7 +114,7 @@ export default function HomePage() {
       <main
         className={cn(
           HOME_PAGE_CONTAINER,
-          "relative z-10 space-y-8 pt-4 pb-4 md:mt-[70px] md:space-y-[70px] md:pt-0 md:pb-0",
+          "relative z-10 space-y-8 pt-4 pb-4 md:mt-[50px] md:space-y-[50px] md:pt-0 md:pb-0",
         )}
       >
         <div className="md:hidden">

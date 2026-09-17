@@ -84,21 +84,21 @@ function ReelPanel({ reel, play, isCenter, onPause, popularBadge, suppressClickR
         className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/25"
       />
 
-      <div className="absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-2 p-2.5">
-        <div className="min-w-0">
-          {reel.isPopular ? (
-            <span className="inline-flex rounded-full bg-white/15 px-2 py-0.5 text-[9px] font-semibold text-white backdrop-blur-md">
-              {popularBadge}
-            </span>
-          ) : null}
-        </div>
-        <span className="inline-flex items-center gap-1 rounded-full bg-black/35 px-1.5 py-0.5 text-[9px] font-medium text-white backdrop-blur-md">
-          <Eye className="size-2.5" aria-hidden />
+      <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-2 p-2.5">
+        {reel.isPopular ? (
+          <span className="inline-flex h-[19px] items-center rounded-full bg-white/15 px-2 text-[9px] leading-none font-semibold text-white backdrop-blur-md">
+            {popularBadge}
+          </span>
+        ) : (
+          <span aria-hidden className="h-[19px]" />
+        )}
+        <span className="inline-flex h-[19px] items-center gap-1 rounded-full bg-black/35 px-1.5 text-[9px] leading-none font-medium text-white backdrop-blur-md">
+          <Eye className="size-2.5 shrink-0" aria-hidden />
           {formatCompactNumber(reel.views || 0)}
         </span>
       </div>
 
-      <div className="absolute top-[34%] right-1.5 z-10 flex flex-col items-center gap-2.5">
+      <div className="absolute top-[44%] right-1.5 z-10 flex flex-col items-center gap-2.5">
         <div className="flex flex-col items-center gap-0.5">
           <span className="inline-flex size-7 items-center justify-center rounded-full bg-black/30 backdrop-blur-md">
             <Heart className="size-3.5 text-white" aria-hidden />
@@ -296,8 +296,8 @@ export function VideosShowcase({ className }) {
         />
 
         <div className="relative mx-auto w-full max-w-[calc(96rem-60px)] px-[4.875rem] py-9 xl:px-[5.875rem] xl:py-11">
-          <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.35fr)] lg:gap-10 xl:gap-14">
-            <div className="max-w-md">
+          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-8 xl:gap-10">
+            <div className="flex w-full max-w-none flex-col lg:pr-2">
               <div className="flex items-center gap-3">
                 <span aria-hidden className="h-px w-10 bg-[#C9D3E2]" />
                 <span className="text-[12px] font-semibold tracking-[0.22em] text-[#1865EA] uppercase">
@@ -305,22 +305,25 @@ export function VideosShowcase({ className }) {
                 </span>
               </div>
 
-              <h2 className="mt-4 text-[calc(2.15rem-4px)] leading-[1.08] font-bold tracking-tight text-[#0F1B2D] lg:text-[2.5rem]">
+              <h2 className="mt-4 max-w-xl text-[calc(2.15rem-4px)] leading-[1.08] font-bold tracking-tight text-[#0F1B2D] lg:text-[2.5rem]">
                 {t("videosTitle")}
                 <span className="mt-1 block bg-[linear-gradient(105deg,#1865EA_0%,#58A1FF_100%)] bg-clip-text text-transparent">
                   {t("videosHighlight")}
                 </span>
               </h2>
 
-              <p className="mt-3 text-[15px] leading-relaxed text-[#667085]">
+              <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-[#667085] lg:text-[15.5px]">
                 {t("videosBody")}
               </p>
 
-              <ul className="mt-6 space-y-3.5">
+              <ul className="mt-6 grid w-[calc(100%-12px)] gap-3 sm:grid-cols-1 xl:gap-3.5">
                 {videoPoints.map((point) => {
                   const Icon = point.icon;
                   return (
-                    <li key={point.title} className="flex gap-3">
+                    <li
+                      key={point.title}
+                      className="flex gap-3 rounded-2xl bg-white/70 px-3.5 py-3 ring-1 ring-[#E8EDF5]"
+                    >
                       <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#EAF1FF] text-[#1865EA] ring-1 ring-[#D6E4FF]">
                         <Icon className="size-4" strokeWidth={2.1} aria-hidden />
                       </span>
@@ -340,7 +343,7 @@ export function VideosShowcase({ className }) {
               <Link
                 href={ALL_REELS_HREF}
                 className={cn(
-                  "gradient-brand mt-7 inline-flex items-center gap-2 rounded-full px-5 py-2.5",
+                  "gradient-brand mt-7 inline-flex w-fit items-center gap-2 rounded-full px-5 py-2.5",
                   "text-sm font-semibold text-white transition-opacity hover:opacity-95",
                 )}
               >
@@ -352,11 +355,10 @@ export function VideosShowcase({ className }) {
             <div
               ref={stageRef}
               className={cn(
-                "relative ml-auto min-w-0 overflow-hidden py-6",
-                "[--gap:1.15rem] [--panel:14.5rem] xl:[--gap:1.35rem] xl:[--panel:15.75rem]",
-                "w-[calc(var(--panel)*2.2+var(--gap)*2)] max-w-full",
-                "[mask-image:linear-gradient(90deg,transparent_0%,#000_12%,#000_88%,transparent_100%)]",
-                "[-webkit-mask-image:linear-gradient(90deg,transparent_0%,#000_12%,#000_88%,transparent_100%)]",
+                "relative w-full min-w-0 overflow-hidden py-6",
+                "[--gap:1.15rem] [--panel:15rem] xl:[--gap:1.35rem] xl:[--panel:16.5rem]",
+                "[mask-image:linear-gradient(90deg,transparent_0%,#000_10%,#000_90%,transparent_100%)]",
+                "[-webkit-mask-image:linear-gradient(90deg,transparent_0%,#000_10%,#000_90%,transparent_100%)]",
                 dragging ? "cursor-grabbing" : "cursor-grab",
               )}
               onMouseEnter={() => setPaused(true)}

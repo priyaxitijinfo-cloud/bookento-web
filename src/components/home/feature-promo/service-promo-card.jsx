@@ -63,6 +63,7 @@ export function ServicePromoCard({
             src={backgroundImage}
             alt=""
             fill
+            unoptimized
             className={cn("object-cover", backgroundPosition)}
             sizes="(min-width: 768px) 28vw, 0px"
             priority={false}

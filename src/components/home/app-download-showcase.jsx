@@ -65,22 +65,81 @@ export function AppDownloadShowcase({ className }) {
           "bg-[#F0F7FF] ring-1 ring-[#D7E8FA]",
         )}
       >
-        {/* Soft wave atmosphere */}
+        {/* Background design — same blue palette */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.55]"
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage: [
+              "radial-gradient(ellipse 75% 60% at 8% 15%, rgba(24,101,234,0.13), transparent 58%)",
+              "radial-gradient(ellipse 55% 50% at 92% 20%, rgba(88,161,255,0.14), transparent 55%)",
+              "radial-gradient(ellipse 60% 55% at 78% 95%, rgba(24,101,234,0.1), transparent 62%)",
+              "radial-gradient(ellipse 45% 40% at 35% 85%, rgba(215,232,250,0.9), transparent 70%)",
+            ].join(", "),
+          }}
+        />
+
+        {/* Soft wave arcs */}
+        <svg
+          aria-hidden
+          className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.45]"
+          viewBox="0 0 1200 420"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M-40 210 C180 120, 320 300, 520 210 S860 90, 1240 200"
+            fill="none"
+            stroke="rgba(24,101,234,0.14)"
+            strokeWidth="1.5"
+          />
+          <path
+            d="M-40 255 C220 165, 360 330, 560 245 S900 140, 1240 250"
+            fill="none"
+            stroke="rgba(88,161,255,0.16)"
+            strokeWidth="1.5"
+          />
+          <path
+            d="M-40 300 C200 220, 400 360, 620 290 S940 190, 1240 300"
+            fill="none"
+            stroke="rgba(215,232,250,0.95)"
+            strokeWidth="18"
+            strokeLinecap="round"
+          />
+        </svg>
+
+        {/* Dot texture */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.22]"
           style={{
             backgroundImage:
-              "radial-gradient(ellipse 120% 60% at 20% 0%, rgba(88,161,255,0.16), transparent 55%), radial-gradient(ellipse 90% 50% at 90% 100%, rgba(122,90,248,0.1), transparent 50%)",
+              "radial-gradient(circle at 1px 1px, rgba(24,101,234,0.28) 1px, transparent 0)",
+            backgroundSize: "20px 20px",
+            maskImage:
+              "linear-gradient(110deg, transparent 0%, #000 20%, #000 55%, transparent 85%)",
+            WebkitMaskImage:
+              "linear-gradient(110deg, transparent 0%, #000 20%, #000 55%, transparent 85%)",
           }}
+        />
+
+        {/* Light blotches */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-16 left-[18%] size-56 rounded-full bg-white/50 blur-3xl"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-[18%] h-24 opacity-[0.35]"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(100deg, transparent 0 18px, rgba(255,255,255,0.55) 18px 19px, transparent 19px 40px)",
-          }}
+          className="pointer-events-none absolute right-[8%] bottom-[-12%] h-[62%] w-[38%] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(88,161,255,0.2)_0%,transparent_70%)] blur-2xl"
+        />
+
+        {/* Corner rings */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-14 -left-14 size-48 rounded-full border border-[#1865EA]/10"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-8 -left-8 size-32 rounded-full border border-[#58A1FF]/15"
         />
 
         <p
@@ -102,7 +161,9 @@ export function AppDownloadShowcase({ className }) {
           <div className="max-w-lg pb-10 lg:pb-11">
             <h2 className="text-[2.35rem] leading-[1.08] font-bold tracking-tight text-[#0F1B2D] lg:text-[2.75rem]">
               <span className="block">{t("appTitle1")}</span>
-              <span className="mt-1 block text-[#1865EA]">{t("appTitle2")}</span>
+              <span className="mt-1 block bg-[linear-gradient(105deg,#1865EA_0%,#7A5AF8_52%,#DD2590_100%)] bg-clip-text text-transparent">
+                {t("appTitle2")}
+              </span>
             </h2>
 
             <p className="mt-4 max-w-md text-[15px] leading-relaxed text-[#5B6B82]">

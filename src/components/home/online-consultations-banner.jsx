@@ -103,7 +103,7 @@ export function OnlineConsultationsBanner({ className }) {
               />
             </div>
 
-            {/* Video chip — speech bubble */}
+            {/* Consult chip — speech bubble */}
             <div
               className={cn(
                 "online-consult-float absolute top-[16%] left-[18%] z-20 lg:left-[20%]",

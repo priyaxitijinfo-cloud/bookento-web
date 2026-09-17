@@ -5,10 +5,11 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Search } from "lucide-react";
 
-import { ROUTES } from "@/constants/routes.constants";
+import { ROUTES, categoryListingRoute } from "@/constants/routes.constants";
 import { getHomeCategoryGradient, HOME_CATEGORIES } from "@/constants/home-categories";
 import { useWebLocale } from "@/hooks/use-web-locale";
 import { cn } from "@/lib/utils";
+import { useRecentSearchesStore } from "@/store";
 
 const HOLD_AFTER_TYPE_MS = 2200;
 const TYPE_STEP_MS = 85;
@@ -170,8 +171,13 @@ const HERO_SLIDES = [
 ];
 
 const HERO_SLIDE_COUNT = HERO_SLIDES.length;
-const HERO_SLIDE_MS = 4200;
 const HERO_PANEL_COUNT = 3;
+/** Pause after the 3rd panel finishes before starting the next round */
+const HERO_HOLD_MS = 2600;
+/** Wait after one panel changes before the next panel changes */
+const HERO_STAGGER_MS = 1800;
+/** Change order: first → last → center (not left-to-right) */
+const HERO_PANEL_ORDER = [0, 2, 1];
 
 function HeroMarkGradient({ id, stops }) {
   return (
@@ -452,7 +458,7 @@ function HeroImagePanel({ panelIndex, shortTop, frame }) {
           aria-hidden
           className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-28 bg-gradient-to-t from-black/50 to-transparent"
         />
-        <span className="pointer-events-none absolute inset-x-0 bottom-5 z-10 flex justify-center">
+        <span className="pointer-events-none absolute inset-x-0 bottom-5 z-10 flex justify-end pr-4">
           <span
             key={activeSlide.labelKey}
             className="rounded-full bg-white px-3.5 py-1.5 text-[12px] font-semibold whitespace-nowrap text-[#0F1B2D] shadow-sm transition-opacity duration-500"
@@ -473,19 +479,62 @@ function HeroImagePanel({ panelIndex, shortTop, frame }) {
 export function HeroSection({ className }) {
   const { t } = useWebLocale();
   const router = useRouter();
+  const addRecentSearch = useRecentSearchesStore((state) => state.addSearch);
   const [query, setQuery] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
-  const [slideFrame, setSlideFrame] = useState(0);
+  const [panelFrames, setPanelFrames] = useState(() =>
+    Array.from({ length: HERO_PANEL_COUNT }, () => 0),
+  );
 
   const advanceWord = useCallback(() => {
     setWordIndex((current) => (current + 1) % HERO_WORDS.length);
   }, []);
 
+  // One panel at a time: 1st → wait → 2nd → wait → 3rd → hold → repeat
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      setSlideFrame((current) => (current + 1) % HERO_SLIDE_COUNT);
-    }, HERO_SLIDE_MS);
-    return () => window.clearInterval(timer);
+    let cancelled = false;
+    let timeoutId = 0;
+
+    const wait = (ms) =>
+      new Promise((resolve) => {
+        timeoutId = window.setTimeout(resolve, ms);
+      });
+
+    const run = async () => {
+      let frame = 0;
+      await wait(HERO_HOLD_MS);
+      if (cancelled) return;
+
+      while (!cancelled) {
+        const nextFrame = (frame + 1) % HERO_SLIDE_COUNT;
+
+        for (let step = 0; step < HERO_PANEL_ORDER.length; step += 1) {
+          if (cancelled) return;
+          const panel = HERO_PANEL_ORDER[step];
+
+          setPanelFrames((prev) => {
+            const next = [...prev];
+            next[panel] = nextFrame;
+            return next;
+          });
+
+          // Wait before changing the next panel (not all at once)
+          if (step < HERO_PANEL_ORDER.length - 1) {
+            await wait(HERO_STAGGER_MS);
+          }
+        }
+
+        frame = nextFrame;
+        await wait(HERO_HOLD_MS);
+      }
+    };
+
+    run();
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeoutId);
+    };
   }, []);
 
   const activeWord = HERO_WORDS[wordIndex] ?? HERO_WORDS[0];
@@ -495,7 +544,28 @@ export function HeroSection({ className }) {
 
   function goSearch(value = query) {
     const q = value.trim();
-    router.push(q ? `${ROUTES.SEARCH}?q=${encodeURIComponent(q)}` : ROUTES.SEARCH);
+    if (!q) {
+      router.push(ROUTES.SEARCH);
+      return;
+    }
+
+    addRecentSearch(q);
+
+    const needle = q.toLowerCase();
+    const matchedCategory = HOME_CATEGORIES.find(
+      (category) =>
+        category.slug === needle ||
+        category.name.toLowerCase() === needle ||
+        category.name.toLowerCase().includes(needle) ||
+        needle.includes(category.name.toLowerCase()),
+    );
+
+    if (matchedCategory && needle.length >= 3) {
+      router.push(categoryListingRoute(matchedCategory.slug));
+      return;
+    }
+
+    router.push(`${ROUTES.SEARCH}?q=${encodeURIComponent(q)}`);
   }
 
   return (
@@ -516,7 +586,7 @@ export function HeroSection({ className }) {
         )}
       >
         {/* Left — denser copy block, fills the column */}
-        <div className="relative z-20 flex w-full max-w-xl flex-col justify-center py-10 pr-2 lg:py-12 lg:pr-4">
+        <div className="relative z-30 flex w-full max-w-xl flex-col justify-center py-10 pr-2 lg:py-12 lg:pr-4">
           <p className="text-[12px] font-semibold tracking-[0.2em] text-[#1865EA] uppercase">
             {t("heroEyebrow")}
           </p>
@@ -540,11 +610,12 @@ export function HeroSection({ className }) {
           </p>
 
           <form
-            className="mt-9 flex w-full max-w-md items-center gap-2 rounded-full bg-white py-2 pr-2 pl-5 shadow-[0_12px_32px_rgba(15,27,45,0.12)] ring-1 ring-[#E8EDF5]"
+            className="relative z-30 mt-9 flex w-full max-w-md items-center gap-2 rounded-full bg-white py-2 pr-2 pl-5 shadow-[0_12px_32px_rgba(15,27,45,0.12)] ring-1 ring-[#E8EDF5]"
             onSubmit={(event) => {
               event.preventDefault();
               goSearch();
             }}
+            role="search"
           >
             <Search
               className="size-[18px] shrink-0 text-[#98A2B3]"
@@ -553,11 +624,14 @@ export function HeroSection({ className }) {
             />
             <input
               type="search"
+              name="q"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={t("heroSearchPlaceholder")}
               className="min-w-0 flex-1 bg-transparent text-[15px] text-[#0F1B2D] outline-none placeholder:text-[#98A2B3]"
               aria-label={t("heroSearchPlaceholder")}
+              autoComplete="off"
+              enterKeyHint="search"
             />
             <button
               type="submit"
@@ -569,13 +643,13 @@ export function HeroSection({ className }) {
           </form>
         </div>
 
-        {/* Right — flush to viewport right */}
-        <div className="relative -ml-[260px] flex h-full min-h-[inherit] w-[calc(100%+260px)] items-stretch gap-4 py-5 lg:py-6">
+        {/* Right — flush to viewport right (no pointer capture over left copy) */}
+        <div className="pointer-events-none relative -ml-[260px] flex h-full min-h-[inherit] w-[calc(100%+260px)] items-stretch gap-4 py-5 lg:py-6">
           {Array.from({ length: HERO_PANEL_COUNT }, (_, index) => (
             <HeroImagePanel
               key={`hero-panel-${index}`}
               panelIndex={index}
-              frame={slideFrame}
+              frame={panelFrames[index] ?? 0}
               shortTop={index === HERO_PANEL_COUNT - 1}
             />
           ))}
