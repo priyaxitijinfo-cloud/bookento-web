@@ -130,6 +130,7 @@ export default function HomePage() {
             badgeKey="servicesBadge"
             titleKey="servicesTitle"
             highlightKey="servicesHighlight"
+            className="mb-3"
           />
           <CategoryGrid />
         </section>

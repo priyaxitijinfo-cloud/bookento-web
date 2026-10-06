@@ -144,15 +144,15 @@ export function AppDownloadShowcase({ className }) {
 
         <p
           className={cn(
-            "font-script absolute top-6 right-8 z-20 hidden max-w-[9rem] text-right text-[1.55rem] leading-tight font-semibold text-[#1B3A5F] lg:block",
+            "font-script absolute top-5 right-7 z-20 hidden max-w-[11rem] -translate-x-1 text-right text-[1.9rem] leading-[1.15] font-semibold text-[#1B3A5F] lg:block",
           )}
         >
           {t("appScript1")}
-          <span className="relative mt-0.5 block">
+          <span className="relative mt-1 block">
             {t("appScript2")}
             <span
               aria-hidden
-              className="absolute right-0 -bottom-1 left-[10%] h-[0.32rem] rounded-full bg-[#C6F405]"
+              className="absolute right-0 -bottom-1 left-[8%] h-[0.38rem] rounded-full bg-[#C6F405]"
             />
           </span>
         </p>
@@ -192,7 +192,7 @@ export function AppDownloadShowcase({ className }) {
             className="relative flex h-full min-h-[18rem] items-end justify-center lg:min-h-[20rem]"
             aria-hidden
           >
-            <div className="relative mb-[-180px] w-full max-w-[26rem] drop-shadow-[0_22px_40px_rgba(24,101,234,0.18)] lg:max-w-[28rem]">
+            <div className="relative mb-[-180px] w-full max-w-[26rem] -translate-x-10 -translate-y-2.5 drop-shadow-[0_22px_40px_rgba(24,101,234,0.18)] lg:max-w-[28rem] lg:-translate-x-14">
               <Image
                 src="/images/app-mockups/app-phones.png"
                 alt=""

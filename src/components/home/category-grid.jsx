@@ -311,7 +311,7 @@ function DesktopCategoryScroll() {
 
       <div
         ref={scrollerRef}
-        className="scrollbar-hide flex overflow-x-auto overscroll-x-contain px-1 py-7"
+        className="scrollbar-hide flex overflow-x-auto overscroll-x-contain px-1 pt-3 pb-7"
         style={{ gap: DESKTOP_GAP_PX }}
       >
         {loopItems.map(({ category, track }) => (

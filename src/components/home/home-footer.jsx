@@ -2,181 +2,225 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
 
 import { categoryListingRoute, ROUTES } from "@/constants/routes.constants";
 import { useWebLocale } from "@/hooks/use-web-locale";
 import { HOME_PAGE_CONTAINER } from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
 
-const COMPANY_LINKS = [
-  { href: ROUTES.HOME, labelKey: "footerAbout" },
-  { href: ROUTES.SERVICES, labelKey: "footerServices" },
-  { href: ROUTES.PROVIDERS, labelKey: "footerProfessionals" },
-  { href: ROUTES.PROVIDER_REGISTER, labelKey: "footerBecomeProvider" },
-  { href: ROUTES.HELP, labelKey: "footerHelp" },
+const EXPLORE_LINKS = [
+  { slug: "doctor", labelKey: "footerExploreDoctors" },
+  { slug: "salon", labelKey: "footerExploreSalon" },
+  { slug: "homecare", labelKey: "footerExploreHomecare" },
+  { slug: "fitness", labelKey: "footerExploreFitness" },
+  { slug: "tutoring", labelKey: "footerExploreTutoring" },
+  { slug: "pet-care", labelKey: "footerExplorePetCare" },
 ];
 
-const CATEGORY_LINKS = [
-  { slug: "doctor", labelKey: "catDoctor" },
-  { slug: "salon", labelKey: "catSalon" },
-  { slug: "fitness", labelKey: "catFitness" },
-  { slug: "homecare", labelKey: "catHomecare" },
-  { slug: "pet-care", labelKey: "catPetCare" },
+const PRO_LINKS = [
+  { href: ROUTES.PROVIDER_REGISTER, labelKey: "footerProList" },
+  { href: ROUTES.PROVIDER_REGISTER, labelKey: "footerProPricing" },
+  { href: ROUTES.HELP, labelKey: "footerProResources" },
+  { href: "/#testimonials", labelKey: "footerProStories" },
 ];
 
-const CONTACT_ITEMS = [
-  {
-    icon: Phone,
-    label: "Phone",
-    content: "+91 98765 43210",
-    href: "tel:+919876543210",
-  },
-  {
-    icon: Mail,
-    label: "Email",
-    content: "support@bookento.com",
-    href: "mailto:support@bookento.com",
-  },
-  {
-    icon: MapPin,
-    label: "Address",
-    content: "Surat, Gujarat, India",
-    href: null,
-  },
+const HELP_LINKS = [
+  { href: ROUTES.HELP, labelKey: "footerHelpCentre" },
+  { href: "mailto:support@bookento.com", labelKey: "footerContactUs", external: true },
+  { href: ROUTES.PRIVACY, labelKey: "footerTrustSafety" },
+  { href: ROUTES.TERMS, labelKey: "footerTermsService" },
+  { href: ROUTES.PRIVACY, labelKey: "footerPrivacyPolicy" },
 ];
 
-/** Desktop-only landing footer — reference layout, Bookento content */
+const SOCIAL = [
+  { label: "Instagram", href: "#", Icon: Instagram },
+  { label: "Facebook", href: "#", Icon: Facebook },
+  { label: "YouTube", href: "#", Icon: Youtube },
+  { label: "LinkedIn", href: "#", Icon: Linkedin },
+];
+
+function FooterLink({ href, children, external }) {
+  const className = "text-[14px] text-[#6B7A90] transition-colors hover:text-[#1865EA]";
+
+  if (external || href.startsWith("mailto:") || href.startsWith("tel:")) {
+    return (
+      <a href={href} className={className}>
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <Link href={href} className={className}>
+      {children}
+    </Link>
+  );
+}
+
+/** Desktop-only landing footer — reference 5-column layout */
 export function HomeFooter({ className }) {
   const { t } = useWebLocale();
+  const year = new Date().getFullYear();
 
   return (
     <footer
       className={cn(
-        "mt-6 hidden border-t border-[#E8EDF5] bg-[#F5F8FC] md:mt-[70px] md:block",
+        "relative isolate mt-6 hidden overflow-hidden border-t border-[#D7E8FA] md:mt-[70px] md:block",
+        "bg-[linear-gradient(165deg,#EEF5FF_0%,#F7FAFF_42%,#F0F6FF_100%)]",
         className,
       )}
     >
-      <div className={cn(HOME_PAGE_CONTAINER, "pt-14 pb-8")}>
-        <div className="grid grid-cols-[minmax(0,1.45fr)_repeat(3,minmax(0,1fr))] gap-10 lg:gap-16">
+      {/* Creative atmosphere */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: [
+            "radial-gradient(ellipse 55% 70% at 0% 100%, rgba(24,101,234,0.1), transparent 60%)",
+            "radial-gradient(ellipse 45% 55% at 100% 0%, rgba(88,161,255,0.12), transparent 55%)",
+            "radial-gradient(ellipse 40% 45% at 70% 100%, rgba(198,244,5,0.06), transparent 65%)",
+          ].join(", "),
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.22]"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 1px 1px, rgba(24,101,234,0.22) 1px, transparent 0)",
+          backgroundSize: "22px 22px",
+          maskImage:
+            "linear-gradient(180deg, transparent 0%, #000 25%, #000 75%, transparent 100%)",
+          WebkitMaskImage:
+            "linear-gradient(180deg, transparent 0%, #000 25%, #000 75%, transparent 100%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-24 left-[20%] size-64 rounded-full bg-white/50 blur-3xl"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute right-[-5%] bottom-[-30%] size-80 rounded-full bg-[#BFD9FF]/25 blur-3xl"
+      />
+      <svg
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-24 w-full opacity-40"
+        viewBox="0 0 1440 96"
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M0 48 C240 16, 480 80, 720 48 S1200 8, 1440 48 V0 H0 Z"
+          fill="rgba(255,255,255,0.55)"
+        />
+      </svg>
+
+      <div className={cn(HOME_PAGE_CONTAINER, "relative z-10 pt-14 pb-10")}>
+        <div className="grid grid-cols-[minmax(0,1.35fr)_repeat(3,minmax(0,0.85fr))_minmax(0,1.15fr)] items-stretch gap-10 lg:gap-12">
           {/* Brand */}
-          <div className="max-w-[17.5rem]">
-            <Link href={ROUTES.HOME} className="inline-flex items-center gap-3">
+          <div className="flex min-h-full flex-col">
+            <Link href={ROUTES.HOME} className="inline-flex items-center gap-2.5">
               <Image
                 src="/images/app-icon.jpg"
                 alt="Bookento"
-                width={52}
-                height={52}
-                className="size-[3.25rem] rounded-[0.8rem] shadow-sm"
+                width={40}
+                height={40}
+                className="size-10 rounded-[0.7rem] shadow-sm"
               />
-              <span className="text-[1.45rem] font-bold tracking-tight text-[#0F1B2D]">
+              <span className="text-[1.35rem] font-bold tracking-tight text-[#0F1B2D]">
                 Bookento
               </span>
             </Link>
-            <p className="mt-4 text-[14px] leading-[1.65] text-[#6B7A90]">
+
+            <p className="mt-4 max-w-[16.5rem] text-[13.5px] leading-[1.65] text-[#6B7A90]">
               {t("footerTagline")}
             </p>
-          </div>
 
-          {/* Company */}
-          <div>
-            <p className="text-[15px] font-semibold text-[#0F1B2D]">
-              {t("footerCompany")}
-            </p>
-            <ul className="mt-5 space-y-3">
-              {COMPANY_LINKS.map((link) => (
-                <li key={link.labelKey}>
-                  <Link
-                    href={link.href}
-                    className="text-[14px] text-[#6B7A90] transition-colors hover:text-[#1865EA]"
-                  >
-                    {t(link.labelKey)}
-                  </Link>
-                </li>
+            <div className="mt-5 flex items-center gap-2.5">
+              {SOCIAL.map(({ label, href, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  className={cn(
+                    "inline-flex size-10 items-center justify-center rounded-full",
+                    "text-[#5B6B82] ring-1 ring-[#E8EDF5]",
+                    "transition-colors hover:bg-white/80 hover:text-[#1865EA]",
+                  )}
+                >
+                  <Icon className="size-5" strokeWidth={1.9} aria-hidden />
+                </a>
               ))}
-            </ul>
+            </div>
+
+            <p className="mt-auto pt-10 text-[12.5px] text-[#98A2B3]">
+              {t("footerCopyright", { year })}
+            </p>
           </div>
 
-          {/* Categories */}
+          {/* Explore */}
           <div>
             <p className="text-[15px] font-semibold text-[#0F1B2D]">
-              {t("footerCategories")}
+              {t("footerExplore")}
             </p>
             <ul className="mt-5 space-y-3">
-              {CATEGORY_LINKS.map((link) => (
+              {EXPLORE_LINKS.map((link) => (
                 <li key={link.slug}>
-                  <Link
-                    href={categoryListingRoute(link.slug)}
-                    className="text-[14px] text-[#6B7A90] transition-colors hover:text-[#1865EA]"
-                  >
+                  <FooterLink href={categoryListingRoute(link.slug)}>
                     {t(link.labelKey)}
-                  </Link>
+                  </FooterLink>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* For professionals */}
           <div>
             <p className="text-[15px] font-semibold text-[#0F1B2D]">
-              {t("footerContact")}
+              {t("footerForPros")}
             </p>
-            <ul className="mt-5 space-y-4">
-              {CONTACT_ITEMS.map((item) => {
-                const Icon = item.icon;
-                const inner = (
-                  <>
-                    <Icon
-                      className="mt-0.5 size-4 shrink-0 text-[#1865EA]"
-                      strokeWidth={2.1}
-                      aria-hidden
-                    />
-                    <span className="text-[14px] leading-snug text-[#6B7A90]">
-                      {item.content}
-                    </span>
-                  </>
-                );
-
-                return (
-                  <li key={item.label}>
-                    {item.href ? (
-                      <a
-                        href={item.href}
-                        className="inline-flex items-start gap-2.5 transition-colors hover:text-[#1865EA] hover:[&_span]:text-[#1865EA]"
-                        aria-label={item.label}
-                      >
-                        {inner}
-                      </a>
-                    ) : (
-                      <div className="inline-flex items-start gap-2.5">{inner}</div>
-                    )}
-                  </li>
-                );
-              })}
+            <ul className="mt-5 space-y-3">
+              {PRO_LINKS.map((link) => (
+                <li key={link.labelKey}>
+                  <FooterLink href={link.href}>{t(link.labelKey)}</FooterLink>
+                </li>
+              ))}
             </ul>
           </div>
-        </div>
 
-        <div className="mt-14 flex items-center justify-between gap-4 border-t border-[#E8EDF5] pt-6">
-          <p className="text-[13px] text-[#8A96A8]">
-            {t("footerCopyright", { year: new Date().getFullYear() })}
-          </p>
-          <div className="flex items-center gap-2 text-[13px] text-[#8A96A8]">
-            <Link
-              href={ROUTES.PRIVACY}
-              className="transition-colors hover:text-[#1865EA]"
-            >
-              {t("footerPrivacy")}
-            </Link>
-            <span aria-hidden className="text-[#C0C8D4]">
-              ·
-            </span>
-            <Link
-              href={ROUTES.TERMS}
-              className="transition-colors hover:text-[#1865EA]"
-            >
-              {t("footerTerms")}
-            </Link>
+          {/* Help */}
+          <div>
+            <p className="text-[15px] font-semibold text-[#0F1B2D]">
+              {t("footerHelpHeading")}
+            </p>
+            <ul className="mt-5 space-y-3">
+              {HELP_LINKS.map((link) => (
+                <li key={link.labelKey}>
+                  <FooterLink href={link.href} external={link.external}>
+                    {t(link.labelKey)}
+                  </FooterLink>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Motto */}
+          <div className="flex min-h-full flex-col border-l border-dashed border-[#D0D5DD] pl-8 lg:pl-10">
+            <p className="font-script max-w-[12rem] text-[1.65rem] leading-[1.2] font-semibold text-[#1865EA]">
+              <span className="block">{t("footerMotto1")}</span>
+              <span className="relative mt-1 inline-block">
+                {t("footerMotto2")}
+                <span
+                  aria-hidden
+                  className="absolute right-0 -bottom-1 left-0 h-[0.35rem] rounded-full bg-[#C6F405]"
+                />
+              </span>
+            </p>
+
+            <p className="mt-auto pt-10 text-[12.5px] text-[#98A2B3]">
+              {t("footerLocation")}
+            </p>
           </div>
         </div>
       </div>
