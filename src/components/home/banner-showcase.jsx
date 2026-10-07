@@ -7,6 +7,7 @@ import { ArrowRight } from "lucide-react";
 
 import { providerPackageRoute, ROUTES } from "@/constants/routes.constants";
 import { MobileScrollRow } from "@/components/home/horizontal-scroll";
+import { useRequireLoginToBook } from "@/hooks/use-require-login-to-book";
 import { getFeaturedPackages } from "@/mock/packages";
 import { cn } from "@/lib/utils";
 
@@ -101,16 +102,18 @@ const PROMO_CARDS = [
 
 function PromoCard({ promo, className }) {
   const isFullImage = promo.fullImage;
+  const { getBookHref } = useRequireLoginToBook();
+  const href = getBookHref(promo.href);
 
   return (
     <Link
-      href={promo.href}
+      href={href}
       className={cn(
         "group relative flex h-[10rem] overflow-hidden rounded-xl sm:h-[10.5rem]",
         "shadow-card",
         "transition-shadow duration-300 ease-out",
         "hover:shadow-[0_14px_36px_-10px_rgba(15,23,42,0.18)]",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2",
+        "focus-visible:ring-primary/40 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
         !isFullImage && cn("bg-gradient-to-br", promo.gradient),
         className,
       )}
@@ -144,7 +147,9 @@ function PromoCard({ promo, className }) {
             )}
           </h3>
           {promo.offer && (
-            <p className={cn("mt-0.5 text-sm font-bold", promo.titleClass)}>{promo.offer}</p>
+            <p className={cn("mt-0.5 text-sm font-bold", promo.titleClass)}>
+              {promo.offer}
+            </p>
           )}
           <p
             className={cn(
@@ -186,7 +191,11 @@ function PromoCard({ promo, className }) {
           alt={promo.title}
           fill
           className={cn("object-cover object-center", promo.imageClass)}
-          sizes={isFullImage ? "(max-width: 768px) 100vw, 25vw" : "(max-width: 768px) 40vw, 180px"}
+          sizes={
+            isFullImage
+              ? "(max-width: 768px) 100vw, 25vw"
+              : "(max-width: 768px) 40vw, 180px"
+          }
         />
         {!promo.hideImageFade && (
           <div
@@ -208,7 +217,7 @@ function PromoCarouselDot({ active }) {
       className={cn(
         "inline-block shrink-0 rounded-full transition-all duration-300",
         active
-          ? "size-2.5 bg-primary shadow-[0_0_0_3px_#B8D4FF]"
+          ? "bg-primary size-2.5 shadow-[0_0_0_3px_#B8D4FF]"
           : "size-2 bg-[#C8DAF5]",
       )}
     />
@@ -253,7 +262,11 @@ function PromoMobileCarousel() {
         ))}
       </MobileScrollRow>
 
-      <div className="mt-3 flex items-center justify-center gap-2.5" role="tablist" aria-label="Promotion slides">
+      <div
+        className="mt-3 flex items-center justify-center gap-2.5"
+        role="tablist"
+        aria-label="Promotion slides"
+      >
         {PROMO_CARDS.map((promo, index) => (
           <PromoCarouselDot key={promo.title} active={active === index} />
         ))}
@@ -262,7 +275,17 @@ function PromoMobileCarousel() {
   );
 }
 
-export function BannerShowcase() {
+export function BannerShowcase({ web = false }) {
+  if (web) {
+    return (
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4 md:gap-4">
+        {PROMO_CARDS.map((promo) => (
+          <PromoCard key={promo.title} promo={promo} />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="md:hidden">

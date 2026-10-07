@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 
-import { UserBottomNav } from "@/components/layout/user-nav";
 import { AppDownloadShowcase } from "@/components/home/app-download-showcase";
 import { BannerShowcase } from "@/components/home/banner-showcase";
 import { CategoryGrid } from "@/components/home/category-grid";
@@ -15,14 +14,10 @@ import { HomeFooter } from "@/components/home/home-footer";
 import { HomeHeader } from "@/components/home/home-header";
 import { PopularServicesShowcase } from "@/components/home/popular-services-showcase";
 import { OnlineConsultationsBanner } from "@/components/home/online-consultations-banner";
-import { SectionHeader, DesktopSectionHeading } from "@/components/home/section-header";
+import { DesktopSectionHeading } from "@/components/home/section-header";
 import { SpecialPackagesShowcase } from "@/components/home/special-packages-showcase";
 import { TestimonialsShowcase } from "@/components/home/testimonials-showcase";
-import { TopRatedProviderCard } from "@/components/home/top-rated-provider-card";
-import { UpcomingAppointmentCard } from "@/components/home/upcoming-appointment-card";
 import { VideosShowcase } from "@/components/home/videos-showcase";
-import { MobileScrollRow } from "@/components/home/horizontal-scroll";
-import { ROUTES } from "@/constants/routes.constants";
 import { setBackFromSource } from "@/lib/navigation/back-navigation";
 import {
   HOME_PAGE_CONTAINER,
@@ -102,37 +97,26 @@ export default function HomePage() {
       };
     });
 
-  const mobileTopRated = topRated.slice(0, 4);
-
   return (
-    <div className={cn(PAGE_SHELL_CLASS, "max-md:overflow-x-hidden md:pb-0")}>
-      <HomeHeader />
+    <div className={cn(PAGE_SHELL_CLASS, "!pb-0 max-md:overflow-x-hidden")}>
+      <HomeHeader marketplace />
 
-      {/* Desktop full-bleed marketplace hero */}
-      <HeroSection className="hidden md:block" />
+      <HeroSection />
 
       <main
         className={cn(
           HOME_PAGE_CONTAINER,
-          "relative z-10 space-y-8 pt-4 pb-4 md:mt-[50px] md:space-y-[50px] md:pt-0 md:pb-0",
+          "relative z-10 space-y-10 pt-8 pb-8 md:mt-[50px] md:space-y-[50px] md:pt-0 md:pb-0",
         )}
       >
-        <div className="md:hidden">
-          <UpcomingAppointmentCard />
-        </div>
-
-        <section
-          id="categories"
-          className="scroll-mt-28 md:overflow-visible max-md:[&_h2]:gap-0.5"
-        >
-          <SectionHeader title="Category" className="md:hidden" />
+        <section id="categories" className="scroll-mt-28 md:overflow-visible">
           <DesktopSectionHeading
             badgeKey="servicesBadge"
             titleKey="servicesTitle"
             highlightKey="servicesHighlight"
             className="mb-3"
           />
-          <CategoryGrid />
+          <CategoryGrid web />
         </section>
 
         <OnlineConsultationsBanner />
@@ -142,56 +126,31 @@ export default function HomePage() {
             badge="Offers"
             title="Exclusive Deals"
             highlight="Just For You"
-            className="max-md:hidden"
           />
-          <SectionHeader title="Offers" className="md:hidden" />
-          <BannerShowcase />
+          <BannerShowcase web />
         </section>
 
         <section
           id="professionals"
           className={cn(
             "scroll-mt-28",
-            "md:relative md:left-1/2 md:w-screen md:max-w-[100vw] md:-translate-x-1/2",
-            "md:overflow-visible md:border-y md:border-[#E2EAF5] md:py-10",
-            "md:bg-[radial-gradient(120%_80%_at_50%_-10%,#E8F1FF_0%,#F5F8FC_45%,#EEF3F9_100%)]",
+            "relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2",
+            "overflow-visible border-y border-[#E2EAF5] py-8 md:py-10",
+            "bg-[radial-gradient(120%_80%_at_50%_-10%,#E8F1FF_0%,#F5F8FC_45%,#EEF3F9_100%)]",
           )}
         >
-          <div className="md:mx-auto md:w-full md:max-w-[calc(96rem-60px)] md:px-[4.875rem] xl:px-[5.875rem]">
-            <SectionHeader
-              title="Top Rated Professionals"
-              href={ROUTES.PROVIDERS}
-              className="md:hidden"
-            />
-
-            <MobileScrollRow className="md:hidden">
-              {mobileTopRated.map((p) => (
-                <div
-                  key={p.id}
-                  className="w-[calc((100vw-4.25rem)/2)] shrink-0 snap-start"
-                >
-                  <TopRatedProviderCard
-                    provider={p}
-                    compact
-                    categorySlug={p.categorySlug}
-                  />
-                </div>
-              ))}
-            </MobileScrollRow>
-
+          <div className="mx-auto w-full max-w-[calc(96rem-60px)] px-4 md:px-[4.875rem] xl:px-[5.875rem]">
             <DesktopTopRatedScroll providers={topRated} />
           </div>
         </section>
 
-        <SpecialPackagesShowcase id="packages" className="scroll-mt-28 max-md:hidden" />
+        <SpecialPackagesShowcase id="packages" className="scroll-mt-28" web />
 
-        <PopularServicesShowcase />
-
-        <SpecialPackagesShowcase className="md:hidden" />
+        <PopularServicesShowcase web />
 
         <VideosShowcase />
 
-        <FeaturePromoBanner />
+        <FeaturePromoBanner className="hidden md:block" />
 
         <FeaturesShowcase />
 
@@ -203,8 +162,6 @@ export default function HomePage() {
       </main>
 
       <HomeFooter />
-
-      <UserBottomNav />
     </div>
   );
 }

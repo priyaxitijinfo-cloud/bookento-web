@@ -12,6 +12,7 @@ import {
 } from "@/constants/home-categories";
 import { CategoryItem, MoreCategoryItem } from "@/components/home/category-item";
 import { categoryListingRoute } from "@/constants/routes.constants";
+import { useRequireLoginToBook } from "@/hooks/use-require-login-to-book";
 import { useWebLocale } from "@/hooks/use-web-locale";
 import { cn } from "@/lib/utils";
 
@@ -25,11 +26,14 @@ const MOBILE_CATEGORY_SLUGS = [
   "automotive",
 ];
 
-/** Desktop: 6 visible tiles */
+/** Desktop: 6 visible tiles; mobile website: 2 visible, advance by 2 */
 const DESKTOP_VISIBLE = 6;
+const MOBILE_VISIBLE = 2;
 const DESKTOP_GAP_PX = 18;
+const MOBILE_GAP_PX = 12;
 const LOOP_TRACKS = 3;
 const DESKTOP_ICON_SIZE_PX = 36;
+const MOBILE_PAGE_HOLD_MS = 2800;
 
 const CATEGORY_NAME_KEYS = {
   doctor: "catDoctor",
@@ -103,9 +107,10 @@ function CategoryIconMask({ slug, size, className, style }) {
   );
 }
 
-/** Desktop-only — pastel service card matching reference */
+/** Website pastel service card — compact on mobile, full on desktop */
 function DesktopCategoryTile({ category }) {
   const { t } = useWebLocale();
+  const { getBookHref } = useRequireLoginToBook();
   const accent = DESKTOP_CATEGORY_COLORS[category.slug] || category.iconTile;
   const cardBg = lightenHex(accent, 0.95);
   const arrowBg = lightenHex(accent, 0.88);
@@ -114,44 +119,47 @@ function DesktopCategoryTile({ category }) {
   const descKey = CATEGORY_DESC_KEYS[category.slug];
   const label = nameKey ? t(nameKey) : category.name;
   const description = descKey ? t(descKey) : "";
+  const href = getBookHref(categoryListingRoute(category.slug));
 
   return (
     <Link
-      href={categoryListingRoute(category.slug)}
+      href={href}
       className={cn(
-        "group relative flex h-[calc(14.5rem-10px)] w-full flex-col overflow-hidden rounded-[1.35rem] border-[3px] border-white p-5 pb-14",
-        "shadow-[0_10px_24px_-8px_rgba(15,23,42,0.14)]",
+        "group relative flex w-full flex-col overflow-hidden border-[3px] border-white",
+        "h-[13.25rem] rounded-[1.25rem] p-4 pb-12 md:h-[calc(14.5rem-10px)] md:rounded-[1.35rem] md:p-5 md:pb-14",
+        "shadow-[0_6px_14px_-6px_rgba(15,23,42,0.12)]",
+        "md:shadow-[0_10px_24px_-8px_rgba(15,23,42,0.14)]",
         "focus-visible:ring-2 focus-visible:ring-[#1865EA]/35 focus-visible:outline-none",
       )}
       style={{ backgroundColor: cardBg }}
     >
       <span
-        className="relative z-10 flex aspect-square size-14 shrink-0 items-center justify-center rounded-xl shadow-sm transition-transform duration-300 group-hover:scale-105"
+        className="relative z-10 flex aspect-square size-12 shrink-0 items-center justify-center rounded-xl shadow-sm transition-transform duration-300 group-hover:scale-105 md:size-14"
         style={{ backgroundColor: accent }}
       >
         <CategoryIconMask
           slug={category.slug}
           size={DESKTOP_ICON_SIZE_PX}
-          className="bg-white"
+          className="scale-90 bg-white md:scale-100"
         />
       </span>
 
-      <h3 className="relative z-10 mt-3 text-[1.05rem] leading-snug font-bold tracking-tight text-[#0F1B2D]">
+      <h3 className="relative z-10 mt-2.5 text-[1rem] leading-snug font-bold tracking-tight text-[#0F1B2D] md:mt-3 md:text-[1.05rem]">
         {label}
       </h3>
 
       {description ? (
-        <p className="relative z-10 mt-1.5 line-clamp-3 text-[12px] leading-relaxed text-[#6B7A8D]">
+        <p className="relative z-10 mt-1 line-clamp-2 text-[12px] leading-relaxed text-[#6B7A8D] md:mt-1.5 md:line-clamp-3">
           {description}
         </p>
       ) : null}
 
       <span
-        className="absolute bottom-4 left-5 z-10 inline-flex aspect-square size-9 shrink-0 items-center justify-center rounded-full"
+        className="absolute bottom-3.5 left-4 z-10 inline-flex aspect-square size-8 shrink-0 items-center justify-center rounded-full md:bottom-4 md:left-5 md:size-9"
         style={{ backgroundColor: arrowBg, color: arrowColor }}
         aria-hidden
       >
-        <ArrowRight className="size-4" strokeWidth={2.4} />
+        <ArrowRight className="size-3.5 md:size-4" strokeWidth={2.4} />
       </span>
 
       {/* Faint watermark icon */}
@@ -187,6 +195,92 @@ function ArrowButton({ label, onClick, side }) {
         <ChevronRight className="size-4" strokeWidth={2.25} />
       )}
     </button>
+  );
+}
+
+/** Mobile website: horizontal scroll — 2 cards visible, next 2 on scroll */
+function MobileCategoryPager() {
+  const scrollerRef = useRef(null);
+  const holdingRef = useRef(false);
+  const inViewRef = useRef(true);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return undefined;
+
+    const pageWidth = () => {
+      const first = el.children[0];
+      const third = el.children[MOBILE_VISIBLE];
+      if (first && third) return third.offsetLeft - first.offsetLeft;
+      if (first) return first.offsetWidth + MOBILE_GAP_PX;
+      return el.clientWidth;
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        inViewRef.current = entry.isIntersecting;
+      },
+      { threshold: 0.2 },
+    );
+    observer.observe(el);
+
+    const onPointerDown = () => {
+      holdingRef.current = true;
+    };
+    const onPointerUp = () => {
+      holdingRef.current = false;
+    };
+
+    const timer = window.setInterval(() => {
+      if (!inViewRef.current || holdingRef.current) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      const step = pageWidth();
+      if (step <= 0) return;
+
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      if (el.scrollLeft >= maxScroll - 8) {
+        el.scrollTo({ left: 0, behavior: "smooth" });
+        return;
+      }
+
+      el.scrollBy({ left: step, behavior: "smooth" });
+    }, MOBILE_PAGE_HOLD_MS);
+
+    el.addEventListener("pointerdown", onPointerDown, { passive: true });
+    el.addEventListener("pointerup", onPointerUp, { passive: true });
+    el.addEventListener("pointercancel", onPointerUp, { passive: true });
+    el.addEventListener("touchstart", onPointerDown, { passive: true });
+    el.addEventListener("touchend", onPointerUp, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      window.clearInterval(timer);
+      el.removeEventListener("pointerdown", onPointerDown);
+      el.removeEventListener("pointerup", onPointerUp);
+      el.removeEventListener("pointercancel", onPointerUp);
+      el.removeEventListener("touchstart", onPointerDown);
+      el.removeEventListener("touchend", onPointerUp);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={scrollerRef}
+      className="scrollbar-hide flex touch-pan-x snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-0.5 pt-0.5 pb-3.5 md:hidden"
+    >
+      {HOME_CATEGORIES.map((category, index) => (
+        <div
+          key={category.slug}
+          className={cn(
+            "w-[calc((100%-0.75rem)/2)] min-w-[calc((100%-0.75rem)/2)] shrink-0",
+            index % MOBILE_VISIBLE === 0 && "snap-start",
+          )}
+        >
+          <DesktopCategoryTile category={category} />
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -287,8 +381,7 @@ function DesktopCategoryScroll() {
   const tileWidth = `calc((100% - ${(DESKTOP_VISIBLE - 1) * DESKTOP_GAP_PX}px) / ${DESKTOP_VISIBLE})`;
 
   return (
-    <div className="relative overflow-visible px-5">
-      {/* Soft edge fades — keep arrows clear of card text */}
+    <div className="relative hidden overflow-visible px-5 md:block">
       <div
         aria-hidden
         className="from-background pointer-events-none absolute inset-y-5 left-0 z-10 w-12 bg-gradient-to-r to-transparent"
@@ -330,26 +423,30 @@ function DesktopCategoryScroll() {
 
 function DesktopCategoriesShowcase() {
   return (
-    <div className="relative hidden md:block">
-      {/* Soft atmosphere */}
+    <div className="relative md:mx-0">
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-10 left-1/2 h-56 w-[70%] -translate-x-1/2 rounded-full bg-[#EAF1FF]/55 blur-3xl"
+        className="pointer-events-none absolute -top-10 left-1/2 hidden h-56 w-[70%] -translate-x-1/2 rounded-full bg-[#EAF1FF]/55 blur-3xl md:block"
       />
 
+      <MobileCategoryPager />
       <DesktopCategoryScroll />
     </div>
   );
 }
 
-export function CategoryGrid() {
+export function CategoryGrid({ web = false }) {
   const mobileCategories = MOBILE_CATEGORY_SLUGS.map((slug) =>
     HOME_CATEGORIES.find((category) => category.slug === slug),
   ).filter(Boolean);
 
+  if (web) {
+    return <DesktopCategoriesShowcase />;
+  }
+
   return (
     <>
-      {/* Mobile — unchanged */}
+      {/* App-style mobile grid */}
       <div className="grid grid-cols-4 gap-2.5 md:hidden">
         {mobileCategories.map((category) => (
           <div key={category.slug} className="aspect-square min-w-0">
@@ -361,7 +458,9 @@ export function CategoryGrid() {
         </div>
       </div>
 
-      <DesktopCategoriesShowcase />
+      <div className="hidden md:block">
+        <DesktopCategoriesShowcase />
+      </div>
     </>
   );
 }

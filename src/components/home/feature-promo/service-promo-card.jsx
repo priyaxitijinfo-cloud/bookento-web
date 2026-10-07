@@ -16,7 +16,7 @@ export function ServicePromoCard({
   eyebrow,
   tone = "doctor",
   illustration,
-  /** Desktop-only full-bleed background image (web). */
+  /** Full-bleed background image (website). */
   backgroundImage,
   backgroundPosition = "object-center",
   className,
@@ -39,13 +39,13 @@ export function ServicePromoCard({
   };
 
   const style = tones[tone] ?? tones.doctor;
-  const hasDesktopBg = Boolean(backgroundImage);
+  const hasPhotoBg = Boolean(backgroundImage);
 
   return (
     <Link
       href={href}
       className={cn(
-        "relative flex min-h-[11.5rem] flex-1 overflow-hidden rounded-[1.65rem]",
+        "relative flex min-h-[9.75rem] flex-1 overflow-hidden rounded-[1.35rem] md:min-h-[11.5rem] md:rounded-[1.65rem]",
         "ring-1",
         "focus-visible:ring-2 focus-visible:ring-[#1865EA]/40 focus-visible:ring-offset-2 focus-visible:outline-none",
         style.bg,
@@ -53,34 +53,31 @@ export function ServicePromoCard({
         className,
       )}
     >
-      {/* Web-only photo background */}
-      {hasDesktopBg ? (
-        <div
-          className="pointer-events-none absolute inset-0 hidden md:block"
-          aria-hidden
-        >
+      {hasPhotoBg ? (
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
           <Image
             src={backgroundImage}
             alt=""
             fill
             unoptimized
             className={cn("object-cover", backgroundPosition)}
-            sizes="(min-width: 768px) 28vw, 0px"
+            sizes="(min-width: 768px) 28vw, 100vw"
             priority={false}
           />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/75 via-white/35 to-transparent md:from-transparent md:via-transparent md:to-transparent" />
         </div>
       ) : null}
 
       <div
         className={cn(
-          "relative z-10 flex min-w-0 flex-1 flex-col justify-center py-5 pr-2 pl-5 sm:pl-6",
-          hasDesktopBg && "md:max-w-[58%] md:pr-3",
+          "relative z-10 flex min-w-0 flex-1 flex-col justify-center py-4 pr-2 pl-4 sm:pl-6 md:py-5 md:pl-5",
+          hasPhotoBg && "max-w-[72%] md:max-w-[58%] md:pr-3",
         )}
       >
         {eyebrow ? (
           <p
             className={cn(
-              "mb-2 hidden text-[10px] font-semibold tracking-[0.16em] uppercase md:block",
+              "mb-1.5 text-[10px] font-semibold tracking-[0.16em] uppercase md:mb-2",
               style.eyebrow,
             )}
           >
@@ -89,7 +86,7 @@ export function ServicePromoCard({
         ) : null}
         <h3
           className={cn(
-            "text-[1.15rem] leading-[1.18] font-bold tracking-tight whitespace-pre-line sm:text-[1.28rem]",
+            "text-[1.05rem] leading-[1.18] font-bold tracking-tight whitespace-pre-line sm:text-[1.15rem] md:text-[1.28rem]",
             style.title,
           )}
         >
@@ -97,7 +94,7 @@ export function ServicePromoCard({
         </h3>
         <p
           className={cn(
-            "mt-2 max-w-[12.5rem] text-[12px] leading-relaxed whitespace-pre-line sm:text-[13px]",
+            "mt-1.5 max-w-[12.5rem] text-[12px] leading-relaxed whitespace-pre-line sm:text-[13px] md:mt-2",
             style.body,
           )}
         >
@@ -105,7 +102,7 @@ export function ServicePromoCard({
         </p>
         <span
           className={cn(
-            "mt-4 inline-flex size-10 items-center justify-center rounded-full bg-white",
+            "mt-3 inline-flex size-9 items-center justify-center rounded-full bg-white md:mt-4 md:size-10",
             "shadow-[0_8px_18px_-10px_rgba(15,27,45,0.4)]",
           )}
           aria-hidden
@@ -114,14 +111,9 @@ export function ServicePromoCard({
         </span>
       </div>
 
-      {/* Mobile / fallback illustration (hidden on web when photo bg is set) */}
-      {illustration ? (
-        <div
-          className={cn(
-            "relative w-[46%] shrink-0 self-stretch sm:w-[48%]",
-            hasDesktopBg && "md:hidden",
-          )}
-        >
+      {/* Fallback illustration only when no photo background */}
+      {illustration && !hasPhotoBg ? (
+        <div className="relative w-[46%] shrink-0 self-stretch sm:w-[48%]">
           <div className="absolute inset-0 flex items-end justify-end overflow-hidden">
             {illustration}
           </div>

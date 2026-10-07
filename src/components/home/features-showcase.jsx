@@ -66,7 +66,7 @@ const FEATURES = [
   },
 ];
 
-/** Desktop-only features grid — matches landing section heading language */
+/** Platform features — website grid, 2-col mobile / 4-col desktop */
 export function FeaturesShowcase({ className }) {
   const { t } = useWebLocale();
 
@@ -75,8 +75,8 @@ export function FeaturesShowcase({ className }) {
       id="features"
       aria-label="Platform features"
       className={cn(
-        "hidden scroll-mt-28 md:block",
-        "md:relative md:left-1/2 md:w-screen md:max-w-[100vw] md:-translate-x-1/2",
+        "scroll-mt-28",
+        "relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2",
         className,
       )}
     >
@@ -85,33 +85,22 @@ export function FeaturesShowcase({ className }) {
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,rgba(24,101,234,0.14)_0%,transparent_52%),radial-gradient(ellipse_at_12%_80%,rgba(88,161,255,0.1)_0%,transparent_42%),radial-gradient(ellipse_at_90%_70%,rgba(24,101,234,0.08)_0%,transparent_40%)]"
         />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.35]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(24,101,234,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(24,101,234,0.05) 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-            maskImage:
-              "radial-gradient(ellipse at 50% 40%, black 18%, transparent 72%)",
-          }}
-        />
 
-        <div className="relative mx-auto w-full max-w-[calc(96rem-60px)] px-[4.875rem] py-14 xl:px-[5.875rem] xl:py-16">
+        <div className="relative mx-auto w-full max-w-[calc(96rem-60px)] px-4 py-10 md:px-[4.875rem] md:py-14 xl:px-[5.875rem] xl:py-16">
           <DesktopSectionHeading
             badgeKey="featuresBadge"
             titleKey="featuresTitle"
             highlightKey="featuresHighlight"
           />
 
-          <div className="grid grid-cols-4 gap-5 xl:gap-6">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5 xl:gap-6">
             {FEATURES.map((feature) => {
               const Icon = feature.icon;
               return (
                 <article
                   key={feature.titleKey}
                   className={cn(
-                    "rounded-2xl border border-white/80 bg-white/95 p-5 xl:p-6",
+                    "rounded-2xl border border-white/80 bg-white/95 p-3.5 md:p-5 xl:p-6",
                     "shadow-[0_12px_32px_-20px_rgba(15,23,42,0.28)] backdrop-blur-sm",
                     "transition-[transform,box-shadow,border-color] duration-300",
                     "hover:-translate-y-0.5 hover:border-[#D7E4FA] hover:shadow-[0_18px_36px_-22px_rgba(24,101,234,0.28)]",
@@ -119,17 +108,21 @@ export function FeaturesShowcase({ className }) {
                 >
                   <span
                     className={cn(
-                      "inline-flex size-11 items-center justify-center rounded-[0.55rem] text-white",
+                      "inline-flex size-9 items-center justify-center rounded-[0.55rem] text-white md:size-11",
                       feature.tile,
                     )}
                   >
-                    <Icon className="size-[22px]" strokeWidth={2.2} aria-hidden />
+                    <Icon
+                      className="size-[18px] md:size-[22px]"
+                      strokeWidth={2.2}
+                      aria-hidden
+                    />
                   </span>
 
-                  <h3 className="mt-4 text-[15px] font-bold tracking-tight text-[#0F1B2D] xl:text-base">
+                  <h3 className="mt-3 text-[13px] font-bold tracking-tight text-[#0F1B2D] md:mt-4 md:text-[15px] xl:text-base">
                     {t(feature.titleKey)}
                   </h3>
-                  <p className="mt-2 text-[13px] leading-relaxed text-[#667085] xl:text-[14px]">
+                  <p className="mt-1.5 line-clamp-3 text-[11.5px] leading-relaxed text-[#667085] md:mt-2 md:line-clamp-none md:text-[13px] xl:text-[14px]">
                     {t(feature.descKey)}
                   </p>
                 </article>

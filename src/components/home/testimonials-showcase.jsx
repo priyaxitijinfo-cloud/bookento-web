@@ -17,7 +17,7 @@ const TESTIMONIALS = [
       "Booked a spa session in minutes. The therapist was on time, the room felt premium, and checkout was seamless from start to finish.",
     photo:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=240&q=80",
-    offset: "mt-10",
+    offset: "mt-6 md:mt-10",
     tilt: "rotate-[-2.5deg]",
   },
   {
@@ -30,7 +30,7 @@ const TESTIMONIALS = [
       "Weekly cleaning without chasing anyone. I pick a slot, confirm the package, and the team shows up prepared every time.",
     photo:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=240&q=80",
-    offset: "mt-2",
+    offset: "mt-1 md:mt-2",
     tilt: "rotate-[1.8deg]",
   },
   {
@@ -43,7 +43,7 @@ const TESTIMONIALS = [
       "Found a clinic nearby, checked real reviews, and booked the same day. Clear slots and no phone tag made the visit easy.",
     photo:
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=240&q=80",
-    offset: "mt-14",
+    offset: "mt-8 md:mt-14",
     tilt: "rotate-[-1.2deg]",
   },
   {
@@ -56,7 +56,7 @@ const TESTIMONIALS = [
       "Switched trainers in one evening. Honest ratings, clear packages, and reminders that actually helped me stay consistent.",
     photo:
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=240&q=80",
-    offset: "mt-5",
+    offset: "mt-3 md:mt-5",
     tilt: "rotate-[2.2deg]",
   },
   {
@@ -69,7 +69,7 @@ const TESTIMONIALS = [
       "Grooming booked in seconds with photos of past work. My dog’s new favorite visit — and I love the transparent pricing.",
     photo:
       "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=240&q=80",
-    offset: "mt-12",
+    offset: "mt-7 md:mt-12",
     tilt: "rotate-[-1.8deg]",
   },
   {
@@ -82,7 +82,7 @@ const TESTIMONIALS = [
       "Found a great tutor nearby with strong reviews. Scheduling felt effortless and progress updates keep us on track.",
     photo:
       "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=240&q=80",
-    offset: "mt-3",
+    offset: "mt-2 md:mt-3",
     tilt: "rotate-[1.4deg]",
   },
 ];
@@ -109,13 +109,15 @@ function ReviewCard({ item }) {
   return (
     <article
       className={cn(
-        "group/card relative w-[17.5rem] shrink-0 pt-8 lg:w-[18.5rem]",
+        "group/card relative shrink-0 pt-8",
+        "w-[16.5rem] md:w-[17.5rem] lg:w-[18.5rem]",
         item.offset,
       )}
     >
       <div
         className={cn(
-          "absolute top-0 left-6 z-20 size-[4.25rem] overflow-hidden rounded-full",
+          "absolute top-0 left-6 z-20 overflow-hidden rounded-full",
+          "size-[3.75rem] md:size-[4.25rem]",
           "bg-white ring-[3px] ring-white",
           "shadow-[0_10px_22px_-12px_rgba(24,101,234,0.35)]",
           "transition-transform duration-300 group-hover/card:-translate-y-1",
@@ -180,7 +182,7 @@ function ReviewCard({ item }) {
   );
 }
 
-/** Desktop-only testimonials — infinite staggered marquee */
+/** Website testimonials — same marquee + tilted cards on mobile and desktop */
 export function TestimonialsShowcase({ className }) {
   const loop = [...TESTIMONIALS, ...TESTIMONIALS];
 
@@ -188,13 +190,12 @@ export function TestimonialsShowcase({ className }) {
     <section
       id="testimonials"
       className={cn(
-        "hidden scroll-mt-28 md:block",
-        "md:relative md:left-1/2 md:w-screen md:max-w-[100vw] md:-translate-x-1/2",
-        "md:py-0",
+        "scroll-mt-28",
+        "relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2",
         className,
       )}
     >
-      <div className="md:mx-auto md:w-full md:max-w-[calc(96rem-60px)] md:px-[4.875rem] xl:px-[5.875rem]">
+      <div className="mx-auto w-full max-w-[calc(96rem-60px)] px-4 md:px-[4.875rem] xl:px-[5.875rem]">
         <DesktopSectionHeading
           badgeKey="testimonialsBadge"
           titleKey="testimonialsTitle"
@@ -202,9 +203,9 @@ export function TestimonialsShowcase({ className }) {
         />
       </div>
 
-      <div className="group/marquee relative mt-2 overflow-hidden">
-        <div className="relative z-10 py-6">
-          <div className="animate-testimonial-marquee flex w-max items-start gap-6 px-6 lg:gap-7">
+      <div className="group/marquee relative mt-1 overflow-hidden md:mt-2">
+        <div className="relative z-10 py-4 md:py-6">
+          <div className="animate-testimonial-marquee flex w-max items-start gap-5 px-4 md:gap-6 md:px-6 lg:gap-7">
             {loop.map((item, index) => (
               <ReviewCard
                 key={`${item.id}-${index < TESTIMONIALS.length ? "a" : "b"}`}

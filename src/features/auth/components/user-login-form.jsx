@@ -24,25 +24,34 @@ import { useUserAuthStore } from "@/store";
 function LoginCopy({ variant }) {
   const isWeb = variant === "web";
   return (
-    <div className={isWeb ? "mb-6" : "mb-7 text-center"}>
-      <h1 className={cnTitle(isWeb)}>Login</h1>
-      <p className={cnSubtitle(isWeb)}>
+    <div className={isWeb ? "mb-8" : "mb-7 text-center"}>
+      {isWeb ? (
+        <p className="text-[12px] font-semibold tracking-[0.16em] text-[#1865EA] uppercase">
+          Secure login
+        </p>
+      ) : null}
+      <h1
+        className={
+          isWeb
+            ? "mt-2 text-[1.85rem] font-bold tracking-tight text-[#0F1B2D]"
+            : "text-[1.75rem] font-bold text-[#111827]"
+        }
+      >
+        Login
+      </h1>
+      <p
+        className={
+          isWeb
+            ? "mt-2 text-[15px] leading-relaxed text-[#667085]"
+            : "mt-1 text-sm text-[#98A2B3]"
+        }
+      >
         {isWeb
-          ? "Enter your mobile number to continue booking."
+          ? "Enter your mobile number. We’ll send a one-time password to verify it’s you."
           : "Login to continue booking"}
       </p>
     </div>
   );
-}
-
-function cnTitle(isWeb) {
-  return isWeb
-    ? "text-2xl font-bold tracking-tight text-[#111827]"
-    : "text-[1.75rem] font-bold text-[#111827]";
-}
-
-function cnSubtitle(isWeb) {
-  return isWeb ? "mt-1.5 text-sm text-[#667085]" : "mt-1 text-sm text-[#98A2B3]";
 }
 
 function LoginFields({
@@ -60,9 +69,20 @@ function LoginFields({
   const isWeb = variant === "web";
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-5">
+    <form
+      onSubmit={onSubmit}
+      className={isWeb ? "flex flex-col gap-5" : "flex flex-col gap-5"}
+    >
       <label className="flex flex-col gap-2">
-        <span className="text-[15px] font-medium text-[#334155]">Mobile number</span>
+        <span
+          className={
+            isWeb
+              ? "text-[13px] font-semibold text-[#314158]"
+              : "text-[15px] font-medium text-[#334155]"
+          }
+        >
+          Mobile number
+        </span>
         <PhoneNumberField
           variant={variant}
           country={country}
@@ -77,6 +97,11 @@ function LoginFields({
         type="submit"
         loading={loading}
         variant={isWeb ? "web" : "app"}
+        className={
+          isWeb
+            ? "mt-1 h-[3.25rem] rounded-xl text-base shadow-[0_10px_24px_rgba(24,101,234,0.28)]"
+            : undefined
+        }
       >
         Send OTP
       </AuthPrimaryButton>
@@ -89,7 +114,7 @@ function LoginFields({
         onClick={onGuest}
         className={
           isWeb
-            ? "text-primary text-sm font-semibold hover:underline"
+            ? "mt-1 h-11 rounded-xl border border-[#E8EDF5] bg-[#F8FAFC] text-sm font-semibold text-[#1865EA] transition-colors hover:bg-[#F0F5FF]"
             : "text-primary pt-1 text-center text-[15px] font-semibold"
         }
       >
@@ -97,11 +122,11 @@ function LoginFields({
       </button>
 
       {isWeb ? (
-        <p className="text-center text-sm text-[#667085]">
+        <p className="mt-2 text-center text-[13.5px] text-[#667085]">
           Are you a provider?{" "}
           <Link
             href={ROUTES.PROVIDER_LOGIN}
-            className="text-primary font-semibold hover:underline"
+            className="font-semibold text-[#1865EA] hover:underline"
           >
             Provider Login
           </Link>

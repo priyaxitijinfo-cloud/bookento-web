@@ -61,12 +61,18 @@ export function SearchResponsive() {
   const categorySlug = searchParams.get("category");
   const category = categorySlug ? getHomeCategoryBySlug(categorySlug) : null;
 
-  const [query, setQuery] = useState(searchParams.get("q") || "");
+  const urlQuery = searchParams.get("q") || "";
+  const [query, setQuery] = useState(urlQuery);
   const [filterOpen, setFilterOpen] = useState(false);
   const [categoryFilters, setCategoryFilters] = useState(DEFAULT_CATEGORY_FILTERS);
   const [categoryFiltersApplied, setCategoryFiltersApplied] = useState(false);
 
   const debouncedQuery = useDebounce(query, 250);
+
+  // Keep input in sync when navigating from hero (or elsewhere) with ?q=
+  useEffect(() => {
+    setQuery(urlQuery);
+  }, [urlQuery]);
 
   const recentSearches = useRecentSearchesStore((state) => state.searches);
   const addRecentSearch = useRecentSearchesStore((state) => state.addSearch);

@@ -2,9 +2,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
+import {
+  Facebook,
+  Instagram,
+  Linkedin,
+  Mail,
+  MapPin,
+  Phone,
+  Youtube,
+} from "lucide-react";
 
 import { categoryListingRoute, ROUTES } from "@/constants/routes.constants";
+import { useRequireLoginToBook } from "@/hooks/use-require-login-to-book";
 import { useWebLocale } from "@/hooks/use-web-locale";
 import { HOME_PAGE_CONTAINER } from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
@@ -25,19 +34,29 @@ const PRO_LINKS = [
   { href: "/#testimonials", labelKey: "footerProStories" },
 ];
 
-const HELP_LINKS = [
-  { href: ROUTES.HELP, labelKey: "footerHelpCentre" },
-  { href: "mailto:support@bookento.com", labelKey: "footerContactUs", external: true },
-  { href: ROUTES.PRIVACY, labelKey: "footerTrustSafety" },
-  { href: ROUTES.TERMS, labelKey: "footerTermsService" },
-  { href: ROUTES.PRIVACY, labelKey: "footerPrivacyPolicy" },
-];
-
 const SOCIAL = [
   { label: "Instagram", href: "#", Icon: Instagram },
   { label: "Facebook", href: "#", Icon: Facebook },
   { label: "YouTube", href: "#", Icon: Youtube },
   { label: "LinkedIn", href: "#", Icon: Linkedin },
+];
+
+const CONTACT_DETAILS = [
+  {
+    label: "+91 9909515320",
+    href: "tel:+919909515320",
+    Icon: Phone,
+  },
+  {
+    label: "incodeslab@gmail.com",
+    href: "mailto:incodeslab@gmail.com",
+    Icon: Mail,
+  },
+  {
+    label: "123 Health Street, New Delhi, India",
+    href: null,
+    Icon: MapPin,
+  },
 ];
 
 function FooterLink({ href, children, external }) {
@@ -58,15 +77,16 @@ function FooterLink({ href, children, external }) {
   );
 }
 
-/** Desktop-only landing footer — reference 5-column layout */
+/** Landing website footer — stacked on mobile, multi-column on desktop */
 export function HomeFooter({ className }) {
   const { t } = useWebLocale();
+  const { getBookHref } = useRequireLoginToBook();
   const year = new Date().getFullYear();
 
   return (
     <footer
       className={cn(
-        "relative isolate mt-6 hidden overflow-hidden border-t border-[#D7E8FA] md:mt-[70px] md:block",
+        "relative isolate mt-8 overflow-hidden border-t border-[#D7E8FA] md:mt-[70px]",
         "bg-[linear-gradient(165deg,#EEF5FF_0%,#F7FAFF_42%,#F0F6FF_100%)]",
         className,
       )}
@@ -116,10 +136,12 @@ export function HomeFooter({ className }) {
         />
       </svg>
 
-      <div className={cn(HOME_PAGE_CONTAINER, "relative z-10 pt-14 pb-10")}>
-        <div className="grid grid-cols-[minmax(0,1.35fr)_repeat(3,minmax(0,0.85fr))_minmax(0,1.15fr)] items-stretch gap-10 lg:gap-12">
+      <div
+        className={cn(HOME_PAGE_CONTAINER, "relative z-10 pt-8 pb-6 md:pt-12 md:pb-8")}
+      >
+        <div className="grid grid-cols-1 items-start gap-8 sm:grid-cols-2 md:grid-cols-[minmax(0,1.4fr)_repeat(2,minmax(0,1fr))_minmax(0,1.2fr)] lg:gap-10">
           {/* Brand */}
-          <div className="flex min-h-full flex-col">
+          <div className="sm:col-span-2 md:col-span-1">
             <Link href={ROUTES.HOME} className="inline-flex items-center gap-2.5">
               <Image
                 src="/images/app-icon.jpg"
@@ -153,10 +175,6 @@ export function HomeFooter({ className }) {
                 </a>
               ))}
             </div>
-
-            <p className="mt-auto pt-10 text-[12.5px] text-[#98A2B3]">
-              {t("footerCopyright", { year })}
-            </p>
           </div>
 
           {/* Explore */}
@@ -167,7 +185,7 @@ export function HomeFooter({ className }) {
             <ul className="mt-5 space-y-3">
               {EXPLORE_LINKS.map((link) => (
                 <li key={link.slug}>
-                  <FooterLink href={categoryListingRoute(link.slug)}>
+                  <FooterLink href={getBookHref(categoryListingRoute(link.slug))}>
                     {t(link.labelKey)}
                   </FooterLink>
                 </li>
@@ -183,21 +201,7 @@ export function HomeFooter({ className }) {
             <ul className="mt-5 space-y-3">
               {PRO_LINKS.map((link) => (
                 <li key={link.labelKey}>
-                  <FooterLink href={link.href}>{t(link.labelKey)}</FooterLink>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Help */}
-          <div>
-            <p className="text-[15px] font-semibold text-[#0F1B2D]">
-              {t("footerHelpHeading")}
-            </p>
-            <ul className="mt-5 space-y-3">
-              {HELP_LINKS.map((link) => (
-                <li key={link.labelKey}>
-                  <FooterLink href={link.href} external={link.external}>
+                  <FooterLink href={getBookHref(link.href)}>
                     {t(link.labelKey)}
                   </FooterLink>
                 </li>
@@ -205,23 +209,47 @@ export function HomeFooter({ className }) {
             </ul>
           </div>
 
-          {/* Motto */}
-          <div className="flex min-h-full flex-col border-l border-dashed border-[#D0D5DD] pl-8 lg:pl-10">
-            <p className="font-script max-w-[12rem] text-[1.65rem] leading-[1.2] font-semibold text-[#1865EA]">
-              <span className="block">{t("footerMotto1")}</span>
-              <span className="relative mt-1 inline-block">
-                {t("footerMotto2")}
-                <span
-                  aria-hidden
-                  className="absolute right-0 -bottom-1 left-0 h-[0.35rem] rounded-full bg-[#C6F405]"
-                />
-              </span>
+          {/* Contact Us — same type scale as Explore / For professionals */}
+          <div className="md:border-l md:border-dashed md:border-[#D0D5DD] md:pl-8 lg:pl-10">
+            <p className="text-[15px] font-semibold text-[#0F1B2D]">
+              {t("footerContact")}
             </p>
+            <ul className="mt-5 space-y-3">
+              {CONTACT_DETAILS.map(({ label, href, Icon }) => {
+                const rowClass =
+                  "flex items-start gap-2.5 text-[14px] text-[#6B7A90] transition-colors";
+                const content = (
+                  <>
+                    <Icon
+                      className="mt-0.5 size-4 shrink-0 text-[#5B6B82]"
+                      strokeWidth={2}
+                      aria-hidden
+                    />
+                    <span className="min-w-0">{label}</span>
+                  </>
+                );
 
-            <p className="mt-auto pt-10 text-[12.5px] text-[#98A2B3]">
-              {t("footerLocation")}
-            </p>
+                return (
+                  <li key={label}>
+                    {href ? (
+                      <a href={href} className={cn(rowClass, "hover:text-[#1865EA]")}>
+                        {content}
+                      </a>
+                    ) : (
+                      <span className={rowClass}>{content}</span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
           </div>
+        </div>
+
+        {/* Bottom bar — copyright */}
+        <div className="mt-8 border-t border-[#D7E8FA] pt-4">
+          <p className="text-left text-[12.5px] text-[#98A2B3] md:text-right">
+            {t("footerCopyright", { year })}
+          </p>
         </div>
       </div>
     </footer>

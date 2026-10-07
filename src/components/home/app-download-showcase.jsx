@@ -53,15 +53,15 @@ function StoreBadge({ href, ariaLabel, eyebrow, label, icon }) {
   );
 }
 
-/** Desktop-only app download — light reference-style banner */
+/** Website app download — stacked on mobile, two-column on desktop */
 export function AppDownloadShowcase({ className }) {
   const { t } = useWebLocale();
 
   return (
-    <section aria-label={t("appAria")} className={cn("hidden md:block", className)}>
+    <section aria-label={t("appAria")} className={cn(className)}>
       <div
         className={cn(
-          "relative isolate overflow-hidden rounded-[1.75rem]",
+          "relative isolate overflow-hidden rounded-2xl md:rounded-[1.75rem]",
           "bg-[#F0F7FF] ring-1 ring-[#D7E8FA]",
         )}
       >
@@ -157,20 +157,20 @@ export function AppDownloadShowcase({ className }) {
           </span>
         </p>
 
-        <div className="relative z-10 grid min-h-[20rem] grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] items-center gap-6 px-9 pt-10 pb-0 lg:min-h-[22rem] lg:gap-8 lg:px-12 lg:pt-11">
-          <div className="max-w-lg pb-10 lg:pb-11">
-            <h2 className="text-[2.35rem] leading-[1.08] font-bold tracking-tight text-[#0F1B2D] lg:text-[2.75rem]">
+        <div className="relative z-10 grid items-center gap-2 px-5 pt-6 pb-0 md:min-h-[20rem] md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] md:gap-6 md:px-9 md:pt-10 lg:min-h-[22rem] lg:gap-8 lg:px-12 lg:pt-11">
+          <div className="mx-auto max-w-lg pb-4 text-center md:mx-0 md:pb-10 md:text-left lg:pb-11">
+            <h2 className="text-[1.75rem] leading-[1.1] font-bold tracking-tight text-[#0F1B2D] md:text-[2.35rem] md:leading-[1.08] lg:text-[2.75rem]">
               <span className="block">{t("appTitle1")}</span>
               <span className="mt-1 block bg-[linear-gradient(105deg,#1865EA_0%,#7A5AF8_52%,#DD2590_100%)] bg-clip-text text-transparent">
                 {t("appTitle2")}
               </span>
             </h2>
 
-            <p className="mt-4 max-w-md text-[15px] leading-relaxed text-[#5B6B82]">
+            <p className="mx-auto mt-3 max-w-md text-[14px] leading-relaxed text-[#5B6B82] md:mx-0 md:mt-4 md:text-[15px]">
               {t("appBody")}
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5 md:mt-8 md:justify-start md:gap-3">
               <StoreBadge
                 href="#"
                 ariaLabel={`${t("appStoreEyebrow")} ${t("appStoreName")}`}
@@ -189,17 +189,17 @@ export function AppDownloadShowcase({ className }) {
           </div>
 
           <div
-            className="relative flex h-full min-h-[18rem] items-end justify-center lg:min-h-[20rem]"
+            className="relative flex h-[11.5rem] items-end justify-center overflow-hidden md:h-full md:min-h-[18rem] md:overflow-visible lg:min-h-[20rem]"
             aria-hidden
           >
-            <div className="relative mb-[-180px] w-full max-w-[26rem] -translate-x-10 -translate-y-2.5 drop-shadow-[0_22px_40px_rgba(24,101,234,0.18)] lg:max-w-[28rem] lg:-translate-x-14">
+            <div className="relative mb-[-8px] w-full max-w-[17.5rem] translate-y-[42%] drop-shadow-[0_22px_40px_rgba(24,101,234,0.18)] md:mb-[-180px] md:max-w-[26rem] md:-translate-x-10 md:-translate-y-2.5 md:translate-y-0 lg:max-w-[28rem] lg:-translate-x-14">
               <Image
                 src="/images/app-mockups/app-phones.png"
                 alt=""
                 width={796}
                 height={926}
                 className="h-auto w-full object-contain object-bottom"
-                sizes="(min-width: 1280px) 448px, 40vw"
+                sizes="(min-width: 1280px) 448px, (min-width: 768px) 40vw, 280px"
                 priority
                 unoptimized
               />

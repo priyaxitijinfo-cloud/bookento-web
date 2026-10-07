@@ -10,6 +10,7 @@ import {
   buildCategoryProviderDetailUrl,
   providerDetailRoute,
 } from "@/constants/routes.constants";
+import { useRequireLoginToBook } from "@/hooks/use-require-login-to-book";
 import { useWebLocale } from "@/hooks/use-web-locale";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/format.utils";
@@ -41,14 +42,17 @@ export function TopRatedProviderCard({
   categorySlug = "salon",
 }) {
   const { t } = useWebLocale();
+  const { getBookHref } = useRequireLoginToBook();
 
-  const bookNowHref = (() => {
+  const providerHref = (() => {
     const base = categorySlug
       ? buildCategoryProviderDetailUrl(provider.id, categorySlug, provider)
       : providerDetailRoute(provider.id);
     const separator = base.includes("?") ? "&" : "?";
     return `${base}${separator}backFrom=home`;
   })();
+  // Web: Book / open pro from home requires login first
+  const bookNowHref = getBookHref(providerHref);
 
   if (desktop) {
     const specialty =
@@ -69,7 +73,7 @@ export function TopRatedProviderCard({
       <article className="flex h-full flex-col rounded-2xl border border-[#E8EDF5] bg-white px-3.5 pt-3.5 pb-3.5 shadow-[0_2px_10px_rgba(15,23,42,0.04)]">
         <div className="group relative aspect-[4/3] overflow-hidden rounded-xl bg-[#EEF2F7]">
           <Link
-            href={providerDetailRoute(provider.id)}
+            href={bookNowHref}
             className="absolute inset-0"
             aria-label={`View ${provider.businessName}`}
           >
@@ -97,7 +101,7 @@ export function TopRatedProviderCard({
         </div>
 
         <div className="flex flex-1 flex-col pt-3.5">
-          <Link href={providerDetailRoute(provider.id)} className="block">
+          <Link href={bookNowHref} className="block">
             <h3 className="line-clamp-1 text-[15px] leading-snug font-bold text-[#0F1B2D]">
               {provider.businessName}
             </h3>

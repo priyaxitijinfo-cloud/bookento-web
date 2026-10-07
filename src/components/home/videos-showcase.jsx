@@ -13,6 +13,7 @@ import {
   Sparkles,
 } from "lucide-react";
 
+import { useRequireLoginToBook } from "@/hooks/use-require-login-to-book";
 import { useWebLocale } from "@/hooks/use-web-locale";
 import { buildReelsRoute } from "@/lib/navigation/back-navigation";
 import { cn } from "@/lib/utils";
@@ -26,7 +27,15 @@ const SLIDE_MS = 600;
 const DRAG_THRESHOLD_PX = 48;
 const ALL_REELS_HREF = buildReelsRoute({ from: "home", view: "all" });
 
-function ReelPanel({ reel, play, isCenter, onPause, popularBadge, suppressClickRef }) {
+function ReelPanel({
+  reel,
+  play,
+  isCenter,
+  onPause,
+  popularBadge,
+  suppressClickRef,
+  href = ALL_REELS_HREF,
+}) {
   const videoRef = useRef(null);
   const handle = reel.handle || reel.providerName;
 
@@ -46,7 +55,7 @@ function ReelPanel({ reel, play, isCenter, onPause, popularBadge, suppressClickR
 
   return (
     <Link
-      href={ALL_REELS_HREF}
+      href={href}
       draggable={false}
       aria-label={`Watch ${reel.title}`}
       onClick={(event) => {
@@ -157,6 +166,8 @@ function ReelPanel({ reel, play, isCenter, onPause, popularBadge, suppressClickR
 /** Desktop-only — center focus hold + smooth slide, seamless infinite loop */
 export function VideosShowcase({ className }) {
   const { t } = useWebLocale();
+  const { getBookHref } = useRequireLoginToBook();
+  const reelsHref = getBookHref(ALL_REELS_HREF);
   const stageRef = useRef(null);
   const trackRef = useRef(null);
   const dragRef = useRef({ active: false, startX: 0, delta: 0 });
@@ -284,8 +295,8 @@ export function VideosShowcase({ className }) {
       id="videos"
       aria-label="Provider videos"
       className={cn(
-        "hidden scroll-mt-28 md:block",
-        "md:relative md:left-1/2 md:w-screen md:max-w-[100vw] md:-translate-x-1/2",
+        "scroll-mt-28",
+        "relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2",
         className,
       )}
     >
@@ -295,28 +306,29 @@ export function VideosShowcase({ className }) {
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_78%_35%,rgba(24,101,234,0.1)_0%,transparent_52%)]"
         />
 
-        <div className="relative mx-auto w-full max-w-[calc(96rem-60px)] px-[4.875rem] py-9 xl:px-[5.875rem] xl:py-11">
-          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-8 xl:gap-10">
-            <div className="flex w-full max-w-none flex-col lg:pr-2">
-              <div className="flex items-center gap-3">
-                <span aria-hidden className="h-px w-10 bg-[#C9D3E2]" />
-                <span className="text-[12px] font-semibold tracking-[0.22em] text-[#1865EA] uppercase">
+        <div className="relative mx-auto w-full max-w-[calc(96rem-60px)] px-4 py-8 md:px-[4.875rem] md:py-9 xl:px-[5.875rem] xl:py-11">
+          <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-8 xl:gap-10">
+            <div className="flex w-full max-w-none flex-col items-center text-center lg:items-start lg:pr-2 lg:text-left">
+              <div className="flex items-center justify-center gap-3 lg:justify-start">
+                <span aria-hidden className="h-px w-8 bg-[#C9D3E2] md:w-10" />
+                <span className="text-[11px] font-semibold tracking-[0.2em] text-[#1865EA] uppercase md:text-[12px] md:tracking-[0.22em]">
                   {t("videosBadge")}
                 </span>
+                <span aria-hidden className="h-px w-8 bg-[#C9D3E2] md:w-10 lg:hidden" />
               </div>
 
-              <h2 className="mt-4 max-w-xl text-[calc(2.15rem-4px)] leading-[1.08] font-bold tracking-tight text-[#0F1B2D] lg:text-[2.5rem]">
+              <h2 className="mt-3 max-w-xl text-[1.65rem] leading-[1.1] font-bold tracking-tight text-[#0F1B2D] md:mt-4 md:text-[calc(2.15rem-4px)] md:leading-[1.08] lg:text-[2.5rem]">
                 {t("videosTitle")}
                 <span className="mt-1 block bg-[linear-gradient(105deg,#1865EA_0%,#58A1FF_100%)] bg-clip-text text-transparent">
                   {t("videosHighlight")}
                 </span>
               </h2>
 
-              <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-[#667085] lg:text-[15.5px]">
+              <p className="mt-3 max-w-lg text-[14px] leading-relaxed text-[#667085] md:text-[15px] lg:text-[15.5px]">
                 {t("videosBody")}
               </p>
 
-              <ul className="mt-6 grid w-[calc(100%-12px)] gap-3 sm:grid-cols-1 xl:gap-3.5">
+              <ul className="mt-5 hidden w-[calc(100%-12px)] gap-3 md:mt-6 md:grid xl:gap-3.5">
                 {videoPoints.map((point) => {
                   const Icon = point.icon;
                   return (
@@ -341,9 +353,9 @@ export function VideosShowcase({ className }) {
               </ul>
 
               <Link
-                href={ALL_REELS_HREF}
+                href={reelsHref}
                 className={cn(
-                  "gradient-brand mt-7 inline-flex w-fit items-center gap-2 rounded-full px-5 py-2.5",
+                  "gradient-brand mt-5 inline-flex w-fit items-center gap-2 rounded-full px-5 py-2.5 md:mt-7",
                   "text-sm font-semibold text-white transition-opacity hover:opacity-95",
                 )}
               >
@@ -355,8 +367,8 @@ export function VideosShowcase({ className }) {
             <div
               ref={stageRef}
               className={cn(
-                "relative w-full min-w-0 overflow-hidden py-6",
-                "[--gap:1.15rem] [--panel:15rem] xl:[--gap:1.35rem] xl:[--panel:16.5rem]",
+                "relative w-full min-w-0 overflow-hidden py-4 md:py-6",
+                "[--gap:0.9rem] [--panel:12.25rem] sm:[--panel:13rem] md:[--gap:1.15rem] md:[--panel:15rem] xl:[--gap:1.35rem] xl:[--panel:16.5rem]",
                 "[mask-image:linear-gradient(90deg,transparent_0%,#000_10%,#000_90%,transparent_100%)]",
                 "[-webkit-mask-image:linear-gradient(90deg,transparent_0%,#000_10%,#000_90%,transparent_100%)]",
                 dragging ? "cursor-grabbing" : "cursor-grab",
@@ -391,6 +403,7 @@ export function VideosShowcase({ className }) {
                     onPause={setPaused}
                     popularBadge={t("popularBadgeShort")}
                     suppressClickRef={suppressClickRef}
+                    href={reelsHref}
                   />
                 ))}
               </div>

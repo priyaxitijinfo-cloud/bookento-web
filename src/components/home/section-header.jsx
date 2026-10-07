@@ -50,25 +50,28 @@ export function DesktopSectionHeading({
   return (
     <div
       className={cn(
-        "mb-6 hidden md:block",
-        isLeft ? "text-left" : "text-center",
+        "mb-5 md:mb-6",
+        isLeft ? "text-center md:text-left" : "text-center",
         className,
       )}
     >
       <div
         className={cn(
           "flex items-center gap-3",
-          isLeft ? "justify-start" : "mx-auto justify-center",
+          isLeft ? "justify-center md:justify-start" : "mx-auto justify-center",
         )}
       >
-        <span aria-hidden className="h-px w-10 bg-[#C9D3E2]" />
-        <span className="text-[12px] font-semibold tracking-[0.22em] text-[#1865EA] uppercase">
+        <span aria-hidden className="h-px w-8 bg-[#C9D3E2] md:w-10" />
+        <span className="text-[11px] font-semibold tracking-[0.2em] text-[#1865EA] uppercase md:text-[12px] md:tracking-[0.22em]">
           {badgeText}
         </span>
-        {!isLeft ? <span aria-hidden className="h-px w-10 bg-[#C9D3E2]" /> : null}
+        <span
+          aria-hidden
+          className={cn("h-px w-8 bg-[#C9D3E2] md:w-10", isLeft && "md:hidden")}
+        />
       </div>
 
-      <h2 className="mt-4 text-[calc(2.15rem-6px)] leading-[1.08] font-bold tracking-tight text-[#0F1B2D] lg:text-[calc(2.6rem-6px)]">
+      <h2 className="mt-3 text-[1.65rem] leading-[1.1] font-bold tracking-tight text-[#0F1B2D] md:mt-4 md:text-[calc(2.15rem-6px)] lg:text-[calc(2.6rem-6px)]">
         {titleText}
         {highlightText ? (
           <>

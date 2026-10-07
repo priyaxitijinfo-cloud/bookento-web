@@ -8,9 +8,16 @@ import { TopRatedProviderCard } from "@/components/home/top-rated-provider-card"
 import { useWebLocale } from "@/hooks/use-web-locale";
 import { cn } from "@/lib/utils";
 
-const VISIBLE = 4;
+const VISIBLE_DESKTOP = 4;
+const VISIBLE_MOBILE = 1;
 const GAP_PX = 20;
 const LOOP_TRACKS = 3;
+const MD_MIN = 768;
+
+function getVisibleCount() {
+  if (typeof window === "undefined") return VISIBLE_DESKTOP;
+  return window.innerWidth < MD_MIN ? VISIBLE_MOBILE : VISIBLE_DESKTOP;
+}
 
 const FILTERS = [
   { id: "recommended", labelKey: "prosFilterRecommended" },
@@ -43,9 +50,10 @@ function getTrackWidth(scroller, itemCount) {
   return child.offsetLeft - scroller.children[0].offsetLeft;
 }
 
-/** Exact width of one page (4 full cards + gaps between them) */
+/** Exact width of one page (1 card mobile / 4 cards desktop + gaps) */
 function getPageWidth(scroller) {
-  const next = scroller.children[VISIBLE];
+  const visible = getVisibleCount();
+  const next = scroller.children[visible];
   if (!next || !scroller.children[0]) return 0;
   return next.offsetLeft - scroller.children[0].offsetLeft;
 }
@@ -92,7 +100,7 @@ export function DesktopTopRatedScroll({ providers }) {
     filteredProviders.map((provider) => ({ provider, track })),
   ).flat();
 
-  const tileWidth = `calc((100% - ${(VISIBLE - 1) * GAP_PX}px) / ${VISIBLE})`;
+  const desktopTileWidth = `calc((100% - ${(VISIBLE_DESKTOP - 1) * GAP_PX}px) / ${VISIBLE_DESKTOP})`;
 
   const snapToPage = (el) => {
     const pageWidth = getPageWidth(el);
@@ -196,17 +204,17 @@ export function DesktopTopRatedScroll({ providers }) {
   };
 
   return (
-    <div className="hidden md:block">
-      <div className="flex items-end justify-between gap-6">
+    <div>
+      <div className="flex items-end justify-between gap-4 md:gap-6">
         <DesktopSectionHeading
           badgeKey="professionalsBadge"
           titleKey="professionalsTitle"
           highlightKey="professionalsHighlight"
           align="left"
-          className="mb-0"
+          className="mb-0 w-full md:w-auto"
         />
 
-        <div className="mb-1 flex shrink-0 items-center gap-2">
+        <div className="mb-1 hidden shrink-0 items-center gap-2 md:flex">
           <NavButton
             label="Previous professionals"
             side="left"
@@ -221,7 +229,7 @@ export function DesktopTopRatedScroll({ providers }) {
       </div>
 
       <div
-        className="mt-5 mb-5 flex flex-wrap items-center gap-2"
+        className="scrollbar-hide mt-5 mb-5 flex flex-nowrap items-center justify-center gap-1.5 overflow-x-auto md:flex-wrap md:justify-start md:gap-2"
         role="tablist"
         aria-label={t("prosFilterAria")}
       >
@@ -235,7 +243,8 @@ export function DesktopTopRatedScroll({ providers }) {
               aria-selected={active}
               onClick={() => setActiveFilter(filter.id)}
               className={cn(
-                "rounded-full px-5 py-[0.55rem] text-[13px] font-semibold tracking-tight transition-all duration-200",
+                "shrink-0 rounded-full font-semibold tracking-tight transition-all duration-200",
+                "px-3 py-2 text-[11px] md:px-5 md:py-[0.55rem] md:text-[13px]",
                 "focus-visible:ring-2 focus-visible:ring-[#1865EA]/30 focus-visible:ring-offset-2 focus-visible:outline-none",
                 active
                   ? "gradient-brand text-white ring-1 ring-[#1865EA]/35"
@@ -250,14 +259,14 @@ export function DesktopTopRatedScroll({ providers }) {
 
       <div
         ref={scrollerRef}
-        className="scrollbar-hide -mx-1 flex overflow-x-auto overscroll-x-contain px-2 pb-4"
+        className="scrollbar-hide -mx-1 flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain px-2 pb-2 md:snap-none md:pb-4"
         style={{ gap: GAP_PX }}
       >
         {loopItems.map(({ provider, track }) => (
           <div
             key={`${track}-${provider.id}`}
-            className="shrink-0 py-1"
-            style={{ width: tileWidth, minWidth: tileWidth }}
+            className="w-full min-w-full shrink-0 snap-start py-1 md:w-[var(--desktop-tile)] md:min-w-[var(--desktop-tile)]"
+            style={{ ["--desktop-tile"]: desktopTileWidth }}
           >
             <TopRatedProviderCard
               provider={provider}
@@ -266,6 +275,19 @@ export function DesktopTopRatedScroll({ providers }) {
             />
           </div>
         ))}
+      </div>
+
+      <div className="mt-3 flex items-center justify-center gap-2 md:hidden">
+        <NavButton
+          label="Previous professionals"
+          side="left"
+          onClick={() => scrollByPage(-1)}
+        />
+        <NavButton
+          label="Next professionals"
+          side="right"
+          onClick={() => scrollByPage(1)}
+        />
       </div>
     </div>
   );

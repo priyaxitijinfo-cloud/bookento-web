@@ -29,14 +29,14 @@ function FaqItem({ item, open, onToggle, t }) {
         type="button"
         aria-expanded={open}
         onClick={onToggle}
-        className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+        className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left md:gap-4 md:px-5 md:py-4"
       >
-        <span className="text-[15px] font-semibold text-[#0F1B2D]">
+        <span className="text-[14px] font-semibold text-[#0F1B2D] md:text-[15px]">
           {t(item.questionKey)}
         </span>
         <span
           className={cn(
-            "flex size-8 shrink-0 items-center justify-center rounded-full transition-colors duration-200",
+            "flex size-7 shrink-0 items-center justify-center rounded-full transition-colors duration-200 md:size-8",
             open ? "bg-[#1865EA] text-white" : "bg-[#EEF2F7] text-[#4A5870]",
           )}
         >
@@ -57,7 +57,7 @@ function FaqItem({ item, open, onToggle, t }) {
         )}
       >
         <div className="overflow-hidden">
-          <p className="px-5 pt-0 pb-4 text-[14px] leading-relaxed text-[#556578]">
+          <p className="px-4 pt-0 pb-3.5 text-[13px] leading-relaxed text-[#556578] md:px-5 md:pb-4 md:text-[14px]">
             {t(item.answerKey)}
           </p>
         </div>
@@ -66,20 +66,20 @@ function FaqItem({ item, open, onToggle, t }) {
   );
 }
 
-/** Desktop-only FAQs for the landing page */
+/** Website FAQs — accordion on all breakpoints */
 export function FaqShowcase({ className }) {
   const { t } = useWebLocale();
-  const [openId, setOpenId] = useState(FAQS[0].id);
+  const [openId, setOpenId] = useState(null);
 
   return (
-    <section id="faqs" className={cn("hidden scroll-mt-28 md:block", className)}>
+    <section id="faqs" className={cn("scroll-mt-28", className)}>
       <DesktopSectionHeading
         badgeKey="faqBadge"
         titleKey="faqTitle"
         highlightKey="faqHighlight"
       />
 
-      <div className="mx-auto grid max-w-3xl gap-3">
+      <div className="mx-auto grid max-w-3xl gap-2.5 md:gap-3">
         {FAQS.map((item) => (
           <FaqItem
             key={item.id}

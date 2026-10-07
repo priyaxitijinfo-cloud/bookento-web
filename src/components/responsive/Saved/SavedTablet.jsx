@@ -9,8 +9,8 @@ export function SavedTablet({ hasHydrated, providers, savedIds, onWishlistToggle
   return (
     <UserPageShell
       title="Saved Providers"
-      backHref={ROUTES.PROFILE}
-      backLabel="Back to Profile"
+      backHref={ROUTES.HOME}
+      backLabel="Go back"
       containerVariant="browseWithBreadcrumb"
       className="bg-surface-page"
       mainClassName="mx-auto max-w-3xl"

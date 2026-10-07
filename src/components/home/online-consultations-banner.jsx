@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowUpRight, Clock3, ShieldCheck, Video } from "lucide-react";
 
 import { categoryListingRoute } from "@/constants/routes.constants";
+import { useRequireLoginToBook } from "@/hooks/use-require-login-to-book";
 import { useWebLocale } from "@/hooks/use-web-locale";
 import { cn } from "@/lib/utils";
 
@@ -18,50 +19,52 @@ const POINTS = [
 ];
 
 /**
- * Desktop-only Online Consultations — full-bleed dark navy + diagonal photo.
+ * Online Consultations — website banner, stacked on mobile.
  */
 export function OnlineConsultationsBanner({ className }) {
   const { t } = useWebLocale();
-  const href = categoryListingRoute("doctor");
+  const { getBookHref } = useRequireLoginToBook();
+  const href = getBookHref(categoryListingRoute("doctor"));
 
   return (
     <section
       id="online-consultations"
       aria-label={t("onlineConsultAria")}
       className={cn(
-        "hidden scroll-mt-28 md:block",
-        "md:relative md:left-1/2 md:w-screen md:max-w-[100vw] md:-translate-x-1/2",
+        "scroll-mt-28",
+        "relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2",
         className,
       )}
     >
       <div className="relative overflow-hidden bg-[#0B1B32]">
-        <div className="relative grid min-h-[22rem] md:min-h-[28rem] lg:min-h-[30rem] lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.28fr)] xl:min-h-[32rem]">
+        <div className="relative grid min-h-0 lg:min-h-[28rem] lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.28fr)] xl:min-h-[32rem]">
           {/* Copy — navy panel */}
           <div
             className={cn(
               "relative z-10 flex flex-col justify-center",
-              "px-9 py-12 md:px-[4.875rem] lg:py-14 xl:px-[5.875rem] xl:py-16",
+              "px-4 py-10 md:px-[4.875rem] md:py-12 xl:px-[5.875rem] xl:py-16",
             )}
           >
-            <div className="max-w-xl md:translate-x-10">
+            {/* Same as web — centered on mobile only */}
+            <div className="mx-auto max-w-xl text-center md:mx-0 md:translate-x-6 md:text-left lg:translate-x-10">
               <p className="text-[11px] font-semibold tracking-[0.18em] text-[#7EB6FF] uppercase">
                 {t("onlineConsultEyebrow")}
               </p>
 
-              <h2 className="mt-4 text-[2.35rem] leading-[1.12] font-bold tracking-tight text-white xl:text-[2.75rem]">
-                <span className="block whitespace-nowrap">
+              <h2 className="mt-4 text-[2rem] leading-[1.12] font-bold tracking-tight text-white md:text-[2.35rem] xl:text-[2.75rem]">
+                <span className="block md:whitespace-nowrap">
                   {t("onlineConsultTitle1")}
                 </span>
-                <span className="mt-1 block whitespace-nowrap">
+                <span className="mt-1 block md:whitespace-nowrap">
                   {t("onlineConsultTitle2")}
                 </span>
               </h2>
 
-              <p className="mt-4 max-w-md text-[0.98rem] leading-relaxed text-white/85">
+              <p className="mx-auto mt-4 max-w-md text-[0.98rem] leading-relaxed text-white/85 md:mx-0">
                 {t("onlineConsultBody1")}
               </p>
 
-              <div className="mt-8">
+              <div className="mt-8 flex justify-center md:justify-start">
                 <Link
                   href={href}
                   className={cn(
@@ -75,7 +78,7 @@ export function OnlineConsultationsBanner({ className }) {
                 </Link>
               </div>
 
-              <ul className="mt-10 flex flex-wrap gap-x-6 gap-y-2.5">
+              <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2.5 md:justify-start">
                 {POINTS.map(({ icon: Icon, key }) => (
                   <li
                     key={key}
@@ -89,25 +92,36 @@ export function OnlineConsultationsBanner({ className }) {
             </div>
           </div>
 
-          {/* Media — diagonal photo to the right edge */}
-          <div className="relative min-h-[20rem] lg:min-h-full">
-            <div className="absolute inset-0" style={{ clipPath: MEDIA_CLIP }}>
+          {/* Media — full width under copy on mobile, diagonal on desktop */}
+          <div className="relative min-h-[14rem] md:min-h-[18rem] lg:min-h-full">
+            <div className="absolute inset-0 lg:hidden">
               <Image
                 src="/images/online-consultations-photo.png"
                 alt={t("onlineConsultAlt")}
                 fill
                 className="object-cover object-[58%_42%]"
-                sizes="(min-width: 1280px) 55vw, (min-width: 768px) 50vw, 0px"
-                priority={false}
+                sizes="100vw"
+                unoptimized
+              />
+            </div>
+            <div
+              className="absolute inset-0 hidden lg:block"
+              style={{ clipPath: MEDIA_CLIP }}
+            >
+              <Image
+                src="/images/online-consultations-photo.png"
+                alt={t("onlineConsultAlt")}
+                fill
+                className="object-cover object-[58%_42%]"
+                sizes="(min-width: 1280px) 55vw, 50vw"
                 unoptimized
               />
             </div>
 
-            {/* Consult chip — speech bubble */}
             <div
               className={cn(
-                "online-consult-float absolute top-[16%] left-[18%] z-20 lg:left-[20%]",
-                "flex items-center gap-2 rounded-full bg-white px-3.5 py-2",
+                "online-consult-float absolute top-[16%] left-[12%] z-20 hidden md:left-[18%] lg:left-[20%] lg:flex",
+                "items-center gap-2 rounded-full bg-white px-3.5 py-2",
                 "shadow-[0_14px_32px_-14px_rgba(15,27,45,0.45)]",
               )}
             >
@@ -132,7 +146,6 @@ export function OnlineConsultationsBanner({ className }) {
               className="absolute inset-0 z-10 focus-visible:outline-none"
               aria-label={t("onlineConsultCta")}
               tabIndex={-1}
-              style={{ clipPath: MEDIA_CLIP }}
             />
           </div>
         </div>

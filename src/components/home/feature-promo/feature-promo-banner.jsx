@@ -19,25 +19,20 @@ export function FeaturePromoBanner({ className }) {
 
   return (
     <section aria-label={t("promoSectionAria")} className={cn("w-full", className)}>
-      {/* Intro */}
-      <div className="mb-5 flex flex-col gap-3 sm:mb-7 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
+      {/* Intro — centered on mobile, web layout on md+ */}
+      <div className="mb-5 flex flex-col items-center gap-2.5 text-center sm:mb-7 md:flex-row md:items-end md:justify-between md:gap-6 md:text-left">
         <div className="min-w-0 overflow-visible">
-          <p className="text-[12px] font-semibold tracking-[0.18em] text-[#1865EA] uppercase">
+          <p className="text-[11px] font-semibold tracking-[0.18em] text-[#1865EA] uppercase md:text-[12px]">
             {t("promoSectionKicker")}
           </p>
-          <h2 className="mt-2 flex flex-wrap items-baseline gap-x-2 overflow-visible text-[1.85rem] leading-[1.12] font-bold tracking-tight text-[#0F1B2D] sm:text-[2.15rem] md:flex-nowrap md:items-center md:gap-x-2.5 md:leading-none lg:text-[2.45rem]">
+          <h2 className="mt-2 flex flex-col items-center gap-1 overflow-visible text-[1.65rem] leading-[1.15] font-bold tracking-tight text-[#0F1B2D] sm:text-[1.9rem] md:flex-row md:flex-wrap md:items-baseline md:gap-x-2.5 md:text-[2.15rem] md:leading-none lg:text-[2.45rem]">
             <span className="md:whitespace-nowrap">{t("promoSectionTitle")}</span>
-            {/* Mobile: solid script color */}
-            <span className="font-script text-[1.15em] font-semibold text-[#1865EA] md:hidden">
-              {highlight}
-            </span>
-            {/* Desktop: larger gradient script — extra end pad so “?” isn’t clipped by bg-clip-text */}
             <span
               className={cn(
-                "font-script hidden overflow-visible font-semibold md:inline-block",
+                "font-script overflow-visible font-semibold",
                 "bg-gradient-to-r from-[#1865EA] via-[#DD2590] to-[#FF6B4A]",
                 "bg-clip-text text-transparent",
-                "pr-[0.28em] pb-[0.12em] text-[1.55em] leading-none lg:text-[1.65em]",
+                "pr-[0.28em] pb-[0.12em] text-[1.25em] leading-none md:text-[1.55em] lg:text-[1.65em]",
               )}
               aria-label={highlight}
             >
@@ -45,7 +40,7 @@ export function FeaturePromoBanner({ className }) {
             </span>
           </h2>
         </div>
-        <p className="inline-flex items-center gap-1.5 text-sm font-medium text-[#5B6B82]">
+        <p className="inline-flex items-center justify-center gap-1.5 text-[13px] font-medium text-[#5B6B82] md:justify-start md:text-sm">
           <MapPin
             className="size-4 shrink-0 text-[#1865EA]"
             strokeWidth={2.2}
@@ -55,11 +50,11 @@ export function FeaturePromoBanner({ className }) {
         </p>
       </div>
 
-      {/* Cards grid */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)] md:items-stretch md:gap-5">
-        <HeroCard className="min-h-[22rem] md:aspect-[806/472] md:h-auto md:min-h-0" />
+      {/* Cards — same web composition, tighter on mobile */}
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)] md:items-stretch md:gap-5">
+        <HeroCard className="min-h-[18.5rem] md:aspect-[806/472] md:h-auto md:min-h-0" />
 
-        <div className="flex flex-col gap-4 md:h-full lg:gap-5">
+        <div className="flex flex-col gap-3 md:h-full md:gap-4 lg:gap-5">
           <ServicePromoCard
             href={categoryListingRoute("doctor")}
             tone="doctor"

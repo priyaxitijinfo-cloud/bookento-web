@@ -5,6 +5,7 @@ import Link from "next/link";
 import { SectionHeader, DesktopSectionHeading } from "@/components/home/section-header";
 import { MobileScrollRow } from "@/components/home/horizontal-scroll";
 import { providerPackageRoute, ROUTES } from "@/constants/routes.constants";
+import { useRequireLoginToBook } from "@/hooks/use-require-login-to-book";
 import { useWebLocale } from "@/hooks/use-web-locale";
 import { getFeaturedPackages } from "@/mock/packages";
 import { formatCurrency } from "@/utils/format.utils";
@@ -76,15 +77,17 @@ const PACKAGES = PACKAGE_DISPLAY.map((display, index) => {
 
 function SpecialPackageCard({ pkg, translate = false }) {
   const { t } = useWebLocale();
+  const { getBookHref } = useRequireLoginToBook();
   const name = translate && pkg.titleKey ? t(pkg.titleKey) : pkg.name;
   const servicesText =
     translate && pkg.subtitleKey ? t(pkg.subtitleKey) : pkg.servicesText;
   const discountLabel =
     translate && pkg.discountKey ? t(pkg.discountKey) : pkg.discountLabel;
+  const href = getBookHref(pkg.href);
 
   return (
     <Link
-      href={pkg.href}
+      href={href}
       className={cn(
         "group relative flex h-[10.5rem] overflow-hidden rounded-2xl p-4",
         "shadow-card hover:shadow-card-hover transition-shadow",
@@ -139,25 +142,34 @@ function SpecialPackageCard({ pkg, translate = false }) {
   );
 }
 
-export function SpecialPackagesShowcase({ className, id }) {
+export function SpecialPackagesShowcase({ className, id, web = false }) {
   return (
     <section id={id} className={className}>
-      <SectionHeader title="Special Packages" className="md:hidden" />
+      {!web ? <SectionHeader title="Special Packages" className="md:hidden" /> : null}
       <DesktopSectionHeading
         badgeKey="packagesBadge"
         titleKey="packagesTitle"
         highlightKey="packagesHighlight"
       />
 
-      <MobileScrollRow className="md:hidden">
-        {PACKAGES.map((pkg) => (
-          <div key={pkg.id} className="w-[calc(100vw-4.25rem)] shrink-0 snap-start">
-            <SpecialPackageCard pkg={pkg} />
-          </div>
-        ))}
-      </MobileScrollRow>
+      {!web ? (
+        <MobileScrollRow className="md:hidden">
+          {PACKAGES.map((pkg) => (
+            <div key={pkg.id} className="w-[calc(100vw-4.25rem)] shrink-0 snap-start">
+              <SpecialPackageCard pkg={pkg} translate />
+            </div>
+          ))}
+        </MobileScrollRow>
+      ) : null}
 
-      <div className="hidden gap-3 md:grid md:grid-cols-3 md:gap-4">
+      <div
+        className={cn(
+          "gap-3 md:gap-4",
+          web
+            ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
+            : "hidden md:grid md:grid-cols-3",
+        )}
+      >
         {PACKAGES.map((pkg) => (
           <SpecialPackageCard key={pkg.id} pkg={pkg} translate />
         ))}

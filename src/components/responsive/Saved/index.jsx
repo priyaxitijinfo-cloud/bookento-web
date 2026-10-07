@@ -34,7 +34,9 @@ export function SavedResponsive() {
   const hasHydrated = usePersistStoreHydration(useSavedProvidersStore);
 
   const providers = useMemo(() => {
-    const providerMap = new Map(mockProviders.map((provider) => [provider.id, provider]));
+    const providerMap = new Map(
+      mockProviders.map((provider) => [provider.id, provider]),
+    );
     return savedIds
       .map((providerId) => providerMap.get(providerId))
       .filter(Boolean)
@@ -43,10 +45,12 @@ export function SavedResponsive() {
 
   const handleWishlistToggle = useCallback(
     (providerId) => {
-      const isNowSaved = toggleSaved(providerId);
-      toast.message(isNowSaved ? "Added to saved" : "Removed from saved");
+      // Saved page: only unlike / remove — never re-add here
+      if (!savedIds.includes(providerId)) return;
+      toggleSaved(providerId);
+      toast.message("Removed from saved");
     },
-    [toggleSaved],
+    [savedIds, toggleSaved],
   );
 
   const sharedProps = {

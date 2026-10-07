@@ -10,6 +10,7 @@ import {
   providerPaymentRoute,
   appendCategoryFlowQuery,
 } from "@/constants/routes.constants";
+import { useRequireLoginToBook } from "@/hooks/use-require-login-to-book";
 import { useBookingStore } from "@/store";
 import { cn } from "@/lib/utils";
 import {
@@ -34,6 +35,7 @@ export function ProviderBookingSummaryBar({
 }) {
   const router = useRouter();
   const { draft } = useBookingStore();
+  const { requireLoginOrContinue } = useRequireLoginToBook();
 
   const selectedServices = services.filter((service) =>
     draft.serviceIds.includes(service.id),
@@ -89,6 +91,7 @@ export function ProviderBookingSummaryBar({
       ? providerPackagePaymentRoute(provider.id, bookingPackage.id)
       : providerPaymentRoute(provider.id);
     url = appendCategoryFlowQuery(url, categorySlug, provider);
+    if (!requireLoginOrContinue(url)) return;
     router.push(url);
   };
 
@@ -207,10 +210,12 @@ export function ProviderBookingSummaryBar({
 
 export function ProviderBookingSidebar({ provider, services }) {
   const { draft } = useBookingStore();
+  const { getBookHref } = useRequireLoginToBook();
   const selectedServices = services.filter((service) =>
     draft.serviceIds.includes(service.id),
   );
   const totalAmount = selectedServices.reduce((sum, service) => sum + service.price, 0);
+  const paymentHref = getBookHref(providerPaymentRoute(provider.id));
 
   return (
     <aside className="hidden lg:block">
@@ -236,7 +241,7 @@ export function ProviderBookingSidebar({ provider, services }) {
           </span>
         </div>
         <Link
-          href={providerPaymentRoute(provider.id)}
+          href={paymentHref}
           className="gradient-brand mt-4 flex w-full items-center justify-center rounded-lg py-3 text-sm font-medium text-white hover:opacity-95 md:font-semibold"
         >
           Continue to Payment

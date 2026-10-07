@@ -3,12 +3,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
-import { ChevronDown, X } from "lucide-react";
+import { CalendarCheck2, ChevronDown, ShieldCheck, Sparkles, X } from "lucide-react";
 
 import { ROUTES } from "@/constants/routes.constants";
 import { cn } from "@/lib/utils";
 import { countries } from "@/mock/languages";
 import { formatNationalPhone, parseNationalPhone } from "@/features/auth/lib/phone";
+
+const AUTH_PANEL_HIGHLIGHTS = [
+  { icon: ShieldCheck, label: "Verified professionals" },
+  { icon: CalendarCheck2, label: "Book in minutes" },
+  { icon: Sparkles, label: "In person or online" },
+];
 
 export function CountryFlag({ code, className }) {
   const clipId = useId();
@@ -158,7 +164,7 @@ export function SocialAuthButtons({ onSelect, variant = "app" }) {
               key={provider.id}
               type="button"
               onClick={() => onSelect(provider.label)}
-              className="flex h-11 items-center justify-center gap-2 rounded-xl border border-[#E7EBF2] bg-white px-2 text-sm font-medium text-[#334155] shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors hover:bg-[#F8FAFC]"
+              className="flex h-12 items-center justify-center gap-2 rounded-xl border border-[#E8EDF5] bg-[#F8FAFC] px-2 text-sm font-medium text-[#334155] transition-colors hover:border-[#D6E4FF] hover:bg-white"
             >
               <Icon />
               <span className="hidden sm:inline">{provider.label}</span>
@@ -263,7 +269,7 @@ export function PhoneNumberField({
         className={cn(
           "flex items-center bg-white",
           isWeb
-            ? "focus-within:ring-primary/20 h-12 rounded-xl border border-[#E6EAF2] focus-within:ring-2"
+            ? "focus-within:ring-primary/20 h-[3.25rem] rounded-xl border border-[#E8EDF5] bg-[#F8FAFC] focus-within:bg-white focus-within:ring-2"
             : "focus-within:ring-primary/20 h-14 rounded-2xl border border-[#EEF1F6] px-1.5 shadow-[0_2px_12px_rgba(15,23,42,0.04)] focus-within:ring-2",
           error && "border-destructive",
         )}
@@ -396,7 +402,7 @@ export function AuthMobileFrame({ illustration, children }) {
 }
 
 export function AuthWebFrame({
-  illustration,
+  illustration: _illustration,
   eyebrow = "Bookento",
   headline,
   copy,
@@ -404,58 +410,151 @@ export function AuthWebFrame({
   wide = false,
 }) {
   return (
-    <div className="min-h-dvh bg-[#F4F7FB]">
-      <div className="mx-auto grid min-h-dvh w-full max-w-[88rem] lg:grid-cols-[1.05fr_1fr]">
-        <aside className="relative hidden overflow-hidden bg-[linear-gradient(160deg,#FFF1E8_0%,#EAF2FF_52%,#F7FAFF_100%)] px-12 py-10 lg:flex lg:flex-col lg:justify-between">
-          <Link href={ROUTES.HOME} className="inline-flex items-center gap-2.5">
-            <Image
-              src="/images/app-icon.jpg"
-              alt="Bookento"
-              width={42}
-              height={42}
-              className="size-[42px] rounded-lg shadow-sm"
-              priority
-            />
-            <span className="text-[1.15rem] font-bold tracking-tight text-[#111827]">
-              {eyebrow}
-            </span>
-          </Link>
-          <div>
-            {illustration ? <div className="mb-8">{illustration}</div> : null}
-            <h2 className="max-w-md text-3xl font-bold tracking-tight text-[#111827]">
-              {headline}
-            </h2>
-            {copy ? (
-              <p className="mt-3 max-w-md text-base leading-relaxed text-[#667085]">
-                {copy}
-              </p>
-            ) : null}
-          </div>
-          <p className="text-sm text-[#98A2B3]">
-            Trusted professionals, booked in minutes.
-          </p>
-        </aside>
-
-        <main className="flex min-h-dvh items-center justify-center px-4 py-10 sm:px-8">
+    <div className="min-h-dvh bg-[#EEF3F9]">
+      <div className="mx-auto grid min-h-dvh w-full max-w-[90rem] lg:grid-cols-[minmax(0,1.12fr)_minmax(0,0.98fr)]">
+        {/* Web brand panel */}
+        <aside className="relative hidden overflow-hidden lg:flex lg:flex-col">
           <div
-            className={cn(
-              "w-full rounded-[1.75rem] border border-[#EEF1F6] bg-white p-6 shadow-[0_16px_48px_rgba(15,23,42,0.06)] sm:p-8",
-              wide ? "max-w-2xl" : "max-w-[28rem]",
-            )}
-          >
-            <Link
-              href={ROUTES.HOME}
-              className="mb-6 inline-flex items-center gap-2 lg:hidden"
-            >
+            aria-hidden
+            className="absolute inset-0 bg-[linear-gradient(165deg,#071525_0%,#0F2744_45%,#1654C4_100%)]"
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 opacity-[0.12]"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.7) 1px, transparent 0)",
+              backgroundSize: "26px 26px",
+            }}
+          />
+          <div
+            aria-hidden
+            className="absolute top-[-12%] right-[-18%] size-[28rem] rounded-full bg-[#1865EA]/35 blur-3xl"
+          />
+          <div
+            aria-hidden
+            className="absolute bottom-[-20%] left-[-12%] size-[22rem] rounded-full bg-[#C6F405]/12 blur-3xl"
+          />
+
+          <div className="relative z-10 flex h-full flex-col px-12 py-10 xl:px-14 xl:py-12">
+            <Link href={ROUTES.HOME} className="inline-flex w-fit items-center gap-2.5">
               <Image
                 src="/images/app-icon.jpg"
                 alt="Bookento"
-                width={36}
-                height={36}
-                className="size-9 rounded-lg shadow-sm"
+                width={40}
+                height={40}
+                className="size-10 rounded-[0.7rem] shadow-[0_8px_22px_rgba(0,0,0,0.25)] ring-1 ring-white/25"
+                priority
               />
-              <span className="font-bold text-[#111827]">Bookento</span>
+              <span className="text-[1.25rem] font-bold tracking-tight text-white">
+                {eyebrow}
+              </span>
             </Link>
+
+            <div className="my-auto grid items-end gap-10 pt-12 pb-10 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] xl:gap-8">
+              <div className="min-w-0">
+                <p className="text-[11px] font-semibold tracking-[0.22em] text-[#C6F405] uppercase">
+                  Welcome back
+                </p>
+                <h2 className="mt-3 max-w-[16ch] text-[2.2rem] leading-[1.15] font-bold tracking-tight text-white xl:text-[2.45rem]">
+                  {headline}
+                </h2>
+                {copy ? (
+                  <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-white/70">
+                    {copy}
+                  </p>
+                ) : null}
+
+                <ul className="mt-8 space-y-3.5">
+                  {AUTH_PANEL_HIGHLIGHTS.map(({ icon: Icon, label }) => (
+                    <li
+                      key={label}
+                      className="flex items-center gap-3 text-[14.5px] font-medium text-white/90"
+                    >
+                      <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-[#C6F405] ring-1 ring-white/15">
+                        <Icon className="size-3.5" strokeWidth={2.3} aria-hidden />
+                      </span>
+                      {label}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="relative mx-auto w-full max-w-[17rem] xl:mx-0 xl:max-w-none">
+                <div className="relative aspect-[4/5] overflow-hidden rounded-[1.75rem] shadow-[0_24px_60px_rgba(0,0,0,0.35)] ring-1 ring-white/20">
+                  <Image
+                    src="/images/hero/doctor.png"
+                    alt=""
+                    fill
+                    className="object-cover object-center"
+                    sizes="280px"
+                    unoptimized
+                    priority
+                  />
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 bg-gradient-to-t from-[#071525]/80 via-transparent to-transparent"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 p-4">
+                    <p className="text-[12px] font-semibold tracking-[0.14em] text-[#C6F405] uppercase">
+                      Bookento
+                    </p>
+                    <p className="mt-1 text-[14px] font-semibold text-white">
+                      Trusted care, one tap away
+                    </p>
+                  </div>
+                </div>
+
+                <div className="absolute -bottom-3 -left-3 flex items-center gap-2 rounded-2xl bg-white px-3 py-2.5 shadow-[0_12px_28px_rgba(0,0,0,0.22)]">
+                  <span className="flex size-8 items-center justify-center rounded-full bg-[#EAF1FF] text-[#1865EA]">
+                    <CalendarCheck2
+                      className="size-3.5"
+                      strokeWidth={2.3}
+                      aria-hidden
+                    />
+                  </span>
+                  <div>
+                    <p className="text-[11px] font-semibold text-[#0F1B2D]">
+                      Instant booking
+                    </p>
+                    <p className="text-[10px] text-[#6B7A90]">Live slots nearby</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p className="border-t border-white/10 pt-5 text-[13px] text-white/50">
+              Trusted professionals, booked in minutes.
+            </p>
+          </div>
+        </aside>
+
+        <main className="relative flex min-h-dvh flex-col bg-white px-5 py-8 sm:px-10 lg:px-12 xl:px-16">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,#F4F8FF_0%,transparent_100%)] lg:hidden"
+          />
+
+          <Link
+            href={ROUTES.HOME}
+            className="relative z-10 mb-8 inline-flex w-fit items-center gap-2.5 lg:hidden"
+          >
+            <Image
+              src="/images/app-icon.jpg"
+              alt="Bookento"
+              width={36}
+              height={36}
+              className="size-9 rounded-lg shadow-sm"
+            />
+            <span className="font-bold text-[#0F1B2D]">Bookento</span>
+          </Link>
+
+          <div
+            className={cn(
+              "relative z-10 mx-auto flex w-full flex-1 flex-col justify-center",
+              wide ? "max-w-xl" : "max-w-[26rem]",
+            )}
+          >
             {children}
           </div>
         </main>

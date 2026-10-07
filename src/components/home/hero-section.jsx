@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Search } from "lucide-react";
@@ -8,8 +8,9 @@ import { ArrowRight, Search } from "lucide-react";
 import { ROUTES, categoryListingRoute } from "@/constants/routes.constants";
 import { getHomeCategoryGradient, HOME_CATEGORIES } from "@/constants/home-categories";
 import { useWebLocale } from "@/hooks/use-web-locale";
+import { getLoginRedirectUrl, isRegisteredBookableUser } from "@/lib/auth/booking-auth";
 import { cn } from "@/lib/utils";
-import { useRecentSearchesStore } from "@/store";
+import { useRecentSearchesStore, useUserAuthStore } from "@/store";
 
 const HOLD_AFTER_TYPE_MS = 2200;
 const TYPE_STEP_MS = 85;
@@ -404,7 +405,7 @@ function HeroTypedWord({ text, mark, color, gradient, stops, onComplete }) {
   );
 }
 
-function HeroImagePanel({ panelIndex, shortTop, frame }) {
+function HeroImagePanel({ panelIndex, shortTop, frame, mobile = false }) {
   const { t } = useWebLocale();
   const activeSlide = HERO_SLIDES[frame]?.[panelIndex];
   if (!activeSlide) return null;
@@ -413,8 +414,13 @@ function HeroImagePanel({ panelIndex, shortTop, frame }) {
   const columnSlides = HERO_SLIDES.map((row) => row[panelIndex]);
 
   return (
-    <div className="relative flex min-h-0 min-w-0 flex-1 flex-col">
-      {shortTop ? (
+    <div
+      className={cn(
+        "relative flex min-h-0 min-w-0 flex-col",
+        mobile ? "w-[78%] max-w-[17.5rem] shrink-0 snap-center" : "flex-1",
+      )}
+    >
+      {shortTop && !mobile ? (
         <div className="mb-2.5 flex shrink-0 justify-center lg:mb-3">
           <p
             className="font-script inline-block origin-center px-1 text-center text-[1.7rem] leading-[1.12] font-semibold tracking-[-0.01em] text-[#1B3A5F] lg:text-[1.9rem]"
@@ -433,7 +439,12 @@ function HeroImagePanel({ panelIndex, shortTop, frame }) {
       ) : null}
 
       <div
-        className="relative min-h-0 w-full flex-1 overflow-hidden"
+        className={cn(
+          "relative overflow-hidden",
+          mobile
+            ? "aspect-[3/4] w-full shadow-[0_14px_32px_-16px_rgba(15,27,45,0.35)]"
+            : "min-h-0 w-full flex-1",
+        )}
         style={{ borderRadius: HERO_PANEL_RADIUS }}
       >
         {columnSlides.map((slide, index) => (
@@ -449,19 +460,34 @@ function HeroImagePanel({ panelIndex, shortTop, frame }) {
               slide.focus || "object-center",
               index === frame ? "opacity-100" : "opacity-0",
             )}
-            sizes="(min-width: 1280px) 320px, 32vw"
+            sizes={
+              mobile
+                ? "(max-width: 768px) 78vw, 280px"
+                : "(min-width: 1280px) 320px, 32vw"
+            }
             draggable={false}
             aria-hidden={index !== frame}
           />
         ))}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-28 bg-gradient-to-t from-black/50 to-transparent"
+          className={cn(
+            "pointer-events-none absolute inset-x-0 bottom-0 z-[1] bg-gradient-to-t from-black/55 to-transparent",
+            mobile ? "h-24" : "h-28",
+          )}
         />
-        <span className="pointer-events-none absolute inset-x-0 bottom-5 z-10 flex justify-end pr-4">
+        <span
+          className={cn(
+            "pointer-events-none absolute inset-x-0 z-10 flex justify-end",
+            mobile ? "bottom-3.5 pr-3" : "bottom-5 pr-4",
+          )}
+        >
           <span
             key={activeSlide.labelKey}
-            className="rounded-full bg-white px-3.5 py-1.5 text-[12px] font-semibold whitespace-nowrap text-[#0F1B2D] shadow-sm transition-opacity duration-500"
+            className={cn(
+              "rounded-full bg-white font-semibold whitespace-nowrap text-[#0F1B2D] shadow-sm transition-opacity duration-500",
+              mobile ? "px-3 py-1.5 text-[11px]" : "px-3.5 py-1.5 text-[12px]",
+            )}
           >
             {t(activeSlide.labelKey)}
           </span>
@@ -472,15 +498,19 @@ function HeroImagePanel({ panelIndex, shortTop, frame }) {
 }
 
 /**
- * Desktop discovery hero — left copy, right 3 straight image panels.
- * Last panel is shorter from top for script text.
- * Mobile uses UpcomingAppointmentCard instead.
+ * Discovery hero — left copy + search; right 3 image panels (desktop)
+ * or portrait snap cards (mobile).
  */
 export function HeroSection({ className }) {
   const { t } = useWebLocale();
   const router = useRouter();
   const addRecentSearch = useRecentSearchesStore((state) => state.addSearch);
+  const isAuthenticated = useUserAuthStore((state) => state.isAuthenticated);
+  const isGuest = useUserAuthStore((state) => state.isGuest);
+  const canBrowseBooked = isRegisteredBookableUser({ isAuthenticated, isGuest });
+  const searchWrapRef = useRef(null);
   const [query, setQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const [wordIndex, setWordIndex] = useState(0);
   const [panelFrames, setPanelFrames] = useState(() =>
     Array.from({ length: HERO_PANEL_COUNT }, () => 0),
@@ -489,6 +519,59 @@ export function HeroSection({ className }) {
   const advanceWord = useCallback(() => {
     setWordIndex((current) => (current + 1) % HERO_WORDS.length);
   }, []);
+
+  const needle = query.trim().toLowerCase();
+
+  const categorySuggestions = useMemo(() => {
+    if (!needle) return HOME_CATEGORIES;
+
+    return HOME_CATEGORIES.filter((category) => {
+      const name = category.name.toLowerCase();
+      const slug = category.slug.toLowerCase();
+      const labelKey = CATEGORY_NAME_KEYS[category.slug];
+      const localized = labelKey ? t(labelKey).toLowerCase() : "";
+      return (
+        slug.includes(needle) ||
+        name.includes(needle) ||
+        needle.includes(name) ||
+        (localized &&
+          localized !== labelKey.toLowerCase() &&
+          (localized.includes(needle) || needle.includes(localized)))
+      );
+    });
+  }, [needle, t]);
+
+  const showSuggestions = searchOpen && categorySuggestions.length > 0;
+
+  function gateHref(destination) {
+    if (!canBrowseBooked) return getLoginRedirectUrl(destination);
+    return destination;
+  }
+
+  function resolveCategoryHref(slug) {
+    return gateHref(categoryListingRoute(slug));
+  }
+
+  useEffect(() => {
+    if (!searchOpen) return undefined;
+
+    function handlePointerDown(event) {
+      if (!searchWrapRef.current?.contains(event.target)) {
+        setSearchOpen(false);
+      }
+    }
+
+    function handleKeyDown(event) {
+      if (event.key === "Escape") setSearchOpen(false);
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [searchOpen]);
 
   // One panel at a time: 1st → wait → 2nd → wait → 3rd → hold → repeat
   useEffect(() => {
@@ -544,6 +627,8 @@ export function HeroSection({ className }) {
 
   function goSearch(value = query) {
     const q = value.trim();
+    setSearchOpen(false);
+
     if (!q) {
       router.push(ROUTES.SEARCH);
       return;
@@ -552,47 +637,60 @@ export function HeroSection({ className }) {
     addRecentSearch(q);
 
     const needle = q.toLowerCase();
-    const matchedCategory = HOME_CATEGORIES.find(
-      (category) =>
-        category.slug === needle ||
-        category.name.toLowerCase() === needle ||
-        category.name.toLowerCase().includes(needle) ||
-        needle.includes(category.name.toLowerCase()),
-    );
+    const matchedCategory = categorySuggestions.find((category) => {
+      const name = category.name.toLowerCase();
+      const slug = category.slug.toLowerCase();
+      const labelKey = CATEGORY_NAME_KEYS[category.slug];
+      const localized = labelKey ? t(labelKey).toLowerCase() : "";
+      return (
+        slug === needle ||
+        name === needle ||
+        localized === needle ||
+        (needle.length >= 3 && (name.includes(needle) || slug.includes(needle)))
+      );
+    });
 
-    if (matchedCategory && needle.length >= 3) {
-      router.push(categoryListingRoute(matchedCategory.slug));
+    if (matchedCategory) {
+      router.push(resolveCategoryHref(matchedCategory.slug));
       return;
     }
 
-    router.push(`${ROUTES.SEARCH}?q=${encodeURIComponent(q)}`);
+    const searchHref = `${ROUTES.SEARCH}?q=${encodeURIComponent(q)}`;
+    router.push(canBrowseBooked ? searchHref : getLoginRedirectUrl(searchHref));
+  }
+
+  function goCategory(slug) {
+    setSearchOpen(false);
+    router.push(resolveCategoryHref(slug));
   }
 
   return (
     <section
       className={cn(
-        "relative isolate z-20 hidden w-full overflow-hidden md:block",
-        "min-h-[640px] bg-white lg:min-h-[680px] xl:min-h-[720px]",
+        "relative isolate z-20 w-full",
+        // Allow category dropdown to extend past the hero; clip panels when closed
+        searchOpen ? "overflow-visible" : "overflow-hidden",
+        "min-h-0 bg-white md:min-h-[640px] lg:min-h-[680px] xl:min-h-[720px]",
         className,
       )}
       aria-label={t("heroAria")}
     >
       <div
         className={cn(
-          "relative z-10 grid h-full min-h-[inherit] w-full items-stretch gap-6",
-          "pl-4 md:pr-0 md:pl-[max(4.875rem,calc((100vw-(96rem-60px))/2+4.875rem))]",
+          "relative z-10 grid h-full min-h-[inherit] w-full items-stretch gap-4",
+          "px-4 md:pr-0 md:pl-[max(4.875rem,calc((100vw-(96rem-60px))/2+4.875rem))]",
           "xl:pl-[max(5.875rem,calc((100vw-(96rem-60px))/2+5.875rem))]",
-          "lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-6",
+          "lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-6",
         )}
       >
-        {/* Left — denser copy block, fills the column */}
-        <div className="relative z-30 flex w-full max-w-xl flex-col justify-center py-10 pr-2 lg:py-12 lg:pr-4">
-          <p className="text-[12px] font-semibold tracking-[0.2em] text-[#1865EA] uppercase">
+        {/* Left — denser copy block; centered on mobile, left on desktop */}
+        <div className="relative z-30 mx-auto flex w-full max-w-xl flex-col justify-center py-8 pr-0 text-center md:mx-0 md:py-10 md:pr-2 md:text-left lg:py-12 lg:pr-4">
+          <p className="text-[11px] font-semibold tracking-[0.18em] text-[#1865EA] uppercase md:text-[12px] md:tracking-[0.2em]">
             {t("heroEyebrow")}
           </p>
-          <h1 className="mt-5 text-[2.75rem] leading-[1.02] font-bold tracking-tight text-[#0F1B2D] lg:text-[3.35rem] xl:text-[3.65rem]">
-            <span className="relative -top-[6px] block">{t("heroTitleLead")}</span>
-            <span className="mt-1 block min-h-[1.35em] overflow-hidden pb-3">
+          <h1 className="mt-4 text-[2.05rem] leading-[1.05] font-bold tracking-tight text-[#0F1B2D] md:mt-5 md:text-[2.75rem] md:leading-[1.02] lg:text-[3.35rem] xl:text-[3.65rem]">
+            <span className="relative block md:-top-[6px]">{t("heroTitleLead")}</span>
+            <span className="mt-1 block min-h-[1.35em] overflow-hidden pb-2 md:pb-3">
               <HeroTypedWord
                 key={activeWord.id}
                 text={activeWordLabel}
@@ -603,48 +701,105 @@ export function HeroSection({ className }) {
                 onComplete={advanceWord}
               />
             </span>
-            <span className="relative -top-[14px] mt-1 block">{t("heroTitleEnd")}</span>
+            <span className="relative mt-0.5 block md:-top-[14px] md:mt-1">
+              {t("heroTitleEnd")}
+            </span>
           </h1>
-          <p className="mt-5 max-w-md text-[16px] leading-relaxed text-[#5B6B82] lg:text-[17px]">
+          <p className="mx-auto mt-4 max-w-md text-[15px] leading-relaxed text-[#5B6B82] md:mx-0 md:mt-5 md:text-[16px] lg:text-[17px]">
             {t("heroSubtitle")}
           </p>
 
-          <form
-            className="relative z-30 mt-9 flex w-full max-w-md items-center gap-2 rounded-full bg-white py-2 pr-2 pl-5 shadow-[0_12px_32px_rgba(15,27,45,0.12)] ring-1 ring-[#E8EDF5]"
-            onSubmit={(event) => {
-              event.preventDefault();
-              goSearch();
-            }}
-            role="search"
+          <div
+            ref={searchWrapRef}
+            className="pointer-events-auto relative z-50 mx-auto mt-6 w-full max-w-md md:mx-0 md:mt-9"
           >
-            <Search
-              className="size-[18px] shrink-0 text-[#98A2B3]"
-              strokeWidth={2.2}
-              aria-hidden
-            />
-            <input
-              type="search"
-              name="q"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={t("heroSearchPlaceholder")}
-              className="min-w-0 flex-1 bg-transparent text-[15px] text-[#0F1B2D] outline-none placeholder:text-[#98A2B3]"
-              aria-label={t("heroSearchPlaceholder")}
-              autoComplete="off"
-              enterKeyHint="search"
-            />
-            <button
-              type="submit"
-              className="gradient-brand inline-flex shrink-0 items-center gap-1.5 rounded-full px-5 py-3 text-[14px] font-semibold text-white transition-opacity hover:opacity-95"
+            <form
+              className="relative flex w-full items-center gap-2 rounded-full bg-white py-1.5 pr-1.5 pl-4 shadow-[0_4px_14px_rgba(15,27,45,0.06)] ring-1 ring-[#E8EDF5] md:py-2 md:pr-2 md:pl-5"
+              onSubmit={(event) => {
+                event.preventDefault();
+                goSearch();
+              }}
+              role="search"
             >
-              {t("heroSearch")}
-              <ArrowRight className="size-4" strokeWidth={2.4} aria-hidden />
-            </button>
-          </form>
+              <Search
+                className="size-[18px] shrink-0 text-[#98A2B3]"
+                strokeWidth={2.2}
+                aria-hidden
+              />
+              <input
+                type="text"
+                name="q"
+                value={query}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  setSearchOpen(true);
+                }}
+                onFocus={() => setSearchOpen(true)}
+                placeholder={t("heroSearchPlaceholder")}
+                className="min-w-0 flex-1 bg-transparent text-[14px] text-[#0F1B2D] outline-none placeholder:text-[#98A2B3] md:text-[15px]"
+                aria-label={t("heroSearchPlaceholder")}
+                aria-expanded={showSuggestions}
+                aria-controls="hero-search-suggestions"
+                autoComplete="off"
+                enterKeyHint="search"
+              />
+              <button
+                type="submit"
+                className="gradient-brand inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2.5 text-[13px] font-semibold text-white transition-opacity hover:opacity-95 md:px-5 md:py-3 md:text-[14px]"
+              >
+                {t("heroSearch")}
+                <ArrowRight className="size-4" strokeWidth={2.4} aria-hidden />
+              </button>
+            </form>
+
+            {showSuggestions ? (
+              <div
+                id="hero-search-suggestions"
+                className="absolute inset-x-0 top-[calc(100%+0.45rem)] z-50 max-h-[min(60vh,22rem)] overflow-y-auto rounded-[1.25rem] border border-[#E8EDF5] bg-white py-1.5 shadow-[0_18px_44px_rgba(15,27,45,0.12)]"
+                role="listbox"
+              >
+                {needle ? (
+                  <p className="px-5 pt-1.5 pb-1 text-[11px] font-semibold tracking-[0.12em] text-[#98A2B3] uppercase">
+                    Categories
+                  </p>
+                ) : null}
+                {categorySuggestions.map((category) => {
+                  const labelKey = CATEGORY_NAME_KEYS[category.slug];
+                  const label = labelKey ? t(labelKey) : category.name;
+                  return (
+                    <button
+                      key={category.slug}
+                      type="button"
+                      role="option"
+                      className="flex w-full items-center px-5 py-2.5 text-left text-[14.5px] font-medium text-[#1A2740] transition-colors hover:bg-[#F4F7FC] hover:text-[#1865EA]"
+                      onClick={() => goCategory(category.slug)}
+                    >
+                      <span className="truncate">{label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
         </div>
 
-        {/* Right — flush to viewport right (no pointer capture over left copy) */}
-        <div className="pointer-events-none relative -ml-[260px] flex h-full min-h-[inherit] w-[calc(100%+260px)] items-stretch gap-4 py-5 lg:py-6">
+        {/* Mobile — portrait cards, horizontal snap */}
+        <div className="-mx-4 pb-2 md:hidden">
+          <div className="scrollbar-hide flex touch-pan-x snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-4">
+            {Array.from({ length: HERO_PANEL_COUNT }, (_, index) => (
+              <HeroImagePanel
+                key={`hero-panel-mobile-${index}`}
+                panelIndex={index}
+                frame={panelFrames[index] ?? 0}
+                mobile
+              />
+            ))}
+            <div className="w-1 shrink-0 snap-none" aria-hidden />
+          </div>
+        </div>
+
+        {/* Desktop — flush to viewport right */}
+        <div className="pointer-events-none relative z-0 hidden h-full min-h-[inherit] items-stretch gap-3.5 py-5 md:-ml-[180px] md:flex md:w-[calc(100%+180px)] lg:py-6">
           {Array.from({ length: HERO_PANEL_COUNT }, (_, index) => (
             <HeroImagePanel
               key={`hero-panel-${index}`}

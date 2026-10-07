@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 
 import { HeroHeartIcon } from "@/components/icons/hero-nav-icons";
 import { SearchIcon } from "@/components/icons/search-icon";
@@ -165,11 +165,12 @@ function LanguageDropdown({ selectedCode, onSelect }) {
   );
 }
 
-export function HomeHeader({ embedded = false }) {
+export function HomeHeader({ embedded = false, marketplace = false }) {
   const { profile, addresses, setLanguage } = useProfileStore();
   const { isAuthenticated, isGuest } = useUserAuthStore();
   const unreadCount = useNotificationStore((state) => state.unreadCount("user"));
   const { t } = useWebLocale();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const defaultAddress = addresses.find((address) => address.isDefault) || addresses[0];
   const addressLabel = defaultAddress
     ? [defaultAddress.addressLine1, defaultAddress.city].filter(Boolean).join(", ")
@@ -184,17 +185,36 @@ export function HomeHeader({ embedded = false }) {
     toast.success(getWebMessages(code).languageUpdated);
   };
 
+  useEffect(() => {
+    if (!mobileMenuOpen) return undefined;
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") setMobileMenuOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = prev;
+    };
+  }, [mobileMenuOpen]);
+
   return (
     <header
       className={cn(
-        "safe-top bg-background/95 backdrop-blur-md",
-        !embedded && "sticky top-0 z-40",
-        "md:border-b md:border-[#EEF0F4] md:bg-white/95 md:shadow-[0_1px_0_rgba(15,23,42,0.04)] md:backdrop-blur-xl",
+        "safe-top bg-background/95 relative backdrop-blur-md",
+        !embedded && "sticky top-0 z-50",
+        marketplace
+          ? "border-b border-[#EEF0F4] bg-white/95 shadow-[0_1px_0_rgba(15,23,42,0.04)] backdrop-blur-xl"
+          : "md:border-b md:border-[#EEF0F4] md:bg-white/95 md:shadow-[0_1px_0_rgba(15,23,42,0.04)] md:backdrop-blur-xl",
       )}
     >
-      <div className={cn(HOME_PAGE_CONTAINER)}>
-        {/* Mobile header — unchanged */}
-        <div className="pt-3 pb-3 md:hidden">
+      <div className={cn("relative z-50", HOME_PAGE_CONTAINER)}>
+        {/* App-style mobile header — hidden on marketplace landing */}
+        <div className={cn("pt-3 pb-3 md:hidden", marketplace && "hidden")}>
           <div className="flex items-center justify-between gap-3">
             <div className="flex min-w-0 flex-1 items-center gap-3">
               <Link href={ROUTES.PROFILE} className="shrink-0">
@@ -258,23 +278,31 @@ export function HomeHeader({ embedded = false }) {
                 "flex h-11 w-full items-center rounded-full border pl-10 text-sm",
               )}
             >
-              Search...
+              {t("searchPlaceholder")}
             </div>
           </Link>
         </div>
 
-        {/* Desktop header — marketplace nav */}
-        <div className="hidden h-[4.5rem] items-center gap-5 md:flex lg:gap-8">
-          <Link href={ROUTES.HOME} className="flex shrink-0 items-center gap-2.5">
+        {/* Marketplace web header — all breakpoints when marketplace, md+ otherwise */}
+        <div
+          className={cn(
+            "h-14 items-center gap-3 md:h-[4.5rem] md:gap-5 lg:gap-8",
+            marketplace ? "flex" : "hidden md:flex",
+          )}
+        >
+          <Link
+            href={ROUTES.HOME}
+            className="flex shrink-0 items-center gap-2 md:gap-2.5"
+          >
             <Image
               src="/images/app-icon.jpg"
               alt="Bookento"
               width={42}
               height={42}
-              className="size-[42px] rounded-lg shadow-sm"
+              className="size-9 rounded-lg shadow-sm md:size-[42px]"
               priority
             />
-            <span className="text-foreground text-[1.15rem] font-bold tracking-tight">
+            <span className="text-foreground text-[1.05rem] font-bold tracking-tight md:text-[1.15rem]">
               Bookento
             </span>
           </Link>
@@ -294,7 +322,7 @@ export function HomeHeader({ embedded = false }) {
             ))}
           </nav>
 
-          <div className="ml-auto flex items-center gap-2 lg:ml-0 lg:gap-2.5">
+          <div className="ml-auto flex items-center gap-1.5 md:gap-2 lg:gap-2.5">
             <LanguageDropdown
               selectedCode={selectedLanguage}
               onSelect={handleSelectLanguage}
@@ -303,7 +331,7 @@ export function HomeHeader({ embedded = false }) {
             <Link
               href={ROUTES.SAVED}
               aria-label="Saved providers"
-              className="hover:bg-accent hover:text-primary flex size-10 items-center justify-center rounded-full text-[#667085] transition-colors"
+              className="hover:bg-accent hover:text-primary flex size-9 items-center justify-center rounded-full text-[#667085] transition-colors md:size-10"
             >
               <HeroHeartIcon tone="dark" className="size-5" />
             </Link>
@@ -312,7 +340,7 @@ export function HomeHeader({ embedded = false }) {
               <Link
                 href={ROUTES.USER_LOGIN}
                 className={cn(
-                  "ml-1 inline-flex h-10 min-w-[5.5rem] items-center justify-center rounded-full px-5",
+                  "ml-0.5 inline-flex h-9 min-w-[4.75rem] items-center justify-center rounded-full px-4 md:ml-1 md:h-10 md:min-w-[5.5rem] md:px-5",
                   "gradient-brand text-sm font-semibold text-white shadow-[0_8px_20px_-10px_rgba(24,101,234,0.65)]",
                   "transition-[opacity,transform] hover:opacity-95 active:scale-[0.98]",
                 )}
@@ -322,7 +350,7 @@ export function HomeHeader({ embedded = false }) {
             ) : (
               <Link
                 href={ROUTES.PROFILE}
-                className="ml-1 flex items-center gap-2 rounded-full py-1 pr-1 pl-1 transition-colors hover:bg-[#F5F7FA]"
+                className="ml-0.5 flex items-center gap-2 rounded-full py-1 pr-1 pl-1 transition-colors hover:bg-[#F5F7FA] md:ml-1"
               >
                 <Avatar
                   src={profile.avatar}
@@ -339,9 +367,70 @@ export function HomeHeader({ embedded = false }) {
                 />
               </Link>
             )}
+
+            <button
+              type="button"
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-primary-nav"
+              onClick={() => setMobileMenuOpen((open) => !open)}
+              className={cn(
+                "relative z-[60] flex size-9 items-center justify-center rounded-full text-[#0F1B2D] transition-colors lg:hidden",
+                "hover:bg-[#F5F7FA] focus-visible:ring-2 focus-visible:ring-[#1865EA]/25 focus-visible:outline-none",
+                mobileMenuOpen && "bg-[#EAF1FF] text-[#1865EA]",
+              )}
+            >
+              {mobileMenuOpen ? (
+                <X className="size-5" strokeWidth={2.25} />
+              ) : (
+                <Menu className="size-5" strokeWidth={2.25} />
+              )}
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Mobile menu sheet */}
+      {mobileMenuOpen ? (
+        <div className="lg:hidden">
+          <button
+            type="button"
+            aria-label="Close menu"
+            className="fixed inset-0 z-[55]"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+
+          <div
+            id="mobile-primary-nav"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu"
+            className={cn(
+              "fixed inset-x-3 z-[56] max-h-[min(78dvh,34rem)] overflow-y-auto",
+              "top-[calc(3.5rem+env(safe-area-inset-top,0px)+0.5rem)]",
+              "rounded-[1.35rem] border border-[#E8ECF2] bg-white",
+              "shadow-[0_8px_20px_-10px_rgba(15,23,42,0.18)]",
+            )}
+          >
+            <nav aria-label="Primary" className="flex flex-col gap-0.5 p-2.5">
+              {DESKTOP_NAV.filter((item) => item.href !== "/#packages").map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={cn(
+                    "rounded-xl px-3.5 py-3 text-[15px] font-medium text-[#243044]",
+                    "transition-colors hover:bg-[#F5F8FC] hover:text-[#1865EA]",
+                    "active:bg-[#EAF1FF] active:text-[#1865EA]",
+                  )}
+                >
+                  {t(item.labelKey)}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        </div>
+      ) : null}
     </header>
   );
 }

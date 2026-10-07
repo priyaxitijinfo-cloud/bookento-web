@@ -10,6 +10,7 @@ import {
   categoryListingRoute,
   providerDetailRoute,
 } from "@/constants/routes.constants";
+import { useRequireLoginToBook } from "@/hooks/use-require-login-to-book";
 import { useWebLocale } from "@/hooks/use-web-locale";
 import { useSavedProvidersStore } from "@/store";
 import { formatCurrency } from "@/utils/format.utils";
@@ -37,11 +38,24 @@ function formatReviews(count) {
   return new Intl.NumberFormat("en-IN").format(count);
 }
 
+/** Web cards: locality on line 1, city on line 2. */
+function formatLocationLines(location) {
+  if (!location) return [];
+  const parts = location
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean);
+  if (parts.length <= 1) return [location];
+  if (parts.length === 2) return parts;
+  return [parts.slice(0, -1).join(", "), parts[parts.length - 1]];
+}
+
 /** Web-only — reference marketplace card (image + details below) */
 function DesktopPopularServiceTile({ service, title, href, imageFocus }) {
   const { t } = useWebLocale();
   const displayTitle = service.providerName || title;
   const location = service.location || service.tagline || null;
+  const locationLines = formatLocationLines(location);
   const categoryLabel = service.categoryLabel || null;
   const reviews = formatReviews(service.reviewCount);
   const saveId = service.id;
@@ -112,9 +126,21 @@ function DesktopPopularServiceTile({ service, title, href, imageFocus }) {
             </span>
           </div>
 
-          {location ? (
-            <p className="mt-1.5 line-clamp-2 text-[12px] leading-snug text-[#6B7A8D]">
-              {location}
+          {locationLines.length > 0 ? (
+            <p className="mt-1.5 min-h-[2.25em] text-[13.5px] leading-[1.35] text-[#6B7A8D]">
+              {locationLines.map((line, index) => (
+                <span
+                  key={`${line}-${index}`}
+                  className={cn(
+                    "block truncate",
+                    index === locationLines.length - 1 && locationLines.length > 1
+                      ? "text-[#8A95A8]"
+                      : undefined,
+                  )}
+                >
+                  {line}
+                </span>
+              ))}
             </p>
           ) : null}
 
@@ -136,14 +162,17 @@ function DesktopPopularServiceTile({ service, title, href, imageFocus }) {
 
 export function ServiceCard({ service, index = 0, desktop = false }) {
   const { t } = useWebLocale();
+  const { getBookHref } = useRequireLoginToBook();
   const title = service.titleKey
     ? t(service.titleKey)
     : (service.title ?? service.name);
   const duration = formatDuration(service.duration);
   const imageFocus = IMAGE_FOCUS[index] ?? "object-center";
-  const href = service.categorySlug
+  const destination = service.categorySlug
     ? categoryListingRoute(service.categorySlug)
     : providerDetailRoute(service.providerId);
+  // Web desktop Explore cards → login first; mobile keeps direct browse
+  const href = desktop ? getBookHref(destination) : destination;
 
   if (desktop) {
     return (
