@@ -163,6 +163,35 @@ export const useUserAuthStore = create(
           return { success: true };
         },
 
+        loginWithSocial: async (provider) => {
+          set({ isLoading: true });
+          await delay(700);
+
+          const label = String(provider || "Social").trim() || "Social";
+          const session = {
+            ...mockAuthSessions.user,
+            email:
+              label.toLowerCase() === "apple"
+                ? "user@icloud.com"
+                : label.toLowerCase() === "facebook"
+                  ? "user@facebook.com"
+                  : "user@gmail.com",
+            name: mockAuthSessions.user.name,
+            socialProvider: label.toLowerCase(),
+          };
+          persistUserSession(session, { socialProvider: session.socialProvider });
+
+          set({
+            user: session,
+            isAuthenticated: true,
+            isGuest: false,
+            isLoading: false,
+            pendingPhone: null,
+          });
+
+          return { success: true, user: session };
+        },
+
         logout: async () => {
           await delay(300);
           clearAuthCookie(AUTH_CONFIG.userAccessTokenCookie);

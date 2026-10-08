@@ -173,7 +173,7 @@ export function TopRatedProviderCard({
         )}
       >
         <Link
-          href={providerDetailRoute(provider.id)}
+          href={bookNowHref}
           className="absolute inset-0 z-0"
           aria-label={`View ${provider.businessName}`}
         >
@@ -206,7 +206,7 @@ export function TopRatedProviderCard({
             compact ? "p-2.5" : "p-3.5",
           )}
         >
-          <Link href={providerDetailRoute(provider.id)} className="block">
+          <Link href={bookNowHref} className="block">
             <h3
               className={cn(
                 "line-clamp-1 font-semibold text-white",

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useId, useRef, useState } from "react";
+import { cloneElement, isValidElement, useEffect, useRef, useState } from "react";
 import { CalendarCheck2, ChevronDown, ShieldCheck, Sparkles, X } from "lucide-react";
 
 import { ROUTES } from "@/constants/routes.constants";
@@ -16,43 +16,59 @@ const AUTH_PANEL_HIGHLIGHTS = [
   { icon: Sparkles, label: "In person or online" },
 ];
 
+const FLAG_CDN_CODE = {
+  IN: "in",
+  US: "us",
+  GB: "gb",
+  AE: "ae",
+  SG: "sg",
+  AU: "au",
+  CA: "ca",
+  SA: "sa",
+  QA: "qa",
+  KW: "kw",
+  OM: "om",
+  BH: "bh",
+  MY: "my",
+  TH: "th",
+  JP: "jp",
+  KR: "kr",
+  NP: "np",
+  BD: "bd",
+  LK: "lk",
+  PK: "pk",
+  DE: "de",
+  FR: "fr",
+  NL: "nl",
+  IT: "it",
+  ES: "es",
+  NZ: "nz",
+  ZA: "za",
+  PH: "ph",
+  ID: "id",
+  HK: "hk",
+};
+
 export function CountryFlag({ code, className }) {
-  const clipId = useId();
-
-  if (code === "IN") {
-    return (
-      <svg
-        viewBox="0 0 24 24"
-        className={className}
-        aria-hidden
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <clipPath id={clipId}>
-          <circle cx="12" cy="12" r="12" />
-        </clipPath>
-        <g clipPath={`url(#${clipId})`}>
-          <rect width="24" height="8" fill="#FF9933" />
-          <rect y="8" width="24" height="8" fill="#FFFFFF" />
-          <rect y="16" width="24" height="8" fill="#138808" />
-          <circle cx="12" cy="12" r="2.4" fill="#000080" />
-          <circle cx="12" cy="12" r="1.55" fill="#FFFFFF" />
-          <circle cx="12" cy="12" r="0.6" fill="#000080" />
-        </g>
-      </svg>
-    );
-  }
-
-  const emoji = { US: "🇺🇸", GB: "🇬🇧", AE: "🇦🇪", SG: "🇸🇬" }[code] ?? "🏳️";
+  const flagCode = FLAG_CDN_CODE[code] || code?.toLowerCase();
 
   return (
     <span
       className={cn(
-        "flex items-center justify-center overflow-hidden rounded-full bg-[#EEF2F7] text-[13px] leading-none",
+        "relative inline-flex shrink-0 overflow-hidden rounded-full bg-[#EEF2F7] ring-1 ring-[#E5E7EB]",
         className,
       )}
       aria-hidden
     >
-      {emoji}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={`https://flagcdn.com/w80/${flagCode}.png`}
+        alt=""
+        width={40}
+        height={40}
+        className="size-full object-cover"
+        draggable={false}
+      />
     </span>
   );
 }
@@ -87,7 +103,7 @@ export function AuthPrimaryButton({
 
 export function OrDivider({ variant = "app" }) {
   return (
-    <div className="relative my-1">
+    <div className={cn("relative", variant === "app" ? "my-1.5" : "my-2")}>
       <div className="absolute inset-0 flex items-center">
         <span className="w-full border-t border-[#EEF1F6]" />
       </div>
@@ -141,7 +157,14 @@ function GoogleMark() {
 
 function AppleMark() {
   return (
-    <svg viewBox="0 0 24 24" className="size-6" aria-hidden fill="currentColor">
+    <svg
+      viewBox="0 0 24 24"
+      width={32}
+      height={32}
+      className="h-[32px] w-[32px] shrink-0"
+      aria-hidden
+      fill="currentColor"
+    >
       <path d="M16.7 12.5c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.9-3.5.9-.7 0-1.9-.8-3.1-.8-1.6 0-3.1 1-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.6.8 1.1 1.7 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.8.8 3.1.8c1.3 0 2.1-1.1 2.9-2.3.9-1.3 1.3-2.6 1.3-2.6s-2.5-1-2.5-3.7zm-2.3-6.8c.7-.8 1.1-1.9 1-3-.9 0-2 .6-2.7 1.4-.6.7-1.1 1.8-1 2.9 1 .1 2-.5 2.7-1.3z" />
     </svg>
   );
@@ -153,21 +176,24 @@ const SOCIAL_PROVIDERS = [
   { id: "apple", label: "Apple", icon: AppleMark },
 ];
 
-export function SocialAuthButtons({ onSelect, variant = "app" }) {
+export function SocialAuthButtons({ onSelect, variant = "app", disabled = false }) {
   if (variant === "web") {
     return (
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-3.5">
         {SOCIAL_PROVIDERS.map((provider) => {
           const Icon = provider.icon;
           return (
             <button
               key={provider.id}
               type="button"
+              disabled={disabled}
               onClick={() => onSelect(provider.label)}
-              className="flex h-12 items-center justify-center gap-2 rounded-xl border border-[#E8EDF5] bg-[#F8FAFC] px-2 text-sm font-medium text-[#334155] transition-colors hover:border-[#D6E4FF] hover:bg-white"
+              className="flex flex-col items-center justify-center gap-2 rounded-[1rem] border border-[#F2F2F2] bg-white px-2 py-3.5 transition-colors hover:border-[#D6E4FF] hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <Icon />
-              <span className="hidden sm:inline">{provider.label}</span>
+              <span className="text-[12px] font-medium text-[#667085]">
+                {provider.label}
+              </span>
             </button>
           );
         })}
@@ -183,8 +209,9 @@ export function SocialAuthButtons({ onSelect, variant = "app" }) {
           <button
             key={provider.id}
             type="button"
+            disabled={disabled}
             onClick={() => onSelect(provider.label)}
-            className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-[#EEF1F6] bg-white px-2 py-3.5 shadow-[0_4px_16px_rgba(15,23,42,0.04)]"
+            className="flex flex-col items-center justify-center gap-2 rounded-[1rem] border border-[#F2F2F2] bg-white px-2 py-3.5 transition-colors active:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Icon />
             <span className="text-[11px] font-medium text-[#667085]">
@@ -201,15 +228,15 @@ export function CountryCodePicker({ open, value, onSelect, onClose }) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-5">
       <button
         type="button"
         className="absolute inset-0 bg-black/40"
         onClick={onClose}
         aria-label="Close country picker"
       />
-      <div className="relative w-full max-w-[22.5rem] overflow-hidden rounded-t-[1.5rem] bg-white px-2 pt-5 pb-3 shadow-[0_20px_60px_rgba(15,23,42,0.22)] sm:rounded-[1.5rem]">
-        <div className="mb-3 flex items-center justify-between px-3">
+      <div className="relative w-full max-w-[22.5rem] overflow-x-hidden overflow-y-hidden rounded-[1.5rem] bg-white px-2 pt-5 pb-3 shadow-[0_20px_60px_rgba(15,23,42,0.22)]">
+        <div className="mb-2 flex items-center justify-between border-b border-[#EEF1F6] px-3 pb-3">
           <h2 className="text-[1.125rem] font-bold text-[#111827]">Select country</h2>
           <button
             type="button"
@@ -220,7 +247,7 @@ export function CountryCodePicker({ open, value, onSelect, onClose }) {
             <X className="size-[1.125rem]" strokeWidth={2.25} />
           </button>
         </div>
-        <div className="max-h-[20rem] overflow-y-auto">
+        <div className="scrollbar-hide mt-4 max-h-[20rem] overflow-x-hidden overflow-y-auto overscroll-contain">
           {countries.map((country) => {
             const selected = country.code === value;
             return (
@@ -232,15 +259,15 @@ export function CountryCodePicker({ open, value, onSelect, onClose }) {
                   onClose();
                 }}
                 className={cn(
-                  "flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left",
+                  "flex w-full min-w-0 items-center gap-3 rounded-xl px-3 py-3 text-left",
                   selected && "bg-[#F4F8FF]",
                 )}
               >
                 <CountryFlag code={country.code} className="size-7 shrink-0" />
-                <span className="min-w-0 flex-1 text-[15px] font-medium text-[#111827]">
+                <span className="min-w-0 flex-1 truncate text-[15px] font-medium text-[#111827]">
                   {country.name}
                 </span>
-                <span className="text-[15px] font-semibold text-[#4D5972]">
+                <span className="shrink-0 text-[15px] font-semibold text-[#4D5972]">
                   {country.dialCode}
                 </span>
               </button>
@@ -258,44 +285,30 @@ export function PhoneNumberField({
   onPhoneChange,
   onCountryClick,
   error,
-  variant = "app",
+  variant: _variant = "app",
   placeholder = "Enter mobile number",
 }) {
-  const isWeb = variant === "web";
-
   return (
     <div>
       <div
         className={cn(
-          "flex items-center bg-white",
-          isWeb
-            ? "focus-within:ring-primary/20 h-[3.25rem] rounded-xl border border-[#E8EDF5] bg-[#F8FAFC] focus-within:bg-white focus-within:ring-2"
-            : "focus-within:ring-primary/20 h-14 rounded-2xl border border-[#EEF1F6] px-1.5 shadow-[0_2px_12px_rgba(15,23,42,0.04)] focus-within:ring-2",
-          error && "border-destructive",
+          "flex h-[3.35rem] items-center rounded-[0.65rem] bg-[#F2F6FC] p-1 focus-within:ring-2 focus-within:ring-[#1865EA]/20",
+          error && "ring-destructive/40 ring-2",
         )}
       >
         <button
           type="button"
           onClick={onCountryClick}
-          className={cn(
-            "inline-flex h-full shrink-0 items-center gap-1.5",
-            isWeb ? "px-3" : "rounded-xl bg-[#F3F6FB] px-2.5",
-          )}
+          className="inline-flex h-full shrink-0 items-center gap-1.5 rounded-[0.45rem] bg-white px-2.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
           aria-label="Select country code"
         >
           <CountryFlag code={country.code} className="size-6 shrink-0" />
-          <span className="h-4 w-px bg-[#D5DCE6]" aria-hidden />
-          <span
-            className={cn(
-              "font-medium text-[#334155]",
-              isWeb ? "text-sm" : "text-[15px]",
-            )}
-          >
+          <span className="h-4 w-px shrink-0 bg-[#D5DCE6]" aria-hidden />
+          <span className="text-[14px] font-semibold text-[#334155]">
             {country.dialCode}
           </span>
-          <ChevronDown className="size-3.5 text-[#4D5972]" />
+          <ChevronDown className="size-3.5 text-[#98A2B3]" />
         </button>
-        {isWeb && <span className="h-6 w-px bg-[#E6EAF2]" aria-hidden />}
         <input
           type="tel"
           inputMode="numeric"
@@ -305,10 +318,7 @@ export function PhoneNumberField({
             onPhoneChange(parseNationalPhone(e.target.value, country.dialCode))
           }
           placeholder={placeholder}
-          className={cn(
-            "h-full min-w-0 flex-1 border-0 bg-transparent text-[#111827] outline-none placeholder:text-[#ADB3B7]",
-            isWeb ? "px-3 text-sm" : "px-3 text-[15px]",
-          )}
+          className="h-full min-w-0 flex-1 border-0 bg-transparent px-3 text-[14.5px] text-[#111827] outline-none placeholder:text-[#ADB3B7]"
         />
       </div>
       {error ? <p className="text-destructive mt-1.5 text-xs">{error}</p> : null}
@@ -372,10 +382,14 @@ export function OtpBoxes({ value, onChange, variant = "app" }) {
           onKeyDown={(e) => handleKeyDown(index, e)}
           onPaste={handlePaste}
           className={cn(
-            "text-center font-semibold text-[#111827] outline-none",
+            "text-center font-semibold text-[#111827] transition-[border-color,box-shadow,background-color] outline-none",
             isWeb
               ? "focus:border-primary focus:ring-primary/20 h-14 w-12 rounded-xl border border-[#E6EAF2] bg-white text-lg focus:ring-2"
-              : "focus:border-primary size-12 rounded-2xl border border-[#EEF2FF] bg-[#F4F7FF] text-lg focus:bg-white",
+              : cn(
+                  "size-12 rounded-[0.65rem] border bg-[#F2F6FC] text-lg",
+                  digit ? "border-[#1865EA] bg-white" : "border-[#E8EDF8]",
+                  "focus:border-[#1865EA] focus:bg-white focus:ring-2 focus:ring-[#1865EA]/20",
+                ),
           )}
         />
       ))}
@@ -385,179 +399,146 @@ export function OtpBoxes({ value, onChange, variant = "app" }) {
 
 export function AuthMobileFrame({ illustration, children }) {
   return (
-    <div className="relative min-h-dvh overflow-x-hidden bg-white">
-      {illustration ? (
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[280px] bg-[linear-gradient(180deg,#FFE8DC_0%,#FFF4EE_42%,#FFFFFF_100%)]" />
-      ) : null}
-      <div className="relative mx-auto flex min-h-dvh w-full max-w-md flex-col px-6 pt-8 pb-8">
+    <div className="relative min-h-dvh overflow-x-hidden bg-[#F4F7FF]">
+      {/* Design background — soft pastel mesh */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url(/images/auth/auth-mobile-bg.png)" }}
+      />
+
+      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-md flex-col px-4 pb-5">
         {illustration ? (
-          <div className="mb-2 flex justify-center pt-4">{illustration}</div>
+          <div className="flex shrink-0 flex-col items-center px-2 pt-12 pb-11">
+            <div className="flex h-[11.75rem] w-full items-center justify-center">
+              {illustration}
+            </div>
+          </div>
         ) : (
-          <div className="pt-6" />
+          <div className="h-6 shrink-0" aria-hidden />
         )}
-        {children}
+
+        <div
+          className={cn(
+            "relative z-10 flex min-h-[38.375rem] flex-1 flex-col bg-white px-5 pt-7 pb-7",
+            "rounded-[1.75rem] shadow-[0_12px_40px_rgba(15,23,42,0.1)]",
+          )}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );
 }
 
 export function AuthWebFrame({
-  illustration: _illustration,
+  illustration,
   eyebrow = "Bookento",
   headline,
   copy,
   children,
   wide = false,
 }) {
-  return (
-    <div className="min-h-dvh bg-[#EEF3F9]">
-      <div className="mx-auto grid min-h-dvh w-full max-w-[90rem] lg:grid-cols-[minmax(0,1.12fr)_minmax(0,0.98fr)]">
-        {/* Web brand panel */}
-        <aside className="relative hidden overflow-hidden lg:flex lg:flex-col">
-          <div
-            aria-hidden
-            className="absolute inset-0 bg-[linear-gradient(165deg,#071525_0%,#0F2744_45%,#1654C4_100%)]"
-          />
-          <div
-            aria-hidden
-            className="absolute inset-0 opacity-[0.12]"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.7) 1px, transparent 0)",
-              backgroundSize: "26px 26px",
-            }}
-          />
-          <div
-            aria-hidden
-            className="absolute top-[-12%] right-[-18%] size-[28rem] rounded-full bg-[#1865EA]/35 blur-3xl"
-          />
-          <div
-            aria-hidden
-            className="absolute bottom-[-20%] left-[-12%] size-[22rem] rounded-full bg-[#C6F405]/12 blur-3xl"
-          />
+  const desktopArt = isValidElement(illustration)
+    ? cloneElement(illustration, { key: "desktop-art" })
+    : illustration;
+  const tabletArt = isValidElement(illustration)
+    ? cloneElement(illustration, { key: "tablet-art" })
+    : illustration;
 
-          <div className="relative z-10 flex h-full flex-col px-12 py-10 xl:px-14 xl:py-12">
-            <Link href={ROUTES.HOME} className="inline-flex w-fit items-center gap-2.5">
+  return (
+    <div className="relative min-h-dvh overflow-x-hidden bg-[#F4F7FF]">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat opacity-90"
+        style={{ backgroundImage: "url(/images/auth/auth-mobile-bg.png)" }}
+      />
+
+      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-[84rem] items-center px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+        <div
+          className={cn(
+            "grid w-full overflow-hidden rounded-[2rem] bg-white shadow-[0_20px_60px_rgba(15,23,42,0.1)]",
+            "lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]",
+          )}
+        >
+          <aside className="relative hidden flex-col gap-8 border-r border-[#EEF1F6] bg-[#F8FAFF] px-10 py-10 lg:flex xl:px-12 xl:py-12">
+            <Link href={ROUTES.HOME} className="inline-flex w-fit items-center gap-3">
               <Image
                 src="/images/app-icon.jpg"
                 alt="Bookento"
-                width={40}
-                height={40}
-                className="size-10 rounded-[0.7rem] shadow-[0_8px_22px_rgba(0,0,0,0.25)] ring-1 ring-white/25"
+                width={48}
+                height={48}
+                className="size-12 rounded-[0.85rem] shadow-sm ring-1 ring-[#E5EAF3]"
                 priority
               />
-              <span className="text-[1.25rem] font-bold tracking-tight text-white">
+              <span className="text-[1.45rem] font-bold tracking-tight text-[#0F1B2D]">
                 {eyebrow}
               </span>
             </Link>
 
-            <div className="my-auto grid items-end gap-10 pt-12 pb-10 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] xl:gap-8">
-              <div className="min-w-0">
-                <p className="text-[11px] font-semibold tracking-[0.22em] text-[#C6F405] uppercase">
-                  Welcome back
-                </p>
-                <h2 className="mt-3 max-w-[16ch] text-[2.2rem] leading-[1.15] font-bold tracking-tight text-white xl:text-[2.45rem]">
+            <div className="flex flex-col items-center">
+              <div className="flex h-[13.5rem] w-full max-w-[18rem] items-center justify-center">
+                {desktopArt}
+              </div>
+
+              <div className="mt-8 w-full max-w-sm text-center">
+                <h2 className="text-[1.65rem] leading-tight font-bold tracking-tight text-[#0F1B2D]">
                   {headline}
                 </h2>
                 {copy ? (
-                  <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-white/70">
+                  <p className="mt-3 text-[14.5px] leading-relaxed text-[#667085]">
                     {copy}
                   </p>
                 ) : null}
-
-                <ul className="mt-8 space-y-3.5">
-                  {AUTH_PANEL_HIGHLIGHTS.map(({ icon: Icon, label }) => (
-                    <li
-                      key={label}
-                      className="flex items-center gap-3 text-[14.5px] font-medium text-white/90"
-                    >
-                      <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-[#C6F405] ring-1 ring-white/15">
-                        <Icon className="size-3.5" strokeWidth={2.3} aria-hidden />
-                      </span>
-                      {label}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="relative mx-auto w-full max-w-[17rem] xl:mx-0 xl:max-w-none">
-                <div className="relative aspect-[4/5] overflow-hidden rounded-[1.75rem] shadow-[0_24px_60px_rgba(0,0,0,0.35)] ring-1 ring-white/20">
-                  <Image
-                    src="/images/hero/doctor.png"
-                    alt=""
-                    fill
-                    className="object-cover object-center"
-                    sizes="280px"
-                    unoptimized
-                    priority
-                  />
-                  <div
-                    aria-hidden
-                    className="absolute inset-0 bg-gradient-to-t from-[#071525]/80 via-transparent to-transparent"
-                  />
-                  <div className="absolute inset-x-0 bottom-0 p-4">
-                    <p className="text-[12px] font-semibold tracking-[0.14em] text-[#C6F405] uppercase">
-                      Bookento
-                    </p>
-                    <p className="mt-1 text-[14px] font-semibold text-white">
-                      Trusted care, one tap away
-                    </p>
-                  </div>
-                </div>
-
-                <div className="absolute -bottom-3 -left-3 flex items-center gap-2 rounded-2xl bg-white px-3 py-2.5 shadow-[0_12px_28px_rgba(0,0,0,0.22)]">
-                  <span className="flex size-8 items-center justify-center rounded-full bg-[#EAF1FF] text-[#1865EA]">
-                    <CalendarCheck2
-                      className="size-3.5"
-                      strokeWidth={2.3}
-                      aria-hidden
-                    />
-                  </span>
-                  <div>
-                    <p className="text-[11px] font-semibold text-[#0F1B2D]">
-                      Instant booking
-                    </p>
-                    <p className="text-[10px] text-[#6B7A90]">Live slots nearby</p>
-                  </div>
-                </div>
               </div>
             </div>
 
-            <p className="border-t border-white/10 pt-5 text-[13px] text-white/50">
-              Trusted professionals, booked in minutes.
-            </p>
-          </div>
-        </aside>
+            <ul className="grid gap-3">
+              {AUTH_PANEL_HIGHLIGHTS.map(({ icon: Icon, label }) => (
+                <li
+                  key={label}
+                  className="flex items-center gap-3 rounded-2xl bg-white px-3.5 py-3 text-[13.5px] font-medium text-[#334155] shadow-[0_4px_14px_rgba(15,23,42,0.04)] ring-1 ring-[#EEF1F6]"
+                >
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#EAF1FF] text-[#1865EA]">
+                    <Icon className="size-3.5" strokeWidth={2.3} aria-hidden />
+                  </span>
+                  {label}
+                </li>
+              ))}
+            </ul>
+          </aside>
 
-        <main className="relative flex min-h-dvh flex-col bg-white px-5 py-8 sm:px-10 lg:px-12 xl:px-16">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,#F4F8FF_0%,transparent_100%)] lg:hidden"
-          />
+          <main className="relative flex flex-col justify-center px-5 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-10 xl:px-12 xl:py-12">
+            <Link
+              href={ROUTES.HOME}
+              className="mb-8 inline-flex w-fit items-center gap-2.5 lg:hidden"
+            >
+              <Image
+                src="/images/app-icon.jpg"
+                alt="Bookento"
+                width={36}
+                height={36}
+                className="size-9 rounded-lg shadow-sm"
+              />
+              <span className="font-bold text-[#0F1B2D]">Bookento</span>
+            </Link>
 
-          <Link
-            href={ROUTES.HOME}
-            className="relative z-10 mb-8 inline-flex w-fit items-center gap-2.5 lg:hidden"
-          >
-            <Image
-              src="/images/app-icon.jpg"
-              alt="Bookento"
-              width={36}
-              height={36}
-              className="size-9 rounded-lg shadow-sm"
-            />
-            <span className="font-bold text-[#0F1B2D]">Bookento</span>
-          </Link>
+            {tabletArt ? (
+              <div className="mb-6 flex h-[11.75rem] items-center justify-center lg:hidden">
+                <div className="w-[14rem]">{tabletArt}</div>
+              </div>
+            ) : null}
 
-          <div
-            className={cn(
-              "relative z-10 mx-auto flex w-full flex-1 flex-col justify-center",
-              wide ? "max-w-xl" : "max-w-[26rem]",
-            )}
-          >
-            {children}
-          </div>
-        </main>
+            <div
+              className={cn(
+                "mx-auto flex w-full flex-col",
+                wide ? "max-w-xl" : "max-w-[30rem]",
+              )}
+            >
+              {children}
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import { HeroCard } from "@/components/home/feature-promo/hero-card";
 import { SalonIllustration } from "@/components/home/feature-promo/salon-illustration";
 import { ServicePromoCard } from "@/components/home/feature-promo/service-promo-card";
 import { categoryListingRoute } from "@/constants/routes.constants";
+import { useRequireLoginToBook } from "@/hooks/use-require-login-to-book";
 import { useWebLocale } from "@/hooks/use-web-locale";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +16,7 @@ import { cn } from "@/lib/utils";
  */
 export function FeaturePromoBanner({ className }) {
   const { t } = useWebLocale();
+  const { getBookHref } = useRequireLoginToBook();
   const highlight = t("promoSectionHighlight");
 
   return (
@@ -56,7 +58,7 @@ export function FeaturePromoBanner({ className }) {
 
         <div className="flex flex-col gap-3 md:h-full md:gap-4 lg:gap-5">
           <ServicePromoCard
-            href={categoryListingRoute("doctor")}
+            href={getBookHref(categoryListingRoute("doctor"))}
             tone="doctor"
             eyebrow={t("promoDoctorEyebrow")}
             title={t("promoDoctorTitle")}
@@ -69,7 +71,7 @@ export function FeaturePromoBanner({ className }) {
             }
           />
           <ServicePromoCard
-            href={categoryListingRoute("salon")}
+            href={getBookHref(categoryListingRoute("salon"))}
             tone="salon"
             eyebrow={t("promoSalonEyebrow")}
             title={t("promoSalonTitle")}

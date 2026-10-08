@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 
 import { categoryListingRoute, ROUTES } from "@/constants/routes.constants";
+import { useRequireLoginToBook } from "@/hooks/use-require-login-to-book";
 import { cn } from "@/lib/utils";
 
 export function CategoryIcon({
@@ -39,9 +42,11 @@ export function CategoryItem({
   fullPage = false,
   className,
 }) {
+  const { getBookHref } = useRequireLoginToBook();
+
   return (
     <Link
-      href={categoryListingRoute(category.slug)}
+      href={getBookHref(categoryListingRoute(category.slug))}
       className={cn(
         category.bg,
         "group flex min-w-0 flex-col items-center justify-center rounded-2xl border-white shadow-[0_8px_20px_-4px_rgba(15,23,42,0.12),0_4px_8px_-4px_rgba(15,23,42,0.06)] transition-all hover:scale-[1.02] hover:shadow-[0_12px_28px_-4px_rgba(15,23,42,0.16),0_6px_12px_-4px_rgba(15,23,42,0.08)]",
@@ -71,9 +76,11 @@ export function CategoryItem({
 }
 
 export function MoreCategoryItem({ compact = false, className }) {
+  const { getBookHref } = useRequireLoginToBook();
+
   return (
     <Link
-      href={ROUTES.CATEGORIES}
+      href={getBookHref(ROUTES.CATEGORIES)}
       className={cn(
         "group flex min-w-0 flex-col items-center justify-center rounded-2xl border-white bg-[#FDE8F3] shadow-[0_8px_20px_-4px_rgba(15,23,42,0.12),0_4px_8px_-4px_rgba(15,23,42,0.06)] transition-all hover:scale-[1.02] hover:shadow-[0_12px_28px_-4px_rgba(15,23,42,0.16),0_6px_12px_-4px_rgba(15,23,42,0.08)]",
         compact

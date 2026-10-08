@@ -24,17 +24,18 @@ import { useUserAuthStore } from "@/store";
 function LoginCopy({ variant }) {
   const isWeb = variant === "web";
   return (
-    <div className={isWeb ? "mb-8" : "mb-7 text-center"}>
-      {isWeb ? (
-        <p className="text-[12px] font-semibold tracking-[0.16em] text-[#1865EA] uppercase">
-          Secure login
-        </p>
-      ) : null}
+    <div
+      className={
+        isWeb
+          ? "mb-7 border-b border-[#EEF1F6] pb-5 text-center"
+          : "mb-6 border-b border-[#EEF1F6] pb-6 text-center"
+      }
+    >
       <h1
         className={
           isWeb
-            ? "mt-2 text-[1.85rem] font-bold tracking-tight text-[#0F1B2D]"
-            : "text-[1.75rem] font-bold text-[#111827]"
+            ? "text-[1.85rem] font-bold tracking-tight text-[#0F1B2D]"
+            : "text-[1.65rem] font-bold tracking-tight text-[#111827]"
         }
       >
         Login
@@ -42,13 +43,11 @@ function LoginCopy({ variant }) {
       <p
         className={
           isWeb
-            ? "mt-2 text-[15px] leading-relaxed text-[#667085]"
-            : "mt-1 text-sm text-[#98A2B3]"
+            ? "mt-1.5 text-[15px] leading-relaxed text-[#667085]"
+            : "mt-1.5 text-[13.5px] text-[#98A2B3]"
         }
       >
-        {isWeb
-          ? "Enter your mobile number. We’ll send a one-time password to verify it’s you."
-          : "Login to continue booking"}
+        Login to continue booking
       </p>
     </div>
   );
@@ -71,13 +70,13 @@ function LoginFields({
   return (
     <form
       onSubmit={onSubmit}
-      className={isWeb ? "flex flex-col gap-5" : "flex flex-col gap-5"}
+      className={isWeb ? "flex flex-col gap-6" : "flex flex-col gap-6"}
     >
-      <label className="flex flex-col gap-2">
+      <label className={isWeb ? "flex flex-col gap-2.5" : "flex flex-col gap-2.5"}>
         <span
           className={
             isWeb
-              ? "text-[13px] font-semibold text-[#314158]"
+              ? "text-[14px] font-semibold text-[#314158]"
               : "text-[15px] font-medium text-[#334155]"
           }
         >
@@ -99,30 +98,30 @@ function LoginFields({
         variant={isWeb ? "web" : "app"}
         className={
           isWeb
-            ? "mt-1 h-[3.25rem] rounded-xl text-base shadow-[0_10px_24px_rgba(24,101,234,0.28)]"
-            : undefined
+            ? "mt-0.5 h-[3.25rem] rounded-xl text-base font-medium shadow-[0_10px_24px_rgba(24,101,234,0.28)]"
+            : "mx-auto mt-1 h-[3.15rem] !w-[78%] rounded-full text-[16px] font-medium tracking-wide shadow-[0_10px_24px_rgba(24,101,234,0.3)]"
         }
       >
         Send OTP
       </AuthPrimaryButton>
 
       <OrDivider variant={variant} />
-      <SocialAuthButtons variant={variant} onSelect={onSocial} />
+      <SocialAuthButtons variant={variant} onSelect={onSocial} disabled={loading} />
 
       <button
         type="button"
         onClick={onGuest}
         className={
           isWeb
-            ? "mt-1 h-11 rounded-xl border border-[#E8EDF5] bg-[#F8FAFC] text-sm font-semibold text-[#1865EA] transition-colors hover:bg-[#F0F5FF]"
-            : "text-primary pt-1 text-center text-[15px] font-semibold"
+            ? "mt-1 text-center text-[15px] font-medium text-[#1865EA] underline underline-offset-4 transition-opacity hover:opacity-80"
+            : "mt-1 pt-1 text-center text-[15px] font-medium text-[#1865EA] underline underline-offset-4"
         }
       >
         Continue as Guest
       </button>
 
       {isWeb ? (
-        <p className="mt-2 text-center text-[13.5px] text-[#667085]">
+        <p className="mt-1 text-center text-[13.5px] text-[#667085]">
           Are you a provider?{" "}
           <Link
             href={ROUTES.PROVIDER_LOGIN}
@@ -139,7 +138,7 @@ function LoginFields({
 export function UserLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { sendOtp, loginAsGuest, isLoading } = useUserAuthStore();
+  const { sendOtp, loginAsGuest, loginWithSocial, isLoading } = useUserAuthStore();
   const { country, countryCode, setCountryCode, pickerOpen, setPickerOpen } =
     useCountry();
   const [phone, setPhone] = useState("");
@@ -171,8 +170,14 @@ export function UserLoginForm() {
     router.push(ROUTES.HOME);
   };
 
-  const handleSocial = (label) => {
-    toast.info(`${label} sign-in coming soon`);
+  const handleSocial = async (label) => {
+    const result = await loginWithSocial(label);
+    if (!result?.success) {
+      toast.error(`${label} sign-in failed. Please try again.`);
+      return;
+    }
+    toast.success(`Signed in with ${label}`);
+    router.push(redirect || ROUTES.HOME);
   };
 
   const fieldProps = {
@@ -202,9 +207,9 @@ export function UserLoginForm() {
         }
         tablet={
           <AuthWebFrame
-            illustration={<LoginIllustration className="h-44 w-52" />}
-            headline="Login to continue booking"
-            copy="Use your mobile number. We'll send a one-time password to verify it's you."
+            illustration={<LoginIllustration className="!h-auto !w-full" />}
+            headline="Book trusted professionals nearby"
+            copy="Find verified experts, compare options, and book in minutes — in person or online."
           >
             <LoginCopy variant="web" />
             <LoginFields variant="web" {...fieldProps} />
@@ -212,9 +217,9 @@ export function UserLoginForm() {
         }
         desktop={
           <AuthWebFrame
-            illustration={<LoginIllustration className="h-52 w-60" />}
-            headline="Login to continue booking"
-            copy="Use your mobile number. We'll send a one-time password to verify it's you."
+            illustration={<LoginIllustration className="!h-auto !w-full" />}
+            headline="Book trusted professionals nearby"
+            copy="Find verified experts, compare options, and book in minutes — in person or online."
           >
             <LoginCopy variant="web" />
             <LoginFields variant="web" {...fieldProps} />

@@ -171,8 +171,7 @@ export function ServiceCard({ service, index = 0, desktop = false }) {
   const destination = service.categorySlug
     ? categoryListingRoute(service.categorySlug)
     : providerDetailRoute(service.providerId);
-  // Web desktop Explore cards → login first; mobile keeps direct browse
-  const href = desktop ? getBookHref(destination) : destination;
+  const href = getBookHref(destination);
 
   if (desktop) {
     return (

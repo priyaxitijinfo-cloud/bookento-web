@@ -759,7 +759,7 @@ export function HeroSection({ className }) {
                 role="listbox"
               >
                 {needle ? (
-                  <p className="px-5 pt-1.5 pb-1 text-[11px] font-semibold tracking-[0.12em] text-[#98A2B3] uppercase">
+                  <p className="hidden px-5 pt-1.5 pb-1 text-[11px] font-semibold tracking-[0.12em] text-[#98A2B3] uppercase md:block">
                     Categories
                   </p>
                 ) : null}
@@ -780,21 +780,6 @@ export function HeroSection({ className }) {
                 })}
               </div>
             ) : null}
-          </div>
-        </div>
-
-        {/* Mobile — portrait cards, horizontal snap */}
-        <div className="-mx-4 pb-2 md:hidden">
-          <div className="scrollbar-hide flex touch-pan-x snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-4">
-            {Array.from({ length: HERO_PANEL_COUNT }, (_, index) => (
-              <HeroImagePanel
-                key={`hero-panel-mobile-${index}`}
-                panelIndex={index}
-                frame={panelFrames[index] ?? 0}
-                mobile
-              />
-            ))}
-            <div className="w-1 shrink-0 snap-none" aria-hidden />
           </div>
         </div>
 

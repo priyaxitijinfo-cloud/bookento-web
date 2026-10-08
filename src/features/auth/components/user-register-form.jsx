@@ -252,6 +252,37 @@ function formatDobDisplay(isoDate) {
   return `${day}/${month}/${year}`;
 }
 
+function AvatarUpload({ previewUrl, onPick }) {
+  return (
+    <div className="mb-2 flex justify-center">
+      <label className="relative cursor-pointer">
+        <input
+          type="file"
+          accept="image/*"
+          className="sr-only"
+          onChange={onPick}
+          aria-label="Upload profile photo"
+        />
+        <span
+          className={cn(
+            "flex size-[5.5rem] items-center justify-center overflow-hidden rounded-full",
+            "border-2 border-dashed border-[#8EB6FF] bg-[#F3F7FF]",
+          )}
+        >
+          {previewUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={previewUrl} alt="" className="size-full object-cover" />
+          ) : (
+            <span className="text-[2rem] leading-none font-light text-[#1865EA]">
+              +
+            </span>
+          )}
+        </span>
+      </label>
+    </div>
+  );
+}
+
 function RegisterFields({
   variant,
   name,
@@ -269,6 +300,8 @@ function RegisterFields({
   setStateName,
   stateOpen,
   setStateOpen,
+  avatarPreview,
+  onAvatarPick,
   errors,
   loading,
   onSubmit,
@@ -279,6 +312,8 @@ function RegisterFields({
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-5">
+      <AvatarUpload previewUrl={avatarPreview} onPick={onAvatarPick} />
+
       <div className={isWeb ? "grid gap-5 sm:grid-cols-2" : "flex flex-col gap-5"}>
         <label className="flex flex-col gap-2">
           <span className="text-[15px] font-medium text-[#334155]">Full Name</span>
@@ -449,7 +484,18 @@ export function UserRegisterForm() {
   const [gender, setGender] = useState("male");
   const [stateName, setStateName] = useState("");
   const [stateOpen, setStateOpen] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState("");
   const [errors, setErrors] = useState({});
+
+  const handleAvatarPick = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    setAvatarPreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return url;
+    });
+  };
 
   const validate = () => {
     const next = {};
@@ -500,6 +546,8 @@ export function UserRegisterForm() {
     setStateName,
     stateOpen,
     setStateOpen,
+    avatarPreview,
+    onAvatarPick: handleAvatarPick,
     errors,
     loading: isLoading,
     onSubmit: handleSubmit,
@@ -512,8 +560,10 @@ export function UserRegisterForm() {
         mobile={
           <AuthMobileFrame>
             <div className="mb-6 text-center">
-              <h1 className="text-[1.75rem] font-bold text-[#111827]">Registration</h1>
-              <p className="mt-1 text-sm text-[#98A2B3]">
+              <h1 className="text-[1.75rem] font-bold tracking-tight text-[#111827]">
+                Registration
+              </h1>
+              <p className="mt-1.5 text-sm text-[#98A2B3]">
                 Fill in your details to start exploring trusted professionals near you.
               </p>
             </div>
@@ -523,9 +573,9 @@ export function UserRegisterForm() {
         tablet={
           <AuthWebFrame
             wide
-            illustration={<LoginIllustration className="h-44 w-52" />}
-            headline="Create your Bookento account"
-            copy="A few details help us personalize professionals and bookings for you."
+            illustration={<LoginIllustration className="!h-auto !w-full" />}
+            headline="Book trusted professionals nearby"
+            copy="Find verified experts, compare options, and book in minutes — in person or online."
           >
             <div className="mb-6">
               <h1 className="text-2xl font-bold tracking-tight text-[#111827]">
@@ -541,9 +591,9 @@ export function UserRegisterForm() {
         desktop={
           <AuthWebFrame
             wide
-            illustration={<LoginIllustration className="h-52 w-60" />}
-            headline="Create your Bookento account"
-            copy="A few details help us personalize professionals and bookings for you."
+            illustration={<LoginIllustration className="!h-auto !w-full" />}
+            headline="Book trusted professionals nearby"
+            copy="Find verified experts, compare options, and book in minutes — in person or online."
           >
             <div className="mb-6">
               <h1 className="text-2xl font-bold tracking-tight text-[#111827]">

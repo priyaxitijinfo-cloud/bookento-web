@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -25,19 +24,27 @@ const OTP_LENGTH = 6;
 function OtpHeader({ variant, destination }) {
   const isWeb = variant === "web";
   return (
-    <div className={isWeb ? "mb-6" : "mb-7 text-center"}>
+    <div
+      className={
+        isWeb
+          ? "mb-7 border-b border-[#EEF1F6] pb-5 text-center"
+          : "mb-6 border-b border-[#EEF1F6] pb-6 text-center"
+      }
+    >
       <h1
         className={
           isWeb
-            ? "text-2xl font-bold tracking-tight text-[#111827]"
-            : "text-[1.75rem] font-bold text-[#111827]"
+            ? "text-[1.85rem] font-bold tracking-tight text-[#0F1B2D]"
+            : "text-[1.65rem] font-bold tracking-tight text-[#111827]"
         }
       >
         Enter OTP
       </h1>
       <p
         className={
-          isWeb ? "mt-1.5 text-sm text-[#667085]" : "mt-1 text-sm text-[#98A2B3]"
+          isWeb
+            ? "mt-1.5 text-[15px] leading-relaxed text-[#667085]"
+            : "mt-1.5 text-[13.5px] text-[#98A2B3]"
         }
       >
         Sent a 6-digit OTP to {destination}
@@ -46,26 +53,19 @@ function OtpHeader({ variant, destination }) {
   );
 }
 
-function ResendRow({ countdown, onResend, variant }) {
-  const isWeb = variant === "web";
+function ResendRow({ countdown, onResend }) {
   return (
-    <p
-      className={
-        isWeb
-          ? "text-center text-sm text-[#667085]"
-          : "text-center text-sm text-[#667085]"
-      }
-    >
-      Don&apos;t receive code?{" "}
+    <p className="text-center text-[15px] text-[#667085]">
+      Don&apos;t Receive Code?{" "}
       {countdown > 0 ? (
-        <span className="text-primary font-semibold">
+        <span className="font-medium text-[#1865EA]">
           Resend {formatOtpTimer(countdown)}
         </span>
       ) : (
         <button
           type="button"
           onClick={onResend}
-          className="text-primary font-semibold hover:underline"
+          className="font-medium text-[#1865EA] underline underline-offset-4"
         >
           Resend OTP
         </button>
@@ -82,7 +82,6 @@ function OtpFields({
   onSubmit,
   countdown,
   onResend,
-  backHref,
 }) {
   const isWeb = variant === "web";
 
@@ -93,19 +92,16 @@ function OtpFields({
         type="submit"
         loading={loading}
         variant={isWeb ? "web" : "app"}
+        className={
+          isWeb
+            ? "mt-0.5 h-[3.25rem] w-full rounded-xl text-base font-medium shadow-[0_10px_24px_rgba(24,101,234,0.28)]"
+            : "mx-auto mt-1 h-[3.15rem] !w-[78%] rounded-full text-[16px] font-medium tracking-wide shadow-[0_10px_24px_rgba(24,101,234,0.3)]"
+        }
       >
         Verify
       </AuthPrimaryButton>
       <OrDivider variant={variant} />
-      <ResendRow countdown={countdown} onResend={onResend} variant={variant} />
-      {isWeb ? (
-        <p className="text-center text-sm text-[#667085]">
-          Wrong number?{" "}
-          <Link href={backHref} className="text-primary font-semibold hover:underline">
-            Change
-          </Link>
-        </p>
-      ) : null}
+      <ResendRow countdown={countdown} onResend={onResend} />
     </form>
   );
 }
@@ -123,7 +119,6 @@ export function UserOtpForm() {
   const redirect = searchParams.get("redirect");
   const isResetFlow = Boolean(email) && !phone;
   const destination = isResetFlow ? email : formatFullPhone(dial, phone);
-  const backHref = isResetFlow ? ROUTES.FORGOT_PASSWORD : ROUTES.USER_LOGIN;
 
   useEffect(() => {
     if (!phone && !email) {
@@ -185,7 +180,6 @@ export function UserOtpForm() {
     onSubmit: handleSubmit,
     countdown,
     onResend: handleResend,
-    backHref,
   };
 
   return (
@@ -199,9 +193,9 @@ export function UserOtpForm() {
       }
       tablet={
         <AuthWebFrame
-          illustration={<OtpIllustration className="h-44 w-52" />}
-          headline="Check your phone"
-          copy="Enter the 6-digit code we sent to verify your number and continue."
+          illustration={<OtpIllustration className="!h-auto !w-full" />}
+          headline="Book trusted professionals nearby"
+          copy="Find verified experts, compare options, and book in minutes — in person or online."
         >
           <OtpHeader variant="web" destination={destination} />
           <OtpFields variant="web" {...fieldProps} />
@@ -209,9 +203,9 @@ export function UserOtpForm() {
       }
       desktop={
         <AuthWebFrame
-          illustration={<OtpIllustration className="h-52 w-60" />}
-          headline="Check your phone"
-          copy="Enter the 6-digit code we sent to verify your number and continue."
+          illustration={<OtpIllustration className="!h-auto !w-full" />}
+          headline="Book trusted professionals nearby"
+          copy="Find verified experts, compare options, and book in minutes — in person or online."
         >
           <OtpHeader variant="web" destination={destination} />
           <OtpFields variant="web" {...fieldProps} />

@@ -8,7 +8,7 @@ export function AuthLayoutShell({ children }) {
   const pathname = usePathname();
 
   if (FULL_BLEED_PATHS.has(pathname)) {
-    return <div className="min-h-dvh bg-white">{children}</div>;
+    return <div className="min-h-dvh bg-transparent">{children}</div>;
   }
 
   return (
