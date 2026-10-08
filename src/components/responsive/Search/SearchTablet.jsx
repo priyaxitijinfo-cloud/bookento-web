@@ -1,12 +1,17 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowLeft, Search } from "lucide-react";
+import { Search } from "lucide-react";
 
 import { CategoryProviderGridCard } from "@/components/category/category-provider-grid-card";
+import { HomeFooter } from "@/components/home/home-footer";
+import { HomeHeader } from "@/components/home/home-header";
+import { DesktopBreadcrumbBar } from "@/components/layout/desktop-breadcrumb-bar";
 import { ProviderCard } from "@/components/shared/provider-card";
 import { EmptyState } from "@/components/shared/empty-state";
-import { PAGE_CONTAINER_VARIANTS, PAGE_SHELL_CLASS } from "@/lib/layout/page-layout.constants";
+import {
+  PAGE_CONTAINER_VARIANTS,
+  PAGE_SHELL_CLASS,
+} from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
 
 import { SearchInput } from "./SearchMobile";
@@ -18,6 +23,7 @@ export function SearchTablet({
   placeholder,
   title,
   backHref,
+  backLabel = "Back to Home",
   results,
   category,
   categorySlug,
@@ -25,23 +31,22 @@ export function SearchTablet({
 }) {
   return (
     <div className={cn(PAGE_SHELL_CLASS, "pb-8")}>
-      <header className="border-border bg-card safe-top sticky top-0 z-30 border-b">
+      <div className="z-30 shrink-0 bg-white/95 backdrop-blur-md">
+        <HomeHeader embedded />
+        <DesktopBreadcrumbBar
+          backHref={backHref}
+          backLabel={backLabel}
+          currentLabel={title}
+        />
+      </div>
+      <header className="border-border bg-card sticky top-0 z-20 border-b">
         <div className="mx-auto max-w-7xl px-6 py-3">
-          <div className="flex items-center gap-3">
-            <Link
-              href={backHref}
-              className="text-foreground hover:text-primary flex size-9 shrink-0 items-center justify-center rounded-full transition-colors"
-              aria-label="Go back"
-            >
-              <ArrowLeft className="size-5" />
-            </Link>
-            <SearchInput
-              inputRef={inputRef}
-              query={query}
-              onChange={onQueryChange}
-              placeholder={placeholder}
-            />
-          </div>
+          <SearchInput
+            inputRef={inputRef}
+            query={query}
+            onChange={onQueryChange}
+            placeholder={placeholder}
+          />
         </div>
       </header>
 
@@ -81,6 +86,7 @@ export function SearchTablet({
           </div>
         )}
       </main>
+      <HomeFooter className="mt-8 md:mt-10" />
     </div>
   );
 }

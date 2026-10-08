@@ -5,7 +5,6 @@ import { Search, SlidersHorizontal, X } from "lucide-react";
 import { CategoryFilterChips } from "@/components/category/category-filter-chips";
 import { CategoryProviderGridCard } from "@/components/category/category-provider-grid-card";
 import { ListingHeaderActions } from "@/components/category/listing-header-actions";
-import { HomeHeader } from "@/components/home/home-header";
 import { DesktopBreadcrumbBar } from "@/components/layout/desktop-breadcrumb-bar";
 import { ProvidersFilterSheet } from "@/components/providers/providers-filter-sheet";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -58,25 +57,22 @@ export function DoctorListingDesktop({
       contentClassName="md:!pt-0 lg:!pt-0"
       containerClassName="md:!pt-0"
       header={
-        <>
-          <HomeHeader embedded />
-          <DesktopBreadcrumbBar
-            backHref={ROUTES.HOME}
-            backLabel="Back to Home"
-            currentLabel="Explore Providers"
-            rightAction={
-              <ListingHeaderActions
-                searchOpen={searchOpen}
-                onSearchToggle={onSearchToggle}
-                onFilterClick={onFilterOpen}
-                showFilterActive={hasSheetFilters}
-                searchQuery={providerSearch}
-                onSearchQueryChange={onProviderSearchChange}
-                searchPlaceholder="Search providers, specialties, cities..."
-              />
-            }
-          />
-        </>
+        <DesktopBreadcrumbBar
+          backHref={ROUTES.HOME}
+          backLabel="Back to Home"
+          currentLabel="Explore Providers"
+          rightAction={
+            <ListingHeaderActions
+              searchOpen={searchOpen}
+              onSearchToggle={onSearchToggle}
+              onFilterClick={onFilterOpen}
+              showFilterActive={hasSheetFilters}
+              searchQuery={providerSearch}
+              onSearchQueryChange={onProviderSearchChange}
+              searchPlaceholder="Search providers, specialties, cities..."
+            />
+          }
+        />
       }
     >
       <div className="space-y-6">

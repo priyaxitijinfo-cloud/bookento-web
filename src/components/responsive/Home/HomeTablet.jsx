@@ -3,6 +3,7 @@
 import { BannerShowcase } from "@/components/home/banner-showcase";
 import { CategoryGrid } from "@/components/home/category-grid";
 import { HeroSection } from "@/components/home/hero-section";
+import { HomeFooter } from "@/components/home/home-footer";
 import { HomeHeader } from "@/components/home/home-header";
 import { PopularServicesShowcase } from "@/components/home/popular-services-showcase";
 import { SectionHeader } from "@/components/home/section-header";
@@ -10,7 +11,10 @@ import { SpecialPackagesShowcase } from "@/components/home/special-packages-show
 import { TopRatedProviderCard } from "@/components/home/top-rated-provider-card";
 import { UpcomingAppointmentCard } from "@/components/home/upcoming-appointment-card";
 import { ROUTES } from "@/constants/routes.constants";
-import { PAGE_CONTAINER_VARIANTS, PAGE_SHELL_CLASS } from "@/lib/layout/page-layout.constants";
+import {
+  PAGE_CONTAINER_VARIANTS,
+  PAGE_SHELL_CLASS,
+} from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
 
 export function HomeTablet({ topRated }) {
@@ -37,7 +41,11 @@ export function HomeTablet({ topRated }) {
           <SectionHeader title="Top Rated Professionals" href={ROUTES.PROVIDERS} />
           <div className="grid grid-cols-3 gap-4">
             {topRated.map((p) => (
-              <TopRatedProviderCard key={p.id} provider={p} categorySlug={p.categorySlug} />
+              <TopRatedProviderCard
+                key={p.id}
+                provider={p}
+                categorySlug={p.categorySlug}
+              />
             ))}
           </div>
         </section>
@@ -45,6 +53,7 @@ export function HomeTablet({ topRated }) {
         <PopularServicesShowcase />
         <SpecialPackagesShowcase />
       </main>
+      <HomeFooter className="mt-8 md:mt-10" />
     </div>
   );
 }

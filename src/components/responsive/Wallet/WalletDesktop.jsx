@@ -1,6 +1,5 @@
 "use client";
 
-import { HomeHeader } from "@/components/home/home-header";
 import { DesktopBreadcrumbBar } from "@/components/layout/desktop-breadcrumb-bar";
 import { DesktopLayout } from "@/components/responsive/layout";
 import { ResponsiveCard } from "@/components/responsive/layout/ResponsiveCard";
@@ -16,14 +15,11 @@ export function WalletDesktop({ balance, transactions }) {
       contentClassName="md:!pt-0 lg:!pt-0"
       containerClassName="md:!pt-0"
       header={
-        <>
-          <HomeHeader embedded />
-          <DesktopBreadcrumbBar
-            backHref={ROUTES.PROFILE}
-            backLabel="Back to Profile"
-            currentLabel="My Wallet"
-          />
-        </>
+        <DesktopBreadcrumbBar
+          backHref={ROUTES.PROFILE}
+          backLabel="Back to Profile"
+          currentLabel="My Wallet"
+        />
       }
     >
       <div className="space-y-6">

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Check } from "lucide-react";
 import { toast } from "sonner";
 
+import { HomeHeader } from "@/components/home/home-header";
 import { Button } from "@/components/ui/button";
 import {
   HeroBackIcon,
@@ -705,300 +706,311 @@ export function BookingPaymentView({
         </div>
       </div>
 
-      {/* Web — same shell as Package Details */}
-      <div className="hidden min-h-dvh flex-col bg-[#F7F8FC] md:flex">
-        <header className="sticky top-0 z-30 border-b border-[#E6EAF2] bg-white">
-          <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-6">
-            <div className="flex min-w-0 flex-1 items-center gap-2">
-              <button
-                type="button"
-                onClick={() => router.back()}
-                className="text-foreground flex size-9 shrink-0 items-center justify-center rounded-full transition-colors hover:bg-[#F3F4F6]"
-                aria-label="Go back"
-              >
-                <ArrowLeft className="size-5" />
-              </button>
-              <h1 className="text-foreground min-w-0 truncate text-base font-semibold">
-                Payment Method
-              </h1>
-            </div>
-            <div className="flex shrink-0 items-center gap-0.5">
-              <button
-                type="button"
-                onClick={() => {
-                  setSaved((current) => !current);
-                  toast.success(saved ? "Removed from saved" : "Saved to favorites");
-                }}
-                className="text-foreground flex size-9 items-center justify-center rounded-full transition-colors hover:bg-[#F3F4F6]"
-                aria-label={saved ? "Unsave" : "Save"}
-              >
-                <HeroHeartIcon tone="dark" filled={saved} className="size-5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  void handleShare();
-                }}
-                className="text-foreground flex size-9 items-center justify-center rounded-full transition-colors hover:bg-[#F3F4F6]"
-                aria-label="Share"
-              >
-                <HeroShareIcon tone="dark" className="pointer-events-none size-5" />
-              </button>
-            </div>
-          </div>
-        </header>
-
-        <main className="mx-auto w-full max-w-7xl flex-1 space-y-6 px-6 py-6 pb-32">
-          <section className={WEB_CARD_CLASS}>
-            {selectedPackage ? (
-              <>
-                <div className="p-5">
-                  <div className="flex items-stretch gap-5">
-                    <div className="bg-muted w-[7rem] shrink-0 overflow-hidden rounded-2xl lg:w-[7.5rem]">
-                      <img
-                        src={selectedPackage.image}
-                        alt={selectedPackage.name}
-                        className="size-full min-h-[9rem] object-cover"
-                      />
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-start justify-between gap-4">
-                        <h2 className="text-foreground text-lg leading-snug font-semibold">
-                          {selectedPackage.name}
-                        </h2>
-                        <span className="text-primary inline-flex shrink-0 items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-3 py-1.5 text-xs font-semibold">
-                          <img
-                            src="/icons/Location1.svg"
-                            alt=""
-                            className="size-3.5 shrink-0 object-contain"
-                            draggable={false}
-                            aria-hidden
-                          />
-                          {visitLabel}
-                        </span>
-                      </div>
-
-                      <ul className="mt-3.5 space-y-2">
-                        {(selectedPackage.features || []).map((feature) => (
-                          <li
-                            key={feature}
-                            className="flex items-start gap-2.5 text-[15px]"
-                          >
-                            <span
-                              className={cn(
-                                "mt-0.5 flex size-[18px] shrink-0 items-center justify-center rounded-full",
-                                theme.checkBg,
-                              )}
-                            >
-                              <Check className="size-2.5 text-white" strokeWidth={3} />
-                            </span>
-                            <span className="leading-snug text-[#4D5972]">
-                              {feature}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="px-5">
-                  <div className="space-y-2 border-t border-[#E6EAF2] py-4 text-[15px]">
-                    <PaymentLineRow
-                      label="Original Price"
-                      amount={originalPrice}
-                      muted
-                      strikethrough
-                    />
-                    <PaymentLineRow label="Discount" amount={discount} green />
-                  </div>
-                  <div className="pb-5">
-                    <PaymentTotalBar amount={amountToPay} />
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="p-5">
-                  <div className="flex items-center gap-5">
-                    <div className="bg-muted size-[7.5rem] shrink-0 overflow-hidden rounded-2xl">
-                      <img
-                        src={provider.avatar}
-                        alt={provider.businessName}
-                        className="size-full object-cover"
-                      />
-                    </div>
-                    <div className="min-w-0 flex-1 space-y-2">
-                      <div className="flex flex-wrap items-center gap-3">
-                        <h2 className="text-foreground text-lg font-semibold">
-                          {provider.businessName}
-                        </h2>
-                        <span className="text-primary inline-flex shrink-0 items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-3 py-1.5 text-xs font-semibold">
-                          <img
-                            src="/icons/Location1.svg"
-                            alt=""
-                            className="size-3.5 shrink-0 object-contain"
-                            draggable={false}
-                            aria-hidden
-                          />
-                          {visitLabel}
-                        </span>
-                      </div>
-                      <p className="text-[15px] text-[#7A8699]">{provider.specialty}</p>
-                      {(dateLabel || draft.scheduledTime) && (
-                        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[15px] text-[#4D5972]">
-                          {dateLabel && (
-                            <span className="inline-flex items-center gap-2 font-medium">
-                              <img
-                                src="/icons/calander.svg"
-                                alt=""
-                                className="size-5 shrink-0 object-contain"
-                                draggable={false}
-                                aria-hidden
-                              />
-                              {dateLabel}
-                            </span>
-                          )}
-                          {draft.scheduledTime && (
-                            <span className="inline-flex items-center gap-2 font-medium">
-                              <img
-                                src="/icons/time.svg"
-                                alt=""
-                                className="size-5 shrink-0 object-contain"
-                                draggable={false}
-                                aria-hidden
-                              />
-                              {draft.scheduledTime}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="px-5">
-                  <div className="space-y-2 border-t border-[#E6EAF2] py-4 text-[15px]">
-                    {billingServices.map((service) => (
-                      <PaymentLineRow
-                        key={service.id}
-                        label={service.name}
-                        amount={service.price}
-                      />
-                    ))}
-                    <PaymentLineRow label="Platform Fees" amount={PLATFORM_FEE} />
-                  </div>
-                  <div className="space-y-2 border-t border-[#E6EAF2] py-4 text-[15px]">
-                    <PaymentLineRow
-                      label="Original Price"
-                      amount={originalPrice}
-                      muted
-                      strikethrough
-                    />
-                    <PaymentLineRow label="Discount" amount={discount} green />
-                  </div>
-                  <div className="pb-5">
-                    <PaymentTotalBar amount={amountToPay} />
-                  </div>
-                </div>
-              </>
-            )}
-          </section>
-
-          <section>
-            <PaymentSectionTitle>Branch</PaymentSectionTitle>
-            <div className={cn(WEB_CARD_CLASS, "p-5")}>
-              <div className="flex items-start gap-3">
-                <span className="flex size-10 shrink-0 items-center justify-center">
-                  <LocationIcon className="size-[22px] text-[#4D5972]" />
-                </span>
+      {/* Web — marketplace chrome + payment content */}
+      <div className="hidden h-dvh flex-col overflow-hidden bg-[#F7F8FC] md:flex">
+        <div className="z-30 shrink-0 bg-white">
+          <HomeHeader embedded />
+          <header className="border-b border-[#E6EAF2] bg-white">
+            <div className="mx-auto flex h-14 w-full max-w-[calc(96rem-60px)] items-center justify-between px-4 md:px-[4.875rem] xl:px-[5.875rem]">
+              <div className="flex min-w-0 flex-1 items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => setBranchPickerOpen(true)}
-                  className="min-w-0 flex-1 text-left"
+                  onClick={() => router.back()}
+                  className="text-foreground flex size-9 shrink-0 items-center justify-center rounded-full transition-colors hover:bg-[#F3F4F6]"
+                  aria-label="Go back"
                 >
-                  <p className="text-foreground text-[15px] font-semibold">
-                    {branch.name}
-                  </p>
-                  <p className="mt-1 text-sm leading-relaxed text-[#7A8699]">
-                    {branch.address}
-                  </p>
+                  <ArrowLeft className="size-5" />
+                </button>
+                <h1 className="text-foreground min-w-0 truncate text-base font-semibold">
+                  Payment Method
+                </h1>
+              </div>
+              <div className="flex shrink-0 items-center gap-0.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSaved((current) => !current);
+                    toast.success(saved ? "Removed from saved" : "Saved to favorites");
+                  }}
+                  className="text-foreground flex size-9 items-center justify-center rounded-full transition-colors hover:bg-[#F3F4F6]"
+                  aria-label={saved ? "Unsave" : "Save"}
+                >
+                  <HeroHeartIcon tone="dark" filled={saved} className="size-5" />
                 </button>
                 <button
                   type="button"
-                  onClick={() => setBranchPickerOpen(true)}
-                  className="flex size-9 shrink-0 items-center justify-center rounded-lg transition-colors hover:bg-[#F3F4F6]"
-                  aria-label="Edit branch"
+                  onClick={() => {
+                    void handleShare();
+                  }}
+                  className="text-foreground flex size-9 items-center justify-center rounded-full transition-colors hover:bg-[#F3F4F6]"
+                  aria-label="Share"
                 >
-                  <img
-                    src="/icons/edit.svg"
-                    alt=""
-                    className="size-8 object-contain"
-                    draggable={false}
-                    aria-hidden
-                  />
+                  <HeroShareIcon tone="dark" className="pointer-events-none size-5" />
                 </button>
               </div>
             </div>
-          </section>
+          </header>
+        </div>
 
-          <section>
-            <PaymentSectionTitle>Payment Options</PaymentSectionTitle>
-            <div className="space-y-3">
-              <button
-                type="button"
-                onClick={() => setPaymentMethod(PAYMENT_METHODS.UPI)}
-                className={cn(
-                  "flex w-full items-center gap-3 p-5 text-left transition-colors",
-                  WEB_CARD_CLASS,
-                  draft.paymentMethod === PAYMENT_METHODS.UPI
-                    ? "border-[#B5CEF8] bg-[#EEF4FD]"
-                    : "hover:border-primary/20",
-                )}
-              >
-                <UpiLogo className="size-10" />
-                <div className="min-w-0 flex-1">
-                  <p className="text-foreground text-[15px] font-semibold">UPI</p>
-                  <p className="mt-0.5 text-sm text-[#7A8699]">
-                    Google Pay · PhonePe · Paytm · BHIM
-                  </p>
+        <div className="scrollbar-hide min-h-0 flex-1 overflow-y-auto overscroll-contain">
+          <main className="mx-auto w-full max-w-[calc(96rem-60px)] flex-1 space-y-6 px-4 py-6 md:px-[4.875rem] xl:px-[5.875rem]">
+            <section className={WEB_CARD_CLASS}>
+              {selectedPackage ? (
+                <>
+                  <div className="p-5">
+                    <div className="flex items-stretch gap-5">
+                      <div className="bg-muted w-[7rem] shrink-0 overflow-hidden rounded-2xl lg:w-[7.5rem]">
+                        <img
+                          src={selectedPackage.image}
+                          alt={selectedPackage.name}
+                          className="size-full min-h-[9rem] object-cover"
+                        />
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-4">
+                          <h2 className="text-foreground text-lg leading-snug font-semibold">
+                            {selectedPackage.name}
+                          </h2>
+                          <span className="text-primary inline-flex shrink-0 items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-3 py-1.5 text-xs font-semibold">
+                            <img
+                              src="/icons/Location1.svg"
+                              alt=""
+                              className="size-3.5 shrink-0 object-contain"
+                              draggable={false}
+                              aria-hidden
+                            />
+                            {visitLabel}
+                          </span>
+                        </div>
+
+                        <ul className="mt-3.5 space-y-2">
+                          {(selectedPackage.features || []).map((feature) => (
+                            <li
+                              key={feature}
+                              className="flex items-start gap-2.5 text-[15px]"
+                            >
+                              <span
+                                className={cn(
+                                  "mt-0.5 flex size-[18px] shrink-0 items-center justify-center rounded-full",
+                                  theme.checkBg,
+                                )}
+                              >
+                                <Check
+                                  className="size-2.5 text-white"
+                                  strokeWidth={3}
+                                />
+                              </span>
+                              <span className="leading-snug text-[#4D5972]">
+                                {feature}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="px-5">
+                    <div className="space-y-2 border-t border-[#E6EAF2] py-4 text-[15px]">
+                      <PaymentLineRow
+                        label="Original Price"
+                        amount={originalPrice}
+                        muted
+                        strikethrough
+                      />
+                      <PaymentLineRow label="Discount" amount={discount} green />
+                    </div>
+                    <div className="pb-5">
+                      <PaymentTotalBar amount={amountToPay} />
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="p-5">
+                    <div className="flex items-center gap-5">
+                      <div className="bg-muted size-[7.5rem] shrink-0 overflow-hidden rounded-2xl">
+                        <img
+                          src={provider.avatar}
+                          alt={provider.businessName}
+                          className="size-full object-cover"
+                        />
+                      </div>
+                      <div className="min-w-0 flex-1 space-y-2">
+                        <div className="flex flex-wrap items-center gap-3">
+                          <h2 className="text-foreground text-lg font-semibold">
+                            {provider.businessName}
+                          </h2>
+                          <span className="text-primary inline-flex shrink-0 items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-3 py-1.5 text-xs font-semibold">
+                            <img
+                              src="/icons/Location1.svg"
+                              alt=""
+                              className="size-3.5 shrink-0 object-contain"
+                              draggable={false}
+                              aria-hidden
+                            />
+                            {visitLabel}
+                          </span>
+                        </div>
+                        <p className="text-[15px] text-[#7A8699]">
+                          {provider.specialty}
+                        </p>
+                        {(dateLabel || draft.scheduledTime) && (
+                          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[15px] text-[#4D5972]">
+                            {dateLabel && (
+                              <span className="inline-flex items-center gap-2 font-medium">
+                                <img
+                                  src="/icons/calander.svg"
+                                  alt=""
+                                  className="size-5 shrink-0 object-contain"
+                                  draggable={false}
+                                  aria-hidden
+                                />
+                                {dateLabel}
+                              </span>
+                            )}
+                            {draft.scheduledTime && (
+                              <span className="inline-flex items-center gap-2 font-medium">
+                                <img
+                                  src="/icons/time.svg"
+                                  alt=""
+                                  className="size-5 shrink-0 object-contain"
+                                  draggable={false}
+                                  aria-hidden
+                                />
+                                {draft.scheduledTime}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="px-5">
+                    <div className="space-y-2 border-t border-[#E6EAF2] py-4 text-[15px]">
+                      {billingServices.map((service) => (
+                        <PaymentLineRow
+                          key={service.id}
+                          label={service.name}
+                          amount={service.price}
+                        />
+                      ))}
+                      <PaymentLineRow label="Platform Fees" amount={PLATFORM_FEE} />
+                    </div>
+                    <div className="space-y-2 border-t border-[#E6EAF2] py-4 text-[15px]">
+                      <PaymentLineRow
+                        label="Original Price"
+                        amount={originalPrice}
+                        muted
+                        strikethrough
+                      />
+                      <PaymentLineRow label="Discount" amount={discount} green />
+                    </div>
+                    <div className="pb-5">
+                      <PaymentTotalBar amount={amountToPay} />
+                    </div>
+                  </div>
+                </>
+              )}
+            </section>
+
+            <section>
+              <PaymentSectionTitle>Branch</PaymentSectionTitle>
+              <div className={cn(WEB_CARD_CLASS, "p-5")}>
+                <div className="flex items-start gap-3">
+                  <span className="flex size-10 shrink-0 items-center justify-center">
+                    <LocationIcon className="size-[22px] text-[#4D5972]" />
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setBranchPickerOpen(true)}
+                    className="min-w-0 flex-1 text-left"
+                  >
+                    <p className="text-foreground text-[15px] font-semibold">
+                      {branch.name}
+                    </p>
+                    <p className="mt-1 text-sm leading-relaxed text-[#7A8699]">
+                      {branch.address}
+                    </p>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setBranchPickerOpen(true)}
+                    className="flex size-9 shrink-0 items-center justify-center rounded-lg transition-colors hover:bg-[#F3F4F6]"
+                    aria-label="Edit branch"
+                  >
+                    <img
+                      src="/icons/edit.svg"
+                      alt=""
+                      className="size-8 object-contain"
+                      draggable={false}
+                      aria-hidden
+                    />
+                  </button>
                 </div>
-                <PaymentRadioIndicator
-                  active={draft.paymentMethod === PAYMENT_METHODS.UPI}
-                />
-              </button>
+              </div>
+            </section>
 
-              <button
-                type="button"
-                onClick={() => setPaymentMethod(PAYMENT_METHODS.WALLET)}
-                className={cn(
-                  "flex w-full items-center gap-3 p-5 text-left transition-colors",
-                  WEB_CARD_CLASS,
-                  draft.paymentMethod === PAYMENT_METHODS.WALLET
-                    ? "border-[#B5CEF8] bg-[#EEF4FD]"
-                    : "hover:border-primary/20",
-                )}
-              >
-                <WalletLogo className="size-10" />
-                <div className="min-w-0 flex-1">
-                  <p className="text-foreground text-[15px] font-semibold">
-                    Pay with Wallet
-                  </p>
-                  <p className="mt-0.5 text-sm text-[#7A8699]">
-                    Available Balance: {formatCurrency(profile.walletBalance || 20000)}
-                  </p>
-                </div>
-                <PaymentRadioIndicator
-                  active={draft.paymentMethod === PAYMENT_METHODS.WALLET}
-                />
-              </button>
-            </div>
-          </section>
-        </main>
+            <section>
+              <PaymentSectionTitle>Payment Options</PaymentSectionTitle>
+              <div className="space-y-3">
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod(PAYMENT_METHODS.UPI)}
+                  className={cn(
+                    "flex w-full items-center gap-3 p-5 text-left transition-colors",
+                    WEB_CARD_CLASS,
+                    draft.paymentMethod === PAYMENT_METHODS.UPI
+                      ? "border-[#B5CEF8] bg-[#EEF4FD]"
+                      : "hover:border-primary/20",
+                  )}
+                >
+                  <UpiLogo className="size-10" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-foreground text-[15px] font-semibold">UPI</p>
+                    <p className="mt-0.5 text-sm text-[#7A8699]">
+                      Google Pay · PhonePe · Paytm · BHIM
+                    </p>
+                  </div>
+                  <PaymentRadioIndicator
+                    active={draft.paymentMethod === PAYMENT_METHODS.UPI}
+                  />
+                </button>
 
-        <div className="safe-bottom fixed inset-x-0 bottom-0 z-40 border-t border-[#E6EAF2] bg-white">
-          <div className="mx-auto w-full max-w-7xl px-6 py-4">
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod(PAYMENT_METHODS.WALLET)}
+                  className={cn(
+                    "flex w-full items-center gap-3 p-5 text-left transition-colors",
+                    WEB_CARD_CLASS,
+                    draft.paymentMethod === PAYMENT_METHODS.WALLET
+                      ? "border-[#B5CEF8] bg-[#EEF4FD]"
+                      : "hover:border-primary/20",
+                  )}
+                >
+                  <WalletLogo className="size-10" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-foreground text-[15px] font-semibold">
+                      Pay with Wallet
+                    </p>
+                    <p className="mt-0.5 text-sm text-[#7A8699]">
+                      Available Balance:{" "}
+                      {formatCurrency(profile.walletBalance || 20000)}
+                    </p>
+                  </div>
+                  <PaymentRadioIndicator
+                    active={draft.paymentMethod === PAYMENT_METHODS.WALLET}
+                  />
+                </button>
+              </div>
+            </section>
+          </main>
+        </div>
+
+        <div className="safe-bottom z-40 shrink-0 border-t border-[#E6EAF2] bg-white">
+          <div className="mx-auto w-full max-w-[calc(96rem-60px)] px-4 py-4 md:px-[4.875rem] xl:px-[5.875rem]">
             <Button
               type="button"
               size="lg"

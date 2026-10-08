@@ -1,5 +1,7 @@
 "use client";
 
+import { HomeFooter } from "@/components/home/home-footer";
+
 import {
   DoctorProfileMobileHeader,
   HomeHeader,
@@ -39,8 +41,8 @@ export function ProviderDetailTablet({
   const showBookingFooter = activeTab === "services";
 
   return (
-    <div className="bg-surface-page min-h-dvh pb-32">
-      <div className="hidden shrink-0 md:block">
+    <div className="bg-surface-page flex h-dvh flex-col overflow-hidden pb-32 md:pb-0">
+      <div className="z-30 hidden shrink-0 md:block">
         <HomeHeader />
         <ProfileDesktopBreadcrumb
           href={backHref}
@@ -49,40 +51,44 @@ export function ProviderDetailTablet({
         />
       </div>
 
-      <div className="mx-auto w-full max-w-5xl px-6 py-6">
-        <DoctorProfileMobileHeader
-          provider={provider}
-          categorySlug={categorySlug}
-          backHref={backHref}
-          backLabel={backLabel}
-          saved={saved}
-          onToggleSaved={onToggleSaved}
-          onBlockClick={onBlockClick}
-          onReportClick={onReportClick}
-        />
-
-        <div className="mt-6">
-          <ProfileMainPanel
-            tabs={tabs}
-            activeTab={activeTab}
-            onTabChange={onTabChange}
-            showBookingFooter={showBookingFooter}
+      <div className="scrollbar-hide min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        <div className="mx-auto w-full max-w-5xl px-6 py-6">
+          <DoctorProfileMobileHeader
             provider={provider}
-            services={services}
             categorySlug={categorySlug}
-          >
-            <ProviderTabPanels
+            backHref={backHref}
+            backLabel={backLabel}
+            saved={saved}
+            onToggleSaved={onToggleSaved}
+            onBlockClick={onBlockClick}
+            onReportClick={onReportClick}
+          />
+
+          <div className="mt-6">
+            <ProfileMainPanel
+              tabs={tabs}
               activeTab={activeTab}
+              onTabChange={onTabChange}
+              showBookingFooter={showBookingFooter}
               provider={provider}
-              categorySlug={categorySlug}
               services={services}
-              packages={packages}
-              gallery={gallery}
-              aboutParagraphs={aboutParagraphs}
-              setServicesOpen={setServicesOpen}
-            />
-          </ProfileMainPanel>
+              categorySlug={categorySlug}
+            >
+              <ProviderTabPanels
+                activeTab={activeTab}
+                provider={provider}
+                categorySlug={categorySlug}
+                services={services}
+                packages={packages}
+                gallery={gallery}
+                aboutParagraphs={aboutParagraphs}
+                setServicesOpen={setServicesOpen}
+              />
+            </ProfileMainPanel>
+          </div>
         </div>
+
+        <HomeFooter className="mt-0 md:mt-10" />
       </div>
 
       <ProviderDetailModals

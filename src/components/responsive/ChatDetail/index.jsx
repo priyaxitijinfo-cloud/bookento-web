@@ -120,6 +120,7 @@ export function ChatDetailResponsive() {
         backHref={ROUTES.CHATS}
         backLabel="Back to Chats"
         containerVariant="browseWithBreadcrumb"
+        showWebFooter={false}
         className="bg-surface-page"
       >
         <EmptyState
@@ -183,6 +184,7 @@ export function ChatDetailResponsive() {
         onBack={handleDesktopBack}
         hideMobileHeader
         showBreadcrumb
+        showWebFooter={false}
         breadcrumbCurrentLabel="Chat"
         containerVariant="chat"
         className={cn(

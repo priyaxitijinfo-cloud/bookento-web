@@ -209,14 +209,11 @@ export function ShortsDesktop({
         contentClassName="md:!pt-0 lg:!pt-0"
         containerClassName="md:!pt-0"
         header={
-          <>
-            <HomeHeader embedded />
-            <DesktopBreadcrumbBar
-              backHref={back.href}
-              backLabel={back.label}
-              currentLabel="Saved Reels"
-            />
-          </>
+          <DesktopBreadcrumbBar
+            backHref={back.href}
+            backLabel={back.label}
+            currentLabel="Saved Reels"
+          />
         }
       >
         {!hasHydrated ? (
@@ -257,14 +254,11 @@ export function ShortsDesktop({
         contentClassName="md:!pt-0 lg:!pt-0"
         containerClassName="md:!pt-0"
         header={
-          <>
-            <HomeHeader embedded />
-            <DesktopBreadcrumbBar
-              backHref={back.href}
-              backLabel={back.label}
-              currentLabel={pageTitle}
-            />
-          </>
+          <DesktopBreadcrumbBar
+            backHref={back.href}
+            backLabel={back.label}
+            currentLabel={pageTitle}
+          />
         }
       >
         {!hasHydrated ? (
@@ -309,20 +303,15 @@ export function ShortsDesktop({
         (isSavedView && savedPlayerOpen) || allPlayerOpen ? false : undefined
       }
       header={
-        <>
-          {(isSavedView && savedPlayerOpen) || allPlayerOpen ? (
-            <HomeHeader embedded />
-          ) : null}
-          <DesktopBreadcrumbBar
-            {...(allPlayerOpen
-              ? {
-                  currentLabel: pageTitle,
-                  onBack: closeAllPlayer,
-                  backLabel: "Back to all reels",
-                }
-              : breadcrumbProps)}
-          />
-        </>
+        <DesktopBreadcrumbBar
+          {...(allPlayerOpen
+            ? {
+                currentLabel: pageTitle,
+                onBack: closeAllPlayer,
+                backLabel: "Back to all reels",
+              }
+            : breadcrumbProps)}
+        />
       }
       contentClassName={
         (isSavedView && savedPlayerOpen) || allPlayerOpen

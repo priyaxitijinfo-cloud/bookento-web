@@ -1,5 +1,6 @@
 "use client";
 
+import { HomeFooter } from "@/components/home/home-footer";
 import { HomeHeader } from "@/components/home/home-header";
 import { DesktopBreadcrumbBar } from "@/components/layout/desktop-breadcrumb-bar";
 import { UserBottomNav, UserHeader } from "@/components/layout/user-nav";
@@ -23,6 +24,7 @@ export function UserPageShell({
   showBottomNav = true,
   showDesktopHeader = true,
   showBreadcrumb = true,
+  showWebFooter = true,
   hideMobileBack = false,
   hideMobileHeader = false,
   titleCentered = false,
@@ -43,6 +45,7 @@ export function UserPageShell({
     <div
       className={cn(
         PAGE_SHELL_CLASS,
+        "md:flex md:h-dvh md:max-h-dvh md:flex-col md:overflow-hidden md:pb-0",
         className,
         hasBreadcrumb && "md:!bg-surface-page",
       )}
@@ -77,9 +80,17 @@ export function UserPageShell({
         </div>
       ) : null}
 
-      <main className={cn(containerClass, mainClassName)}>{children}</main>
+      <div className="md:scrollbar-hide max-md:contents md:flex md:min-h-0 md:flex-1 md:flex-col md:overflow-y-auto md:overscroll-contain">
+        <main className={cn(containerClass, mainClassName)}>{children}</main>
 
-      {footer}
+        {showWebFooter ? (
+          <div className="hidden md:block">
+            <HomeFooter className="mt-0 md:mt-10" />
+          </div>
+        ) : null}
+
+        {footer}
+      </div>
 
       {showBottomNav ? (
         <div className="shrink-0">

@@ -1,5 +1,8 @@
 "use client";
 
+import { HomeFooter } from "@/components/home/home-footer";
+import { DESKTOP_STICKY_HEADER_CLASS } from "@/lib/layout/page-layout.constants";
+
 import {
   DoctorProfileSidebar,
   HomeHeader,
@@ -8,7 +11,6 @@ import {
   ProviderDetailModals,
   ProviderTabPanels,
 } from "./provider-detail-layout";
-import { DESKTOP_STICKY_HEADER_CLASS } from "@/lib/layout/page-layout.constants";
 
 export function ProviderDetailDesktop({
   provider,
@@ -51,42 +53,46 @@ export function ProviderDetailDesktop({
           />
         </div>
 
-        <div className="mx-auto flex min-h-0 w-full max-w-[calc(96rem-60px)] flex-1 flex-col px-4 pt-0 pb-4 md:px-[4.875rem] md:pt-1 md:pb-4 xl:px-[5.875rem]">
-          <div className="grid min-h-0 flex-1 gap-6 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)]">
-            <aside className="hidden min-h-0 overflow-y-auto lg:block">
-              <DoctorProfileSidebar
-                provider={provider}
-                categorySlug={categorySlug}
-                saved={saved}
-                onToggleSaved={onToggleSaved}
-                onBlockClick={onBlockClick}
-                onReportClick={onReportClick}
-              />
-            </aside>
+        <div className="scrollbar-hide min-h-0 flex-1 overflow-y-auto overscroll-contain">
+          <div className="mx-auto flex min-h-full w-full max-w-[calc(96rem-60px)] flex-col px-4 pt-0 pb-4 md:px-[4.875rem] md:pt-1 md:pb-4 xl:px-[5.875rem]">
+            <div className="grid min-h-[calc(100dvh-8.5rem)] flex-1 gap-6 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)]">
+              <aside className="hidden min-h-0 overflow-y-auto lg:block">
+                <DoctorProfileSidebar
+                  provider={provider}
+                  categorySlug={categorySlug}
+                  saved={saved}
+                  onToggleSaved={onToggleSaved}
+                  onBlockClick={onBlockClick}
+                  onReportClick={onReportClick}
+                />
+              </aside>
 
-            <ProfileMainPanel
-              tabs={tabs}
-              activeTab={activeTab}
-              onTabChange={onTabChange}
-              showBookingFooter={showBookingFooter}
-              provider={provider}
-              services={services}
-              categorySlug={categorySlug}
-              mobileFooterClassName="hidden"
-              fillViewport
-            >
-              <ProviderTabPanels
+              <ProfileMainPanel
+                tabs={tabs}
                 activeTab={activeTab}
+                onTabChange={onTabChange}
+                showBookingFooter={showBookingFooter}
                 provider={provider}
-                categorySlug={categorySlug}
                 services={services}
-                packages={packages}
-                gallery={gallery}
-                aboutParagraphs={aboutParagraphs}
-                setServicesOpen={setServicesOpen}
-              />
-            </ProfileMainPanel>
+                categorySlug={categorySlug}
+                mobileFooterClassName="hidden"
+                fillViewport
+              >
+                <ProviderTabPanels
+                  activeTab={activeTab}
+                  provider={provider}
+                  categorySlug={categorySlug}
+                  services={services}
+                  packages={packages}
+                  gallery={gallery}
+                  aboutParagraphs={aboutParagraphs}
+                  setServicesOpen={setServicesOpen}
+                />
+              </ProfileMainPanel>
+            </div>
           </div>
+
+          <HomeFooter className="mt-0 md:mt-0" />
         </div>
       </div>
 

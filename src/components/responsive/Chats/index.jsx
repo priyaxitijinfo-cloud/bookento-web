@@ -40,6 +40,7 @@ export function ChatsResponsive() {
       backLabel="Back to Profile"
       hideMobileHeader={inbox.searchOpen}
       showBreadcrumb
+      showWebFooter={false}
       breadcrumbCurrentLabel="Chat"
       containerVariant="chat"
       className={cn(

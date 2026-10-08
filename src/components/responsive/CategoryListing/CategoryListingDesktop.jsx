@@ -11,6 +11,7 @@ import {
   normalizeAppliedFilters,
 } from "@/components/category/category-filter-sheet";
 import { CategoryProviderGridCard } from "@/components/category/category-provider-grid-card";
+import { HomeFooter } from "@/components/home/home-footer";
 import { HomeHeader } from "@/components/home/home-header";
 import { DesktopBreadcrumbBar } from "@/components/layout/desktop-breadcrumb-bar";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -91,7 +92,7 @@ function ListingFiltersSidebar({
   return (
     <aside
       className={cn(
-        "flex h-full w-[280px] shrink-0 flex-col overflow-hidden xl:w-[300px]",
+        "sticky top-0 flex max-h-[calc(100dvh-8.5rem)] w-[280px] shrink-0 flex-col self-start overflow-hidden xl:w-[300px]",
         "rounded-2xl border border-[#E8EDF5] bg-white",
         "shadow-[0_8px_24px_-16px_rgba(15,23,42,0.18)]",
       )}
@@ -175,54 +176,58 @@ export function CategoryListingDesktop({
         />
       </div>
 
-      <div className={cn(HOME_PAGE_CONTAINER, "flex min-h-0 flex-1 gap-6 pt-0 pb-5")}>
-        <ListingFiltersSidebar
-          categoryName={category.name}
-          searchQuery={searchQuery}
-          onSearchQueryChange={onSearchQueryChange}
-          specialtyFilters={[
-            "All",
-            ...(config.specialties ?? config.subFilters.slice(1)),
-          ]}
-          activeSpecialty={filters.specialty}
-          onSpecialtyChange={onSpecialtyChange}
-          filters={filters}
-          onApplySheetFilters={onApplySheetFilters}
-        />
+      <div className="scrollbar-hide min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        <div className={cn(HOME_PAGE_CONTAINER, "flex min-h-0 flex-1 gap-6 pt-0 pb-5")}>
+          <ListingFiltersSidebar
+            categoryName={category.name}
+            searchQuery={searchQuery}
+            onSearchQueryChange={onSearchQueryChange}
+            specialtyFilters={[
+              "All",
+              ...(config.specialties ?? config.subFilters.slice(1)),
+            ]}
+            activeSpecialty={filters.specialty}
+            onSpecialtyChange={onSpecialtyChange}
+            filters={filters}
+            onApplySheetFilters={onApplySheetFilters}
+          />
 
-        <div className="scrollbar-hide min-h-0 min-w-0 flex-1 space-y-5 overflow-y-auto overscroll-contain pr-1">
-          {sheetFiltersApplied ? (
-            <CategoryActiveFilters
-              filters={filters}
-              onRemove={onRemoveSheetFilter}
-              onClearAll={onClearSheetFilters}
-            />
-          ) : null}
+          <div className="min-w-0 flex-1 space-y-5 pr-1">
+            {sheetFiltersApplied ? (
+              <CategoryActiveFilters
+                filters={filters}
+                onRemove={onRemoveSheetFilter}
+                onClearAll={onClearSheetFilters}
+              />
+            ) : null}
 
-          {providers.length === 0 ? (
-            <EmptyState
-              icon={hasSearchQuery ? Search : SlidersHorizontal}
-              title={hasSearchQuery ? "No results found" : "No providers found"}
-              description={
-                hasSearchQuery
-                  ? `No matches for "${debouncedSearch.trim()}". Try a different name or specialty.`
-                  : "Try another filter to see more providers in this category."
-              }
-              actionLabel={hasSearchQuery ? undefined : "Show all"}
-              onAction={hasSearchQuery ? undefined : onResetFilters}
-            />
-          ) : (
-            <ResponsiveGrid mobile={2} tablet={3} desktop={3} gap="gap-5">
-              {providers.map((provider) => (
-                <CategoryProviderGridCard
-                  key={provider.listingKey}
-                  provider={provider}
-                  fromCategory={slug}
-                />
-              ))}
-            </ResponsiveGrid>
-          )}
+            {providers.length === 0 ? (
+              <EmptyState
+                icon={hasSearchQuery ? Search : SlidersHorizontal}
+                title={hasSearchQuery ? "No results found" : "No providers found"}
+                description={
+                  hasSearchQuery
+                    ? `No matches for "${debouncedSearch.trim()}". Try a different name or specialty.`
+                    : "Try another filter to see more providers in this category."
+                }
+                actionLabel={hasSearchQuery ? undefined : "Show all"}
+                onAction={hasSearchQuery ? undefined : onResetFilters}
+              />
+            ) : (
+              <ResponsiveGrid mobile={2} tablet={3} desktop={3} gap="gap-5">
+                {providers.map((provider) => (
+                  <CategoryProviderGridCard
+                    key={provider.listingKey}
+                    provider={provider}
+                    fromCategory={slug}
+                  />
+                ))}
+              </ResponsiveGrid>
+            )}
+          </div>
         </div>
+
+        <HomeFooter className="mt-0 md:mt-10" />
       </div>
     </div>
   );

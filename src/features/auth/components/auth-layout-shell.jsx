@@ -2,7 +2,17 @@
 
 import { usePathname } from "next/navigation";
 
-const FULL_BLEED_PATHS = new Set(["/login", "/verify-otp", "/register"]);
+const FULL_BLEED_PATHS = new Set([
+  "/login",
+  "/verify-otp",
+  "/register",
+  "/provider/login",
+  "/provider/register",
+  "/provider/forgot-password",
+  "/provider/verify-otp",
+  "/provider/reset-password",
+  "/provider/registration-status",
+]);
 
 export function AuthLayoutShell({ children }) {
   const pathname = usePathname();

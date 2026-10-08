@@ -29,6 +29,7 @@ export function ChatDetailTablet({
       containerVariant="browseWithBreadcrumb"
       className="bg-surface-page h-dvh overflow-hidden pb-0"
       showBottomNav={false}
+      showWebFooter={false}
       mainClassName="mx-auto max-w-3xl overflow-hidden pb-0"
     >
       <div className="border-border/60 bg-background shadow-card -mx-4 -mt-3 flex h-[calc(100dvh-3.5rem)] flex-col overflow-hidden rounded-2xl border">

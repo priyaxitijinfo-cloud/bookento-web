@@ -1,6 +1,5 @@
 "use client";
 
-import { HomeHeader } from "@/components/home/home-header";
 import { DesktopBreadcrumbBar } from "@/components/layout/desktop-breadcrumb-bar";
 import { DesktopLayout } from "@/components/responsive/layout";
 import { ROUTES } from "@/constants/routes.constants";
@@ -21,18 +20,15 @@ export function WalletOffersDesktop({
       contentClassName="md:!pt-0 lg:!pt-0"
       containerClassName="md:!pt-0"
       header={
-        <>
-          <HomeHeader embedded />
-          <DesktopBreadcrumbBar
-            backHref={ROUTES.WALLET_ADD_MONEY}
-            backLabel="Back to Add Money"
-            currentLabel="Available Offers"
-            trail={[
-              { label: "My Wallet", href: ROUTES.WALLET },
-              { label: "Add Money", href: ROUTES.WALLET_ADD_MONEY },
-            ]}
-          />
-        </>
+        <DesktopBreadcrumbBar
+          backHref={ROUTES.WALLET_ADD_MONEY}
+          backLabel="Back to Add Money"
+          currentLabel="Available Offers"
+          trail={[
+            { label: "My Wallet", href: ROUTES.WALLET },
+            { label: "Add Money", href: ROUTES.WALLET_ADD_MONEY },
+          ]}
+        />
       }
     >
       <div className="space-y-5">

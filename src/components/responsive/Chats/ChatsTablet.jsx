@@ -34,6 +34,7 @@ export function ChatsTablet({ inbox }) {
       backHref={ROUTES.HOME}
       backLabel="Back to Home"
       containerVariant="chat"
+      showWebFooter={false}
       className={CHAT_PAGE_SHELL_CLASS}
       mainClassName={cn(CHAT_PAGE_MAIN_CLASS, "mx-auto max-w-3xl")}
       rightAction={<ChatsSearchAction inbox={inbox} />}

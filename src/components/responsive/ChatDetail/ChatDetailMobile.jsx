@@ -33,6 +33,7 @@ export function ChatDetailMobile({
       hideMobileHeader
       showBottomNav={false}
       showBreadcrumb={false}
+      showWebFooter={false}
       containerVariant="chat"
       className={cn(CHAT_PAGE_SHELL_CLASS, "overflow-x-hidden !pb-0")}
       mainClassName={CHAT_PAGE_MAIN_CLASS}

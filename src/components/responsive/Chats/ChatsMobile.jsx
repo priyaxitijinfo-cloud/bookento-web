@@ -34,6 +34,7 @@ export function ChatsMobile({ inbox }) {
       backLabel="Back to Home"
       hideMobileHeader={inbox.searchOpen}
       containerVariant="chat"
+      showWebFooter={false}
       className={CHAT_PAGE_SHELL_CLASS}
       mainClassName={CHAT_PAGE_MAIN_CLASS}
       rightAction={<ChatsSearchAction inbox={inbox} />}
