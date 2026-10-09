@@ -215,10 +215,10 @@ export function ProviderSettingsView() {
               iconWrapClass="bg-[#E0F2FE] text-[#0284C7]"
             />
             <SettingsMenuItem
+              href={ROUTES.PROVIDER_MEDIA}
               label="Upload Photo & Videos"
               icon={ImagePlus}
               iconWrapClass="bg-[#FFE8EE] text-[#EC407A]"
-              onClick={() => comingSoon("Upload Photo & Videos")}
             />
             <SettingsMenuItem
               href={ROUTES.PROVIDER_SLOTS}
@@ -230,10 +230,10 @@ export function ProviderSettingsView() {
 
           <SettingsSection title="Operations">
             <SettingsMenuItem
+              href={ROUTES.PROVIDER_CATEGORIES}
               label="Suggest Category"
               icon={LayoutGrid}
               iconWrapClass="bg-[#F3E8FF] text-[#9333EA]"
-              onClick={() => comingSoon("Suggest Category")}
             />
             <SettingsMenuItem
               href={ROUTES.PROVIDER_PACKAGES}

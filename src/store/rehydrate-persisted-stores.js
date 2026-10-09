@@ -3,6 +3,9 @@ import {
   useProviderProfileStore,
   useProviderSettingsStore,
 } from "./provider-profile.store";
+import { useProviderCategorySuggestionsStore } from "./provider-category-suggestions.store";
+import { useProviderMediaStore } from "./provider-media.store";
+import { useProviderPackagesStore } from "./provider-packages.store";
 import { useProviderServicesStore } from "./provider-services.store";
 import { useProviderSlotsStore } from "./provider-slots.store";
 import { useSettingsStore } from "./profile.store";
@@ -22,7 +25,10 @@ const persistedStores = [
   useProviderProfileStore,
   useProviderSettingsStore,
   useProviderServicesStore,
+  useProviderPackagesStore,
   useProviderSlotsStore,
+  useProviderMediaStore,
+  useProviderCategorySuggestionsStore,
   useProviderAuthStore,
   useUserAuthStore,
   useThemeStore,

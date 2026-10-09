@@ -128,7 +128,7 @@ export const currentProvider = {
   ...mockProviders[0],
   email: "provider@test.com",
   businessName: "UrbanCare Clinic",
-  ownerName: "Olivia Brown",
+  ownerName: "Amara Reyes",
   specialty: "Gynecologist",
   status: PROVIDER_STATUS.APPROVED,
   isVerified: true,

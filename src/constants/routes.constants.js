@@ -45,10 +45,14 @@ export const ROUTES = {
   PROVIDER_SLOTS_NEW: "/provider/slots/new",
   PROVIDER_BRANCHES: "/provider/branches",
   PROVIDER_PACKAGES: "/provider/packages",
+  PROVIDER_PACKAGES_NEW: "/provider/packages/new",
   PROVIDER_POSTS: "/provider/posts",
   PROVIDER_REELS: "/provider/reels",
+  PROVIDER_MEDIA: "/provider/media",
+  PROVIDER_MEDIA_VIDEO_NEW: "/provider/media/videos/new",
   PROVIDER_CATEGORIES: "/provider/categories",
   PROVIDER_RATINGS: "/provider/ratings",
+  PROVIDER_RATINGS_REVIEWS: "/provider/ratings/reviews",
   PROVIDER_PROFILE: "/provider/profile",
   PROVIDER_PROFILE_EDIT: "/provider/profile/edit",
   PROVIDER_ANALYTICS: "/provider/analytics",
@@ -228,6 +232,24 @@ export function providerServiceEditRoute(id) {
   return `${ROUTES.PROVIDER_SERVICES}/${id}/edit`;
 }
 
+export function providerPackageEditRoute(id) {
+  return `${ROUTES.PROVIDER_PACKAGES}/${id}/edit`;
+}
+
 export function providerSlotEditRoute(id) {
   return `${ROUTES.PROVIDER_SLOTS}/${id}`;
+}
+
+export function providerMediaVideoEditRoute(id) {
+  return `${ROUTES.PROVIDER_MEDIA}/videos/${id}/edit`;
+}
+
+export function providerRatingsRoute({ empty = false } = {}) {
+  return empty ? `${ROUTES.PROVIDER_RATINGS}?empty=1` : ROUTES.PROVIDER_RATINGS;
+}
+
+export function providerRatingsReviewsRoute({ empty = false } = {}) {
+  return empty
+    ? `${ROUTES.PROVIDER_RATINGS_REVIEWS}?empty=1`
+    : ROUTES.PROVIDER_RATINGS_REVIEWS;
 }

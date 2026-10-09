@@ -156,6 +156,8 @@ export function ProviderBottomNav() {
     pathname.startsWith(`${ROUTES.PROVIDER_SETTINGS}/profile`) ||
     pathname === ROUTES.PROVIDER_SERVICES_NEW ||
     /^\/provider\/services\/[^/]+\/edit$/.test(pathname) ||
+    pathname === ROUTES.PROVIDER_PACKAGES_NEW ||
+    /^\/provider\/packages\/[^/]+\/edit$/.test(pathname) ||
     pathname === ROUTES.PROVIDER_SLOTS_NEW ||
     (/^\/provider\/slots\/[^/]+$/.test(pathname) && pathname !== ROUTES.PROVIDER_SLOTS)
   ) {

@@ -38,11 +38,29 @@ function isProviderServiceForm(pathname) {
   );
 }
 
+function isProviderPackageForm(pathname) {
+  return (
+    pathname === ROUTES.PROVIDER_PACKAGES_NEW ||
+    /^\/provider\/packages\/[^/]+\/edit$/.test(pathname)
+  );
+}
+
 function isProviderSlotForm(pathname) {
   return (
     pathname === ROUTES.PROVIDER_SLOTS_NEW ||
     (/^\/provider\/slots\/[^/]+$/.test(pathname) && pathname !== ROUTES.PROVIDER_SLOTS)
   );
+}
+
+function isProviderMediaVideoForm(pathname) {
+  return (
+    pathname === ROUTES.PROVIDER_MEDIA_VIDEO_NEW ||
+    /^\/provider\/media\/videos\/[^/]+\/edit$/.test(pathname)
+  );
+}
+
+function isProviderRatingsReviews(pathname) {
+  return pathname === ROUTES.PROVIDER_RATINGS_REVIEWS;
 }
 
 export default function ProviderLayout({ children }) {
@@ -53,7 +71,10 @@ export default function ProviderLayout({ children }) {
     isProviderEarningsSubpage(pathname) ||
     isProviderProfileEdit(pathname) ||
     isProviderServiceForm(pathname) ||
-    isProviderSlotForm(pathname);
+    isProviderPackageForm(pathname) ||
+    isProviderSlotForm(pathname) ||
+    isProviderMediaVideoForm(pathname) ||
+    isProviderRatingsReviews(pathname);
 
   return (
     <div className="bg-background flex h-dvh overflow-hidden">
