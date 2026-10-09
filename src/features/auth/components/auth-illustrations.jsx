@@ -2,6 +2,23 @@ import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 
+/** App logo used as the web / webview auth panel mark */
+export function AuthBrandLogo({ className, size = 120 }) {
+  return (
+    <Image
+      src="/images/app-icon.jpg"
+      alt="Bookento"
+      width={size}
+      height={size}
+      className={cn(
+        "rounded-[1.5rem] object-cover shadow-[0_14px_32px_rgba(24,101,234,0.22)] ring-1 ring-[#E5EAF3]",
+        className,
+      )}
+      priority
+    />
+  );
+}
+
 export function LoginIllustration({ className }) {
   return (
     <Image

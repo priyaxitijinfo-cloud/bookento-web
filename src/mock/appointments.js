@@ -148,12 +148,21 @@ appointments[4] = {
   address: "123 Home Street, Mumbai",
 };
 
+const CLINIC_NAMES = [
+  "Rockridge Family Health",
+  "Royal Clinic",
+  "Quiet Garden Spa",
+  "Urban Wellness Center",
+  "Sunrise Care Clinic",
+];
+
 export const providerAppointments = Array.from({ length: 25 }, (_, i) => {
   const userName = personName(i);
   const service = services[i % services.length];
   const status = ["pending", "confirmed", "upcoming", "completed", "cancelled"][i % 5];
   const date = new Date();
   date.setDate(date.getDate() + (i % 7) - 2);
+  const slug = userName.toLowerCase().replace(/\s+/g, ".");
 
   return {
     id: generateId("papt", i + 1),
@@ -161,6 +170,7 @@ export const providerAppointments = Array.from({ length: 25 }, (_, i) => {
     userName,
     userAvatar: avatarUrl(`apt-user-${i}`),
     userPhone: `+91 9${String(800000000 + i).slice(0, 9)}`,
+    userEmail: `${slug}@gmail.com`,
     providerId: mockProviders[0].id,
     serviceName: service.name,
     serviceIds: [service.id],
@@ -171,35 +181,198 @@ export const providerAppointments = Array.from({ length: 25 }, (_, i) => {
     duration: service.duration,
     amount: service.price,
     paymentStatus: "paid",
+    bookingCode: `#BK${String(10234 + i).padStart(5, "0")}`,
+    locationName: CLINIC_NAMES[i % CLINIC_NAMES.length],
+    showBookingId: i % 4 === 0,
     createdAt: isoDate(i),
   };
 });
 
 providerAppointments[0] = {
   ...providerAppointments[0],
-  userName: "Alex Sharma",
-  serviceName: "Haircut & Styling",
-  status: "upcoming",
+  userName: "Priya Sharma",
+  userPhone: "+91 12345 69874",
+  userEmail: "priya.sharma@gmail.com",
+  serviceName: "Headache",
+  status: "pending",
+  visitType: "onsite",
+  amount: 899,
   scheduledDate: todayIso,
-  scheduledTime: "10:30 AM",
+  scheduledTime: "10:00 AM",
+  bookingCode: "#BK10234",
+  locationName: "Rockridge Family Health",
 };
 
 providerAppointments[1] = {
   ...providerAppointments[1],
-  userName: "Sarah Johnson",
-  serviceName: "Deep Tissue Massage",
-  status: "confirmed",
+  userName: "Amit Kumar",
+  userPhone: "+91 12345 69874",
+  userEmail: "amit.kumar@gmail.com",
+  serviceName: "Headache",
+  status: "pending",
+  visitType: "online",
+  amount: 599,
   scheduledDate: todayIso,
-  scheduledTime: "02:00 PM",
+  scheduledTime: "10:00 AM",
+  bookingCode: "#BK10235",
 };
 
 providerAppointments[2] = {
   ...providerAppointments[2],
-  userName: "Emily Wilson",
-  serviceName: "Physiotherapy Session",
-  status: "pending",
+  userName: "Dr. Amara Reyes",
+  userEmail: "amara.reyes@gmail.com",
+  userPhone: "+91 12345 65478",
+  serviceName: "Headache",
+  status: "upcoming",
+  visitType: "onsite",
   scheduledDate: todayIso,
-  scheduledTime: "04:30 PM",
+  scheduledTime: "10:00 AM",
+  bookingCode: "#BK10236",
+  locationName: "Rockridge Family Health",
+};
+
+providerAppointments[3] = {
+  ...providerAppointments[3],
+  userName: "Dr. Amara Reyes",
+  userEmail: "amara.reyes@gmail.com",
+  serviceName: "Headache",
+  status: "confirmed",
+  visitType: "online",
+  scheduledDate: todayIso,
+  scheduledTime: "11:30 AM",
+  bookingCode: "#BK10237",
+};
+
+providerAppointments[4] = {
+  ...providerAppointments[4],
+  userName: "Dr. Amara Reyes",
+  userEmail: "amara.reyes@gmail.com",
+  serviceName: "Headache",
+  status: "upcoming",
+  visitType: "home",
+  scheduledDate: todayIso,
+  scheduledTime: "01:00 PM",
+  bookingCode: "#BK10238",
+  showBookingId: true,
+};
+
+providerAppointments[5] = {
+  ...providerAppointments[5],
+  userName: "Dr. Amara Reyes",
+  userEmail: "amara.reyes@gmail.com",
+  serviceName: "Headache",
+  status: "confirmed",
+  visitType: "onsite",
+  scheduledDate: todayIso,
+  scheduledTime: "03:30 PM",
+  bookingCode: "#BK10239",
+  showBookingId: true,
+};
+
+const nextWeek = new Date();
+nextWeek.setDate(nextWeek.getDate() + 1);
+const nextWeekIso = nextWeek.toISOString().split("T")[0];
+const twoDaysAgo = new Date();
+twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+const twoDaysAgoIso = twoDaysAgo.toISOString().split("T")[0];
+
+providerAppointments[6] = {
+  ...providerAppointments[6],
+  userName: "Abhi Mehta",
+  userAvatar: avatarUrl("abhi-mehta"),
+  userPhone: "+91 12345 65478",
+  userEmail: "abhi.mehta@gmail.com",
+  serviceName: "Headache",
+  status: "upcoming",
+  visitType: "onsite",
+  scheduledDate: todayIso,
+  scheduledTime: "10:30 AM",
+  amount: 899,
+  bookingCode: "#BK10234",
+  locationName: "Rockridge Family Health",
+  showBookingId: true,
+};
+
+providerAppointments[7] = {
+  ...providerAppointments[7],
+  userName: "Dr. Amara Reyes",
+  serviceName: "Headache",
+  status: "completed",
+  visitType: "onsite",
+  scheduledDate: todayIso,
+  scheduledTime: "10:00 AM",
+  bookingCode: "#BK10240",
+};
+
+providerAppointments[8] = {
+  ...providerAppointments[8],
+  userName: "Dr. Amara Reyes",
+  serviceName: "Headache",
+  status: "completed",
+  visitType: "online",
+  scheduledDate: todayIso,
+  scheduledTime: "04:00 AM",
+  bookingCode: "#BK10234",
+  showBookingId: true,
+};
+
+providerAppointments[9] = {
+  ...providerAppointments[9],
+  userName: "Dr. Amara Reyes",
+  serviceName: "Headache",
+  status: "cancelled",
+  visitType: "onsite",
+  scheduledDate: todayIso,
+  scheduledTime: "10:00 AM",
+  bookingCode: "#BK10241",
+  unavailableReason:
+    "The selected healthcare provider is currently unavailable to provide the requested service. Please choose another provider or reschedule your appointment to a different available time.",
+};
+
+providerAppointments[10] = {
+  ...providerAppointments[10],
+  userName: "Dr. Amara Reyes",
+  serviceName: "Headache",
+  status: "cancelled",
+  visitType: "online",
+  scheduledDate: nextWeekIso,
+  scheduledTime: "11:30 AM",
+  bookingCode: "#BK10242",
+  unavailableReason:
+    "The selected healthcare provider is currently unavailable to provide the requested service. Please choose another provider or reschedule your appointment to a different available time.",
+};
+
+providerAppointments[11] = {
+  ...providerAppointments[11],
+  userName: "Dr. Amara Reyes",
+  serviceName: "Headache",
+  status: "completed",
+  visitType: "home",
+  scheduledDate: nextWeekIso,
+  scheduledTime: "01:00 PM",
+  bookingCode: "#BK10243",
+};
+
+providerAppointments[12] = {
+  ...providerAppointments[12],
+  userName: "Dr. Amara Reyes",
+  serviceName: "Headache",
+  status: "upcoming",
+  visitType: "online",
+  scheduledDate: nextWeekIso,
+  scheduledTime: "10:00 AM",
+  bookingCode: "#BK10244",
+};
+
+providerAppointments[13] = {
+  ...providerAppointments[13],
+  userName: "Dr. Amara Reyes",
+  serviceName: "Headache",
+  status: "cancelled",
+  visitType: "onsite",
+  scheduledDate: twoDaysAgoIso,
+  scheduledTime: "03:30 PM",
+  bookingCode: "#BK10245",
 };
 
 export const timeSlots = generateHalfHourSlots(9, 18).map((slot, i) => ({

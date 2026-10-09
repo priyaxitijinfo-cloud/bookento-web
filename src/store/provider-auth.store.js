@@ -19,13 +19,33 @@ export const useProviderAuthStore = create(
         isLoading: false,
         registrationDraft: { step: 1 },
 
+        pendingEmail: null,
+
+        /** Validates credentials and "sends" login OTP — does not authenticate yet */
         login: async (email) => {
           set({ isLoading: true });
           await delay(800);
+          set({
+            isLoading: false,
+            pendingEmail: email,
+          });
+          return { success: true };
+        },
 
+        /** Completes login after email OTP verification */
+        verifyLoginOtp: async (otp, email) => {
+          set({ isLoading: true });
+          await delay(600);
+
+          if (!VALID_OTP.includes(otp)) {
+            set({ isLoading: false });
+            return { success: false, message: "Invalid OTP" };
+          }
+
+          const resolvedEmail = email || get().pendingEmail || "";
           const session = {
             ...mockAuthSessions.provider,
-            email,
+            email: resolvedEmail,
             status: "approved",
           };
 
@@ -33,7 +53,7 @@ export const useProviderAuthStore = create(
             sub: session.id,
             role: USER_ROLES.PROVIDER,
             status: "approved",
-            email,
+            email: resolvedEmail,
           });
 
           setAuthCookie(
@@ -46,6 +66,7 @@ export const useProviderAuthStore = create(
             provider: session,
             isAuthenticated: true,
             isLoading: false,
+            pendingEmail: null,
           });
 
           return { success: true, provider: session };
@@ -55,7 +76,7 @@ export const useProviderAuthStore = create(
           await delay(300);
           clearAuthCookie(AUTH_CONFIG.providerAccessTokenCookie);
           clearAuthCookie(AUTH_CONFIG.providerRefreshTokenCookie);
-          set({ provider: null, isAuthenticated: false });
+          set({ provider: null, isAuthenticated: false, pendingEmail: null });
         },
 
         verifyOtp: async (otp) => {

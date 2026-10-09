@@ -289,11 +289,13 @@ export function PhoneNumberField({
   placeholder = "Enter mobile number",
 }) {
   return (
-    <div>
+    <div className="min-w-0">
       <div
         className={cn(
-          "flex h-[3.35rem] items-center rounded-[0.65rem] bg-[#F2F6FC] p-1 focus-within:ring-2 focus-within:ring-[#1865EA]/20",
-          error && "ring-destructive/40 ring-2",
+          "flex h-[3.35rem] items-center rounded-[0.65rem] border border-transparent bg-[#F2F6FC] p-1 transition-colors",
+          "focus-within:border-[#1865EA]/35 focus-within:ring-2 focus-within:ring-[#1865EA]/15 focus-within:ring-inset",
+          error &&
+            "border-red-300 focus-within:border-red-400 focus-within:ring-red-200/60",
         )}
       >
         <button
@@ -321,7 +323,9 @@ export function PhoneNumberField({
           className="h-full min-w-0 flex-1 border-0 bg-transparent px-3 text-[14.5px] text-[#111827] outline-none placeholder:text-[#ADB3B7]"
         />
       </div>
-      {error ? <p className="text-destructive mt-1.5 text-xs">{error}</p> : null}
+      {typeof error === "string" && error ? (
+        <p className="text-destructive mt-1.5 text-xs">{error}</p>
+      ) : null}
     </div>
   );
 }
@@ -447,57 +451,58 @@ export function AuthWebFrame({
     : illustration;
 
   return (
-    <div className="relative min-h-dvh overflow-x-hidden bg-[#F4F7FF]">
+    <div className="relative h-dvh overflow-hidden bg-[#F4F7FF]">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat opacity-90"
         style={{ backgroundImage: "url(/images/auth/auth-mobile-bg.png)" }}
       />
 
-      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-[84rem] items-center px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+      <div className="relative z-10 mx-auto flex h-full w-full max-w-[84rem] items-center px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <div
           className={cn(
-            "grid w-full overflow-hidden rounded-[2rem] bg-white shadow-[0_20px_60px_rgba(15,23,42,0.1)]",
+            "grid h-full max-h-[min(46rem,100%)] w-full overflow-hidden rounded-[2rem] bg-white shadow-[0_20px_60px_rgba(15,23,42,0.1)]",
             "lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]",
           )}
         >
-          <aside className="relative hidden flex-col gap-8 border-r border-[#EEF1F6] bg-[#F8FAFF] px-10 py-10 lg:flex xl:px-12 xl:py-12">
-            <Link href={ROUTES.HOME} className="inline-flex w-fit items-center gap-3">
-              <Image
-                src="/images/app-icon.jpg"
-                alt="Bookento"
-                width={48}
-                height={48}
-                className="size-12 rounded-[0.85rem] shadow-sm ring-1 ring-[#E5EAF3]"
-                priority
-              />
-              <span className="text-[1.45rem] font-bold tracking-tight text-[#0F1B2D]">
-                {eyebrow}
-              </span>
-            </Link>
+          <aside className="relative hidden min-h-0 flex-col justify-center gap-12 overflow-hidden border-r border-[#EEF1F6] px-10 py-10 lg:flex xl:px-12 xl:py-12">
+            {/* Same soft pastel mesh as mobile / app auth screens */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat"
+              style={{ backgroundImage: "url(/images/auth/auth-mobile-bg.png)" }}
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_10%_-10%,rgba(244,114,182,0.14),transparent_55%),radial-gradient(ellipse_70%_50%_at_90%_0%,rgba(96,165,250,0.16),transparent_50%),linear-gradient(180deg,rgba(248,245,255,0.55)_0%,rgba(255,255,255,0.72)_70%)]"
+            />
 
-            <div className="flex flex-col items-center">
-              <div className="flex h-[13.5rem] w-full max-w-[18rem] items-center justify-center">
+            <div className="relative z-10 flex flex-col items-center">
+              <div className="flex w-full max-w-[18rem] items-center justify-center">
                 {desktopArt}
               </div>
 
-              <div className="mt-8 w-full max-w-sm text-center">
-                <h2 className="text-[1.65rem] leading-tight font-bold tracking-tight text-[#0F1B2D]">
-                  {headline}
-                </h2>
-                {copy ? (
-                  <p className="mt-3 text-[14.5px] leading-relaxed text-[#667085]">
-                    {copy}
-                  </p>
-                ) : null}
-              </div>
+              {(headline || copy) && (
+                <div className="mt-5 w-full max-w-[22rem] text-center">
+                  {headline ? (
+                    <h2 className="text-[1.7rem] leading-snug font-bold tracking-tight text-[#0F1B2D]">
+                      {headline}
+                    </h2>
+                  ) : null}
+                  {copy ? (
+                    <p className="mx-auto mt-2.5 max-w-[21rem] text-[15.5px] leading-relaxed text-[#64748B]">
+                      {copy}
+                    </p>
+                  ) : null}
+                </div>
+              )}
             </div>
 
-            <ul className="grid gap-3">
+            <ul className="relative z-10 grid gap-2.5">
               {AUTH_PANEL_HIGHLIGHTS.map(({ icon: Icon, label }) => (
                 <li
                   key={label}
-                  className="flex items-center gap-3 rounded-2xl bg-white px-3.5 py-3 text-[13.5px] font-medium text-[#334155] shadow-[0_4px_14px_rgba(15,23,42,0.04)] ring-1 ring-[#EEF1F6]"
+                  className="flex items-center gap-3 rounded-2xl bg-white/90 px-3.5 py-2.5 text-[13.5px] font-medium text-[#334155] shadow-[0_4px_14px_rgba(15,23,42,0.04)] ring-1 ring-[#EEF1F6] backdrop-blur-[2px]"
                 >
                   <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#EAF1FF] text-[#1865EA]">
                     <Icon className="size-3.5" strokeWidth={2.3} aria-hidden />
@@ -508,31 +513,52 @@ export function AuthWebFrame({
             </ul>
           </aside>
 
-          <main className="relative flex flex-col justify-center px-5 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-10 xl:px-12 xl:py-12">
-            <Link
-              href={ROUTES.HOME}
-              className="mb-8 inline-flex w-fit items-center gap-2.5 lg:hidden"
-            >
-              <Image
-                src="/images/app-icon.jpg"
-                alt="Bookento"
-                width={36}
-                height={36}
-                className="size-9 rounded-lg shadow-sm"
-              />
-              <span className="font-bold text-[#0F1B2D]">Bookento</span>
-            </Link>
-
-            {tabletArt ? (
-              <div className="mb-6 flex h-[11.75rem] items-center justify-center lg:hidden">
-                <div className="w-[14rem]">{tabletArt}</div>
-              </div>
-            ) : null}
+          <main className="relative flex min-h-0 min-w-0 flex-col overflow-hidden px-5 pt-8 pb-6 sm:px-8 sm:pt-10 sm:pb-7 lg:h-full lg:px-10 lg:pt-10 lg:pb-8 xl:px-12 xl:pt-12 xl:pb-9">
+            {/* Webview / tablet: logo + screen-related copy (aside is desktop-only) */}
+            <div className="mb-6 flex shrink-0 flex-col items-center lg:hidden">
+              <Link
+                href={ROUTES.HOME}
+                className="inline-flex flex-col items-center gap-3"
+              >
+                {tabletArt ? (
+                  <div className="flex h-[7.5rem] w-full items-center justify-center">
+                    {tabletArt}
+                  </div>
+                ) : (
+                  <Image
+                    src="/images/app-icon.jpg"
+                    alt="Bookento"
+                    width={72}
+                    height={72}
+                    className="size-[4.5rem] rounded-[1.1rem] shadow-sm ring-1 ring-[#E5EAF3]"
+                  />
+                )}
+                <span className="text-[1.15rem] font-bold tracking-tight text-[#0F1B2D]">
+                  {eyebrow}
+                </span>
+              </Link>
+              {(headline || copy) && (
+                <div className="mt-4 w-full max-w-[22rem] text-center">
+                  {headline ? (
+                    <h2 className="text-[1.4rem] leading-snug font-bold tracking-tight text-[#0F1B2D]">
+                      {headline}
+                    </h2>
+                  ) : null}
+                  {copy ? (
+                    <p className="mx-auto mt-2.5 text-[14.5px] leading-relaxed text-[#64748B]">
+                      {copy}
+                    </p>
+                  ) : null}
+                </div>
+              )}
+            </div>
 
             <div
               className={cn(
-                "mx-auto flex w-full flex-col",
-                wide ? "max-w-xl" : "max-w-[30rem]",
+                // Extra x/y padding so Continue button box-shadow is not clipped.
+                // Never scroll this wrapper — ProviderAuthWebShell pins the button below.
+                "mx-auto flex h-full min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden overscroll-none px-6 pb-2",
+                wide ? "max-w-[38rem]" : "max-w-[28rem]",
               )}
             >
               {children}

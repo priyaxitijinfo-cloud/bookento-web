@@ -1,10 +1,4 @@
-import {
-  avatarUrl,
-  generateId,
-  isoDate,
-  MOCK_REFERENCE_MS,
-  personName,
-} from "./helpers";
+import { avatarUrl, generateId, isoDate, MOCK_REFERENCE_MS } from "./helpers";
 import { appointments } from "./appointments";
 import { mockProviders } from "./providers";
 import { currentUser } from "./users";
@@ -140,31 +134,174 @@ conversations.forEach((conv, ci) => {
   });
 });
 
-export const providerConversations = Array.from({ length: 12 }, (_, i) => ({
+/** Demo-day timestamps (IST) so list labels match Figma on the current demo date. */
+function providerChatTime(daysAgo = 0, hour = 12, minute = 0) {
+  const day = String(9 - daysAgo).padStart(2, "0");
+  const hh = String(hour).padStart(2, "0");
+  const mm = String(minute).padStart(2, "0");
+  return `2026-10-${day}T${hh}:${mm}:00+05:30`;
+}
+
+const PROVIDER_CHAT_SEED = [
+  {
+    name: "Jully Williams",
+    lastMessage: "Looking forward to our next session.",
+    lastMessageAt: providerChatTime(0, 10, 30),
+    unreadCount: 3,
+    isOnline: true,
+  },
+  {
+    name: "Ravi Sharma",
+    lastMessage: "Thank you for your guidance!",
+    lastMessageAt: providerChatTime(0, 9, 20),
+    unreadCount: 1,
+    isOnline: true,
+  },
+  {
+    name: "Amit Verma",
+    lastMessage: "Can you share the diet plan?",
+    lastMessageAt: providerChatTime(1, 18, 40),
+    unreadCount: 0,
+    isOnline: false,
+  },
+  {
+    name: "Zara Lucknow",
+    lastMessage: "Please Call Me At Evening",
+    lastMessageAt: providerChatTime(1, 16, 15),
+    unreadCount: 0,
+    isOnline: true,
+  },
+  {
+    name: "Priya Mehta",
+    lastMessage: "I'll be 5 minutes late.",
+    lastMessageAt: providerChatTime(2, 14, 0),
+    unreadCount: 0,
+    isOnline: false,
+  },
+  {
+    name: "Karan Malhotra",
+    lastMessage: "I'll be 5 minutes late.",
+    lastMessageAt: providerChatTime(3, 11, 30),
+    unreadCount: 0,
+    isOnline: true,
+  },
+  {
+    name: "Johan Dou",
+    lastMessage: "I'll be 5 minutes late.",
+    lastMessageAt: providerChatTime(4, 15, 45),
+    unreadCount: 0,
+    isOnline: false,
+  },
+  {
+    name: "Vikram Singh",
+    lastMessage: "I'll be 5 minutes late.",
+    lastMessageAt: providerChatTime(5, 10, 10),
+    unreadCount: 0,
+    isOnline: true,
+  },
+];
+
+export const providerConversations = PROVIDER_CHAT_SEED.map((seed, i) => ({
   id: generateId("pconv", i + 1),
   participantId: generateId("user", i + 1),
-  participantName: personName(i),
+  participantName: seed.name,
   participantAvatar: avatarUrl(`pconv-${i}`),
   participantRole: "user",
-  lastMessage: "When is my next appointment?",
-  lastMessageAt: isoDate(i),
-  unreadCount: i % 3,
-  isOnline: i % 2 === 0,
+  lastMessage: seed.lastMessage,
+  lastMessageAt: seed.lastMessageAt,
+  unreadCount: seed.unreadCount,
+  isOnline: seed.isOnline,
+  isPinned: i < 2,
 }));
 
 providerConversations.forEach((conv, ci) => {
-  messages[conv.id] = Array.from({ length: 10 }, (_, i) => ({
-    id: generateId("pmsg", ci * 100 + i + 1),
-    conversationId: conv.id,
-    senderId: i % 2 === 0 ? conv.participantId : mockProviders[0].id,
-    content:
-      i % 2 === 0
-        ? "Hi, I have a question about my booking."
-        : "Sure, how can I assist you?",
-    type: "text",
-    status: "seen",
-    createdAt: isoDate(ci + i),
-  }));
+  // Zara Lucknow — rich thread matching Figma (voice call + ticks)
+  if (ci === 3) {
+    const base = Date.parse(providerChatTime(1, 10, 0));
+    messages[conv.id] = [
+      {
+        id: generateId("pmsg", 301),
+        conversationId: conv.id,
+        senderId: conv.participantId,
+        content: "Hello! I wanted to check about my appointment tomorrow.",
+        type: "text",
+        status: "seen",
+        createdAt: new Date(base).toISOString(),
+      },
+      {
+        id: generateId("pmsg", 302),
+        conversationId: conv.id,
+        senderId: mockProviders[0].id,
+        content: "Hi Zara! Yes, you're scheduled for 4 PM. Does that still work?",
+        type: "text",
+        status: "seen",
+        createdAt: new Date(base + 8 * 60 * 1000).toISOString(),
+      },
+      {
+        id: generateId("pmsg", 303),
+        conversationId: conv.id,
+        senderId: conv.participantId,
+        content: "Perfect, thank you. Also, can we do a quick call later?",
+        type: "text",
+        status: "seen",
+        createdAt: new Date(base + 15 * 60 * 1000).toISOString(),
+      },
+      {
+        id: generateId("pmsg", 304),
+        conversationId: conv.id,
+        senderId: mockProviders[0].id,
+        content: "00:56 min",
+        durationLabel: "00:56 min",
+        type: "call",
+        status: "seen",
+        createdAt: new Date(base + 35 * 60 * 1000).toISOString(),
+      },
+      {
+        id: generateId("pmsg", 305),
+        conversationId: conv.id,
+        senderId: conv.participantId,
+        content: "Please Call Me At Evening",
+        type: "text",
+        status: "seen",
+        createdAt: new Date(base + 6 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: generateId("pmsg", 306),
+        conversationId: conv.id,
+        senderId: mockProviders[0].id,
+        content: "Sure, I'll call you around 7 PM.",
+        type: "text",
+        status: "seen",
+        createdAt: new Date(base + 6 * 60 * 60 * 1000 + 5 * 60 * 1000).toISOString(),
+      },
+    ];
+    return;
+  }
+
+  messages[conv.id] = Array.from({ length: 8 }, (_, i) => {
+    const isClient = i % 2 === 0;
+    return {
+      id: generateId("pmsg", ci * 100 + i + 1),
+      conversationId: conv.id,
+      senderId: isClient ? conv.participantId : mockProviders[0].id,
+      content: isClient
+        ? [
+            "Hi, I have a question about my booking.",
+            conv.lastMessage,
+            "That sounds great, thank you!",
+            "See you soon.",
+          ][i % 4]
+        : [
+            "Sure, how can I assist you?",
+            "Happy to help with that.",
+            "You're welcome!",
+            "Looking forward to our session.",
+          ][i % 4],
+      type: "text",
+      status: "seen",
+      createdAt: providerChatTime(ci, 9 + i, (i * 7) % 60),
+    };
+  });
 });
 
 export function getConversationById(id) {

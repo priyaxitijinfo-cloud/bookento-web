@@ -8,7 +8,10 @@ import { toast } from "sonner";
 import { ResponsiveView } from "@/components/responsive/primitives/ResponsiveView";
 import { PageLoader } from "@/components/ui/skeleton";
 import { ROUTES } from "@/constants/routes.constants";
-import { LoginIllustration } from "@/features/auth/components/auth-illustrations";
+import {
+  AuthBrandLogo,
+  LoginIllustration,
+} from "@/features/auth/components/auth-illustrations";
 import {
   AuthMobileFrame,
   AuthPrimaryButton,
@@ -120,17 +123,21 @@ function LoginFields({
         Continue as Guest
       </button>
 
-      {isWeb ? (
-        <p className="mt-1 text-center text-[13.5px] text-[#667085]">
-          Are you a provider?{" "}
-          <Link
-            href={ROUTES.PROVIDER_LOGIN}
-            className="font-semibold text-[#1865EA] hover:underline"
-          >
-            Provider Login
-          </Link>
-        </p>
-      ) : null}
+      <p
+        className={
+          isWeb
+            ? "mt-1 text-center text-[13.5px] text-[#667085]"
+            : "mt-2.5 pt-1 text-center text-[13px] text-[#64748B]"
+        }
+      >
+        Are you a provider?{" "}
+        <Link
+          href={ROUTES.PROVIDER_LOGIN}
+          className="font-semibold text-[#1865EA] hover:underline"
+        >
+          Provider Login
+        </Link>
+      </p>
     </form>
   );
 }
@@ -207,7 +214,7 @@ export function UserLoginForm() {
         }
         tablet={
           <AuthWebFrame
-            illustration={<LoginIllustration className="!h-auto !w-full" />}
+            illustration={<AuthBrandLogo size={112} className="size-[7rem]" />}
             headline="Book trusted professionals nearby"
             copy="Find verified experts, compare options, and book in minutes — in person or online."
           >
@@ -217,7 +224,7 @@ export function UserLoginForm() {
         }
         desktop={
           <AuthWebFrame
-            illustration={<LoginIllustration className="!h-auto !w-full" />}
+            illustration={<AuthBrandLogo size={144} className="size-[9rem]" />}
             headline="Book trusted professionals nearby"
             copy="Find verified experts, compare options, and book in minutes — in person or online."
           >

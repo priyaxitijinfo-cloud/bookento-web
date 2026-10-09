@@ -35,6 +35,8 @@ export const ROUTES = {
   PROVIDER_APPOINTMENTS: "/provider/appointments",
   PROVIDER_CHATS: "/provider/chats",
   PROVIDER_EARNINGS: "/provider/earnings",
+  PROVIDER_EARNINGS_TRANSACTIONS: "/provider/earnings/transactions",
+  PROVIDER_EARNINGS_WALLET: "/provider/earnings/wallet",
   PROVIDER_SETTINGS: "/provider/settings",
   PROVIDER_SERVICES: "/provider/services",
   PROVIDER_BRANCHES: "/provider/branches",
@@ -197,6 +199,22 @@ export function chatDetailRoute(id) {
   return `/chats/${id}`;
 }
 
+export function providerChatDetailRoute(id) {
+  return `${ROUTES.PROVIDER_CHATS}/${id}`;
+}
+
 export function appointmentDetailRoute(id) {
   return `/appointments/${id}`;
+}
+
+export function providerAppointmentDetailRoute(id) {
+  return `${ROUTES.PROVIDER_APPOINTMENTS}/${id}`;
+}
+
+export function providerEarningsTransactionsRoute() {
+  return ROUTES.PROVIDER_EARNINGS_TRANSACTIONS;
+}
+
+export function providerEarningsWalletRoute() {
+  return ROUTES.PROVIDER_EARNINGS_WALLET;
 }

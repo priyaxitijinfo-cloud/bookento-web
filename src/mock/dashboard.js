@@ -15,16 +15,24 @@ export const userDashboard = {
 };
 
 export const providerDashboard = {
-  todayEarnings: earningsSummary.todayEarnings,
+  todayEarnings: 24500,
+  todayEarningsLabel: "24.5K",
+  todayPatients: 850,
   monthlyEarnings: earningsSummary.monthlyEarnings,
   pendingAppointments: getPendingAppointments().length,
-  completedAppointments: providerAppointments.filter((a) => a.status === "completed").length,
-  cancelledAppointments: providerAppointments.filter((a) => a.status === "cancelled").length,
+  completedAppointments: providerAppointments.filter((a) => a.status === "completed")
+    .length,
+  cancelledAppointments: providerAppointments.filter((a) => a.status === "cancelled")
+    .length,
   totalCustomers: 342,
   averageRating: 4.7,
-  earningsTrend: earningsSummary.earningsTrend,
+  earningsTrend: 12.5,
+  patientsTrend: 12.5,
   appointmentsTrend: earningsSummary.appointmentsTrend,
-  todaySchedule: providerAppointments.filter((a) => a.status === "upcoming" || a.status === "confirmed").slice(0, 5),
+  todaySchedule: providerAppointments
+    .filter((a) => a.scheduledDate === new Date().toISOString().split("T")[0])
+    .filter((a) => a.status === "upcoming" || a.status === "confirmed")
+    .slice(0, 5),
   quickStats: [
     { label: "Today's Bookings", value: 8, change: "+2" },
     { label: "This Week", value: 42, change: "+12%" },

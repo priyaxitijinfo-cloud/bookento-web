@@ -6,15 +6,97 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { PasswordInput } from "@/components/forms/password-input";
+import { ResponsiveView } from "@/components/responsive/primitives/ResponsiveView";
+import { PageLoader } from "@/components/ui/skeleton";
 import {
   ProviderAuthField,
-  ProviderAuthResponsive,
+  ProviderAuthMobileShell,
+  ProviderAuthWebShell,
   ProviderContinueButton,
   providerAuthInputClass,
 } from "@/features/auth/components/provider-auth-shell";
 import { ROUTES } from "@/constants/routes.constants";
 import { useProviderAuthStore } from "@/store";
 import { cn } from "@/lib/utils";
+
+function ProviderLoginFields({
+  variant,
+  email,
+  password,
+  errors,
+  isLoading,
+  onEmailChange,
+  onPasswordChange,
+  onSubmit,
+}) {
+  const isApp = variant === "app";
+
+  return (
+    <form
+      onSubmit={onSubmit}
+      className={isApp ? "flex flex-col gap-5" : "flex flex-col gap-5"}
+    >
+      <ProviderAuthField label="Email Address" error={errors.email}>
+        <input
+          type="email"
+          value={email}
+          onChange={onEmailChange}
+          placeholder="Your email address"
+          className={providerAuthInputClass(errors.email)}
+          autoComplete="email"
+        />
+      </ProviderAuthField>
+
+      <ProviderAuthField label="Password" error={errors.password}>
+        <PasswordInput
+          value={password}
+          onChange={onPasswordChange}
+          placeholder="Your Password"
+          className={cn(providerAuthInputClass(errors.password), "pr-11")}
+          autoComplete="current-password"
+        />
+        <div className="mt-1.5 flex justify-end">
+          <Link
+            href={ROUTES.PROVIDER_FORGOT_PASSWORD}
+            className="text-[13px] font-medium text-[#F07167] hover:underline"
+          >
+            Forgot Password
+          </Link>
+        </div>
+      </ProviderAuthField>
+
+      <ProviderContinueButton
+        type="submit"
+        disabled={isLoading}
+        className={isApp ? "mt-3" : "mt-2"}
+      >
+        {isLoading ? "Signing in..." : "Continue"}
+      </ProviderContinueButton>
+
+      {isApp ? (
+        <p className="mt-6 text-center text-[13px] text-[#64748B]">
+          Don&apos;t have an account?{" "}
+          <Link
+            href={ROUTES.PROVIDER_REGISTER}
+            className="font-semibold text-[#1865EA] hover:underline"
+          >
+            Register as Provider
+          </Link>
+        </p>
+      ) : (
+        <p className="pt-1 text-center text-[13px] text-[#64748B]">
+          Looking for services?{" "}
+          <Link
+            href={ROUTES.USER_LOGIN}
+            className="font-semibold text-[#1865EA] hover:underline"
+          >
+            User Login
+          </Link>
+        </p>
+      )}
+    </form>
+  );
+}
 
 export function ProviderLoginForm() {
   const router = useRouter();
@@ -38,75 +120,69 @@ export function ProviderLoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    const result = await login(email);
+    const result = await login(email.trim());
     if (result.success) {
-      toast.success("Welcome back!");
-      router.push(redirect || ROUTES.PROVIDER_HOME);
+      toast.success("OTP sent to your email");
+      const params = new URLSearchParams({
+        email: email.trim(),
+        flow: "login",
+      });
+      if (redirect) params.set("redirect", redirect);
+      router.push(`${ROUTES.PROVIDER_VERIFY_OTP}?${params.toString()}`);
     }
   };
 
+  const fieldProps = {
+    email,
+    password,
+    errors,
+    isLoading,
+    onEmailChange: (e) => setEmail(e.target.value),
+    onPasswordChange: (e) => setPassword(e.target.value),
+    onSubmit: handleSubmit,
+  };
+
+  const appShellProps = {
+    title: "Welcome Back!",
+    subtitle: "Sign in to your account to continue managing your services.",
+  };
+
+  const webShellProps = {
+    ...appShellProps,
+    wide: true,
+    headline: "Welcome back, Pro",
+    copy: "Sign in to manage appointments, earnings, and your business profile.",
+    footer: (
+      <p className="text-center text-[13.5px] text-[#64748B]">
+        Don&apos;t have an account?{" "}
+        <Link
+          href={ROUTES.PROVIDER_REGISTER}
+          className="font-semibold text-[#1865EA] hover:underline"
+        >
+          Register as Provider
+        </Link>
+      </p>
+    ),
+  };
+
   return (
-    <ProviderAuthResponsive
-      title="Welcome Back!"
-      subtitle="Sign in to your account to continue managing your services."
-      headline="Welcome back, Pro"
-      copy="Sign in to manage appointments, earnings, and your business profile."
-      footer={
-        <p className="text-center text-[13.5px] text-[#64748B]">
-          Don&apos;t have an account?{" "}
-          <Link
-            href={ROUTES.PROVIDER_REGISTER}
-            className="font-semibold text-[#1865EA] hover:underline"
-          >
-            Register as Provider
-          </Link>
-        </p>
+    <ResponsiveView
+      fallback={<PageLoader />}
+      mobile={
+        <ProviderAuthMobileShell {...appShellProps}>
+          <ProviderLoginFields variant="app" {...fieldProps} />
+        </ProviderAuthMobileShell>
       }
-    >
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        <ProviderAuthField label="Email Address" error={errors.email}>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Your email address"
-            className={providerAuthInputClass(errors.email)}
-            autoComplete="email"
-          />
-        </ProviderAuthField>
-
-        <ProviderAuthField label="Password" error={errors.password}>
-          <PasswordInput
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Your Password"
-            className={cn(providerAuthInputClass(errors.password), "pr-11")}
-            autoComplete="current-password"
-          />
-          <div className="mt-1.5 flex justify-end">
-            <Link
-              href={ROUTES.PROVIDER_FORGOT_PASSWORD}
-              className="text-[13px] font-medium text-[#F07167] hover:underline"
-            >
-              Forgot Password
-            </Link>
-          </div>
-        </ProviderAuthField>
-
-        <ProviderContinueButton type="submit" disabled={isLoading} className="mt-2">
-          {isLoading ? "Signing in..." : "Continue"}
-        </ProviderContinueButton>
-
-        <p className="pt-1 text-center text-[13px] text-[#64748B]">
-          Looking for services?{" "}
-          <Link
-            href={ROUTES.USER_LOGIN}
-            className="font-semibold text-[#1865EA] hover:underline"
-          >
-            User Login
-          </Link>
-        </p>
-      </form>
-    </ProviderAuthResponsive>
+      tablet={
+        <ProviderAuthWebShell {...webShellProps}>
+          <ProviderLoginFields variant="web" {...fieldProps} />
+        </ProviderAuthWebShell>
+      }
+      desktop={
+        <ProviderAuthWebShell {...webShellProps}>
+          <ProviderLoginFields variant="web" {...fieldProps} />
+        </ProviderAuthWebShell>
+      }
+    />
   );
 }

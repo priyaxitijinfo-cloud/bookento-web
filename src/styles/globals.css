@@ -115,7 +115,7 @@
     scroll-behavior: smooth;
     color-scheme: light;
     font-family: var(--font-sans);
-    scrollbar-gutter: stable;
+    scrollbar-gutter: auto;
   }
 
   body {
@@ -347,6 +347,58 @@
 
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  /**
+   * Overlay-style scrollbar: no layout shift (transparent track),
+   * thumb only visible on hover / focus-within (smooth fade).
+   * Brand-aligned slate/blue to match Bookento UI.
+   */
+  .scrollbar-hover {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    scrollbar-gutter: auto;
+    transition: scrollbar-color 0.15s ease;
+  }
+
+  .scrollbar-hover:hover,
+  .scrollbar-hover:focus-within {
+    scrollbar-color: rgba(100, 116, 139, 0.45) transparent;
+  }
+
+  .scrollbar-hover::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background: transparent;
+  }
+
+  .scrollbar-hover::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-hover::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    transition:
+      background-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .scrollbar-hover:hover::-webkit-scrollbar-thumb,
+  .scrollbar-hover:focus-within::-webkit-scrollbar-thumb {
+    background-color: rgba(148, 163, 184, 0.55);
+  }
+
+  .scrollbar-hover:hover::-webkit-scrollbar-thumb:hover,
+  .scrollbar-hover:focus-within::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(24, 101, 234, 0.55);
+    box-shadow: 0 0 0 1px rgba(24, 101, 234, 0.12);
+  }
+
+  .scrollbar-hover::-webkit-scrollbar-corner {
+    background: transparent;
   }
 
   .filter-distance-slider {

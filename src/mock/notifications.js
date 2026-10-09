@@ -2,7 +2,9 @@ import { generateId, isoDate } from "./helpers";
 import { appointments } from "./appointments";
 import { mockProviders } from "./providers";
 
-const providerNames = mockProviders.slice(0, 6).map((provider) => provider.businessName);
+const providerNames = mockProviders
+  .slice(0, 6)
+  .map((provider) => provider.businessName);
 
 function isoHoursAgo(hours = 0) {
   const d = new Date();
@@ -26,7 +28,8 @@ const DESIGN_NOTIFICATIONS = [
     id: generateId("notif", 2),
     type: "chat",
     title: "New message from Saffron & Stone",
-    message: "Looking forward to seeing you tomorrow! Let us know if you need anything...",
+    message:
+      "Looking forward to seeing you tomorrow! Let us know if you need anything...",
     actorName: "Kai North",
     actorInitials: "KN",
     isRead: false,
@@ -103,36 +106,118 @@ export const notifications = [
       actorName: provider,
       actorInitials: initials,
       isRead: true,
-      actionUrl: type === "booking"
-        ? `/appointments/${linkedAppointment.id}`
-        : ["/appointments", "/wallet", "/providers", "/chats", "/profile", "/reviews"][i % 6],
+      actionUrl:
+        type === "booking"
+          ? `/appointments/${linkedAppointment.id}`
+          : [
+              "/appointments",
+              "/wallet",
+              "/providers",
+              "/chats",
+              "/profile",
+              "/reviews",
+            ][i % 6],
       createdAt: isoDate(i + 2),
     };
   }),
 ];
 
-export const providerNotifications = Array.from({ length: 20 }, (_, i) => {
-  const linkedAppointment = appointments[i % appointments.length];
+const PROVIDER_DESIGN_NOTIFICATIONS = [
+  {
+    id: generateId("pnotif", 1),
+    type: "booking",
+    title: "Haircut with Saffron & Stone",
+    message: "Tomorrow at 10:00 AM · Tap to view booking details",
+    actorName: "Kai North",
+    actorInitials: "KN",
+    isRead: false,
+    actionUrl: "/provider/appointments",
+    createdAt: isoHoursAgo(2),
+  },
+  {
+    id: generateId("pnotif", 2),
+    type: "payment",
+    title: "Payment Successful",
+    message: "₹1,200 has been paid for your recent booking",
+    actorName: "Kai North",
+    actorInitials: "KN",
+    isRead: false,
+    actionUrl: "/provider/earnings",
+    createdAt: isoHoursAgo(5),
+  },
+  {
+    id: generateId("pnotif", 3),
+    type: "chat",
+    title: "New message from Care Clinic",
+    message: "Your appointment has been confirmed for Friday",
+    actorName: "Kai North",
+    actorInitials: "KN",
+    isRead: false,
+    actionUrl: "/provider/chats",
+    createdAt: isoHoursAgo(8),
+  },
+  {
+    id: generateId("pnotif", 4),
+    type: "booking",
+    title: "Appointment Rescheduled",
+    message: "Your slot moved to 11:30 AM tomorrow",
+    actorName: "Kai North",
+    actorInitials: "KN",
+    isRead: true,
+    actionUrl: "/provider/appointments",
+    createdAt: isoHoursAgo(26),
+  },
+  {
+    id: generateId("pnotif", 5),
+    type: "review",
+    title: "Rate Your Experience",
+    message: "Tell us how your visit was — your feedback matters",
+    actorName: "Kai North",
+    actorInitials: "KN",
+    isRead: true,
+    actionUrl: "/provider/ratings",
+    createdAt: isoHoursAgo(30),
+  },
+];
 
-  return {
-    id: generateId("pnotif", i + 1),
-    type: ["booking", "payment", "chat", "review", "system"][i % 5],
-    title: [
-      "New Booking Request",
-      "Payout Processed",
-      "Customer Message",
-      "New 5-Star Review",
-      "Profile Verified",
-    ][i % 5],
-    message: [
-      `New booking request from ${linkedAppointment.userName} for ${linkedAppointment.serviceName}.`,
-      "₹15,000 has been transferred to your bank account.",
-      `${linkedAppointment.userName} sent you a message about ${linkedAppointment.serviceName}.`,
-      "You received a glowing 5-star review from a recent customer!",
-      "Your business profile is now verified.",
-    ][i % 5],
-    isRead: i > 4,
-    actionUrl: ["/provider/appointments", "/provider/earnings", "/provider/chats", "/provider/ratings", "/provider/profile"][i % 5],
-    createdAt: isoDate(i),
-  };
-});
+export const providerNotifications = [
+  ...PROVIDER_DESIGN_NOTIFICATIONS,
+  ...Array.from({ length: 15 }, (_, i) => {
+    const linkedAppointment = appointments[i % appointments.length];
+
+    return {
+      id: generateId("pnotif", i + 6),
+      type: ["booking", "payment", "chat", "review", "system"][i % 5],
+      title: [
+        "New Booking Request",
+        "Payout Processed",
+        "Customer Message",
+        "New 5-Star Review",
+        "Profile Verified",
+      ][i % 5],
+      message: [
+        `New booking request from ${linkedAppointment.userName} for ${linkedAppointment.serviceName}.`,
+        "₹15,000 has been transferred to your bank account.",
+        `${linkedAppointment.userName} sent you a message about ${linkedAppointment.serviceName}.`,
+        "You received a glowing 5-star review from a recent customer!",
+        "Your business profile is now verified.",
+      ][i % 5],
+      actorName: linkedAppointment.userName,
+      actorInitials: linkedAppointment.userName
+        .split(" ")
+        .map((part) => part[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2),
+      isRead: true,
+      actionUrl: [
+        "/provider/appointments",
+        "/provider/earnings",
+        "/provider/chats",
+        "/provider/ratings",
+        "/provider/profile",
+      ][i % 5],
+      createdAt: isoDate(i + 3),
+    };
+  }),
+];

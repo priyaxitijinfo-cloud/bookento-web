@@ -13,7 +13,7 @@ export function ChatEmptyInbox({
       src="/icons/chat-not-yet.png"
       title={title}
       description={description}
-      className={cn("min-h-0 flex-1 md:hidden", className)}
+      className={cn("min-h-0 flex-1", className)}
     />
   );
 }

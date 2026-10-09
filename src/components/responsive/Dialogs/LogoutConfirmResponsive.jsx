@@ -16,6 +16,7 @@ export function LogoutConfirmResponsive({
   onOpenChange,
   onConfirm,
   loading = false,
+  description = "You will need to sign in again to access your bookings and wallet.",
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -25,9 +26,7 @@ export function LogoutConfirmResponsive({
             <ProfileLogoutIcon className="size-8 text-white" />
           </div>
           <DialogTitle>Sign out?</DialogTitle>
-          <DialogDescription>
-            You will need to sign in again to access your bookings and wallet.
-          </DialogDescription>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex-col gap-2 sm:flex-col">
           <PrimaryButton fullWidth onClick={onConfirm} disabled={loading}>

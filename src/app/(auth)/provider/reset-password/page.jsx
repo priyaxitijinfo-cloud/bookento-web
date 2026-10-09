@@ -41,6 +41,12 @@ function ResetPasswordForm() {
     router.push(ROUTES.PROVIDER_LOGIN);
   };
 
+  const continueBtn = (
+    <ProviderContinueButton type="submit" form="provider-reset-form" disabled={loading}>
+      {loading ? "Saving..." : "Continue"}
+    </ProviderContinueButton>
+  );
+
   return (
     <ProviderAuthResponsive
       title="New Password"
@@ -51,15 +57,7 @@ function ResetPasswordForm() {
           ? `Set a strong new password for ${email}.`
           : "Use at least 8 characters with a mix of letters and numbers."
       }
-      footer={
-        <ProviderContinueButton
-          type="submit"
-          form="provider-reset-form"
-          disabled={loading}
-        >
-          {loading ? "Saving..." : "Continue"}
-        </ProviderContinueButton>
-      }
+      footer={continueBtn}
     >
       <form id="provider-reset-form" onSubmit={handleSubmit} className="space-y-5">
         <ProviderAuthField label="Email Address">

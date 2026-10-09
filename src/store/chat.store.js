@@ -129,33 +129,49 @@ export const useChatStore = create(
           replyToId: options.replyToId ?? null,
           createdAt: new Date().toISOString(),
         };
+
+        const patchLastMessage = (list, preview, at) =>
+          list.map((item) =>
+            item.id === conv.id
+              ? { ...item, lastMessage: preview, lastMessageAt: at }
+              : item,
+          );
+
         set((s) => {
+          const nextMessages = [...s.messages, newMsg];
+          messageMap[conv.id] = nextMessages;
+
           const nextConversations = withFlaggedQuotaConsumed(
-            s.conversations.map((item) =>
-              item.id === conv.id
-                ? { ...item, lastMessage: content, lastMessageAt: newMsg.createdAt }
-                : item,
-            ),
+            patchLastMessage(s.conversations, content, newMsg.createdAt),
             conv.id,
+          );
+          const nextProviderConversations = patchLastMessage(
+            s.providerConversations,
+            content,
+            newMsg.createdAt,
           );
           const nextActive =
             s.activeConversation?.id === conv.id
-              ? (nextConversations.find((item) => item.id === conv.id) ??
+              ? (nextProviderConversations.find((item) => item.id === conv.id) ??
+                nextConversations.find((item) => item.id === conv.id) ??
                 s.activeConversation)
               : s.activeConversation;
 
           return {
-            messages: [...s.messages, newMsg],
+            messages: nextMessages,
             conversations: nextConversations,
+            providerConversations: nextProviderConversations,
             activeConversation: nextActive,
           };
         });
         await delay(500);
-        set((s) => ({
-          messages: s.messages.map((m) =>
+        set((s) => {
+          const nextMessages = s.messages.map((m) =>
             m.id === newMsg.id ? { ...m, status: "sent" } : m,
-          ),
-        }));
+          );
+          messageMap[conv.id] = nextMessages;
+          return { messages: nextMessages };
+        });
         set({ isTyping: true });
         await delay(1500);
         const reply = {
@@ -167,19 +183,24 @@ export const useChatStore = create(
           status: "delivered",
           createdAt: new Date().toISOString(),
         };
-        set((s) => ({
-          messages: [...s.messages, reply],
-          isTyping: false,
-          conversations: s.conversations.map((item) =>
-            item.id === conv.id
-              ? {
-                  ...item,
-                  lastMessage: reply.content,
-                  lastMessageAt: reply.createdAt,
-                }
-              : item,
-          ),
-        }));
+        set((s) => {
+          const nextMessages = [...s.messages, reply];
+          messageMap[conv.id] = nextMessages;
+          return {
+            messages: nextMessages,
+            isTyping: false,
+            conversations: patchLastMessage(
+              s.conversations,
+              reply.content,
+              reply.createdAt,
+            ),
+            providerConversations: patchLastMessage(
+              s.providerConversations,
+              reply.content,
+              reply.createdAt,
+            ),
+          };
+        });
       },
 
       sendVoiceMessage: async ({ blob, durationMs, durationLabel }) => {
@@ -201,24 +222,30 @@ export const useChatStore = create(
           createdAt: new Date().toISOString(),
         };
 
+        const patchLastMessage = (list) =>
+          list.map((item) =>
+            item.id === conv.id
+              ? { ...item, lastMessage: preview, lastMessageAt: newMsg.createdAt }
+              : item,
+          );
+
         set((s) => {
           const nextConversations = withFlaggedQuotaConsumed(
-            s.conversations.map((item) =>
-              item.id === conv.id
-                ? { ...item, lastMessage: preview, lastMessageAt: newMsg.createdAt }
-                : item,
-            ),
+            patchLastMessage(s.conversations),
             conv.id,
           );
+          const nextProviderConversations = patchLastMessage(s.providerConversations);
           const nextActive =
             s.activeConversation?.id === conv.id
-              ? (nextConversations.find((item) => item.id === conv.id) ??
+              ? (nextProviderConversations.find((item) => item.id === conv.id) ??
+                nextConversations.find((item) => item.id === conv.id) ??
                 s.activeConversation)
               : s.activeConversation;
 
           return {
             messages: [...s.messages, newMsg],
             conversations: nextConversations,
+            providerConversations: nextProviderConversations,
             activeConversation: nextActive,
           };
         });
@@ -257,24 +284,30 @@ export const useChatStore = create(
           createdAt: new Date().toISOString(),
         };
 
+        const patchLastMessage = (list) =>
+          list.map((item) =>
+            item.id === conv.id
+              ? { ...item, lastMessage: preview, lastMessageAt: newMsg.createdAt }
+              : item,
+          );
+
         set((s) => {
           const nextConversations = withFlaggedQuotaConsumed(
-            s.conversations.map((item) =>
-              item.id === conv.id
-                ? { ...item, lastMessage: preview, lastMessageAt: newMsg.createdAt }
-                : item,
-            ),
+            patchLastMessage(s.conversations),
             conv.id,
           );
+          const nextProviderConversations = patchLastMessage(s.providerConversations);
           const nextActive =
             s.activeConversation?.id === conv.id
-              ? (nextConversations.find((item) => item.id === conv.id) ??
+              ? (nextProviderConversations.find((item) => item.id === conv.id) ??
+                nextConversations.find((item) => item.id === conv.id) ??
                 s.activeConversation)
               : s.activeConversation;
 
           return {
             messages: [...s.messages, newMsg],
             conversations: nextConversations,
+            providerConversations: nextProviderConversations,
             activeConversation: nextActive,
           };
         });

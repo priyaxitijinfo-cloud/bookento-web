@@ -4,10 +4,23 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
-import { Calendar, Check, ChevronDown, FileText, Plus, X } from "lucide-react";
+import {
+  Activity,
+  Bone,
+  ChevronDown,
+  Eye,
+  FileText,
+  HeartPulse,
+  Plus,
+  Smile,
+  Stethoscope,
+  Wind,
+  X,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { PasswordInput } from "@/components/forms/password-input";
+import { Calendar01Icon } from "@/components/icons/calendar01-icon";
 import {
   CountryCodePicker,
   PhoneNumberField,
@@ -19,16 +32,80 @@ import {
   ProviderContinueButton,
   providerAuthInputClass,
 } from "@/features/auth/components/provider-auth-shell";
+import { ProviderRegistrationStatusView } from "@/features/auth/components/provider-registration-status-view";
 import { ROUTES } from "@/constants/routes.constants";
 import { cn } from "@/lib/utils";
 
 const STATES = ["Gujarat", "Maharashtra", "Rajasthan", "Karnataka"];
 const COUNTRIES = ["India", "United States", "Canada", "United Kingdom", "Australia"];
+const TOTAL_STEPS = 6;
 
 const DOC_FIELDS = [
   { key: "businessLicense", label: "Business License" },
   { key: "idProof", label: "ID Proof (Aadhaar/PAN)" },
   { key: "addressProof", label: "Address Proof" },
+];
+
+const PROVIDER_TYPES = [
+  {
+    id: "salon-spa",
+    title: "Salon & Spa",
+    description: "Beauty salon, spa, parlor with fixed location",
+    icon: "/icons/categories/salon.svg",
+    iconBg: "bg-[#FFE8EE]",
+  },
+  {
+    id: "clinic-wellness",
+    title: "Clinic & Wellness",
+    description: "Health clinic, therapy center, wellness",
+    icon: "/icons/categories/doctor.svg",
+    iconBg: "bg-[#E0F2FF]",
+  },
+  {
+    id: "fitness-yoga",
+    title: "Fitness & Yoga",
+    description: "Gym, yoga studio, personal trainer",
+    icon: "/icons/categories/fitness.svg",
+    iconBg: "bg-[#E4F5E8]",
+  },
+  {
+    id: "tutoring",
+    title: "Tutoring",
+    description: "Academic tutoring, coaching classes, skill training",
+    icon: "/icons/categories/tutoring.svg",
+    iconBg: "bg-[#FFF1DE]",
+  },
+  {
+    id: "pet-care",
+    title: "Pet Care",
+    description: "Pet grooming, vet clinic, pet sitting, training",
+    icon: "/icons/categories/pet-care.svg",
+    iconBg: "bg-[#ECEBFF]",
+  },
+  {
+    id: "homecare",
+    title: "Homecare",
+    description: "Elder care, patient care, nursing, home assistance",
+    icon: "/icons/categories/homecare.svg",
+    iconBg: "bg-[#F9E8FF]",
+  },
+  {
+    id: "kids-care",
+    title: "Kids Care",
+    description: "Child care, babysitting, kids activities",
+    icon: "/icons/categories/kids-care.svg",
+    iconBg: "bg-[#FFE8F3]",
+  },
+];
+
+const SERVICE_CATEGORIES = [
+  { id: "dental", title: "Dental Care", Icon: Smile },
+  { id: "diabetes", title: "Diabetes Care", Icon: Activity },
+  { id: "eye", title: "Eye Care", Icon: Eye },
+  { id: "general-physician", title: "General Physician", Icon: Stethoscope },
+  { id: "cardiology", title: "Cardiology", Icon: HeartPulse },
+  { id: "pulmonology", title: "Pulmonology", Icon: Wind },
+  { id: "orthopedics", title: "Orthopedics", Icon: Bone },
 ];
 
 const initialForm = {
@@ -45,10 +122,12 @@ const initialForm = {
   pincode: "",
   state: "",
   country: "India",
+  providerType: "",
+  serviceCategory: "",
   documents: {
-    businessLicense: false,
-    idProof: false,
-    addressProof: false,
+    businessLicense: null,
+    idProof: null,
+    addressProof: null,
   },
 };
 
@@ -120,7 +199,7 @@ function CoverUpload({ preview, onPick }) {
 
 function GenderCards({ value, onChange }) {
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid min-w-0 grid-cols-2 gap-3">
       {[
         { id: "male", label: "Male", icon: "/icons/male.png" },
         { id: "female", label: "Female", icon: "/icons/female.png" },
@@ -132,7 +211,7 @@ function GenderCards({ value, onChange }) {
             type="button"
             onClick={() => onChange(option.id)}
             className={cn(
-              "flex items-center gap-3 rounded-2xl border bg-white px-3.5 py-3 text-left transition-colors",
+              "flex min-w-0 items-center gap-2.5 rounded-2xl border bg-white px-3 py-3 text-left transition-colors sm:gap-3 sm:px-3.5",
               selected
                 ? "border-[#1865EA] shadow-[0_0_0_1px_rgba(24,101,234,0.15)]"
                 : "border-[#E2E8F0]",
@@ -143,20 +222,98 @@ function GenderCards({ value, onChange }) {
               alt=""
               width={40}
               height={40}
-              className="size-10 object-contain"
+              className="size-9 shrink-0 object-contain sm:size-10"
             />
-            <span className="flex-1 text-[14px] font-semibold text-[#0F172A]">
+            <span className="min-w-0 flex-1 truncate text-[14px] font-semibold text-[#0F172A]">
               {option.label}
             </span>
             <span
               className={cn(
-                "flex size-5 items-center justify-center rounded-full border-2",
-                selected ? "border-[#1865EA] bg-[#1865EA]" : "border-[#CBD5E1]",
+                "flex size-5 shrink-0 items-center justify-center rounded-full border-2 bg-white",
+                selected ? "border-[#1865EA]" : "border-[#CBD5E1]",
               )}
+              aria-hidden
             >
               {selected ? (
-                <Check className="size-3 text-white" strokeWidth={3} />
+                <span className="size-2.5 rounded-full bg-[#1865EA]" />
               ) : null}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function ProviderTypeCards({ value, onChange }) {
+  return (
+    <div className="space-y-3">
+      {PROVIDER_TYPES.map((option) => {
+        const selected = value === option.id;
+        return (
+          <button
+            key={option.id}
+            type="button"
+            onClick={() => onChange(option.id)}
+            className={cn(
+              "flex w-full items-center gap-3.5 rounded-2xl border bg-white px-3.5 py-3.5 text-left transition-colors",
+              selected
+                ? "border-[#1865EA] shadow-[0_0_0_1px_rgba(24,101,234,0.12)]"
+                : "border-[#EEF1F6] shadow-[0_2px_10px_rgba(15,23,42,0.04)]",
+            )}
+          >
+            <span
+              className={cn(
+                "flex size-12 shrink-0 items-center justify-center rounded-xl",
+                option.iconBg,
+              )}
+            >
+              <Image
+                src={option.icon}
+                alt=""
+                width={28}
+                height={28}
+                className="size-7 object-contain"
+              />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[15px] font-semibold text-[#0F172A]">
+                {option.title}
+              </span>
+              <span className="mt-0.5 block text-[13px] leading-snug text-[#64748B]">
+                {option.description}
+              </span>
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function ServiceCategoryCards({ value, onChange }) {
+  return (
+    <div className="space-y-3">
+      <p className="text-[14px] font-semibold text-[#1E293B]">Select Category</p>
+      {SERVICE_CATEGORIES.map(({ id, title, Icon }) => {
+        const selected = value === id;
+        return (
+          <button
+            key={id}
+            type="button"
+            onClick={() => onChange(id)}
+            className={cn(
+              "flex w-full items-center gap-3.5 rounded-2xl border bg-white px-3.5 py-3.5 text-left transition-colors",
+              selected
+                ? "border-[#1865EA] shadow-[0_0_0_1px_rgba(24,101,234,0.12)]"
+                : "border-[#EEF1F6] shadow-[0_2px_10px_rgba(15,23,42,0.04)]",
+            )}
+          >
+            <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#EAF3FF] text-[#1865EA]">
+              <Icon className="size-6" strokeWidth={1.8} aria-hidden />
+            </span>
+            <span className="min-w-0 flex-1 text-[15px] font-medium text-[#0F172A]">
+              {title}
             </span>
           </button>
         );
@@ -214,47 +371,81 @@ function DropdownField({ label, value, placeholder, options, onChange, error }) 
   );
 }
 
-function DocumentUploadCard({ label, uploaded, onUpload }) {
+function DocumentUploadCard({ label, document, onUpload, onRemove }) {
+  const inputRef = useRef(null);
+  const isImage = document?.type?.startsWith("image/");
+
   return (
     <ProviderAuthField label={label}>
-      <button
-        type="button"
-        onClick={onUpload}
-        className={cn(
-          "flex h-[7.5rem] w-full flex-col items-center justify-center gap-2 rounded-2xl border-[1.5px] border-dashed",
-          uploaded
-            ? "border-emerald-400 bg-emerald-50"
-            : "border-[#1865EA] bg-[#EEF4FF]",
-        )}
-      >
-        <FileText
-          className={cn("size-8", uploaded ? "text-emerald-600" : "text-[#1865EA]")}
-          strokeWidth={1.8}
-        />
-        <span className="text-[14px] font-medium text-[#0F172A]">
-          {uploaded ? "Uploaded" : "Tap to Upload"}
-        </span>
-      </button>
-    </ProviderAuthField>
-  );
-}
-
-function SuccessStamp({ tone = "success" }) {
-  const isSuccess = tone === "success";
-  return (
-    <div
-      className={cn(
-        "mx-auto flex size-[5.5rem] items-center justify-center rounded-[1.75rem]",
-        isSuccess ? "bg-[#22C55E]" : "bg-[#EF4444]",
-        "[clip-path:polygon(50%_0%,63%_8%,75%_4%,82%_16%,94%_20%,92%_33%,100%_45%,94%_58%,96%_72%,84%_78%,78%_90%,65%_88%,50%_100%,35%_88%,22%_90%,16%_78%,4%_72%,6%_58%,0%_45%,8%_33%,6%_20%,18%_16%,25%_4%,37%_8%)]",
-      )}
-    >
-      {isSuccess ? (
-        <Check className="size-9 text-white" strokeWidth={3} />
+      {document ? (
+        <div className="relative overflow-hidden rounded-2xl border border-emerald-300 bg-emerald-50">
+          {isImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={document.url}
+              alt={document.name}
+              className="h-[7.5rem] w-full object-cover"
+            />
+          ) : (
+            <div className="flex h-[7.5rem] w-full flex-col items-center justify-center gap-2 px-4">
+              <FileText className="size-8 text-emerald-600" strokeWidth={1.8} />
+              <p className="line-clamp-2 max-w-full text-center text-[13px] font-medium text-[#0F172A]">
+                {document.name}
+              </p>
+            </div>
+          )}
+          <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-black/45 px-3 py-2">
+            <span className="truncate text-[12px] font-medium text-white">
+              {document.name}
+            </span>
+            <div className="flex shrink-0 items-center gap-2">
+              <button
+                type="button"
+                onClick={() => inputRef.current?.click()}
+                className="rounded-lg bg-white/95 px-2.5 py-1 text-[11px] font-semibold text-[#0F172A]"
+              >
+                Replace
+              </button>
+              <button
+                type="button"
+                onClick={onRemove}
+                className="flex size-7 items-center justify-center rounded-full bg-white/95 text-[#EF4444]"
+                aria-label={`Remove ${label}`}
+              >
+                <X className="size-3.5" strokeWidth={2.5} />
+              </button>
+            </div>
+          </div>
+        </div>
       ) : (
-        <X className="size-9 text-white" strokeWidth={3} />
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          className="flex h-[7.5rem] w-full flex-col items-center justify-center gap-2 rounded-2xl border-[1.5px] border-dashed border-[#1865EA] bg-[#EEF4FF]"
+        >
+          <FileText className="size-8 text-[#1865EA]" strokeWidth={1.8} />
+          <span className="text-[14px] font-medium text-[#0F172A]">Tap to Upload</span>
+          <span className="text-[11px] text-[#64748B]">PDF, JPG or PNG</span>
+        </button>
       )}
-    </div>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*,.pdf,application/pdf"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          e.target.value = "";
+          if (!file) return;
+          onUpload({
+            name: file.name,
+            type: file.type || "application/octet-stream",
+            url: URL.createObjectURL(file),
+            size: file.size,
+          });
+        }}
+      />
+    </ProviderAuthField>
   );
 }
 
@@ -297,15 +488,28 @@ export function ProviderRegisterForm() {
       subtitle: "Add your business address and service location details",
     },
     3: {
+      title: "Choose Provider Type",
+      subtitle: "Select the type that best describes your business",
+    },
+    4: {
+      title: "Select Your Service Category",
+      subtitle: "Select the healthcare category that matches your clinic or expertise",
+    },
+    5: {
       title: "Verification Documents",
       subtitle: "Upload the required documents to verify your business account",
     },
-    4: {
+    6: {
       title: "Request Send Successfully",
       subtitle:
         "Your provider request send successfully for admin wait 48 hours to approve request.",
     },
   };
+
+  const selectedCategoryLabel =
+    SERVICE_CATEGORIES.find((item) => item.id === form.serviceCategory)?.title ||
+    PROVIDER_TYPES.find((item) => item.id === form.providerType)?.title ||
+    "Provider";
 
   const validateStep = () => {
     const next = {};
@@ -327,7 +531,13 @@ export function ProviderRegisterForm() {
       if (!form.state) next.state = "Select state";
       if (!form.country) next.country = "Select country";
     }
-    if (step === 3) {
+    if (step === 3 && !form.providerType) {
+      next.providerType = "Select a provider type";
+    }
+    if (step === 4 && !form.serviceCategory) {
+      next.serviceCategory = "Select a service category";
+    }
+    if (step === 5) {
       if (!form.documents.businessLicense || !form.documents.idProof) {
         next.documents = "Upload required documents";
       }
@@ -338,7 +548,7 @@ export function ProviderRegisterForm() {
 
   const nextStep = () => {
     if (!validateStep()) return;
-    if (step < 4) setStep((s) => s + 1);
+    if (step < TOTAL_STEPS) setStep((s) => s + 1);
   };
 
   const shellTitles = titles[step];
@@ -352,7 +562,7 @@ export function ProviderRegisterForm() {
         headline="Join Bookento Pro"
         copy="Create your provider profile, verify documents, and start receiving bookings."
         footer={
-          step < 4 ? (
+          step < TOTAL_STEPS ? (
             <ProviderContinueButton onClick={nextStep}>Continue</ProviderContinueButton>
           ) : (
             <ProviderContinueButton onClick={() => router.push(ROUTES.PROVIDER_LOGIN)}>
@@ -362,7 +572,7 @@ export function ProviderRegisterForm() {
         }
       >
         {step === 1 ? (
-          <div className="space-y-5">
+          <div className="w-full max-w-full min-w-0 space-y-5 overflow-x-hidden">
             <AvatarUpload preview={avatarPreview} onPick={setAvatarPreview} />
 
             <ProviderAuthField label="Owner Name" error={errors.ownerName}>
@@ -399,7 +609,7 @@ export function ProviderRegisterForm() {
                 onPhoneChange={(value) => update("phone", value)}
                 onCountryClick={() => setPickerOpen(true)}
                 placeholder="Enter mobile number"
-                error={errors.phone}
+                error={Boolean(errors.phone)}
               />
             </ProviderAuthField>
 
@@ -409,10 +619,13 @@ export function ProviderRegisterForm() {
                   type="date"
                   value={form.dob}
                   onChange={(e) => update("dob", e.target.value)}
-                  className={cn(providerAuthInputClass(), "pr-11")}
+                  className={cn(
+                    providerAuthInputClass(),
+                    "pr-11 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0",
+                  )}
                 />
-                <Calendar
-                  className="pointer-events-none absolute top-1/2 right-3.5 size-4 -translate-y-1/2 text-[#1865EA]"
+                <Calendar01Icon
+                  className="pointer-events-none absolute top-1/2 right-3.5 size-5 -translate-y-1/2"
                   aria-hidden
                 />
               </div>
@@ -461,7 +674,7 @@ export function ProviderRegisterForm() {
         ) : null}
 
         {step === 2 ? (
-          <div className="space-y-5">
+          <div className="w-full max-w-full min-w-0 space-y-5 overflow-x-hidden">
             <ProviderAuthField label="Address" error={errors.address}>
               <input
                 value={form.address}
@@ -511,93 +724,80 @@ export function ProviderRegisterForm() {
         ) : null}
 
         {step === 3 ? (
-          <div className="space-y-5">
-            {DOC_FIELDS.map(({ key, label }) => (
-              <DocumentUploadCard
-                key={key}
-                label={label}
-                uploaded={form.documents[key]}
-                onUpload={() => {
-                  setForm((prev) => ({
-                    ...prev,
-                    documents: { ...prev.documents, [key]: true },
-                  }));
-                  toast.success(`${label} uploaded`);
-                }}
-              />
-            ))}
-            {errors.documents ? (
-              <p className="text-[12.5px] text-red-500">{errors.documents}</p>
+          <div className="w-full max-w-full min-w-0 space-y-4 overflow-x-hidden">
+            <ProviderTypeCards
+              value={form.providerType}
+              onChange={(value) => {
+                update("providerType", value);
+                setErrors((prev) => ({ ...prev, providerType: undefined }));
+              }}
+            />
+            {errors.providerType ? (
+              <p className="sr-only">{errors.providerType}</p>
             ) : null}
           </div>
         ) : null}
 
         {step === 4 ? (
-          <div className="space-y-6">
-            <SuccessStamp />
-
-            <div className="overflow-hidden rounded-2xl border border-[#E8EDF5] bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]">
-              <div className="flex items-center gap-3 px-4 py-4">
-                <div className="bg-muted size-14 shrink-0 overflow-hidden rounded-full">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={avatarPreview || "/images/app-icon.jpg"}
-                    alt=""
-                    className="size-full object-cover"
-                  />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-[15px] font-bold text-[#0F172A]">
-                    {form.ownerName || "Provider"}
-                  </p>
-                  <p className="truncate text-[13px] text-[#64748B]">
-                    {form.businessName || "Business"}
-                  </p>
-                  <span className="mt-1.5 inline-flex rounded-full bg-[#EEF2FF] px-2.5 py-0.5 text-[11px] font-semibold text-[#1865EA]">
-                    Pending Review
-                  </span>
-                </div>
-              </div>
-
-              <div className="space-y-3 border-t border-[#EEF1F6] px-4 py-4 text-[13.5px]">
-                {[
-                  ["Request Date", requestMeta.date],
-                  ["Request Time", requestMeta.time],
-                  ["Request ID", requestMeta.id],
-                  ["Request Status", "Pending"],
-                ].map(([label, value]) => (
-                  <div key={label} className="flex items-center justify-between gap-3">
-                    <span className="text-[#64748B]">{label}</span>
-                    <span
-                      className={cn(
-                        "font-semibold",
-                        label === "Request Status"
-                          ? "text-[#1865EA]"
-                          : "text-[#0F172A]",
-                      )}
-                    >
-                      {value}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {rejected ? (
-              <div className="flex gap-3 rounded-2xl border border-[#FECACA] bg-[#FEF2F2] p-4">
-                <SuccessStamp tone="error" />
-                <div className="min-w-0 flex-1 pt-1">
-                  <p className="text-[14px] font-bold text-[#0F172A]">
-                    Reason for Rejection
-                  </p>
-                  <p className="mt-1 text-[13px] leading-relaxed text-[#64748B]">
-                    Your documents are not valid. Please upload valid documents and try
-                    again.
-                  </p>
-                </div>
-              </div>
+          <div className="w-full max-w-full min-w-0 space-y-4 overflow-x-hidden">
+            <ServiceCategoryCards
+              value={form.serviceCategory}
+              onChange={(value) => {
+                update("serviceCategory", value);
+                setErrors((prev) => ({ ...prev, serviceCategory: undefined }));
+              }}
+            />
+            {errors.serviceCategory ? (
+              <p className="sr-only">{errors.serviceCategory}</p>
             ) : null}
           </div>
+        ) : null}
+
+        {step === 5 ? (
+          <div className="w-full max-w-full min-w-0 space-y-5 overflow-x-hidden">
+            {DOC_FIELDS.map(({ key, label }) => (
+              <DocumentUploadCard
+                key={key}
+                label={label}
+                document={form.documents[key]}
+                onUpload={(doc) => {
+                  setForm((prev) => {
+                    const previous = prev.documents[key];
+                    if (previous?.url) URL.revokeObjectURL(previous.url);
+                    return {
+                      ...prev,
+                      documents: { ...prev.documents, [key]: doc },
+                    };
+                  });
+                  toast.success(`${label} uploaded`);
+                }}
+                onRemove={() => {
+                  setForm((prev) => {
+                    const previous = prev.documents[key];
+                    if (previous?.url) URL.revokeObjectURL(previous.url);
+                    return {
+                      ...prev,
+                      documents: { ...prev.documents, [key]: null },
+                    };
+                  });
+                }}
+              />
+            ))}
+            {errors.documents ? <p className="sr-only">{errors.documents}</p> : null}
+          </div>
+        ) : null}
+
+        {step === 6 ? (
+          <ProviderRegistrationStatusView
+            rejected={rejected}
+            avatarSrc={avatarPreview || "/images/app-icon.jpg"}
+            name={form.ownerName || "Provider"}
+            businessName={form.businessName || "Business"}
+            category={selectedCategoryLabel}
+            requestDate={requestMeta.date}
+            requestTime={requestMeta.time}
+            requestId={requestMeta.id}
+          />
         ) : null}
       </ProviderAuthResponsive>
 

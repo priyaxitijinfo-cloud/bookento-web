@@ -2,13 +2,13 @@
 
 import { Suspense } from "react";
 
-import { ProviderAppointmentsView } from "@/features/provider/components/provider-appointments-view";
+import { ProviderTransactionsView } from "@/features/provider/components/provider-transactions-view";
 
-export default function ProviderAppointmentsPage() {
+export default function ProviderEarningsTransactionsPage() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <Suspense fallback={<div className="min-h-0 flex-1 bg-[#F4F7FF]" />}>
-        <ProviderAppointmentsView />
+        <ProviderTransactionsView />
       </Suspense>
     </div>
   );

@@ -29,8 +29,20 @@ export default function ProviderForgotPasswordPage() {
     await new Promise((r) => setTimeout(r, 600));
     setLoading(false);
     toast.success("OTP sent to your email");
-    router.push(`${ROUTES.PROVIDER_VERIFY_OTP}?email=${encodeURIComponent(email)}`);
+    router.push(
+      `${ROUTES.PROVIDER_VERIFY_OTP}?email=${encodeURIComponent(email)}&flow=reset`,
+    );
   };
+
+  const continueBtn = (
+    <ProviderContinueButton
+      type="submit"
+      form="provider-forgot-form"
+      disabled={loading}
+    >
+      {loading ? "Sending..." : "Continue"}
+    </ProviderContinueButton>
+  );
 
   return (
     <ProviderAuthResponsive
@@ -38,15 +50,7 @@ export default function ProviderForgotPasswordPage() {
       subtitle="Enter your registered e-mail address to receive a password reset link."
       headline="Reset your password"
       copy="We'll email a verification code so you can securely set a new password."
-      footer={
-        <ProviderContinueButton
-          type="submit"
-          form="provider-forgot-form"
-          disabled={loading}
-        >
-          {loading ? "Sending..." : "Continue"}
-        </ProviderContinueButton>
-      }
+      footer={continueBtn}
     >
       <form id="provider-forgot-form" onSubmit={handleSubmit} className="space-y-5">
         <ProviderAuthField label="Email Address" error={error}>

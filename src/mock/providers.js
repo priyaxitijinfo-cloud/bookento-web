@@ -127,8 +127,9 @@ mockProviders[0] = {
 export const currentProvider = {
   ...mockProviders[0],
   email: "provider@test.com",
-  businessName: "Elite Wellness Studio",
-  ownerName: "Raj Mehta",
+  businessName: "UrbanCare Clinic",
+  ownerName: "Dr. Raj Mehta",
+  specialty: "Gynecologist",
   status: PROVIDER_STATUS.APPROVED,
 };
 

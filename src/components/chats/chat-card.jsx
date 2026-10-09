@@ -8,13 +8,17 @@ import { chatDetailRoute } from "@/constants/routes.constants";
 import { formatChatListTime } from "@/utils/format.utils";
 import { cn } from "@/lib/utils";
 
-export const ChatCard = memo(function ChatCard({ conversation, isActive = false }) {
+export const ChatCard = memo(function ChatCard({
+  conversation,
+  isActive = false,
+  href,
+}) {
   const hasUnread = conversation.unreadCount > 0;
   const timestamp = formatChatListTime(conversation.lastMessageAt);
 
   return (
     <Link
-      href={chatDetailRoute(conversation.id)}
+      href={href ?? chatDetailRoute(conversation.id)}
       prefetch={false}
       className={cn(
         "flex w-full items-start gap-3 transition-colors",
