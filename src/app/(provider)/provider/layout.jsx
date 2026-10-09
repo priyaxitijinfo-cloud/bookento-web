@@ -23,12 +23,37 @@ function isProviderEarningsSubpage(pathname) {
   );
 }
 
+function isProviderProfileEdit(pathname) {
+  return (
+    pathname === ROUTES.PROVIDER_SETTINGS_PROFILE ||
+    pathname === ROUTES.PROVIDER_PROFILE_EDIT ||
+    pathname.startsWith(`${ROUTES.PROVIDER_SETTINGS}/profile`)
+  );
+}
+
+function isProviderServiceForm(pathname) {
+  return (
+    pathname === ROUTES.PROVIDER_SERVICES_NEW ||
+    /^\/provider\/services\/[^/]+\/edit$/.test(pathname)
+  );
+}
+
+function isProviderSlotForm(pathname) {
+  return (
+    pathname === ROUTES.PROVIDER_SLOTS_NEW ||
+    (/^\/provider\/slots\/[^/]+$/.test(pathname) && pathname !== ROUTES.PROVIDER_SLOTS)
+  );
+}
+
 export default function ProviderLayout({ children }) {
   const pathname = usePathname();
   const hideBottomNav =
     isProviderChatThread(pathname) ||
     isProviderAppointmentDetail(pathname) ||
-    isProviderEarningsSubpage(pathname);
+    isProviderEarningsSubpage(pathname) ||
+    isProviderProfileEdit(pathname) ||
+    isProviderServiceForm(pathname) ||
+    isProviderSlotForm(pathname);
 
   return (
     <div className="bg-background flex h-dvh overflow-hidden">

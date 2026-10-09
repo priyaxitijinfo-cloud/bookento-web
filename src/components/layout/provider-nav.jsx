@@ -30,7 +30,7 @@ const sidebarItems = [
   { href: ROUTES.PROVIDER_HOME, label: "Dashboard", icon: Home },
   { href: ROUTES.PROVIDER_APPOINTMENTS, label: "Appointments", icon: Calendar },
   { href: ROUTES.PROVIDER_EARNINGS, label: "Earnings", icon: Wallet },
-  { href: ROUTES.PROVIDER_SERVICES, label: "Services", icon: Wrench },
+  { href: ROUTES.PROVIDER_SERVICES, label: "My Services", icon: Wrench },
   { href: ROUTES.PROVIDER_PACKAGES, label: "Packages", icon: Package },
   { href: ROUTES.PROVIDER_BRANCHES, label: "Branches", icon: Building2 },
   { href: ROUTES.PROVIDER_CATEGORIES, label: "Categories", icon: Layers },
@@ -144,13 +144,20 @@ export function ProviderSidebar() {
 export function ProviderBottomNav() {
   const pathname = usePathname();
 
-  // Full-screen thread / booking detail / earnings subpages: hide bottom nav so it doesn't overlap actions
+  // Full-screen thread / booking detail / earnings / profile edit / forms: hide bottom nav so it doesn't overlap actions
   if (
     /^\/provider\/chats\/[^/]+/.test(pathname) ||
     /^\/provider\/appointments\/[^/]+/.test(pathname) ||
     pathname === ROUTES.PROVIDER_EARNINGS_TRANSACTIONS ||
     pathname === ROUTES.PROVIDER_EARNINGS_WALLET ||
-    pathname.startsWith(`${ROUTES.PROVIDER_EARNINGS}/`)
+    pathname.startsWith(`${ROUTES.PROVIDER_EARNINGS}/`) ||
+    pathname === ROUTES.PROVIDER_SETTINGS_PROFILE ||
+    pathname === ROUTES.PROVIDER_PROFILE_EDIT ||
+    pathname.startsWith(`${ROUTES.PROVIDER_SETTINGS}/profile`) ||
+    pathname === ROUTES.PROVIDER_SERVICES_NEW ||
+    /^\/provider\/services\/[^/]+\/edit$/.test(pathname) ||
+    pathname === ROUTES.PROVIDER_SLOTS_NEW ||
+    (/^\/provider\/slots\/[^/]+$/.test(pathname) && pathname !== ROUTES.PROVIDER_SLOTS)
   ) {
     return null;
   }

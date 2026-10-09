@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { PasswordInput } from "@/components/forms/password-input";
@@ -15,9 +15,17 @@ import {
   ProviderContinueButton,
   providerAuthInputClass,
 } from "@/features/auth/components/provider-auth-shell";
+import { ProviderLoginVerificationBanner } from "@/features/auth/components/provider-registration-status-view";
 import { ROUTES } from "@/constants/routes.constants";
+import { PROVIDER_STATUS } from "@/constants/status.constants";
 import { useProviderAuthStore } from "@/store";
 import { cn } from "@/lib/utils";
+
+const DEMO_STATUSES = new Set([
+  PROVIDER_STATUS.PENDING,
+  PROVIDER_STATUS.REJECTED,
+  PROVIDER_STATUS.APPROVED,
+]);
 
 function ProviderLoginFields({
   variant,
@@ -25,9 +33,11 @@ function ProviderLoginFields({
   password,
   errors,
   isLoading,
+  verificationApplication,
   onEmailChange,
   onPasswordChange,
   onSubmit,
+  onResubmit,
 }) {
   const isApp = variant === "app";
 
@@ -36,6 +46,13 @@ function ProviderLoginFields({
       onSubmit={onSubmit}
       className={isApp ? "flex flex-col gap-5" : "flex flex-col gap-5"}
     >
+      {verificationApplication ? (
+        <ProviderLoginVerificationBanner
+          application={verificationApplication}
+          onResubmit={onResubmit}
+        />
+      ) : null}
+
       <ProviderAuthField label="Email Address" error={errors.email}>
         <input
           type="email"
@@ -101,12 +118,51 @@ function ProviderLoginFields({
 export function ProviderLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login, isLoading } = useProviderAuthStore();
+  const {
+    login,
+    isLoading,
+    verificationApplication,
+    setVerificationApplication,
+    updateVerificationStatus,
+    registrationDraft,
+  } = useProviderAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
 
   const redirect = searchParams.get("redirect");
+  const statusParam = searchParams.get("status");
+
+  useEffect(() => {
+    if (!DEMO_STATUSES.has(statusParam)) return;
+    if (verificationApplication?.status === statusParam) return;
+
+    if (verificationApplication) {
+      updateVerificationStatus(statusParam);
+      return;
+    }
+
+    setVerificationApplication({
+      status: statusParam,
+      email: registrationDraft?.email || "provider@business.com",
+      name: registrationDraft?.ownerName || "Dr. Amara Reyes",
+      businessName: registrationDraft?.businessName || "UrbanCare Clinic",
+      category: registrationDraft?.category || "Gynecologist",
+      avatarSrc: registrationDraft?.avatarSrc || "/images/app-icon.jpg",
+    });
+  }, [
+    statusParam,
+    verificationApplication,
+    registrationDraft,
+    setVerificationApplication,
+    updateVerificationStatus,
+  ]);
+
+  useEffect(() => {
+    if (verificationApplication?.email && !email) {
+      setEmail(verificationApplication.email);
+    }
+  }, [verificationApplication, email]);
 
   const validate = () => {
     const next = {};
@@ -117,9 +173,36 @@ export function ProviderLoginForm() {
     return Object.keys(next).length === 0;
   };
 
+  const handleResubmit = () => {
+    router.push(`${ROUTES.PROVIDER_REGISTER}?resubmit=1`);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
+
+    const status = verificationApplication?.status;
+    const emailMatches =
+      !verificationApplication?.email ||
+      verificationApplication.email.toLowerCase() === email.trim().toLowerCase();
+
+    if (
+      emailMatches &&
+      (status === PROVIDER_STATUS.PENDING || status === PROVIDER_STATUS.REJECTED)
+    ) {
+      toast.message(
+        status === PROVIDER_STATUS.REJECTED
+          ? "Documents were rejected. Re-submit to continue."
+          : "Your documents are still under review.",
+      );
+      router.push(
+        status === PROVIDER_STATUS.REJECTED
+          ? `${ROUTES.PROVIDER_REGISTRATION_STATUS}?status=rejected`
+          : ROUTES.PROVIDER_REGISTRATION_STATUS,
+      );
+      return;
+    }
+
     const result = await login(email.trim());
     if (result.success) {
       toast.success("OTP sent to your email");
@@ -137,9 +220,11 @@ export function ProviderLoginForm() {
     password,
     errors,
     isLoading,
+    verificationApplication,
     onEmailChange: (e) => setEmail(e.target.value),
     onPasswordChange: (e) => setPassword(e.target.value),
     onSubmit: handleSubmit,
+    onResubmit: handleResubmit,
   };
 
   const appShellProps = {

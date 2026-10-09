@@ -128,9 +128,25 @@ export const currentProvider = {
   ...mockProviders[0],
   email: "provider@test.com",
   businessName: "UrbanCare Clinic",
-  ownerName: "Dr. Raj Mehta",
+  ownerName: "Olivia Brown",
   specialty: "Gynecologist",
   status: PROVIDER_STATUS.APPROVED,
+  isVerified: true,
+  gender: "male",
+  dateOfBirth: "2005-06-15",
+  phone: "+91 98765 43210",
+  description:
+    "Dr. Amara Reyes is a highly experienced and board-certified gynecologist with over 10 years of dedicated practice in women's health, offering compassionate care and personalized treatment plans.",
+  address: "12th Floor, Horizon Tower, Ring Road",
+  city: "Surat",
+  pincode: "395009",
+  state: "Gujarat",
+  country: "India",
+  settingsStats: {
+    earnings: 700,
+    bookings: 3,
+    reviews: 12,
+  },
 };
 
 export function getProviderById(id) {

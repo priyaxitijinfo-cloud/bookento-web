@@ -15,6 +15,25 @@ export {
   useProviderProfileStore,
   useProviderSettingsStore,
 } from "./provider-profile.store";
+export {
+  useProviderServicesStore,
+  SERVICE_CATEGORIES,
+  SERVICE_DURATION_OPTIONS,
+  SAMPLE_PROVIDER_SERVICES,
+  emptyServiceForm,
+  serviceToForm,
+} from "./provider-services.store";
+export {
+  useProviderSlotsStore,
+  WEEKDAYS,
+  TIME_OPTIONS,
+  SESSION_TIMES,
+  SAMPLE_WEEKLY_SCHEDULES,
+  SAMPLE_HOLIDAYS,
+  emptySlotForm,
+  slotToForm,
+  slotCountLabel,
+} from "./provider-slots.store";
 export { useSettingsStore } from "./profile.store";
 export { useSavedProvidersStore } from "./saved-providers.store";
 export { useSavedReelsStore } from "./saved-reels.store";

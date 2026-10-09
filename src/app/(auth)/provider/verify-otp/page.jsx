@@ -102,6 +102,19 @@ function VerifyOtpForm() {
         toast.error(result.message || "Invalid OTP");
         return;
       }
+      if (result.blocked) {
+        toast.message(
+          result.status === "rejected"
+            ? "Documents were rejected. Please re-submit."
+            : "Document verification is still pending.",
+        );
+        router.push(
+          result.status === "rejected"
+            ? `${ROUTES.PROVIDER_REGISTRATION_STATUS}?status=rejected`
+            : ROUTES.PROVIDER_REGISTRATION_STATUS,
+        );
+        return;
+      }
       toast.success("Welcome back!");
       router.push(redirect || ROUTES.PROVIDER_HOME);
       return;

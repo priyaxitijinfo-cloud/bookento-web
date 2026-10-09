@@ -38,7 +38,11 @@ export const ROUTES = {
   PROVIDER_EARNINGS_TRANSACTIONS: "/provider/earnings/transactions",
   PROVIDER_EARNINGS_WALLET: "/provider/earnings/wallet",
   PROVIDER_SETTINGS: "/provider/settings",
+  PROVIDER_SETTINGS_PROFILE: "/provider/settings/profile",
   PROVIDER_SERVICES: "/provider/services",
+  PROVIDER_SERVICES_NEW: "/provider/services/new",
+  PROVIDER_SLOTS: "/provider/slots",
+  PROVIDER_SLOTS_NEW: "/provider/slots/new",
   PROVIDER_BRANCHES: "/provider/branches",
   PROVIDER_PACKAGES: "/provider/packages",
   PROVIDER_POSTS: "/provider/posts",
@@ -46,6 +50,7 @@ export const ROUTES = {
   PROVIDER_CATEGORIES: "/provider/categories",
   PROVIDER_RATINGS: "/provider/ratings",
   PROVIDER_PROFILE: "/provider/profile",
+  PROVIDER_PROFILE_EDIT: "/provider/profile/edit",
   PROVIDER_ANALYTICS: "/provider/analytics",
   PROVIDER_GALLERY: "/provider/gallery",
   PROVIDER_NOTIFICATIONS: "/provider/notifications",
@@ -217,4 +222,12 @@ export function providerEarningsTransactionsRoute() {
 
 export function providerEarningsWalletRoute() {
   return ROUTES.PROVIDER_EARNINGS_WALLET;
+}
+
+export function providerServiceEditRoute(id) {
+  return `${ROUTES.PROVIDER_SERVICES}/${id}/edit`;
+}
+
+export function providerSlotEditRoute(id) {
+  return `${ROUTES.PROVIDER_SLOTS}/${id}`;
 }

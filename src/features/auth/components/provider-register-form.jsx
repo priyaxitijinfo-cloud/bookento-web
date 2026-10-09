@@ -2,25 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useMemo, useRef, useState } from "react";
-import {
-  Activity,
-  Bone,
-  ChevronDown,
-  Eye,
-  FileText,
-  HeartPulse,
-  Plus,
-  Smile,
-  Stethoscope,
-  Wind,
-  X,
-} from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { ChevronDown, FileText, Plus, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { PasswordInput } from "@/components/forms/password-input";
 import { Calendar01Icon } from "@/components/icons/calendar01-icon";
+import { PageLoader } from "@/components/ui/skeleton";
 import {
   CountryCodePicker,
   PhoneNumberField,
@@ -34,7 +23,42 @@ import {
 } from "@/features/auth/components/provider-auth-shell";
 import { ProviderRegistrationStatusView } from "@/features/auth/components/provider-registration-status-view";
 import { ROUTES } from "@/constants/routes.constants";
+import { PROVIDER_STATUS } from "@/constants/status.constants";
+import { usePersistStoreHydration } from "@/hooks/use-persist-store-hydration";
+import { useProviderAuthStore } from "@/store";
 import { cn } from "@/lib/utils";
+
+function clampRegisterStep(step) {
+  const value = Number(step);
+  if (!Number.isFinite(value)) return 1;
+  return Math.min(TOTAL_STEPS, Math.max(1, Math.round(value)));
+}
+
+function formFromDraft(draft = {}, verification = null) {
+  return {
+    ...initialForm,
+    ownerName: draft.ownerName || "",
+    businessName: draft.businessName || "",
+    experience: draft.experience || "",
+    phone: draft.phone || "",
+    dob: draft.dob || "",
+    gender: draft.gender || "male",
+    email: draft.email || verification?.email || "",
+    password: draft.password || "",
+    address: draft.address || "",
+    city: draft.city || "",
+    pincode: draft.pincode || "",
+    state: draft.state || "",
+    country: draft.country || "India",
+    providerType: draft.providerType || "",
+    serviceCategory: draft.serviceCategory || "",
+    documents: {
+      businessLicense: null,
+      idProof: null,
+      addressProof: null,
+    },
+  };
+}
 
 const STATES = ["Gujarat", "Maharashtra", "Rajasthan", "Karnataka"];
 const COUNTRIES = ["India", "United States", "Canada", "United Kingdom", "Australia"];
@@ -99,13 +123,41 @@ const PROVIDER_TYPES = [
 ];
 
 const SERVICE_CATEGORIES = [
-  { id: "dental", title: "Dental Care", Icon: Smile },
-  { id: "diabetes", title: "Diabetes Care", Icon: Activity },
-  { id: "eye", title: "Eye Care", Icon: Eye },
-  { id: "general-physician", title: "General Physician", Icon: Stethoscope },
-  { id: "cardiology", title: "Cardiology", Icon: HeartPulse },
-  { id: "pulmonology", title: "Pulmonology", Icon: Wind },
-  { id: "orthopedics", title: "Orthopedics", Icon: Bone },
+  {
+    id: "dental",
+    title: "Dental Care",
+    icon: "/icons/categories/service/dental.png",
+  },
+  {
+    id: "diabetes",
+    title: "Diabetes Care",
+    icon: "/icons/categories/service/diabetes.png",
+  },
+  {
+    id: "eye",
+    title: "Eye Care",
+    icon: "/icons/categories/service/eye.png",
+  },
+  {
+    id: "general-physician",
+    title: "General Physician",
+    icon: "/icons/categories/service/general-physician.png",
+  },
+  {
+    id: "cardiology",
+    title: "Cardiology",
+    icon: "/icons/categories/service/cardiology.png",
+  },
+  {
+    id: "pulmonology",
+    title: "Pulmonology",
+    icon: "/icons/categories/service/pulmonology.png",
+  },
+  {
+    id: "orthopedics",
+    title: "Orthopedics",
+    icon: "/icons/categories/service/orthopedics.png",
+  },
 ];
 
 const initialForm = {
@@ -256,24 +308,24 @@ function ProviderTypeCards({ value, onChange }) {
             type="button"
             onClick={() => onChange(option.id)}
             className={cn(
-              "flex w-full items-center gap-3.5 rounded-2xl border bg-white px-3.5 py-3.5 text-left transition-colors",
+              "flex w-full items-center gap-3.5 rounded-2xl border px-3.5 py-3.5 text-left transition-colors",
               selected
-                ? "border-[#1865EA] shadow-[0_0_0_1px_rgba(24,101,234,0.12)]"
-                : "border-[#EEF1F6] shadow-[0_2px_10px_rgba(15,23,42,0.04)]",
+                ? "border-[#E6EFFC] bg-[#F2F6FC] shadow-none"
+                : "border-[#EEF1F6] bg-white shadow-[0_2px_10px_rgba(15,23,42,0.04)]",
             )}
           >
             <span
               className={cn(
-                "flex size-12 shrink-0 items-center justify-center rounded-xl",
+                "flex size-16 shrink-0 items-center justify-center rounded-lg border-2 border-white shadow-[0_1px_3px_rgba(15,23,42,0.06)]",
                 option.iconBg,
               )}
             >
               <Image
                 src={option.icon}
                 alt=""
-                width={28}
-                height={28}
-                className="size-7 object-contain"
+                width={38}
+                height={38}
+                className="size-[38px] object-contain"
               />
             </span>
             <span className="min-w-0 flex-1">
@@ -295,7 +347,7 @@ function ServiceCategoryCards({ value, onChange }) {
   return (
     <div className="space-y-3">
       <p className="text-[14px] font-semibold text-[#1E293B]">Select Category</p>
-      {SERVICE_CATEGORIES.map(({ id, title, Icon }) => {
+      {SERVICE_CATEGORIES.map(({ id, title, icon }) => {
         const selected = value === id;
         return (
           <button
@@ -303,14 +355,21 @@ function ServiceCategoryCards({ value, onChange }) {
             type="button"
             onClick={() => onChange(id)}
             className={cn(
-              "flex w-full items-center gap-3.5 rounded-2xl border bg-white px-3.5 py-3.5 text-left transition-colors",
+              "flex w-full items-center gap-3.5 rounded-2xl border px-3.5 py-3.5 text-left transition-colors",
               selected
-                ? "border-[#1865EA] shadow-[0_0_0_1px_rgba(24,101,234,0.12)]"
-                : "border-[#EEF1F6] shadow-[0_2px_10px_rgba(15,23,42,0.04)]",
+                ? "border-[#E6EFFC] bg-[#F2F6FC] shadow-none"
+                : "border-[#EEF1F6] bg-white shadow-[0_2px_10px_rgba(15,23,42,0.04)]",
             )}
           >
-            <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#EAF3FF] text-[#1865EA]">
-              <Icon className="size-6" strokeWidth={1.8} aria-hidden />
+            <span className="relative size-14 shrink-0 overflow-hidden rounded-xl">
+              <Image
+                src={icon}
+                alt=""
+                width={56}
+                height={56}
+                className="size-full object-cover"
+                unoptimized
+              />
             </span>
             <span className="min-w-0 flex-1 text-[15px] font-medium text-[#0F172A]">
               {title}
@@ -449,17 +508,85 @@ function DocumentUploadCard({ label, document, onUpload, onRemove }) {
   );
 }
 
-export function ProviderRegisterForm() {
+function ProviderRegisterFormContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isResubmit = searchParams.get("resubmit") === "1";
+  const hasHydrated = usePersistStoreHydration(useProviderAuthStore);
+
+  const {
+    submitRegistration,
+    resubmitRegistration,
+    enterProviderHome,
+    updateRegistrationDraft,
+    verificationApplication,
+    registrationDraft,
+    isLoading,
+  } = useProviderAuthStore();
+
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [coverPreview, setCoverPreview] = useState(null);
-  const [rejected] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [restored, setRestored] = useState(false);
   const { country, setCountryCode, pickerOpen, setPickerOpen } = useCountry("IN");
 
+  useEffect(() => {
+    if (!hasHydrated || restored) return;
+
+    const draft = useProviderAuthStore.getState().registrationDraft || {};
+    const verification = useProviderAuthStore.getState().verificationApplication;
+    const restoredForm = formFromDraft(draft, verification);
+
+    setForm(restoredForm);
+    setAvatarPreview(draft.avatarSrc || verification?.avatarSrc || null);
+    setCoverPreview(draft.coverSrc || null);
+
+    if (isResubmit) {
+      setStep(5);
+    } else if (verification?.status === PROVIDER_STATUS.PENDING && draft.step === 6) {
+      setStep(6);
+    } else {
+      setStep(clampRegisterStep(draft.step || 1));
+    }
+
+    setRestored(true);
+  }, [hasHydrated, restored, isResubmit]);
+
+  useEffect(() => {
+    if (!restored) return;
+    updateRegistrationDraft({
+      step,
+      ownerName: form.ownerName,
+      businessName: form.businessName,
+      experience: form.experience,
+      phone: form.phone,
+      dob: form.dob,
+      gender: form.gender,
+      email: form.email,
+      password: form.password,
+      address: form.address,
+      city: form.city,
+      pincode: form.pincode,
+      state: form.state,
+      country: form.country,
+      providerType: form.providerType,
+      serviceCategory: form.serviceCategory,
+      avatarSrc: avatarPreview || undefined,
+      coverSrc: coverPreview || undefined,
+    });
+  }, [restored, step, form, avatarPreview, coverPreview, updateRegistrationDraft]);
+
   const requestMeta = useMemo(() => {
+    if (verificationApplication?.requestId && !isResubmit) {
+      return {
+        date: verificationApplication.requestDate,
+        time: verificationApplication.requestTime,
+        id: verificationApplication.requestId,
+      };
+    }
     const now = new Date();
     return {
       date: now.toLocaleDateString("en-GB", {
@@ -473,7 +600,7 @@ export function ProviderRegisterForm() {
       }),
       id: `PR${String(now.getTime()).slice(-8).toUpperCase()}`,
     };
-  }, []);
+  }, [verificationApplication, isResubmit]);
 
   const update = (field, value) => setForm((prev) => ({ ...prev, [field]: value }));
 
@@ -546,12 +673,65 @@ export function ProviderRegisterForm() {
     return Object.keys(next).length === 0;
   };
 
-  const nextStep = () => {
+  const nextStep = async () => {
     if (!validateStep()) return;
+
+    if (step === 5) {
+      setSubmitting(true);
+      const payload = {
+        email: form.email.trim(),
+        name: form.ownerName.trim(),
+        ownerName: form.ownerName.trim(),
+        businessName: form.businessName.trim(),
+        category: selectedCategoryLabel,
+        avatarSrc: avatarPreview || "/images/app-icon.jpg",
+        phone: form.phone,
+        providerType: form.providerType,
+        serviceCategory: form.serviceCategory,
+        requestDate: requestMeta.date,
+        requestTime: requestMeta.time,
+        requestId: requestMeta.id,
+      };
+      updateRegistrationDraft(payload);
+
+      const result = isResubmit
+        ? await resubmitRegistration(payload)
+        : await submitRegistration(payload);
+
+      setSubmitting(false);
+      if (!result.success) {
+        toast.error("Could not submit documents. Try again.");
+        return;
+      }
+      toast.success(
+        isResubmit
+          ? "Documents re-submitted for verification"
+          : "Documents submitted for verification",
+      );
+      setStep(6);
+      return;
+    }
+
     if (step < TOTAL_STEPS) setStep((s) => s + 1);
   };
 
+  const handleGoToHome = async () => {
+    const result = await enterProviderHome();
+    if (!result.success) {
+      toast.error("Could not open provider home. Try again.");
+      return;
+    }
+    toast.success("Welcome to Bookento Pro");
+    router.push(ROUTES.PROVIDER_HOME);
+  };
+
   const shellTitles = titles[step];
+  const busy = submitting || isLoading;
+  const applicationStatus = verificationApplication?.status || PROVIDER_STATUS.PENDING;
+
+  if (!hasHydrated || !restored) {
+    return <PageLoader />;
+  }
 
   return (
     <>
@@ -563,10 +743,16 @@ export function ProviderRegisterForm() {
         copy="Create your provider profile, verify documents, and start receiving bookings."
         footer={
           step < TOTAL_STEPS ? (
-            <ProviderContinueButton onClick={nextStep}>Continue</ProviderContinueButton>
+            <ProviderContinueButton onClick={nextStep} disabled={busy}>
+              {busy
+                ? "Submitting..."
+                : step === 5 && isResubmit
+                  ? "Re-submit Documents"
+                  : "Continue"}
+            </ProviderContinueButton>
           ) : (
-            <ProviderContinueButton onClick={() => router.push(ROUTES.PROVIDER_LOGIN)}>
-              Back to Login
+            <ProviderContinueButton onClick={handleGoToHome} disabled={busy}>
+              {busy ? "Opening..." : "Go to Home"}
             </ProviderContinueButton>
           )
         }
@@ -789,14 +975,21 @@ export function ProviderRegisterForm() {
 
         {step === 6 ? (
           <ProviderRegistrationStatusView
-            rejected={rejected}
-            avatarSrc={avatarPreview || "/images/app-icon.jpg"}
-            name={form.ownerName || "Provider"}
-            businessName={form.businessName || "Business"}
+            status={applicationStatus}
+            avatarSrc={
+              avatarPreview ||
+              verificationApplication?.avatarSrc ||
+              "/images/app-icon.jpg"
+            }
+            name={form.ownerName || verificationApplication?.name || "Provider"}
+            businessName={
+              form.businessName || verificationApplication?.businessName || "Business"
+            }
             category={selectedCategoryLabel}
             requestDate={requestMeta.date}
             requestTime={requestMeta.time}
             requestId={requestMeta.id}
+            rejectionReason={verificationApplication?.rejectionReason}
           />
         ) : null}
       </ProviderAuthResponsive>
@@ -808,5 +1001,13 @@ export function ProviderRegisterForm() {
         onSelect={setCountryCode}
       />
     </>
+  );
+}
+
+export function ProviderRegisterForm() {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <ProviderRegisterFormContent />
+    </Suspense>
   );
 }
