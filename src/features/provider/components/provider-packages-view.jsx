@@ -5,16 +5,32 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ArrowLeft, Check, MoreVertical, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { ROUTES, providerPackageEditRoute } from "@/constants/routes.constants";
+import {
+  PROVIDER_DESKTOP_GRID,
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
 import {
   getSavePercent,
   useProviderPackagesStore,
 } from "@/store/provider-packages.store";
 import { formatCurrency } from "@/utils/format.utils";
+
+function PackIcon({ src, className, alt = "" }) {
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={cn("object-contain", className)}
+      draggable={false}
+    />
+  );
+}
 
 const THEME_STYLES = {
   pink: {
@@ -44,16 +60,15 @@ function PackagesEmptyIllustration() {
       <span className="absolute top-12 right-14 size-1 rounded-full bg-[#60A5FA]" />
       <span className="absolute top-20 left-16 size-1 rounded-full bg-[#BFDBFE]" />
       <span className="absolute right-10 bottom-32 size-1.5 rounded-full bg-[#93C5FD]" />
+      <span className="absolute top-10 right-20 text-[10px] text-[#93C5FD]">✦</span>
 
-      {/* Paper plane */}
       <div className="absolute top-8 right-8 rotate-12 text-[#60A5FA]">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
         </svg>
         <span className="absolute -bottom-3 -left-4 h-6 w-10 border-t border-dashed border-[#93C5FD]" />
       </div>
 
-      {/* Plant */}
       <div className="absolute bottom-12 left-2 flex flex-col items-center">
         <div className="mb-0.5 flex items-end gap-0.5">
           <span className="h-5 w-2.5 rounded-t-full bg-[#4ADE80]" />
@@ -63,7 +78,6 @@ function PackagesEmptyIllustration() {
         <div className="h-5 w-7 rounded-b-lg bg-[#93C5FD]" />
       </div>
 
-      {/* Document card */}
       <div className="relative z-10 mb-8 drop-shadow-md">
         <div className="w-[7.5rem] overflow-hidden rounded-2xl border border-[#E2E8F0] bg-white shadow-sm">
           <div className="space-y-1.5 px-3 pt-4 pb-2">
@@ -77,26 +91,20 @@ function PackagesEmptyIllustration() {
             </span>
           </div>
         </div>
-
-        {/* Check badge */}
         <span className="absolute -top-3 left-1/2 flex size-8 -translate-x-1/2 items-center justify-center rounded-full bg-[#1865EA] text-white shadow-md">
-          <Check className="size-4" strokeWidth={3} />
+          <PackIcon src={PROVIDER_ICONS.check} className="size-4 brightness-0 invert" />
         </span>
       </div>
 
-      {/* Bell */}
       <div className="absolute top-16 right-6">
-        <span className="relative flex size-9 items-center justify-center rounded-full bg-[#1865EA] text-white shadow-md">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm6-6V11a6 6 0 1 0-12 0v5l-2 2v1h16v-1l-2-2z" />
-          </svg>
+        <span className="relative flex size-9 items-center justify-center rounded-full bg-[#1865EA] shadow-md">
+          <PackIcon src={PROVIDER_ICONS.bell} className="size-4 brightness-0 invert" />
           <span className="absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-[#EF4444] text-[8px] font-bold text-white">
             1
           </span>
         </span>
       </div>
 
-      {/* Coins */}
       <div className="absolute right-10 bottom-10">
         <div className="relative">
           <span className="block size-8 rounded-full border-2 border-[#F59E0B] bg-[#FBBF24] shadow-sm" />
@@ -105,10 +113,9 @@ function PackagesEmptyIllustration() {
         </div>
       </div>
 
-      {/* Shield */}
       <div className="absolute right-4 bottom-20">
-        <span className="flex size-8 items-center justify-center rounded-lg bg-[#1865EA] text-white shadow-md">
-          <Check className="size-4" strokeWidth={3} />
+        <span className="flex size-8 items-center justify-center rounded-lg bg-[#1865EA] shadow-md">
+          <PackIcon src={PROVIDER_ICONS.check} className="size-4 brightness-0 invert" />
         </span>
       </div>
     </div>
@@ -156,10 +163,13 @@ function DeletePackageModal({ open, onClose, onConfirm }) {
             +
           </span>
           <span className="absolute right-0 bottom-3 size-1.5 rounded-full bg-[#FCA5A5]" />
-          <span className="flex size-16 items-center justify-center rounded-full bg-[#FEE2E2]">
-            <span className="flex size-12 items-center justify-center rounded-full bg-[#EF4444] text-white shadow-sm">
-              <Trash2 className="size-5" strokeWidth={2.2} />
-            </span>
+          <span className="absolute inset-0 rounded-full bg-[#FEE2E2]/70" />
+          <span className="absolute inset-2 rounded-full bg-[#FECACA]/80" />
+          <span className="relative flex size-14 items-center justify-center rounded-full bg-[#EF4444] shadow-sm">
+            <PackIcon
+              src={PROVIDER_ICONS.trashRed}
+              className="size-6 brightness-0 invert"
+            />
           </span>
         </div>
 
@@ -240,11 +250,11 @@ function PackageCard({ pkg, onEdit, onDelete }) {
               <button
                 type="button"
                 onClick={() => setMenuOpen((v) => !v)}
-                className="flex size-8 items-center justify-center rounded-full bg-[#E8F1FF] text-[#64748B] transition-colors hover:bg-[#D6E6FF]"
+                className="flex size-8 items-center justify-center rounded-lg bg-[#E8F1FF] transition-colors hover:bg-[#D6E6FF]"
                 aria-label="Package actions"
                 aria-expanded={menuOpen}
               >
-                <MoreVertical className="size-4" />
+                <PackIcon src={PROVIDER_ICONS.more} className="size-4" />
               </button>
               {menuOpen ? (
                 <div className="absolute top-full right-0 z-20 mt-1.5 min-w-[8.5rem] overflow-hidden rounded-xl border border-[#EEF1F6] bg-white py-1 shadow-[0_8px_24px_rgba(15,23,42,0.12)]">
@@ -256,9 +266,13 @@ function PackageCard({ pkg, onEdit, onDelete }) {
                       onEdit(pkg);
                     }}
                   >
-                    <Pencil className="size-3.5 text-[#64748B]" />
+                    <PackIcon
+                      src={PROVIDER_ICONS.edit}
+                      className="size-3.5 opacity-70"
+                    />
                     Edit
                   </button>
+                  <div className="mx-3 border-t border-[#EEF1F6]" />
                   <button
                     type="button"
                     className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-sm font-medium text-[#0F172A] hover:bg-[#F8FAFF]"
@@ -267,7 +281,10 @@ function PackageCard({ pkg, onEdit, onDelete }) {
                       onDelete(pkg);
                     }}
                   >
-                    <Trash2 className="size-3.5 text-[#64748B]" />
+                    <PackIcon
+                      src={PROVIDER_ICONS.trash}
+                      className="size-3.5 opacity-70"
+                    />
                     Delete
                   </button>
                 </div>
@@ -281,11 +298,14 @@ function PackageCard({ pkg, onEdit, onDelete }) {
                 <li key={feature} className="flex items-start gap-1.5">
                   <span
                     className={cn(
-                      "mt-0.5 flex size-3.5 shrink-0 items-center justify-center rounded-full text-white",
+                      "mt-0.5 flex size-3.5 shrink-0 items-center justify-center rounded-full",
                       theme.check,
                     )}
                   >
-                    <Check className="size-2.5" strokeWidth={3} />
+                    <PackIcon
+                      src={PROVIDER_ICONS.check}
+                      className="size-2.5 brightness-0 invert"
+                    />
                   </span>
                   <span className="text-[11.5px] leading-snug text-[#64748B]">
                     {feature}
@@ -338,41 +358,44 @@ export function ProviderPackagesView() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F7FF]">
       <header className="sticky top-0 z-30 shrink-0 border-b border-[#E8EEF8] bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 max-w-3xl items-center gap-1 px-3 lg:px-6">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <button
             type="button"
             onClick={() => router.back()}
             className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-[#F4F7FF]"
             aria-label="Back"
           >
-            <ArrowLeft className="size-5" />
+            <PackIcon src={PROVIDER_ICONS.arrowLeft} className="size-5" />
           </button>
           <h1 className="flex-1 truncate text-[17px] font-bold text-[#111827]">
             Packages
           </h1>
           <Link
             href={ROUTES.PROVIDER_PACKAGES_NEW}
-            className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#1865EA] text-white shadow-sm transition-opacity hover:opacity-90"
+            className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#1865EA] shadow-sm transition-opacity hover:opacity-90"
             aria-label="Add package"
           >
-            <Plus className="size-5" strokeWidth={2.4} />
+            <PackIcon
+              src={PROVIDER_ICONS.plus}
+              className="size-5 brightness-0 invert"
+            />
           </Link>
         </div>
       </header>
 
       <main className="min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-3xl px-4 py-4 lg:px-6 lg:py-6">
+        <div className={cn(PROVIDER_PAGE_SHELL, "py-4 lg:py-6")}>
           {isEmpty ? (
             <div className="flex min-h-[calc(100dvh-8rem)] flex-col items-center justify-center px-4 pb-16 text-center">
               <PackagesEmptyIllustration />
-              <h2 className="text-xl font-bold text-[#0F172A]">No Packages Yet</h2>
+              <h2 className="text-xl font-bold text-[#0F172A]">Not Packages Yet</h2>
               <p className="mt-2 max-w-xs text-[13.5px] leading-relaxed text-[#94A3B8]">
                 You don&apos;t have any upcoming Service. Let&apos;s schedule your first
                 appointment.
               </p>
             </div>
           ) : (
-            <div className="space-y-3.5">
+            <div className={cn(PROVIDER_DESKTOP_GRID, "gap-3.5")}>
               {list.map((pkg) => (
                 <PackageCard
                   key={pkg.id}

@@ -3,11 +3,15 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import { isToday, isValid, isYesterday, parseISO } from "date-fns";
-import { ArrowLeft, Bell } from "lucide-react";
-
 import { NotificationItem } from "@/components/notifications/notification-item";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { ROUTES } from "@/constants/routes.constants";
+import {
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { useNotificationStore } from "@/store";
+import { cn } from "@/lib/utils";
 
 function getDaySection(date) {
   const parsed = typeof date === "string" ? parseISO(date) : date;
@@ -44,26 +48,36 @@ export function ProviderNotificationsView() {
   return (
     <>
       <header className="sticky top-0 z-30 border-b border-[#E8EEF8] bg-[#F4F7FF]/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 max-w-3xl items-center gap-2 px-4 lg:px-6">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <Link
             href={ROUTES.PROVIDER_HOME}
             className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-white/80"
             aria-label="Back"
           >
-            <ArrowLeft className="size-5" />
+            <img
+              src={PROVIDER_ICONS.arrowLeft}
+              alt=""
+              className="size-5 object-contain"
+              draggable={false}
+            />
           </Link>
-          <h1 className="flex-1 truncate pr-10 text-center text-lg font-bold text-[#111827]">
+          <h1 className="flex-1 truncate text-[17px] font-bold text-[#111827]">
             Notification
           </h1>
         </div>
       </header>
 
       <main className="flex-1 overflow-y-auto bg-[#F4F7FF]">
-        <div className="mx-auto w-full max-w-3xl pb-6 lg:px-6 lg:pt-2">
+        <div className={cn(PROVIDER_PAGE_SHELL, "pb-6 max-lg:!px-0 lg:pt-2")}>
           {!hasItems ? (
             <div className="px-4 pt-12 text-center">
               <div className="bg-card mx-auto mb-3 flex size-14 items-center justify-center rounded-full">
-                <Bell className="text-muted-foreground size-6" />
+                <img
+                  src={PROVIDER_ICONS.bell}
+                  alt=""
+                  className="size-6 object-contain opacity-60"
+                  draggable={false}
+                />
               </div>
               <p className="font-semibold text-[#111827]">No notifications</p>
               <p className="text-muted-foreground mt-1 text-sm">
@@ -78,7 +92,7 @@ export function ProviderNotificationsView() {
 
                 return (
                   <section key={key}>
-                    <h2 className="text-muted-foreground px-4 pt-4 pb-1 text-[11px] font-semibold tracking-wider uppercase md:px-5 md:pt-5 md:text-xs">
+                    <h2 className="px-4 pt-4 pb-1 text-[11px] font-semibold tracking-wider text-[#9CA3AF] uppercase md:px-5 md:pt-5 md:text-xs">
                       {SECTION_LABELS[key]}
                     </h2>
                     <ul>

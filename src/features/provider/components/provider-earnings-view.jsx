@@ -1,11 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Building2, Download, LayoutGrid } from "lucide-react";
-
 import {
   DownloadReportModal,
   EarningsEmptyIllustration,
@@ -14,16 +11,23 @@ import {
   ProviderTransactionCard,
   ServiceBookingChart,
 } from "@/features/provider/components/provider-earnings-shared";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import {
   providerEarningsTransactionsRoute,
   providerEarningsWalletRoute,
 } from "@/constants/routes.constants";
+import {
+  PROVIDER_DESKTOP_GRID,
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { earningsChartPeriods, earningsSummary } from "@/mock/earnings";
 import { payouts } from "@/mock/payouts";
 import { transactions } from "@/mock/transactions";
+import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/format.utils";
 
-function SummaryCard({ amount, label, trend, tone }) {
+function SummaryCard({ amount, label, trend, tone, iconSrc }) {
   const tones = {
     earnings: {
       card: "bg-[#FFF0F3]",
@@ -48,13 +52,11 @@ function SummaryCard({ amount, label, trend, tone }) {
       <div
         className={`mb-3 flex size-9 items-center justify-center rounded-xl ${styles.iconWrap}`}
       >
-        <Image
-          src="/icons/wallet.png"
+        <img
+          src={iconSrc}
           alt=""
-          width={20}
-          height={20}
-          className="brightness-0 invert"
-          unoptimized
+          className="size-4 object-contain brightness-0 invert"
+          draggable={false}
         />
       </div>
       <p className="text-xl font-bold tracking-tight text-[#111827]">
@@ -96,7 +98,12 @@ function WithdrawBanner({ amount }) {
           </p>
         </div>
         <span className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-white px-3.5 py-2.5 text-sm font-semibold text-[#1865EA] shadow-sm">
-          <Building2 className="size-4" />
+          <img
+            src={PROVIDER_ICONS.bank}
+            alt=""
+            className="size-4 object-contain"
+            draggable={false}
+          />
           Withdraw
         </span>
       </div>
@@ -122,16 +129,21 @@ export function ProviderEarningsView() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F7FF]">
       <header className="sticky top-0 z-30 shrink-0 border-b border-[#E8EEF8] bg-[#F4F7FF]/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 max-w-3xl items-center gap-2 px-4 lg:px-6">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <h1 className="flex-1 truncate text-lg font-bold text-[#111827]">
             Your Earnings
           </h1>
           <button
             type="button"
-            className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#1865EA] shadow-[0_2px_8px_rgba(15,23,42,0.06)] transition-colors hover:bg-[#F8FAFC]"
+            className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#E8F1FF] transition-colors hover:bg-[#D6E6FF]"
             aria-label="Calendar"
           >
-            <LayoutGrid className="size-5" />
+            <img
+              src={PROVIDER_ICONS.calendarBlue}
+              alt=""
+              className="size-5 object-contain"
+              draggable={false}
+            />
           </button>
           <button
             type="button"
@@ -139,13 +151,18 @@ export function ProviderEarningsView() {
             className="flex size-10 shrink-0 items-center justify-center rounded-xl text-[#111827] transition-colors hover:bg-white/80"
             aria-label="Download report"
           >
-            <Download className="size-5" />
+            <img
+              src={PROVIDER_ICONS.download}
+              alt=""
+              className="size-5 object-contain"
+              draggable={false}
+            />
           </button>
         </div>
       </header>
 
       <main className="min-h-0 flex-1 overflow-y-auto bg-[#F4F7FF]">
-        <div className="mx-auto w-full max-w-3xl px-4 pt-4 pb-6 lg:px-6">
+        <div className={cn(PROVIDER_PAGE_SHELL, "pt-4 pb-6")}>
           {!hasEarnings ? (
             <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
               <EarningsEmptyIllustration variant="earnings" />
@@ -157,54 +174,66 @@ export function ProviderEarningsView() {
             </div>
           ) : (
             <div className="space-y-5">
-              <div className="grid grid-cols-2 gap-3">
-                <SummaryCard
-                  amount={summary.totalEarnings}
-                  label="Your Earnings"
-                  trend={summary.earningsTrend}
-                  tone="earnings"
-                />
-                <SummaryCard
-                  amount={summary.pendingSettlement}
-                  label="Pending Settlement"
-                  trend={summary.settlementTrend}
-                  tone="pending"
-                />
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_minmax(240px,320px)] lg:items-stretch lg:gap-6">
+                <div className="grid grid-cols-2 gap-3">
+                  <SummaryCard
+                    amount={summary.totalEarnings}
+                    label="Your Earnings"
+                    trend={summary.earningsTrend}
+                    tone="earnings"
+                    iconSrc={PROVIDER_ICONS.handMoney}
+                  />
+                  <SummaryCard
+                    amount={summary.pendingSettlement}
+                    label="Pending Settlement"
+                    trend={summary.settlementTrend}
+                    tone="pending"
+                    iconSrc={PROVIDER_ICONS.walletPending}
+                  />
+                </div>
+
+                <WithdrawBanner amount={summary.availableBalance} />
               </div>
 
-              <WithdrawBanner amount={summary.availableBalance} />
-
-              <ServiceBookingChart
-                data={summary.serviceBookingChart}
-                periodLabel={period.label}
-                periods={earningsChartPeriods}
-                onPeriodChange={setPeriod}
-                activeIndex={chartActiveIndex}
-              />
-
-              <section>
-                <EarningsSectionHeader
-                  title="Recent Transactions"
-                  href={providerEarningsTransactionsRoute()}
+              <div className={PROVIDER_DESKTOP_GRID}>
+                <ServiceBookingChart
+                  data={summary.serviceBookingChart}
+                  periodLabel={period.label}
+                  periods={earningsChartPeriods}
+                  onPeriodChange={setPeriod}
+                  activeIndex={chartActiveIndex}
                 />
-                <div className="space-y-3">
-                  {recentTransactions.map((txn) => (
-                    <ProviderTransactionCard key={txn.id} transaction={txn} compact />
-                  ))}
-                </div>
-              </section>
 
-              <section>
-                <EarningsSectionHeader
-                  title="Payout History"
-                  href={providerEarningsTransactionsRoute()}
-                />
-                <div className="space-y-3">
-                  {recentPayouts.map((payout) => (
-                    <ProviderPayoutCard key={payout.id} payout={payout} />
-                  ))}
+                <div className="space-y-5">
+                  <section>
+                    <EarningsSectionHeader
+                      title="Recent Transactions"
+                      href={providerEarningsTransactionsRoute()}
+                    />
+                    <div className="space-y-3">
+                      {recentTransactions.map((txn) => (
+                        <ProviderTransactionCard
+                          key={txn.id}
+                          transaction={txn}
+                          compact
+                        />
+                      ))}
+                    </div>
+                  </section>
+
+                  <section>
+                    <EarningsSectionHeader
+                      title="Payout History"
+                      href={providerEarningsTransactionsRoute()}
+                    />
+                    <div className="space-y-3">
+                      {recentPayouts.map((payout) => (
+                        <ProviderPayoutCard key={payout.id} payout={payout} />
+                      ))}
+                    </div>
+                  </section>
                 </div>
-              </section>
+              </div>
             </div>
           )}
         </div>

@@ -4,23 +4,29 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import {
-  ArrowLeft,
-  CalendarDays,
-  Home,
-  MoreVertical,
-  Pencil,
-  Percent,
-  Plus,
-  Trash2,
-  Video,
-} from "lucide-react";
 import { toast } from "sonner";
 
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { ROUTES, providerServiceEditRoute } from "@/constants/routes.constants";
+import {
+  PROVIDER_DESKTOP_GRID,
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
 import { useProviderServicesStore } from "@/store/provider-services.store";
 import { formatCurrency, formatDate } from "@/utils/format.utils";
+
+function PackIcon({ src, className, alt = "" }) {
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={cn("object-contain", className)}
+      draggable={false}
+    />
+  );
+}
 
 function getOfferLabel(service) {
   if (service.discountType === "percent" && service.discountValue > 0) {
@@ -55,8 +61,8 @@ function ServicesEmptyIllustration() {
       <span className="absolute top-10 right-10 size-1 rounded-full bg-[#60A5FA]" />
       <span className="absolute top-16 left-14 size-1 rounded-full bg-[#BFDBFE]" />
       <span className="absolute right-12 bottom-28 size-1.5 rounded-full bg-[#93C5FD]" />
+      <span className="absolute top-8 right-16 text-[10px] text-[#93C5FD]">✦</span>
 
-      {/* Plant */}
       <div className="absolute bottom-10 left-3 flex flex-col items-center">
         <div className="mb-0.5 flex items-end gap-0.5">
           <span className="h-5 w-2.5 rounded-t-full bg-[#4ADE80]" />
@@ -66,7 +72,6 @@ function ServicesEmptyIllustration() {
         <div className="h-5 w-7 rounded-b-lg bg-[#93C5FD]" />
       </div>
 
-      {/* Calendar */}
       <div className="relative z-10 mb-6 drop-shadow-md">
         <div className="w-[7.25rem] overflow-hidden rounded-2xl border-[3px] border-[#1865EA] bg-white shadow-sm">
           <div className="flex h-7 items-center justify-center gap-3 bg-[#1865EA]">
@@ -89,7 +94,6 @@ function ServicesEmptyIllustration() {
         </div>
       </div>
 
-      {/* Chair */}
       <div className="absolute right-2 bottom-8">
         <div className="relative">
           <div className="h-10 w-14 rounded-t-2xl bg-[#5B8DEF]" />
@@ -104,7 +108,7 @@ function ServicesEmptyIllustration() {
   );
 }
 
-function AttrTile({ icon: Icon, iconWrap, label, value }) {
+function AttrTile({ iconSrc, iconWrap, label, value }) {
   return (
     <div className="flex min-w-0 items-start gap-2.5">
       <span
@@ -113,7 +117,7 @@ function AttrTile({ icon: Icon, iconWrap, label, value }) {
           iconWrap,
         )}
       >
-        <Icon className="size-4" strokeWidth={2} />
+        <PackIcon src={iconSrc} className="size-4" />
       </span>
       <div className="min-w-0">
         <p className="text-[11px] font-medium text-[#94A3B8]">{label}</p>
@@ -180,11 +184,11 @@ function ServiceCard({ service, onEdit, onDelete }) {
           <button
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
-            className="flex size-8 items-center justify-center rounded-full bg-[#F4F7FF] text-[#64748B] transition-colors hover:bg-[#E8F1FF]"
+            className="flex size-8 items-center justify-center rounded-lg bg-[#E8F1FF] transition-colors hover:bg-[#D6E6FF]"
             aria-label="Service actions"
             aria-expanded={menuOpen}
           >
-            <MoreVertical className="size-4" />
+            <PackIcon src={PROVIDER_ICONS.more} className="size-4" />
           </button>
           {menuOpen ? (
             <div className="absolute top-full right-0 z-20 mt-1.5 min-w-[8.5rem] overflow-hidden rounded-xl border border-[#EEF1F6] bg-white py-1 shadow-[0_8px_24px_rgba(15,23,42,0.12)]">
@@ -196,9 +200,10 @@ function ServiceCard({ service, onEdit, onDelete }) {
                   onEdit(service);
                 }}
               >
-                <Pencil className="size-3.5 text-[#64748B]" />
+                <PackIcon src={PROVIDER_ICONS.edit} className="size-3.5 opacity-70" />
                 Edit
               </button>
+              <div className="mx-3 border-t border-[#EEF1F6]" />
               <button
                 type="button"
                 className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-sm font-medium text-[#0F172A] hover:bg-[#F8FAFF]"
@@ -207,7 +212,7 @@ function ServiceCard({ service, onEdit, onDelete }) {
                   onDelete(service);
                 }}
               >
-                <Trash2 className="size-3.5 text-[#64748B]" />
+                <PackIcon src={PROVIDER_ICONS.trash} className="size-3.5 opacity-70" />
                 Delete
               </button>
             </div>
@@ -217,14 +222,14 @@ function ServiceCard({ service, onEdit, onDelete }) {
 
       <div className="grid grid-cols-2 gap-x-3 gap-y-3 border-t border-[#EEF1F6] px-3.5 py-3">
         <AttrTile
-          icon={CalendarDays}
-          iconWrap="bg-[#FFE4EC] text-[#E91E63]"
+          iconSrc={PROVIDER_ICONS.calendarPink}
+          iconWrap="bg-[#FFE4EC]"
           label="Available From"
           value={formatOfferRange(service.offerStart, service.offerEnd)}
         />
         <AttrTile
-          icon={Video}
-          iconWrap="bg-[#E8F1FF] text-[#1865EA]"
+          iconSrc={PROVIDER_ICONS.video}
+          iconWrap="bg-[#E8F1FF]"
           label="Online"
           value={
             service.online
@@ -233,14 +238,14 @@ function ServiceCard({ service, onEdit, onDelete }) {
           }
         />
         <AttrTile
-          icon={Home}
-          iconWrap="bg-[#FFE4EC] text-[#EC407A]"
+          iconSrc={PROVIDER_ICONS.homePink}
+          iconWrap="bg-[#FFE4EC]"
           label="Home Visit"
           value={service.atHome ? formatCurrency(service.travelFee || 0) : "—"}
         />
         <AttrTile
-          icon={Percent}
-          iconWrap="bg-[#F3E8FF] text-[#9333EA]"
+          iconSrc={PROVIDER_ICONS.offers}
+          iconWrap="bg-[#F3E8FF]"
           label="Offer"
           value={offer || "—"}
         />
@@ -267,41 +272,44 @@ export function ProviderServicesView() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F7FF]">
       <header className="sticky top-0 z-30 shrink-0 border-b border-[#E8EEF8] bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 max-w-3xl items-center gap-1 px-3 lg:px-6">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <button
             type="button"
             onClick={() => router.back()}
             className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-[#F4F7FF]"
             aria-label="Back"
           >
-            <ArrowLeft className="size-5" />
+            <PackIcon src={PROVIDER_ICONS.arrowLeft} className="size-5" />
           </button>
-          <h1 className="flex-1 truncate text-center text-lg font-bold text-[#111827]">
+          <h1 className="flex-1 truncate text-[17px] font-bold text-[#111827]">
             My Services
           </h1>
           <Link
             href={ROUTES.PROVIDER_SERVICES_NEW}
-            className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#1865EA] text-white shadow-sm transition-opacity hover:opacity-90"
+            className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#1865EA] shadow-sm transition-opacity hover:opacity-90"
             aria-label="Add service"
           >
-            <Plus className="size-5" strokeWidth={2.4} />
+            <PackIcon
+              src={PROVIDER_ICONS.plus}
+              className="size-5 brightness-0 invert"
+            />
           </Link>
         </div>
       </header>
 
       <main className="min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-3xl px-4 py-4 lg:px-6 lg:py-6">
+        <div className={cn(PROVIDER_PAGE_SHELL, "py-4 lg:py-6")}>
           {isEmpty ? (
             <div className="flex min-h-[calc(100dvh-8rem)] flex-col items-center justify-center px-4 pb-16 text-center">
               <ServicesEmptyIllustration />
-              <h2 className="text-xl font-bold text-[#0F172A]">No Services Yet</h2>
+              <h2 className="text-xl font-bold text-[#0F172A]">Not Service Yet</h2>
               <p className="mt-2 max-w-xs text-[13.5px] leading-relaxed text-[#94A3B8]">
-                You don&apos;t have any services yet. Add your first service to get
-                started.
+                You don&apos;t have any upcoming Service. Let&apos;s schedule your first
+                appointment.
               </p>
             </div>
           ) : (
-            <div className="space-y-3.5">
+            <div className={cn(PROVIDER_DESKTOP_GRID, "gap-3.5")}>
               {list.map((service) => (
                 <ServiceCard
                   key={service.id}

@@ -19,6 +19,20 @@ export const PAGE_SHELL_CLASS_SURFACE =
 export const PROVIDER_MAIN_CLASS =
   "mx-auto flex w-full max-w-7xl flex-1 flex-col space-y-6 overflow-y-auto p-4 lg:p-6";
 
+/**
+ * Provider mobile-first page shell — matches ~390px screenshot padding on phones,
+ * then expands into a professional desktop content width beside the sidebar.
+ */
+export const PROVIDER_PAGE_SHELL = "mx-auto w-full max-w-lg px-4 lg:max-w-6xl lg:px-8";
+
+/** Sticky mobile page header row used across provider screens */
+export const PROVIDER_MOBILE_HEADER =
+  "mx-auto flex h-14 w-full max-w-lg items-center gap-2 px-4 lg:max-w-6xl lg:px-8";
+
+/** Two-column desktop content (lists / dashboards) */
+export const PROVIDER_DESKTOP_GRID =
+  "grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6 xl:gap-8";
+
 /** Sticky desktop header stack (logo + optional breadcrumb) */
 export const DESKTOP_STICKY_HEADER_CLASS = "sticky top-0 z-30 hidden shrink-0 md:block";
 

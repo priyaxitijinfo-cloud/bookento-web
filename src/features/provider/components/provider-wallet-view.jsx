@@ -3,11 +3,15 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 
 import { VerifiedCheck } from "@/features/provider/components/provider-earnings-shared";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { ROUTES } from "@/constants/routes.constants";
+import {
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { earningsSummary, paymentGateways } from "@/mock/earnings";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/format.utils";
@@ -54,13 +58,18 @@ export function ProviderWalletView() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F7FF]">
       <header className="sticky top-0 z-30 shrink-0 border-b border-[#E8EEF8] bg-[#F4F7FF]/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 max-w-3xl items-center gap-2 px-4 lg:px-6">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <Link
             href={ROUTES.PROVIDER_EARNINGS}
             className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-white/80"
             aria-label="Back"
           >
-            <ArrowLeft className="size-5" />
+            <img
+              src={PROVIDER_ICONS.arrowLeft}
+              alt=""
+              className="size-5 object-contain"
+              draggable={false}
+            />
           </Link>
           <h1 className="flex-1 truncate text-lg font-bold text-[#111827]">
             My Wallet
@@ -72,7 +81,7 @@ export function ProviderWalletView() {
       <main className="min-h-0 flex-1 overflow-y-auto bg-[#F4F7FF]">
         <form
           onSubmit={handleWithdraw}
-          className="mx-auto flex min-h-full w-full max-w-3xl flex-col px-4 pt-4 lg:px-6"
+          className={cn(PROVIDER_PAGE_SHELL, "flex min-h-full flex-col pt-4")}
         >
           <div className="relative isolate mb-6 overflow-hidden rounded-2xl bg-gradient-to-r from-[#1865EA] to-[#0B3FA8] p-4 shadow-[0_8px_24px_rgba(24,101,234,0.28)]">
             <div
@@ -123,8 +132,8 @@ export function ProviderWalletView() {
               >
                 Enter Amount
               </label>
-              <div className="flex h-12 overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
-                <span className="flex size-12 shrink-0 items-center justify-center bg-[#1865EA] text-lg font-bold text-white">
+              <div className="flex h-12 overflow-hidden rounded-xl border border-[#E5E7EB] bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04)]">
+                <span className="flex size-12 shrink-0 items-center justify-center rounded-l-xl bg-[#1865EA] text-lg font-bold text-white">
                   ₹
                 </span>
                 <input
@@ -146,12 +155,12 @@ export function ProviderWalletView() {
 
             <div className="relative">
               <label className="mb-2 block text-sm font-semibold text-[#111827]">
-                Select Payment Gateway
+                Select Payment Getway
               </label>
               <button
                 type="button"
                 onClick={() => setGatewayOpen((open) => !open)}
-                className="flex h-12 w-full items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-3 text-left transition-colors hover:bg-[#F8FAFC]"
+                className="flex h-12 w-full items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-3 text-left shadow-[0_2px_8px_rgba(15,23,42,0.04)] transition-colors hover:bg-[#F8FAFC]"
               >
                 <span className="flex size-8 items-center justify-center rounded-lg bg-[#F1F5F9] text-sm font-bold text-[#1865EA]">
                   {selectedGateway?.logo}
@@ -159,11 +168,14 @@ export function ProviderWalletView() {
                 <span className="flex-1 text-sm font-semibold text-[#111827]">
                   {selectedGateway?.label}
                 </span>
-                <ChevronDown
+                <img
+                  src={PROVIDER_ICONS.chevronDown}
+                  alt=""
                   className={cn(
-                    "size-4 text-[#94A3B8] transition-transform",
+                    "size-4 object-contain opacity-50 transition-transform",
                     gatewayOpen && "rotate-180",
                   )}
+                  draggable={false}
                 />
               </button>
               {gatewayOpen ? (
@@ -218,7 +230,7 @@ export function ProviderWalletView() {
             <button
               type="submit"
               disabled={submitting}
-              className="h-12 w-full rounded-xl bg-[#1865EA] text-base font-semibold text-white shadow-[0_8px_20px_rgba(24,101,234,0.3)] transition-opacity hover:opacity-95 disabled:opacity-60"
+              className="h-12 w-full rounded-xl bg-gradient-to-r from-[#1865EA] to-[#3B82F6] text-base font-semibold text-white shadow-[0_8px_20px_rgba(24,101,234,0.3)] transition-opacity hover:opacity-95 disabled:opacity-60"
             >
               Withdraw
             </button>

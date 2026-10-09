@@ -3,23 +3,31 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import {
-  ArrowLeft,
-  CalendarDays,
-  Clock3,
-  MoreVertical,
-  Pencil,
-  Plus,
-  Trash2,
-} from "lucide-react";
 import { toast } from "sonner";
 
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { ROUTES, providerSlotEditRoute } from "@/constants/routes.constants";
+import {
+  PROVIDER_DESKTOP_GRID,
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
 import { slotCountLabel, useProviderSlotsStore } from "@/store/provider-slots.store";
 import { formatDate } from "@/utils/format.utils";
 
 const REASON_MAX = 500;
+
+function PackIcon({ src, className, alt = "" }) {
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={cn("object-contain", className)}
+      draggable={false}
+    />
+  );
+}
 
 function SlotsEmptyIllustration() {
   return (
@@ -28,8 +36,8 @@ function SlotsEmptyIllustration() {
       <span className="absolute top-12 right-14 size-1 rounded-full bg-[#60A5FA]" />
       <span className="absolute top-20 left-16 size-1.5 rounded-full bg-[#BFDBFE]" />
       <span className="absolute right-10 bottom-36 size-1 rounded-full bg-[#93C5FD]" />
+      <span className="absolute top-10 right-20 text-[10px] text-[#93C5FD]">✦</span>
 
-      {/* Paper plane trail */}
       <svg
         className="absolute top-8 right-8 text-[#60A5FA]"
         width="36"
@@ -48,7 +56,6 @@ function SlotsEmptyIllustration() {
         <path d="M28 6l6 4-7 1 1-5z" fill="currentColor" />
       </svg>
 
-      {/* Plant */}
       <div className="absolute bottom-12 left-4 flex flex-col items-center">
         <div className="mb-0.5 flex items-end gap-0.5">
           <span className="h-5 w-2.5 rounded-t-full bg-[#4ADE80]" />
@@ -58,7 +65,6 @@ function SlotsEmptyIllustration() {
         <div className="h-5 w-8 rounded-b-lg bg-[#93C5FD]" />
       </div>
 
-      {/* Calendar */}
       <div className="relative z-10 mb-8 drop-shadow-md">
         <div className="w-[7.5rem] overflow-hidden rounded-2xl border-[3px] border-[#1865EA] bg-white shadow-sm">
           <div className="flex h-7 items-center justify-center gap-3 bg-[#1865EA]">
@@ -69,17 +75,16 @@ function SlotsEmptyIllustration() {
             {Array.from({ length: 9 }).map((_, i) => (
               <span
                 key={i}
-                className="flex size-5 items-center justify-center rounded-md bg-[#E8F1FF] text-[9px] font-semibold text-[#94A3B8]"
+                className="flex size-5 items-center justify-center rounded-md bg-[#E8F1FF]"
               />
             ))}
-            <span className="absolute inset-0 m-auto flex size-9 items-center justify-center rounded-lg border-2 border-dashed border-[#1865EA] bg-white text-[#1865EA]">
-              <Plus className="size-4" strokeWidth={2.5} />
+            <span className="absolute inset-0 m-auto flex size-9 items-center justify-center rounded-lg border-2 border-dashed border-[#1865EA] bg-white">
+              <PackIcon src={PROVIDER_ICONS.plus} className="size-4" />
             </span>
           </div>
         </div>
       </div>
 
-      {/* Clock */}
       <div className="absolute right-3 bottom-14 flex size-14 items-center justify-center rounded-full bg-[#1865EA] shadow-md">
         <span className="absolute size-11 rounded-full border-2 border-white/30" />
         <span className="absolute top-3 h-3.5 w-0.5 origin-bottom rotate-[-20deg] rounded-full bg-white" />
@@ -108,11 +113,11 @@ function CardMenu({ onEdit, onDelete }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex size-8 items-center justify-center rounded-full bg-[#F4F7FF] text-[#64748B] transition-colors hover:bg-[#E8F1FF]"
+        className="flex size-8 items-center justify-center rounded-xl bg-[#E8F1FF] transition-colors hover:bg-[#DCE9FF]"
         aria-label="Actions"
         aria-expanded={open}
       >
-        <MoreVertical className="size-4" />
+        <PackIcon src={PROVIDER_ICONS.more} className="size-4" />
       </button>
       {open ? (
         <div className="absolute top-full right-0 z-20 mt-1.5 min-w-[8.5rem] overflow-hidden rounded-xl border border-[#EEF1F6] bg-white py-1 shadow-[0_8px_24px_rgba(15,23,42,0.12)]">
@@ -124,9 +129,10 @@ function CardMenu({ onEdit, onDelete }) {
               onEdit();
             }}
           >
-            <Pencil className="size-3.5 text-[#64748B]" />
+            <PackIcon src={PROVIDER_ICONS.edit} className="size-3.5 opacity-70" />
             Edit
           </button>
+          <div className="mx-3 h-px bg-[#EEF1F6]" />
           <button
             type="button"
             className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-sm font-medium text-[#0F172A] hover:bg-[#F8FAFF]"
@@ -135,7 +141,7 @@ function CardMenu({ onEdit, onDelete }) {
               onDelete();
             }}
           >
-            <Trash2 className="size-3.5 text-[#64748B]" />
+            <PackIcon src={PROVIDER_ICONS.trash} className="size-3.5 opacity-70" />
             Delete
           </button>
         </div>
@@ -147,7 +153,10 @@ function CardMenu({ onEdit, onDelete }) {
 function TimeDetail({ label, value }) {
   return (
     <div className="flex min-w-0 items-start gap-2">
-      <Clock3 className="mt-0.5 size-3.5 shrink-0 text-[#94A3B8]" strokeWidth={2} />
+      <PackIcon
+        src={PROVIDER_ICONS.clock}
+        className="mt-0.5 size-3.5 shrink-0 opacity-50"
+      />
       <div className="min-w-0">
         <p className="text-[11px] font-medium text-[#94A3B8]">{label}</p>
         <p className="truncate text-[12.5px] font-semibold text-[#0F172A]">{value}</p>
@@ -156,11 +165,16 @@ function TimeDetail({ label, value }) {
   );
 }
 
-function SlotCountBox({ label, count }) {
+function SlotCountCell({ label, count, border }) {
   return (
-    <div className="min-w-0 flex-1 rounded-xl border border-[#E8EEF8] bg-[#FAFBFF] px-2 py-2.5 text-center">
+    <div
+      className={cn(
+        "min-w-0 flex-1 px-2 py-1 text-center",
+        border && "border-l border-[#E8EEF8]",
+      )}
+    >
       <p className="text-[10.5px] font-medium text-[#94A3B8]">{label}</p>
-      <p className="mt-0.5 text-[15px] font-bold text-[#0F172A]">
+      <p className="mt-0.5 text-[17px] font-bold text-[#0F172A] tabular-nums">
         {slotCountLabel(count)}
       </p>
     </div>
@@ -169,13 +183,13 @@ function SlotCountBox({ label, count }) {
 
 function WeeklyCard({ slot, onEdit, onDelete }) {
   const breakLabel =
-    slot.breakIn && slot.breakOut ? `${slot.breakIn} - ${slot.breakOut}` : "—";
+    slot.breakIn && slot.breakOut ? `${slot.breakIn} – ${slot.breakOut}` : "—";
 
   return (
     <article className="overflow-hidden rounded-2xl border border-[#EEF1F6] bg-white shadow-[0_2px_12px_rgba(15,23,42,0.04)]">
       <div className="flex items-center gap-3 px-3.5 pt-3.5 pb-3">
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#1865EA] text-white">
-          <CalendarDays className="size-4" strokeWidth={2.2} />
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#E8F1FF]">
+          <PackIcon src={PROVIDER_ICONS.calendarBlue} className="size-4" />
         </span>
         <h3 className="min-w-0 flex-1 truncate text-[15px] font-bold text-[#0F172A]">
           {slot.day}
@@ -183,17 +197,25 @@ function WeeklyCard({ slot, onEdit, onDelete }) {
         <CardMenu onEdit={() => onEdit(slot)} onDelete={() => onDelete(slot)} />
       </div>
 
-      <div className="grid grid-cols-2 gap-x-3 gap-y-3 border-t border-[#EEF1F6] px-3.5 py-3">
+      <div className="mx-3.5 mb-3 grid grid-cols-2 gap-x-3 gap-y-3 rounded-xl border border-[#E8EEF8] bg-white px-3 py-3">
         <TimeDetail label="Open Time" value={slot.openTime} />
         <TimeDetail label="Close Time" value={slot.closeTime} />
         <TimeDetail label="Break Time" value={breakLabel} />
         <TimeDetail label="Service Time" value={slot.serviceTime} />
       </div>
 
-      <div className="flex gap-2 px-3.5 pb-3.5">
-        <SlotCountBox label="Morning Slot" count={slot.morningSlots?.length || 0} />
-        <SlotCountBox label="Afternoon Slot" count={slot.afternoonSlots?.length || 0} />
-        <SlotCountBox label="Evening Slot" count={slot.eveningSlots?.length || 0} />
+      <div className="mx-3.5 mb-3.5 flex items-stretch rounded-xl border border-[#E8EEF8] bg-[#FAFBFF] py-2.5">
+        <SlotCountCell label="Morning Slot" count={slot.morningSlots?.length || 0} />
+        <SlotCountCell
+          label="Afternoon Slot"
+          count={slot.afternoonSlots?.length || 0}
+          border
+        />
+        <SlotCountCell
+          label="Evening Slot"
+          count={slot.eveningSlots?.length || 0}
+          border
+        />
       </div>
     </article>
   );
@@ -205,8 +227,8 @@ function HolidayCard({ holiday, onEdit, onDelete }) {
   return (
     <article className="overflow-hidden rounded-2xl border border-[#EEF1F6] bg-white shadow-[0_2px_12px_rgba(15,23,42,0.04)]">
       <div className="flex items-center gap-3 px-3.5 pt-3.5 pb-3">
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#FFE4EC] text-[#E91E63]">
-          <CalendarDays className="size-4" strokeWidth={2.2} />
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#FFE4EC]">
+          <PackIcon src={PROVIDER_ICONS.calendarPink} className="size-4" />
         </span>
         <h3 className="min-w-0 flex-1 truncate text-[15px] font-bold text-[#0F172A]">
           {titleDate}
@@ -214,30 +236,40 @@ function HolidayCard({ holiday, onEdit, onDelete }) {
         <CardMenu onEdit={() => onEdit(holiday)} onDelete={() => onDelete(holiday)} />
       </div>
 
-      <div className="mx-3.5 mb-3 grid grid-cols-2 gap-0 overflow-hidden rounded-xl border border-[#E8EEF8] bg-[#FAFBFF]">
+      <div className="mx-3.5 mb-3 grid grid-cols-2 gap-0 overflow-hidden rounded-xl border border-[#E8EEF8] bg-white">
         <div className="border-r border-[#E8EEF8] px-3 py-2.5">
-          <p className="text-[11px] font-medium text-[#94A3B8]">From</p>
-          <div className="mt-1 flex items-center gap-1.5">
-            <CalendarDays className="size-3.5 text-[#94A3B8]" />
-            <p className="text-[12.5px] font-semibold text-[#0F172A]">
-              {formatDate(holiday.from, "dd MMM yyyy") || "—"}
-            </p>
+          <div className="flex items-start gap-1.5">
+            <PackIcon
+              src={PROVIDER_ICONS.calendar}
+              className="mt-0.5 size-3.5 shrink-0 opacity-45"
+            />
+            <div className="min-w-0">
+              <p className="text-[11px] font-medium text-[#94A3B8]">From</p>
+              <p className="mt-0.5 text-[12.5px] font-semibold text-[#0F172A]">
+                {formatDate(holiday.from, "dd MMM yyyy") || "—"}
+              </p>
+            </div>
           </div>
         </div>
         <div className="px-3 py-2.5">
-          <p className="text-[11px] font-medium text-[#94A3B8]">To</p>
-          <div className="mt-1 flex items-center gap-1.5">
-            <CalendarDays className="size-3.5 text-[#94A3B8]" />
-            <p className="text-[12.5px] font-semibold text-[#0F172A]">
-              {formatDate(holiday.to, "dd MMM yyyy") || "—"}
-            </p>
+          <div className="flex items-start gap-1.5">
+            <PackIcon
+              src={PROVIDER_ICONS.calendar}
+              className="mt-0.5 size-3.5 shrink-0 opacity-45"
+            />
+            <div className="min-w-0">
+              <p className="text-[11px] font-medium text-[#94A3B8]">To</p>
+              <p className="mt-0.5 text-[12.5px] font-semibold text-[#0F172A]">
+                {formatDate(holiday.to, "dd MMM yyyy") || "—"}
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
       <div className="px-3.5 pb-3.5">
-        <p className="mb-1.5 text-[12px] font-semibold text-[#334155]">Reason</p>
-        <div className="rounded-xl bg-[#F4F7FF] px-3.5 py-3 text-[13px] font-medium text-[#0F172A]">
+        <p className="mb-1.5 text-[13px] font-semibold text-[#0F172A]">Reason</p>
+        <div className="rounded-xl border border-[#E8EEF8] bg-white px-3.5 py-3 text-[13px] font-medium text-[#0F172A]">
           {holiday.reason || "—"}
         </div>
       </div>
@@ -275,7 +307,7 @@ function DeleteConfirmModal({ open, onClose, onConfirm }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="delete-slot-title"
-        className="relative w-full max-w-[340px] rounded-[1.5rem] bg-white px-5 pt-8 pb-5 shadow-[0_20px_60px_rgba(15,23,42,0.18)]"
+        className="relative w-full max-w-[340px] rounded-[1.75rem] bg-white px-5 pt-8 pb-5 shadow-[0_20px_60px_rgba(15,23,42,0.18)]"
       >
         <div className="relative mx-auto mb-5 flex size-20 items-center justify-center">
           <span className="absolute -top-1 left-2 text-sm font-bold text-[#F87171]">
@@ -286,9 +318,12 @@ function DeleteConfirmModal({ open, onClose, onConfirm }) {
             +
           </span>
           <span className="absolute right-0 bottom-3 size-1.5 rounded-full bg-[#FCA5A5]" />
-          <span className="flex size-16 items-center justify-center rounded-full bg-[#FEE2E2]">
+          <span className="flex size-16 items-center justify-center rounded-full bg-[#FEE2E2] ring-4 ring-[#FEE2E2]/60">
             <span className="flex size-12 items-center justify-center rounded-full bg-[#EF4444] text-white shadow-sm">
-              <Trash2 className="size-5" strokeWidth={2.2} />
+              <PackIcon
+                src={PROVIDER_ICONS.trashRed}
+                className="size-5 brightness-0 invert"
+              />
             </span>
           </span>
         </div>
@@ -379,7 +414,7 @@ function HolidayScheduleModal({ open, onClose, initial, onSubmit }) {
         aria-modal="true"
         aria-labelledby="holiday-schedule-title"
         onSubmit={handleSubmit}
-        className="relative w-full max-w-[380px] rounded-[1.5rem] bg-white px-5 pt-6 pb-5 shadow-[0_20px_60px_rgba(15,23,42,0.18)]"
+        className="relative w-full max-w-[380px] rounded-[1.75rem] bg-white px-5 pt-6 pb-5 shadow-[0_20px_60px_rgba(15,23,42,0.18)]"
       >
         <h2
           id="holiday-schedule-title"
@@ -400,8 +435,8 @@ function HolidayScheduleModal({ open, onClose, initial, onSubmit }) {
                 onChange={(e) => setFrom(e.target.value)}
                 className="h-11 w-full appearance-none rounded-xl border border-[#E2E8F0] bg-white px-3 pr-10 text-sm font-medium text-[#0F172A] outline-none focus:border-[#1865EA] focus:ring-2 focus:ring-[#1865EA]/20 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0"
               />
-              <span className="pointer-events-none absolute top-1/2 right-2 flex size-7 -translate-y-1/2 items-center justify-center rounded-lg bg-[#1865EA] text-white">
-                <CalendarDays className="size-3.5" strokeWidth={2.2} />
+              <span className="pointer-events-none absolute top-1/2 right-2.5 flex size-6 -translate-y-1/2 items-center justify-center">
+                <PackIcon src={PROVIDER_ICONS.calendarBlue} className="size-5" />
               </span>
             </div>
           </div>
@@ -416,8 +451,8 @@ function HolidayScheduleModal({ open, onClose, initial, onSubmit }) {
                 onChange={(e) => setTo(e.target.value)}
                 className="h-11 w-full appearance-none rounded-xl border border-[#E2E8F0] bg-white px-3 pr-10 text-sm font-medium text-[#0F172A] outline-none focus:border-[#1865EA] focus:ring-2 focus:ring-[#1865EA]/20 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0"
               />
-              <span className="pointer-events-none absolute top-1/2 right-2 flex size-7 -translate-y-1/2 items-center justify-center rounded-lg bg-[#1865EA] text-white">
-                <CalendarDays className="size-3.5" strokeWidth={2.2} />
+              <span className="pointer-events-none absolute top-1/2 right-2.5 flex size-6 -translate-y-1/2 items-center justify-center">
+                <PackIcon src={PROVIDER_ICONS.calendarBlue} className="size-5" />
               </span>
             </div>
           </div>
@@ -532,14 +567,14 @@ export function ProviderSlotsView() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F7FF]">
       <header className="sticky top-0 z-30 shrink-0 border-b border-[#E8EEF8] bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 max-w-3xl items-center gap-1 px-3 lg:px-6">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <button
             type="button"
             onClick={() => router.back()}
             className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-[#F4F7FF]"
             aria-label="Back"
           >
-            <ArrowLeft className="size-5" />
+            <PackIcon src={PROVIDER_ICONS.arrowLeft} className="size-5" />
           </button>
           <h1 className="flex-1 truncate text-center text-lg font-bold text-[#111827]">
             Slot Management
@@ -550,40 +585,45 @@ export function ProviderSlotsView() {
             className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#1865EA] text-white shadow-sm transition-opacity hover:opacity-90"
             aria-label={tab === "holiday" ? "Add holiday" : "Add slot"}
           >
-            <Plus className="size-5" strokeWidth={2.4} />
+            <PackIcon
+              src={PROVIDER_ICONS.plus}
+              className="size-5 brightness-0 invert"
+            />
           </button>
         </div>
 
-        <div className="mx-auto flex max-w-3xl px-4 lg:px-6">
-          <button
-            type="button"
-            onClick={() => setTabAndUrl("weekly")}
-            className={cn(
-              "flex-1 border-b-2 py-3 text-center text-sm font-semibold transition-colors",
-              tab === "weekly"
-                ? "border-[#1865EA] text-[#1865EA]"
-                : "border-transparent text-[#94A3B8]",
-            )}
-          >
-            Weekly schedule
-          </button>
-          <button
-            type="button"
-            onClick={() => setTabAndUrl("holiday")}
-            className={cn(
-              "flex-1 border-b-2 py-3 text-center text-sm font-semibold transition-colors",
-              tab === "holiday"
-                ? "border-[#1865EA] text-[#1865EA]"
-                : "border-transparent text-[#94A3B8]",
-            )}
-          >
-            Holiday
-          </button>
+        <div className={cn(PROVIDER_PAGE_SHELL, "pb-3")}>
+          <div className="grid grid-cols-2 gap-1 rounded-xl bg-[#EEF2F7] p-1">
+            <button
+              type="button"
+              onClick={() => setTabAndUrl("weekly")}
+              className={cn(
+                "h-10 rounded-lg text-sm font-semibold transition-colors",
+                tab === "weekly"
+                  ? "border border-[#1865EA] bg-white text-[#1865EA] shadow-sm"
+                  : "border border-transparent text-[#64748B]",
+              )}
+            >
+              Weekly schedule
+            </button>
+            <button
+              type="button"
+              onClick={() => setTabAndUrl("holiday")}
+              className={cn(
+                "h-10 rounded-lg text-sm font-semibold transition-colors",
+                tab === "holiday"
+                  ? "border border-[#1865EA] bg-white text-[#1865EA] shadow-sm"
+                  : "border border-transparent text-[#64748B]",
+              )}
+            >
+              Holiday
+            </button>
+          </div>
         </div>
       </header>
 
       <main className="min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-3xl px-4 py-4 lg:px-6 lg:py-6">
+        <div className={cn(PROVIDER_PAGE_SHELL, "py-4 lg:py-6")}>
           {isEmpty ? (
             <div className="flex min-h-[calc(100dvh-11rem)] flex-col items-center justify-center px-4 pb-16 text-center">
               <SlotsEmptyIllustration />
@@ -594,7 +634,7 @@ export function ProviderSlotsView() {
               </p>
             </div>
           ) : tab === "weekly" ? (
-            <div className="space-y-3.5">
+            <div className={cn(PROVIDER_DESKTOP_GRID, "gap-3.5")}>
               {weeklyList.map((slot) => (
                 <WeeklyCard
                   key={slot.id}
@@ -605,7 +645,7 @@ export function ProviderSlotsView() {
               ))}
             </div>
           ) : (
-            <div className="space-y-3.5">
+            <div className={cn(PROVIDER_DESKTOP_GRID, "gap-3.5")}>
               {holidayList.map((holiday) => (
                 <HolidayCard
                   key={holiday.id}

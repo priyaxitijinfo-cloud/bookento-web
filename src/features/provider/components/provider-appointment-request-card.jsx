@@ -35,6 +35,8 @@ export function ProviderAppointmentRequestCard({
         <ProviderVisitBadge visitType={appointment.visitType} />
       </div>
 
+      <div className="mt-3 border-t border-[#F1F4F9]" />
+
       <div className="mt-3.5 flex items-start gap-3">
         <div
           className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#FFE8D6] text-sm font-semibold text-[#E07A3D]"

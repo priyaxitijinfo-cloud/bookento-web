@@ -3,17 +3,11 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Building2,
-  Check,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  Plane,
-} from "lucide-react";
+import { Check, Plane } from "lucide-react";
 import { toast } from "sonner";
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { getEarningsReportFileName } from "@/mock/earnings";
 import { cn } from "@/lib/utils";
 import { formatCurrency, formatDate, getInitials } from "@/utils/format.utils";
@@ -139,6 +133,11 @@ export function ProviderTransactionCard({ transaction, compact = false }) {
     text: "text-[#1865EA]",
   };
 
+  const timeLabel =
+    transaction.scheduledLabel ||
+    transaction.displayDate ||
+    formatDate(transaction.createdAt, "dd MMM yyyy");
+
   return (
     <article className="rounded-2xl border border-[#EEF2F7] bg-white p-4 shadow-[0_2px_12px_rgba(15,23,42,0.04)]">
       <div className="flex items-start gap-3">
@@ -153,51 +152,41 @@ export function ProviderTransactionCard({ transaction, compact = false }) {
           {getInitials(transaction.userName)}
         </div>
 
-        <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <p className="truncate text-[15px] font-semibold text-[#111827]">
-                {transaction.userName}
-              </p>
-              <p className="mt-0.5 truncate text-sm text-[#94A3B8]">
-                {transaction.serviceName}
-              </p>
-            </div>
-            <div className="shrink-0 text-right">
-              <p className="text-[15px] font-semibold text-[#1865EA]">
-                {formatCurrency(transaction.grossAmount)}
-              </p>
-              <p className="mt-0.5 text-sm font-medium text-[#EF4444]">
-                -{formatCurrency(transaction.commission)}
-              </p>
-            </div>
+        <div className="flex min-w-0 flex-1 items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="truncate text-[15px] font-semibold text-[#111827]">
+              {transaction.userName}
+            </p>
+            <p className="mt-0.5 truncate text-sm text-[#94A3B8]">
+              {transaction.serviceName}
+            </p>
           </div>
-
-          {!compact ? (
-            <div className="mt-3 border-t border-[#F1F5F9] pt-3">
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-xs text-[#94A3B8]">
-                  {transaction.scheduledLabel || transaction.displayDate}
-                </p>
-                <p className="text-sm font-bold text-[#111827]">
-                  {formatCurrency(transaction.netEarnings)}
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div className="mt-2 flex items-center justify-between gap-3">
-              <p className="text-xs text-[#94A3B8]">
-                {transaction.scheduledLabel ||
-                  transaction.displayDate ||
-                  formatDate(transaction.createdAt, "dd MMM yyyy")}
-              </p>
-              <p className="text-sm font-bold text-[#111827]">
-                {formatCurrency(transaction.netEarnings)}
-              </p>
-            </div>
-          )}
+          <div className="shrink-0 text-right">
+            <p className="text-[15px] font-semibold text-[#1865EA]">
+              {formatCurrency(transaction.grossAmount)}
+            </p>
+            <p className="mt-0.5 text-sm font-medium text-[#EF4444]">
+              -{formatCurrency(transaction.commission)}
+            </p>
+          </div>
         </div>
       </div>
+
+      {!compact ? (
+        <div className="mt-3 flex items-center justify-between gap-3 border-t border-[#F1F5F9] pt-3">
+          <p className="text-xs text-[#94A3B8]">{timeLabel}</p>
+          <p className="text-sm font-bold text-[#111827]">
+            {formatCurrency(transaction.netEarnings)}
+          </p>
+        </div>
+      ) : (
+        <div className="mt-2 flex items-center justify-between gap-3">
+          <p className="text-xs text-[#94A3B8]">{timeLabel}</p>
+          <p className="text-sm font-bold text-[#111827]">
+            {formatCurrency(transaction.netEarnings)}
+          </p>
+        </div>
+      )}
     </article>
   );
 }
@@ -241,8 +230,13 @@ export function ProviderPayoutCard({ payout }) {
 
       <div className="flex items-center justify-between gap-3 border-t border-[#F1F5F9] bg-[#F8FAFC] px-4 py-3">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#E8F1FF] text-[#1865EA]">
-            <Building2 className="size-4" />
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#E8F1FF]">
+            <img
+              src={PROVIDER_ICONS.bank}
+              alt=""
+              className="size-4 object-contain"
+              draggable={false}
+            />
           </span>
           <p className="truncate text-sm font-medium text-[#374151]">
             {payout.bankLabel ||
@@ -327,7 +321,12 @@ export function ServiceBookingChart({
             className="inline-flex items-center gap-1 rounded-lg border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-xs font-medium text-[#374151] transition-colors hover:bg-[#F8FAFC]"
           >
             {periodLabel}
-            <ChevronDown className="size-3.5 text-[#94A3B8]" />
+            <img
+              src={PROVIDER_ICONS.chevronDown}
+              alt=""
+              className="size-3.5 object-contain opacity-60"
+              draggable={false}
+            />
           </button>
           {open && periods.length > 0 ? (
             <div className="absolute top-full right-0 z-20 mt-1 min-w-[140px] overflow-hidden rounded-xl border border-[#E5E7EB] bg-white shadow-lg">
@@ -486,7 +485,7 @@ export function DownloadReportModal({ open, onOpenChange }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         showClose={false}
-        className="max-w-[340px] gap-0 rounded-2xl border-0 p-5 shadow-[0_16px_48px_rgba(15,23,42,0.18)] sm:max-w-[360px]"
+        className="max-w-[340px] gap-0 rounded-3xl border-0 p-5 shadow-[0_16px_48px_rgba(15,23,42,0.18)] sm:max-w-[360px]"
       >
         <DialogTitle className="mb-5 text-center text-lg font-bold text-[#111827]">
           Download Report
@@ -496,10 +495,15 @@ export function DownloadReportModal({ open, onOpenChange }) {
           <button
             type="button"
             onClick={() => setYear((value) => value - 1)}
-            className="flex size-9 items-center justify-center rounded-xl bg-[#F1F5F9] text-[#374151] transition-colors hover:bg-[#E2E8F0]"
+            className="flex size-9 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white transition-colors hover:bg-[#F8FAFC]"
             aria-label="Previous year"
           >
-            <ChevronLeft className="size-4" />
+            <img
+              src={PROVIDER_ICONS.arrowLeft}
+              alt=""
+              className="size-4 object-contain"
+              draggable={false}
+            />
           </button>
           <span className="min-w-[4rem] text-center text-base font-bold text-[#111827]">
             {year}
@@ -507,10 +511,15 @@ export function DownloadReportModal({ open, onOpenChange }) {
           <button
             type="button"
             onClick={() => setYear((value) => value + 1)}
-            className="flex size-9 items-center justify-center rounded-xl bg-[#F1F5F9] text-[#374151] transition-colors hover:bg-[#E2E8F0]"
+            className="flex size-9 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white transition-colors hover:bg-[#F8FAFC]"
             aria-label="Next year"
           >
-            <ChevronRight className="size-4" />
+            <img
+              src={PROVIDER_ICONS.arrowLeft}
+              alt=""
+              className="size-4 rotate-180 object-contain"
+              draggable={false}
+            />
           </button>
         </div>
 
@@ -523,7 +532,7 @@ export function DownloadReportModal({ open, onOpenChange }) {
                 type="button"
                 onClick={() => setMonthIndex(index)}
                 className={cn(
-                  "h-10 rounded-xl text-sm font-semibold transition-colors",
+                  "h-10 rounded-lg text-sm font-semibold transition-colors",
                   selected
                     ? "bg-[#1865EA] text-white"
                     : "border border-[#E5E7EB] bg-white text-[#374151] hover:bg-[#F8FAFC]",

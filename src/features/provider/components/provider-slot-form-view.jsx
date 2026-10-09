@@ -11,16 +11,14 @@ import {
   parseISO,
   startOfMonth,
 } from "date-fns";
-import {
-  ArrowLeft,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  Umbrella,
-} from "lucide-react";
 import { toast } from "sonner";
 
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { ROUTES } from "@/constants/routes.constants";
+import {
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
 import {
   SESSION_TIMES,
@@ -78,7 +76,12 @@ function TimeDropdown({ label, value, onChange }) {
             </option>
           ))}
         </select>
-        <ChevronDown className="pointer-events-none absolute top-1/2 right-3.5 size-4 -translate-y-1/2 text-[#94A3B8]" />
+        <img
+          src={PROVIDER_ICONS.chevronDown}
+          alt=""
+          className="pointer-events-none absolute top-1/2 right-3.5 size-4 -translate-y-1/2 object-contain opacity-50"
+          draggable={false}
+        />
       </div>
     </div>
   );
@@ -93,15 +96,18 @@ function SessionAccordion({ title, open, onToggle, times, selected, onToggleTime
         className="flex w-full items-center justify-between px-4 py-3.5 text-left"
       >
         <span className="text-[14.5px] font-bold text-[#0F172A]">{title}</span>
-        <ChevronDown
+        <img
+          src={PROVIDER_ICONS.chevronDown}
+          alt=""
           className={cn(
-            "size-4 text-[#64748B] transition-transform",
+            "size-4 object-contain opacity-55 transition-transform",
             open && "rotate-180",
           )}
+          draggable={false}
         />
       </button>
       {open ? (
-        <div className="grid grid-cols-3 gap-2 border-t border-[#EEF1F6] px-3.5 py-3.5">
+        <div className="grid grid-cols-4 gap-2 border-t border-[#EEF1F6] px-3.5 py-3.5">
           {times.map((time) => {
             const isSelected = selected.includes(time);
             return (
@@ -110,10 +116,10 @@ function SessionAccordion({ title, open, onToggle, times, selected, onToggleTime
                 type="button"
                 onClick={() => onToggleTime(time)}
                 className={cn(
-                  "rounded-xl px-2 py-2.5 text-center text-[12px] font-semibold transition-colors",
+                  "rounded-xl px-1.5 py-2.5 text-center text-[11px] font-semibold transition-colors sm:text-[12px]",
                   isSelected
-                    ? "border border-[#1865EA] bg-white text-[#1865EA]"
-                    : "border border-transparent bg-[#F4F7FF] text-[#64748B]",
+                    ? "border border-[#1865EA] bg-[#E8F1FF] text-[#1865EA]"
+                    : "border border-[#E8EEF8] bg-white text-[#64748B]",
                 )}
               >
                 {time}
@@ -239,14 +245,19 @@ export function ProviderSlotFormView({ slotId } = {}) {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F7FF]">
       <header className="sticky top-0 z-30 shrink-0 border-b border-[#E8EEF8] bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 max-w-3xl items-center gap-1 px-3 lg:px-6">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <button
             type="button"
             onClick={() => router.back()}
             className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-[#F4F7FF]"
             aria-label="Back"
           >
-            <ArrowLeft className="size-5" />
+            <img
+              src={PROVIDER_ICONS.arrowLeft}
+              alt=""
+              className="size-5 object-contain"
+              draggable={false}
+            />
           </button>
           <h1 className="flex-1 truncate pr-10 text-center text-lg font-bold text-[#111827]">
             Slot Management
@@ -259,30 +270,40 @@ export function ProviderSlotFormView({ slotId } = {}) {
         className="flex min-h-0 flex-1 flex-col overflow-hidden"
       >
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="mx-auto w-full max-w-3xl space-y-4 px-4 py-4 pb-6 lg:px-6 lg:py-6">
+          <div className={cn(PROVIDER_PAGE_SHELL, "space-y-4 py-4 pb-6 lg:py-6")}>
             {/* Select Date */}
             <section>
               <div className="mb-3 flex items-center justify-between gap-3">
                 <h2 className="text-[15px] font-bold text-[#0F172A]">Select Date</h2>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-0.5">
                   <button
                     type="button"
                     onClick={() => setMonthCursor((m) => addMonths(m, -1))}
-                    className="flex size-8 items-center justify-center rounded-full text-[#64748B] hover:bg-white"
+                    className="flex size-7 items-center justify-center rounded-full text-[#1865EA] hover:bg-white"
                     aria-label="Previous month"
                   >
-                    <ChevronLeft className="size-4" />
+                    <img
+                      src={PROVIDER_ICONS.arrowLeft}
+                      alt=""
+                      className="size-3.5 object-contain"
+                      draggable={false}
+                    />
                   </button>
-                  <span className="min-w-[6.5rem] text-center text-sm font-semibold text-[#0F172A]">
+                  <span className="min-w-[5.75rem] text-center text-sm font-semibold text-[#1865EA]">
                     {format(monthCursor, "MMM, yyyy")}
                   </span>
                   <button
                     type="button"
                     onClick={() => setMonthCursor((m) => addMonths(m, 1))}
-                    className="flex size-8 items-center justify-center rounded-full text-[#64748B] hover:bg-white"
+                    className="flex size-7 items-center justify-center rounded-full text-[#1865EA] hover:bg-white"
                     aria-label="Next month"
                   >
-                    <ChevronRight className="size-4" />
+                    <img
+                      src={PROVIDER_ICONS.arrowLeft}
+                      alt=""
+                      className="size-3.5 rotate-180 object-contain"
+                      draggable={false}
+                    />
                   </button>
                 </div>
               </div>
@@ -298,8 +319,8 @@ export function ProviderSlotFormView({ slotId } = {}) {
                       className={cn(
                         "flex w-[3.35rem] shrink-0 flex-col items-center rounded-xl px-2 py-2.5 transition-colors",
                         selected
-                          ? "border border-[#1865EA] bg-white text-[#1865EA]"
-                          : "border border-transparent bg-[#EEF2F7] text-[#64748B]",
+                          ? "border border-[#1865EA] bg-[#E8F1FF] text-[#1865EA]"
+                          : "border border-transparent bg-white text-[#64748B] shadow-[0_1px_4px_rgba(15,23,42,0.04)]",
                       )}
                     >
                       <span
@@ -321,8 +342,13 @@ export function ProviderSlotFormView({ slotId } = {}) {
 
             {/* Holiday Mode */}
             <div className="flex items-center gap-3 rounded-2xl border border-[#EEF1F6] bg-white px-3.5 py-3.5 shadow-[0_2px_8px_rgba(15,23,42,0.03)]">
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#FFE4EC] text-[#E11D48]">
-                <Umbrella className="size-5" strokeWidth={2} />
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#FFE4EC]">
+                <img
+                  src={PROVIDER_ICONS.vacation}
+                  alt=""
+                  className="size-6 object-contain"
+                  draggable={false}
+                />
               </span>
               <div className="min-w-0 flex-1">
                 <p className="text-[14.5px] font-bold text-[#0F172A]">Holiday Mode</p>
@@ -402,8 +428,8 @@ export function ProviderSlotFormView({ slotId } = {}) {
           </div>
         </div>
 
-        <div className="sticky bottom-0 z-20 shrink-0 border-t border-[#E8EEF8] bg-white/95 px-4 py-3 backdrop-blur-sm lg:px-6">
-          <div className="mx-auto w-full max-w-3xl">
+        <div className="sticky bottom-0 z-20 shrink-0 border-t border-[#E8EEF8] bg-white/95 py-3 backdrop-blur-sm">
+          <div className={PROVIDER_PAGE_SHELL}>
             <button
               type="submit"
               disabled={saving}

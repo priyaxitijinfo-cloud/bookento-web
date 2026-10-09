@@ -5,10 +5,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { format, isValid, parseISO } from "date-fns";
-import { ArrowLeft, CalendarDays, ImageIcon, Plus, X } from "lucide-react";
 import { toast } from "sonner";
 
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { ROUTES } from "@/constants/routes.constants";
+import {
+  PROVIDER_DESKTOP_GRID,
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
 import {
   CATEGORY_SUGGESTION_STATUS,
@@ -135,9 +140,11 @@ function CategorySuggestionCard({ item }) {
           <h3 className="truncate text-[15px] font-bold text-[#0F172A]">{item.name}</h3>
 
           <div className="mt-1 flex items-center gap-1.5 text-[12px] text-[#64748B]">
-            <CalendarDays
-              className="size-3.5 shrink-0 text-[#64748B]"
-              strokeWidth={2}
+            <img
+              src={PROVIDER_ICONS.calendar}
+              alt=""
+              className="size-3.5 shrink-0 object-contain opacity-55"
+              draggable={false}
             />
             <span className="truncate">
               {statusLabel} : {when || "—"}
@@ -256,7 +263,12 @@ function SuggestCategoryModal({ open, onClose, onSubmit }) {
                 className="absolute top-2 right-2 flex size-7 items-center justify-center rounded-full bg-[#EF4444] text-white shadow-md"
                 aria-label="Remove photo"
               >
-                <X className="size-3.5" strokeWidth={2.4} />
+                <img
+                  src={PROVIDER_ICONS.closeCircle}
+                  alt=""
+                  className="size-3.5 object-contain brightness-0 invert"
+                  draggable={false}
+                />
               </button>
             </div>
           ) : (
@@ -264,8 +276,13 @@ function SuggestCategoryModal({ open, onClose, onSubmit }) {
               htmlFor={fileInputId}
               className="flex size-[7.5rem] cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-[1.5px] border-dashed border-[#1865EA] bg-[#F4F7FF] transition-colors hover:bg-[#E8F1FF]"
             >
-              <ImageIcon className="size-7 text-[#1865EA]" strokeWidth={1.7} />
-              <span className="text-[12.5px] font-semibold text-[#1865EA]">
+              <img
+                src={PROVIDER_ICONS.gallery}
+                alt=""
+                className="size-7 object-contain"
+                draggable={false}
+              />
+              <span className="text-[12.5px] font-semibold text-[#0F172A]">
                 Upload Photo
               </span>
             </label>
@@ -389,14 +406,19 @@ export function ProviderSuggestCategoryView() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F7FF]">
       <header className="sticky top-0 z-30 shrink-0 border-b border-[#E8EEF8] bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 max-w-3xl items-center gap-1 px-3 lg:px-6">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <button
             type="button"
             onClick={() => router.back()}
             className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-[#F4F7FF]"
             aria-label="Back"
           >
-            <ArrowLeft className="size-5" />
+            <img
+              src={PROVIDER_ICONS.arrowLeft}
+              alt=""
+              className="size-5 object-contain"
+              draggable={false}
+            />
           </button>
           <h1 className="flex-1 truncate text-center text-lg font-bold text-[#111827]">
             Suggest Category
@@ -407,13 +429,18 @@ export function ProviderSuggestCategoryView() {
             className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#1865EA] text-white shadow-sm transition-opacity hover:opacity-90"
             aria-label="Suggest category"
           >
-            <Plus className="size-5" strokeWidth={2.4} />
+            <img
+              src={PROVIDER_ICONS.plus}
+              alt=""
+              className="size-5 object-contain brightness-0 invert"
+              draggable={false}
+            />
           </button>
         </div>
       </header>
 
       <main className="min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-3xl px-4 py-4 lg:px-6 lg:py-6">
+        <div className={cn(PROVIDER_PAGE_SHELL, "py-4 lg:py-6")}>
           <div className="mb-4 grid grid-cols-3 gap-1 rounded-2xl bg-white p-1 shadow-[0_2px_12px_rgba(15,23,42,0.04)]">
             {TABS.map((item) => {
               const active = tab === item.id;
@@ -438,13 +465,13 @@ export function ProviderSuggestCategoryView() {
           {isEmpty ? (
             <div className="flex min-h-[calc(100dvh-12rem)] flex-col items-center justify-center px-4 pb-16 text-center">
               <CategoriesEmptyIllustration />
-              <h2 className="text-xl font-bold text-[#0F172A]">No Categories Yet</h2>
+              <h2 className="text-xl font-bold text-[#0F172A]">Not Category Yet</h2>
               <p className="mt-2 max-w-xs text-[13.5px] leading-relaxed text-[#94A3B8]">
                 Your category suggestions will appear here once you submit one.
               </p>
             </div>
           ) : (
-            <div className="space-y-3.5">
+            <div className={cn(PROVIDER_DESKTOP_GRID, "gap-3.5")}>
               {list.map((item) => (
                 <CategorySuggestionCard key={item.id} item={item} />
               ))}

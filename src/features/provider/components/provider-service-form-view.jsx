@@ -1,21 +1,17 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
-import {
-  ArrowLeft,
-  Building2,
-  Check,
-  ChevronDown,
-  Home,
-  Minus,
-  Plus,
-  Video,
-} from "lucide-react";
 import { toast } from "sonner";
 
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { ROUTES } from "@/constants/routes.constants";
+import {
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
 import {
   SERVICE_CATEGORIES,
@@ -27,10 +23,21 @@ import {
 
 const DESC_MAX = 500;
 
+function PackIcon({ src, className, alt = "" }) {
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={cn("object-contain", className)}
+      draggable={false}
+    />
+  );
+}
+
 function FieldLabel({ children, className }) {
   return (
     <label
-      className={cn("mb-1.5 block text-[13px] font-semibold text-[#334155]", className)}
+      className={cn("mb-1.5 block text-[13px] font-semibold text-[#0F172A]", className)}
     >
       {children}
     </label>
@@ -100,9 +107,10 @@ function CategoryDropdown({ value, onChange }) {
         ) : (
           <span className="flex-1 text-sm text-[#94A3B8]">Category</span>
         )}
-        <ChevronDown
+        <PackIcon
+          src={PROVIDER_ICONS.chevronDown}
           className={cn(
-            "size-4 shrink-0 text-[#94A3B8] transition-transform",
+            "size-4 shrink-0 opacity-50 transition-transform",
             open && "rotate-180",
           )}
         />
@@ -137,7 +145,9 @@ function CategoryDropdown({ value, onChange }) {
                 <span className="min-w-0 flex-1 text-sm font-medium text-[#0F172A]">
                   {cat.label}
                 </span>
-                {isActive ? <Check className="size-4 shrink-0 text-[#1865EA]" /> : null}
+                {isActive ? (
+                  <PackIcon src={PROVIDER_ICONS.check} className="size-4 shrink-0" />
+                ) : null}
               </button>
             );
           })}
@@ -166,7 +176,10 @@ function DurationDropdown({ value, onChange }) {
             </option>
           ))}
         </select>
-        <ChevronDown className="pointer-events-none absolute top-1/2 right-3.5 size-4 -translate-y-1/2 text-[#94A3B8]" />
+        <PackIcon
+          src={PROVIDER_ICONS.chevronDown}
+          className="pointer-events-none absolute top-1/2 right-3.5 size-4 -translate-y-1/2 opacity-50"
+        />
         <span className="sr-only">{selected.label}</span>
       </div>
     </div>
@@ -183,7 +196,10 @@ function DateField({ value, onChange, placeholder }) {
         className="h-11 w-full appearance-none rounded-xl border border-[#E2E8F0] bg-white px-3 pr-9 text-sm font-medium text-[#0F172A] outline-none focus:border-[#1865EA] focus:ring-2 focus:ring-[#1865EA]/20 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-2 [&::-webkit-calendar-picker-indicator]:opacity-60"
         placeholder={placeholder}
       />
-      <ChevronDown className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-[#94A3B8]" />
+      <PackIcon
+        src={PROVIDER_ICONS.chevronDown}
+        className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 opacity-50"
+      />
     </div>
   );
 }
@@ -193,22 +209,22 @@ const SERVICE_TYPES = [
     key: "inClinic",
     title: "In-clinic",
     subtitle: "Patients visit your clinic",
-    icon: Building2,
-    iconWrap: "bg-[#FFE4EC] text-[#E91E63]",
+    icon: PROVIDER_ICONS.building,
+    iconWrap: "bg-[#FFE4EC]",
   },
   {
     key: "online",
     title: "Online",
     subtitle: "Consult with patients online",
-    icon: Video,
-    iconWrap: "bg-[#F3E8FF] text-[#9333EA]",
+    icon: PROVIDER_ICONS.videoPurple,
+    iconWrap: "bg-[#F3E8FF]",
   },
   {
     key: "atHome",
     title: "At-home",
     subtitle: "We'll visit the patient at their location",
-    icon: Home,
-    iconWrap: "bg-[#FFE4EC] text-[#EC407A]",
+    icon: PROVIDER_ICONS.homePink,
+    iconWrap: "bg-[#FFE4EC]",
   },
 ];
 
@@ -319,20 +335,30 @@ export function ProviderServiceFormView({ serviceId = null }) {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F7FF]">
       <header className="sticky top-0 z-30 shrink-0 border-b border-[#E8EEF8] bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 max-w-3xl items-center gap-1 px-3 lg:px-6">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <button
             type="button"
             onClick={() => router.back()}
             className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-[#F4F7FF]"
             aria-label="Back"
           >
-            <ArrowLeft className="size-5" />
+            <PackIcon src={PROVIDER_ICONS.arrowLeft} className="size-5" />
           </button>
-          <h1 className="flex-1 truncate pr-10 text-center text-lg font-bold text-[#111827]">
+          <h1 className="flex-1 truncate text-[17px] font-bold text-[#111827]">
             {isEdit ? "Edit Service" : "Add Service"}
           </h1>
+          <Link
+            href={ROUTES.PROVIDER_SERVICES_NEW}
+            className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#1865EA] shadow-sm transition-opacity hover:opacity-90"
+            aria-label="Add service"
+          >
+            <PackIcon
+              src={PROVIDER_ICONS.plus}
+              className="size-5 brightness-0 invert"
+            />
+          </Link>
         </div>
       </header>
 
@@ -340,87 +366,104 @@ export function ProviderServiceFormView({ serviceId = null }) {
         onSubmit={handleSave}
         className="flex min-h-0 flex-1 flex-col overflow-hidden"
       >
-        <div className="min-h-0 flex-1 overflow-y-auto bg-white">
-          <div className="mx-auto w-full max-w-3xl space-y-4 px-4 py-4 pb-6 lg:px-6 lg:py-6">
-            <div>
-              <FieldLabel>Service Name</FieldLabel>
-              <input
-                value={form.name}
-                onChange={(e) => setField("name", e.target.value)}
-                placeholder="Name"
-                className="h-12 w-full rounded-xl border border-[#E2E8F0] bg-white px-3.5 text-sm text-[#0F172A] outline-none placeholder:text-[#94A3B8] focus:border-[#1865EA] focus:ring-2 focus:ring-[#1865EA]/20"
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <div
+            className={cn(
+              PROVIDER_PAGE_SHELL,
+              "space-y-4 py-4 pb-6 lg:grid lg:max-w-6xl lg:grid-cols-2 lg:gap-6 lg:space-y-0 lg:py-6",
+            )}
+          >
+            <div className="space-y-4">
+              <div>
+                <FieldLabel>Service Name</FieldLabel>
+                <input
+                  value={form.name}
+                  onChange={(e) => setField("name", e.target.value)}
+                  placeholder="Name"
+                  className="h-12 w-full rounded-xl border border-[#E2E8F0] bg-white px-3.5 text-sm text-[#0F172A] outline-none placeholder:text-[#94A3B8] focus:border-[#1865EA] focus:ring-2 focus:ring-[#1865EA]/20"
+                />
+              </div>
+
+              <div>
+                <FieldLabel>Description Service</FieldLabel>
+                <div className="relative">
+                  <textarea
+                    value={form.description}
+                    onChange={(e) =>
+                      setField("description", e.target.value.slice(0, DESC_MAX))
+                    }
+                    placeholder="ABC..."
+                    rows={4}
+                    className="w-full resize-none rounded-xl border border-[#E2E8F0] bg-white px-3.5 py-3 pb-8 text-sm text-[#0F172A] outline-none placeholder:text-[#94A3B8] focus:border-[#1865EA] focus:ring-2 focus:ring-[#1865EA]/20"
+                  />
+                  <span className="pointer-events-none absolute right-3 bottom-2.5 text-[11px] font-medium text-[#94A3B8]">
+                    {descriptionLen}/{DESC_MAX}
+                  </span>
+                </div>
+              </div>
+
+              <CategoryDropdown
+                value={form.categoryId}
+                onChange={(id) => setField("categoryId", id)}
+              />
+
+              <div>
+                <FieldLabel>Service images (Optional)</FieldLabel>
+                <div className="flex flex-wrap gap-2.5">
+                  {(form.images || []).map((src, index) => (
+                    <div
+                      key={`${src}-${index}`}
+                      className="relative size-20 overflow-hidden rounded-xl border border-[#E2E8F0] bg-white"
+                    >
+                      <Image
+                        src={src}
+                        alt=""
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute top-1 right-1 flex size-5 items-center justify-center rounded-full bg-black/55 text-[10px] font-bold text-white"
+                        aria-label="Remove photo"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                  <label
+                    htmlFor={fileInputId}
+                    className="flex min-h-[7.5rem] min-w-[9rem] flex-1 cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-[#93C5FD] bg-[#E8F1FF]/60 px-4 py-5 transition-colors hover:bg-[#E8F1FF]"
+                  >
+                    <span className="flex size-9 items-center justify-center rounded-xl bg-[#1865EA] shadow-sm">
+                      <PackIcon
+                        src={PROVIDER_ICONS.plus}
+                        className="size-5 brightness-0 invert"
+                      />
+                    </span>
+                    <span className="text-sm font-medium text-[#0F172A]">
+                      Add Photo
+                    </span>
+                    <input
+                      id={fileInputId}
+                      ref={fileRef}
+                      type="file"
+                      accept="image/*"
+                      className="sr-only"
+                      onChange={handleAddPhoto}
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <DurationDropdown
+                value={form.duration}
+                onChange={(v) => setField("duration", v)}
               />
             </div>
 
-            <div>
-              <FieldLabel>Description Service</FieldLabel>
-              <div className="relative">
-                <textarea
-                  value={form.description}
-                  onChange={(e) =>
-                    setField("description", e.target.value.slice(0, DESC_MAX))
-                  }
-                  placeholder="ABC..."
-                  rows={4}
-                  className="w-full resize-none rounded-xl border border-[#E2E8F0] bg-white px-3.5 py-3 pb-8 text-sm text-[#0F172A] outline-none placeholder:text-[#94A3B8] focus:border-[#1865EA] focus:ring-2 focus:ring-[#1865EA]/20"
-                />
-                <span className="pointer-events-none absolute right-3 bottom-2.5 text-[11px] font-medium text-[#94A3B8]">
-                  {descriptionLen}/{DESC_MAX}
-                </span>
-              </div>
-            </div>
-
-            <CategoryDropdown
-              value={form.categoryId}
-              onChange={(id) => setField("categoryId", id)}
-            />
-
-            <div>
-              <FieldLabel>Service images (Optional)</FieldLabel>
-              <div className="flex flex-wrap gap-2.5">
-                {(form.images || []).map((src, index) => (
-                  <div
-                    key={`${src}-${index}`}
-                    className="relative size-20 overflow-hidden rounded-xl border border-[#E2E8F0] bg-white"
-                  >
-                    <Image src={src} alt="" fill className="object-cover" unoptimized />
-                    <button
-                      type="button"
-                      onClick={() => removeImage(index)}
-                      className="absolute top-1 right-1 flex size-5 items-center justify-center rounded-full bg-black/55 text-[10px] font-bold text-white"
-                      aria-label="Remove photo"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-                <label
-                  htmlFor={fileInputId}
-                  className="flex min-h-[7.5rem] min-w-[9rem] flex-1 cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-[#93C5FD] bg-[#F4F7FF] px-4 py-5 transition-colors hover:bg-[#E8F1FF]"
-                >
-                  <span className="flex size-9 items-center justify-center rounded-xl bg-[#1865EA] text-white shadow-sm">
-                    <Plus className="size-5" strokeWidth={2.4} />
-                  </span>
-                  <span className="text-sm font-medium text-[#64748B]">Add Photo</span>
-                  <input
-                    id={fileInputId}
-                    ref={fileRef}
-                    type="file"
-                    accept="image/*"
-                    className="sr-only"
-                    onChange={handleAddPhoto}
-                  />
-                </label>
-              </div>
-            </div>
-
-            <DurationDropdown
-              value={form.duration}
-              onChange={(v) => setField("duration", v)}
-            />
-
-            {/* Pricing */}
-            <div className="space-y-3.5 rounded-2xl bg-[#F4F7FF] p-3.5 ring-1 ring-[#E8EEF8]">
+            <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <FieldLabel>Price</FieldLabel>
@@ -439,64 +482,64 @@ export function ProviderServiceFormView({ serviceId = null }) {
                   </div>
                 </div>
                 <div>
-                  <FieldLabel>Limited Price</FieldLabel>
-                  <div className="relative">
-                    <span className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-sm font-medium text-[#1865EA]">
-                      ₹
-                    </span>
+                  <FieldLabel>Discount Type</FieldLabel>
+                  <div className="flex h-11 items-center gap-1.5 rounded-xl border border-[#E2E8F0] bg-white px-2 pl-3">
                     <input
                       inputMode="numeric"
-                      value={form.limitedPrice}
+                      value={form.discountValue}
                       onChange={(e) =>
-                        setField("limitedPrice", e.target.value.replace(/[^\d.]/g, ""))
+                        setField("discountValue", e.target.value.replace(/[^\d.]/g, ""))
                       }
-                      className="h-11 w-full rounded-xl border border-[#E2E8F0] bg-white py-2 pr-3 pl-7 text-sm font-semibold text-[#1865EA] outline-none focus:border-[#1865EA] focus:ring-2 focus:ring-[#1865EA]/20"
+                      className="min-w-0 flex-1 bg-transparent text-sm font-semibold text-[#0F172A] outline-none"
+                      placeholder={form.discountType === "percent" ? "20" : "200"}
                     />
+                    <span className="text-sm font-medium text-[#64748B]">
+                      {form.discountType === "percent" ? "%" : "₹"}
+                    </span>
+                    <div className="flex shrink-0 overflow-hidden rounded-lg bg-[#EEF2F7] p-0.5">
+                      <button
+                        type="button"
+                        onClick={() => setField("discountType", "percent")}
+                        className={cn(
+                          "rounded-md px-2 py-1.5 text-xs font-bold transition-colors",
+                          form.discountType === "percent"
+                            ? "bg-[#1865EA] text-white"
+                            : "text-[#64748B]",
+                        )}
+                      >
+                        %
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setField("discountType", "rupee")}
+                        className={cn(
+                          "rounded-md px-2 py-1.5 text-xs font-bold transition-colors",
+                          form.discountType === "rupee"
+                            ? "bg-[#1865EA] text-white"
+                            : "text-[#64748B]",
+                        )}
+                      >
+                        ₹
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div>
-                <FieldLabel>Discount Type</FieldLabel>
-                <div className="flex h-11 items-center gap-2 rounded-xl border border-[#E2E8F0] bg-white px-2 pl-3.5">
+                <FieldLabel>Limited Price</FieldLabel>
+                <div className="relative">
+                  <span className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-sm font-medium text-[#1865EA]">
+                    ₹
+                  </span>
                   <input
                     inputMode="numeric"
-                    value={form.discountValue}
+                    value={form.limitedPrice}
                     onChange={(e) =>
-                      setField("discountValue", e.target.value.replace(/[^\d.]/g, ""))
+                      setField("limitedPrice", e.target.value.replace(/[^\d.]/g, ""))
                     }
-                    className="min-w-0 flex-1 bg-transparent text-sm font-semibold text-[#0F172A] outline-none"
-                    placeholder={form.discountType === "percent" ? "20" : "200"}
+                    className="h-11 w-full rounded-xl border border-[#E2E8F0] bg-white py-2 pr-3 pl-7 text-sm font-semibold text-[#1865EA] outline-none focus:border-[#1865EA] focus:ring-2 focus:ring-[#1865EA]/20"
                   />
-                  <span className="text-sm font-medium text-[#64748B]">
-                    {form.discountType === "percent" ? "%" : "₹"}
-                  </span>
-                  <div className="flex shrink-0 overflow-hidden rounded-lg bg-[#EEF2F7] p-0.5">
-                    <button
-                      type="button"
-                      onClick={() => setField("discountType", "percent")}
-                      className={cn(
-                        "rounded-md px-2.5 py-1.5 text-xs font-bold transition-colors",
-                        form.discountType === "percent"
-                          ? "bg-[#1865EA] text-white"
-                          : "text-[#64748B]",
-                      )}
-                    >
-                      %
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setField("discountType", "rupee")}
-                      className={cn(
-                        "rounded-md px-2.5 py-1.5 text-xs font-bold transition-colors",
-                        form.discountType === "rupee"
-                          ? "bg-[#1865EA] text-white"
-                          : "text-[#64748B]",
-                      )}
-                    >
-                      ₹
-                    </button>
-                  </div>
                 </div>
               </div>
 
@@ -515,83 +558,88 @@ export function ProviderServiceFormView({ serviceId = null }) {
                   />
                 </div>
               </div>
-            </div>
 
-            {/* Service type */}
-            <div className="overflow-hidden rounded-2xl bg-[#F4F7FF] ring-1 ring-[#E8EEF8]">
-              <div className="divide-y divide-[#E8EEF8]">
-                {SERVICE_TYPES.map((item) => {
-                  const Icon = item.icon;
-                  const checked = Boolean(form[item.key]);
-                  return (
-                    <div
-                      key={item.key}
-                      className="flex items-center gap-3 px-3.5 py-3.5"
-                    >
-                      <span
-                        className={cn(
-                          "flex size-10 shrink-0 items-center justify-center rounded-xl",
-                          item.iconWrap,
-                        )}
+              <div>
+                <FieldLabel>Service Type</FieldLabel>
+                <div className="space-y-2.5">
+                  {SERVICE_TYPES.map((item) => {
+                    const checked = Boolean(form[item.key]);
+                    return (
+                      <div
+                        key={item.key}
+                        className="flex items-center gap-3 rounded-2xl border border-[#E8EEF8] bg-white px-3.5 py-3.5"
                       >
-                        <Icon className="size-5" strokeWidth={1.9} />
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[14.5px] font-semibold text-[#0F172A]">
-                          {item.title}
-                        </p>
-                        <p className="mt-0.5 text-[12px] text-[#94A3B8]">
-                          {item.subtitle}
-                        </p>
+                        <span
+                          className={cn(
+                            "flex size-10 shrink-0 items-center justify-center rounded-xl",
+                            item.iconWrap,
+                          )}
+                        >
+                          <PackIcon src={item.icon} className="size-5" />
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[14.5px] font-semibold text-[#0F172A]">
+                            {item.title}
+                          </p>
+                          <p className="mt-0.5 text-[12px] text-[#94A3B8]">
+                            {item.subtitle}
+                          </p>
+                        </div>
+                        <ToggleSwitch
+                          checked={checked}
+                          onChange={(v) => setField(item.key, v)}
+                          label={item.title}
+                        />
                       </div>
-                      <ToggleSwitch
-                        checked={checked}
-                        onChange={(v) => setField(item.key, v)}
-                        label={item.title}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
 
-              {form.atHome ? (
-                <div className="flex items-center justify-between gap-3 border-t border-[#E8EEF8] px-3.5 py-3.5">
-                  <p className="text-[14.5px] font-semibold text-[#0F172A]">
-                    Travel Fee
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => adjustTravelFee(-50)}
-                      className="flex size-9 items-center justify-center rounded-xl bg-[#1865EA] text-white shadow-sm transition-opacity hover:opacity-90"
-                      aria-label="Decrease travel fee"
-                    >
-                      <Minus className="size-4" strokeWidth={2.4} />
-                    </button>
-                    <span className="min-w-[4.5rem] rounded-xl border border-[#E2E8F0] bg-white px-3 py-2 text-center text-sm font-bold text-[#0F172A]">
-                      ₹{Number(form.travelFee || 0)}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => adjustTravelFee(50)}
-                      className="flex size-9 items-center justify-center rounded-xl bg-[#1865EA] text-white shadow-sm transition-opacity hover:opacity-90"
-                      aria-label="Increase travel fee"
-                    >
-                      <Plus className="size-4" strokeWidth={2.4} />
-                    </button>
-                  </div>
+                  {form.atHome ? (
+                    <div className="flex items-center justify-between gap-3 rounded-2xl border border-[#E8EEF8] bg-white px-3.5 py-3.5">
+                      <p className="text-[14.5px] font-semibold text-[#0F172A]">
+                        Travel Fee
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => adjustTravelFee(-50)}
+                          className="flex size-9 items-center justify-center rounded-xl bg-[#1865EA] shadow-sm transition-opacity hover:opacity-90"
+                          aria-label="Decrease travel fee"
+                        >
+                          <PackIcon
+                            src={PROVIDER_ICONS.minus}
+                            className="size-4 brightness-0 invert"
+                          />
+                        </button>
+                        <span className="min-w-[4.5rem] rounded-xl border border-[#E2E8F0] bg-white px-3 py-2 text-center text-sm font-bold text-[#0F172A]">
+                          ₹{Number(form.travelFee || 0)}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => adjustTravelFee(50)}
+                          className="flex size-9 items-center justify-center rounded-xl bg-[#1865EA] shadow-sm transition-opacity hover:opacity-90"
+                          aria-label="Increase travel fee"
+                        >
+                          <PackIcon
+                            src={PROVIDER_ICONS.plus}
+                            className="size-4 brightness-0 invert"
+                          />
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
-              ) : null}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="sticky bottom-0 z-20 shrink-0 border-t border-[#E8EEF8] bg-white/95 px-4 py-3 backdrop-blur-sm lg:px-6">
-          <div className="mx-auto w-full max-w-3xl">
+        <div className="sticky bottom-0 z-20 shrink-0 border-t border-[#E8EEF8] bg-white/95 py-3 backdrop-blur-sm">
+          <div className={PROVIDER_PAGE_SHELL}>
             <button
               type="submit"
               disabled={saving}
-              className="flex h-12 w-full items-center justify-center rounded-xl bg-[#1865EA] text-base font-semibold text-white shadow-[0_8px_20px_rgba(24,101,234,0.28)] transition-opacity hover:opacity-95 disabled:opacity-60"
+              className="flex h-12 w-full items-center justify-center rounded-xl bg-gradient-to-b from-[#4B8BF5] to-[#1865EA] text-base font-semibold text-white shadow-[0_8px_20px_rgba(24,101,234,0.28)] transition-opacity hover:opacity-95 disabled:opacity-60"
             >
               {saving ? "Saving…" : "Save"}
             </button>

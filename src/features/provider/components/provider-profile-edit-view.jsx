@@ -4,17 +4,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Camera, Check, ChevronDown, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Calendar01Icon } from "@/components/icons/calendar01-icon";
 import {
   CountryCodePicker,
   CountryFlag,
   useCountry,
 } from "@/features/auth/components/auth-shared";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { ROUTES } from "@/constants/routes.constants";
 import { formatNationalPhone, parseNationalPhone } from "@/features/auth/lib/phone";
+import {
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { currentProvider } from "@/mock/providers";
 import { useProviderAuthStore, useProviderProfileStore } from "@/store";
 import { cn } from "@/lib/utils";
@@ -55,12 +58,7 @@ function GenderCard({ value, label, selected, imageSrc, onSelect }) {
       type="button"
       onClick={() => onSelect(value)}
       aria-pressed={selected}
-      className={cn(
-        "flex flex-1 items-center gap-2.5 rounded-2xl border bg-white px-3 py-3 text-left transition-colors",
-        selected
-          ? "border-[#1865EA] shadow-[0_0_0_1px_rgba(24,101,234,0.12)]"
-          : "border-[#E8EEF8]",
-      )}
+      className="flex flex-1 items-center gap-2.5 rounded-2xl border border-[#E8EEF8] bg-white px-3 py-3 text-left shadow-[0_2px_8px_rgba(15,23,42,0.04)] transition-colors"
     >
       <Image
         src={imageSrc}
@@ -69,7 +67,7 @@ function GenderCard({ value, label, selected, imageSrc, onSelect }) {
         height={40}
         className="size-10 shrink-0 object-contain"
       />
-      <span className="min-w-0 flex-1 text-[14px] font-semibold text-[#0F172A]">
+      <span className="min-w-0 flex-1 text-[14px] font-medium text-[#64748B]">
         {label}
       </span>
       <span
@@ -108,11 +106,14 @@ function DropdownField({
         <span className={value ? "text-[#111827]" : "text-[#ADB3B7]"}>
           {value || placeholder}
         </span>
-        <ChevronDown
+        <img
+          src={PROVIDER_ICONS.chevronDown}
+          alt=""
           className={cn(
-            "size-4 shrink-0 text-[#64748B] transition-transform",
+            "size-4 shrink-0 object-contain opacity-50 transition-transform",
             open && "rotate-180",
           )}
+          draggable={false}
         />
       </button>
       {open ? (
@@ -141,30 +142,20 @@ function DropdownField({
 
 function VerifiedBadge() {
   return (
-    <span className="inline-flex size-[18px] items-center justify-center rounded-full bg-[#16A34A] text-white">
-      <Check className="size-2.5" strokeWidth={3.5} />
-    </span>
-  );
-}
-
-function ClinicIcon() {
-  return (
-    <span className="flex size-14 items-center justify-center rounded-2xl bg-[#1865EA] text-white shadow-[0_6px_16px_rgba(24,101,234,0.3)]">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
-        <path
-          d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-5.5v-5h-3v5H5a1 1 0 0 1-1-1v-9.5Z"
-          fill="currentColor"
-          opacity="0.95"
-        />
-        <path d="M11 9h2v2h2v2h-2v2h-2v-2H9v-2h2V9Z" fill="white" />
-      </svg>
+    <span className="inline-flex size-[18px] items-center justify-center overflow-hidden rounded-full">
+      <img
+        src={PROVIDER_ICONS.verified}
+        alt=""
+        className="size-[18px] object-contain"
+        draggable={false}
+      />
     </span>
   );
 }
 
 function SegmentedTabs({ activeTab, onChange }) {
   return (
-    <div className="rounded-2xl bg-[#EEF2F8] p-1">
+    <div className="rounded-2xl bg-white p-1 shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
       <div className="grid grid-cols-2 gap-1">
         {TABS.map((tab) => {
           const active = activeTab === tab.id;
@@ -176,7 +167,7 @@ function SegmentedTabs({ activeTab, onChange }) {
               className={cn(
                 "h-11 rounded-xl text-[13.5px] font-semibold transition-all",
                 active
-                  ? "bg-gradient-to-r from-[#1865EA] to-[#3B82F6] text-white shadow-[0_4px_12px_rgba(24,101,234,0.28)]"
+                  ? "bg-gradient-to-br from-[#3B82F6] to-[#1865EA] text-white shadow-[0_4px_12px_rgba(24,101,234,0.28)]"
                   : "bg-transparent text-[#64748B]",
               )}
             >
@@ -304,13 +295,18 @@ function ProviderProfileEditInner() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F7FF]">
       <header className="sticky top-0 z-30 shrink-0 border-b border-[#E8EEF8] bg-[#F4F7FF]/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 max-w-3xl items-center gap-2 px-4 lg:px-6">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <Link
             href={backHref}
             className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-white/80"
             aria-label="Back"
           >
-            <ArrowLeft className="size-5" />
+            <img
+              src={PROVIDER_ICONS.arrowLeft}
+              alt=""
+              className="size-5 object-contain"
+              draggable={false}
+            />
           </Link>
           <h1 className="flex-1 truncate text-lg font-bold text-[#111827]">Profile</h1>
           <span className="size-10 shrink-0" aria-hidden />
@@ -320,7 +316,7 @@ function ProviderProfileEditInner() {
       <main className="min-h-0 flex-1 overflow-y-auto">
         <form
           onSubmit={handleSave}
-          className="mx-auto flex min-h-full w-full max-w-3xl flex-col px-4 pt-4 lg:px-6"
+          className={cn(PROVIDER_PAGE_SHELL, "flex min-h-full flex-col pt-4")}
         >
           <SegmentedTabs activeTab={activeTab} onChange={handleTabChange} />
 
@@ -340,10 +336,15 @@ function ProviderProfileEditInner() {
                   <button
                     type="button"
                     onClick={() => avatarInputRef.current?.click()}
-                    className="absolute right-0.5 bottom-0.5 flex size-9 items-center justify-center rounded-full bg-[#1865EA] text-white shadow-[0_4px_12px_rgba(24,101,234,0.4)]"
+                    className="absolute right-0.5 bottom-0.5 flex size-9 items-center justify-center rounded-full bg-[#1865EA] shadow-[0_4px_12px_rgba(24,101,234,0.4)]"
                     aria-label="Change profile photo"
                   >
-                    <Camera className="size-4" strokeWidth={2.2} />
+                    <img
+                      src={PROVIDER_ICONS.camera}
+                      alt=""
+                      className="size-4 object-contain brightness-0 invert"
+                      draggable={false}
+                    />
                   </button>
                   <input
                     ref={avatarInputRef}
@@ -398,7 +399,12 @@ function ProviderProfileEditInner() {
                     <span className="text-[14px] font-medium text-[#334155]">
                       {country.dialCode}
                     </span>
-                    <ChevronDown className="size-3.5 text-[#98A2B3]" />
+                    <img
+                      src={PROVIDER_ICONS.chevronDown}
+                      alt=""
+                      className="size-3.5 object-contain opacity-45"
+                      draggable={false}
+                    />
                   </button>
                   <input
                     type="tel"
@@ -427,9 +433,11 @@ function ProviderProfileEditInner() {
                       "pr-11 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0",
                     )}
                   />
-                  <Calendar01Icon
-                    className="pointer-events-none absolute top-1/2 right-3.5 size-5 -translate-y-1/2"
-                    aria-hidden
+                  <img
+                    src={PROVIDER_ICONS.calendarBlue}
+                    alt=""
+                    className="pointer-events-none absolute top-1/2 right-3.5 size-5 -translate-y-1/2 object-contain"
+                    draggable={false}
                   />
                 </div>
               </div>
@@ -472,10 +480,15 @@ function ProviderProfileEditInner() {
                     <button
                       type="button"
                       onClick={() => setCoverImage("")}
-                      className="absolute top-2.5 right-2.5 flex size-8 items-center justify-center rounded-full bg-[#EF4444] text-white shadow-md"
+                      className="absolute top-2.5 right-2.5 flex size-8 items-center justify-center rounded-full bg-white shadow-md"
                       aria-label="Remove cover image"
                     >
-                      <Trash2 className="size-3.5" strokeWidth={2.2} />
+                      <img
+                        src={PROVIDER_ICONS.trashRed}
+                        alt=""
+                        className="size-4 object-contain"
+                        draggable={false}
+                      />
                     </button>
                   </div>
                 ) : (
@@ -484,10 +497,15 @@ function ProviderProfileEditInner() {
                     onClick={() => coverInputRef.current?.click()}
                     className="flex h-40 w-full flex-col items-center justify-center gap-2 rounded-2xl border-[1.5px] border-dashed border-[#1865EA] bg-[#EEF4FF]"
                   >
-                    <span className="flex size-11 items-center justify-center rounded-xl bg-[#1865EA] text-white shadow-sm">
-                      <Plus className="size-5" strokeWidth={2.5} />
+                    <span className="flex size-11 items-center justify-center rounded-xl bg-[#1865EA] shadow-sm">
+                      <img
+                        src={PROVIDER_ICONS.plus}
+                        alt=""
+                        className="size-5 object-contain brightness-0 invert"
+                        draggable={false}
+                      />
                     </span>
-                    <span className="text-[13px] font-medium text-[#334155]">
+                    <span className="text-[13px] font-medium text-[#0F172A]">
                       Add Photo
                     </span>
                   </button>
@@ -502,13 +520,7 @@ function ProviderProfileEditInner() {
               </div>
 
               <div className="flex flex-col items-center pt-1">
-                {!coverImage ? <ClinicIcon /> : null}
-                <p
-                  className={cn(
-                    "text-[17px] font-bold text-[#0F172A]",
-                    !coverImage && "mt-3",
-                  )}
-                >
+                <p className="text-[17px] font-bold text-[#0F172A]">
                   {businessName.trim() || "Business name"}
                 </p>
                 <div className="mt-1 flex items-center gap-1.5">

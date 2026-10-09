@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { format, isToday, isValid, parseISO } from "date-fns";
-import { CalendarDays, User } from "lucide-react";
 
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { cn } from "@/lib/utils";
 
 function formatModalAppointmentTime(scheduledDate, scheduledTime) {
@@ -15,11 +15,11 @@ function formatModalAppointmentTime(scheduledDate, scheduledTime) {
   return `${format(parsed, "dd MMM")} ${scheduledTime}`;
 }
 
-function ModalInfoRow({ icon: Icon, label, value }) {
+function ModalInfoRow({ iconSrc, label, value }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#E8F1FF] text-[#1865EA]">
-        <Icon className="size-5" />
+      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#E8F1FF]">
+        <img src={iconSrc} alt="" className="size-5 object-contain" draggable={false} />
       </div>
       <div className="min-w-0">
         <p className="text-muted-foreground text-xs">{label}</p>
@@ -80,14 +80,19 @@ function RequestModalShell({
         >
           {title}
         </h2>
-        <p className="text-muted-foreground mx-auto mt-2 max-w-[300px] text-center text-sm leading-relaxed">
+        <div className="mt-4 border-t border-[#EEF2F7]" />
+        <p className="mx-auto mt-4 max-w-[300px] text-center text-sm leading-relaxed text-[#6B7280]">
           {description}
         </p>
 
         <div className="mt-5 space-y-4">
-          <ModalInfoRow icon={User} label="Patient Name" value={appointment.userName} />
           <ModalInfoRow
-            icon={CalendarDays}
+            iconSrc={PROVIDER_ICONS.user}
+            label="Patient Name"
+            value={appointment.userName}
+          />
+          <ModalInfoRow
+            iconSrc={PROVIDER_ICONS.calendar}
             label="Appointment Time"
             value={formatModalAppointmentTime(
               appointment.scheduledDate,

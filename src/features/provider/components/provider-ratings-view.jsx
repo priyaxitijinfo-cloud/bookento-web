@@ -2,14 +2,18 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Star } from "lucide-react";
-
 import { IllustrationEmptyState } from "@/components/shared/illustration-empty-state";
 import {
   ProviderReviewCard,
   ProviderStarRating,
 } from "@/features/provider/components/provider-review-card";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { providerRatingsReviewsRoute } from "@/constants/routes.constants";
+import {
+  PROVIDER_DESKTOP_GRID,
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { currentProvider } from "@/mock/providers";
 import { getRatingOverview, getReviewsByProvider } from "@/mock/reviews";
 import { cn } from "@/lib/utils";
@@ -50,14 +54,11 @@ function ProviderSummaryCard({ provider, overview, isEmpty }) {
             isEmpty ? "text-[#94A3B8]" : "text-[#F5A623]",
           )}
         >
-          <Star
-            className="size-4"
-            style={
-              isEmpty
-                ? { fill: "none", color: "#94A3B8" }
-                : { fill: STAR_ORANGE, color: STAR_ORANGE }
-            }
-            strokeWidth={isEmpty ? 1.6 : 0}
+          <img
+            src={isEmpty ? PROVIDER_ICONS.star : PROVIDER_ICONS.starFilled}
+            alt=""
+            className={cn("size-4 object-contain", isEmpty && "opacity-50 grayscale")}
+            draggable={false}
           />
           {ratingLabel}
         </span>
@@ -140,14 +141,19 @@ export function ProviderRatingsView() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F7FF]">
       <header className="sticky top-0 z-30 shrink-0 border-b border-[#E8EEF8] bg-[#F4F7FF]/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 max-w-3xl items-center gap-1 px-3 lg:px-6">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <button
             type="button"
             onClick={() => router.back()}
             className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-white/80"
             aria-label="Back"
           >
-            <ArrowLeft className="size-5" />
+            <img
+              src={PROVIDER_ICONS.arrowLeft}
+              alt=""
+              className="size-5 object-contain"
+              draggable={false}
+            />
           </button>
           <h1 className="flex-1 truncate text-[17px] font-bold text-[#111827]">
             My Ratings
@@ -156,18 +162,20 @@ export function ProviderRatingsView() {
       </header>
 
       <main className="min-h-0 flex-1 overflow-y-auto bg-[#F4F7FF]">
-        <div className="mx-auto w-full max-w-3xl space-y-4 px-4 pt-4 pb-8 lg:px-6">
-          <ProviderSummaryCard
-            provider={currentProvider}
-            overview={overview}
-            isEmpty={isEmpty}
-          />
-          <DistributionCard overview={overview} isEmpty={isEmpty} />
+        <div className={cn(PROVIDER_PAGE_SHELL, "space-y-4 pt-4 pb-8")}>
+          <div className={PROVIDER_DESKTOP_GRID}>
+            <ProviderSummaryCard
+              provider={currentProvider}
+              overview={overview}
+              isEmpty={isEmpty}
+            />
+            <DistributionCard overview={overview} isEmpty={isEmpty} />
+          </div>
 
           {isEmpty ? (
             <IllustrationEmptyState
               src="/icons/reviews-empty.svg"
-              title="No Reviews Yet"
+              title="Not Reviews Yet"
               description="Your reviews will appear here after patients share their feedback."
               className="min-h-0 py-10"
               imageClassName="size-[180px] w-[min(180px,70vw)]"
@@ -183,7 +191,7 @@ export function ProviderRatingsView() {
                   See all &gt;
                 </Link>
               </div>
-              <div className="space-y-3">
+              <div className={cn(PROVIDER_DESKTOP_GRID, "gap-3")}>
                 {previewReviews.map((review) => (
                   <ProviderReviewCard key={review.id} review={review} />
                 ))}

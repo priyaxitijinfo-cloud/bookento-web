@@ -4,13 +4,17 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { format, isValid, parseISO } from "date-fns";
-import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
 import { MessageBubble } from "@/components/chats/message-bubble";
 import { MessageInput } from "@/components/chats/message-input";
 import { Avatar } from "@/components/ui/avatar";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { ROUTES } from "@/constants/routes.constants";
+import {
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { getConversationById } from "@/mock/chat";
 import { currentProvider } from "@/mock/providers";
 import { useChatStore } from "@/store";
@@ -24,20 +28,12 @@ function formatMessageTime(date) {
 
 function CallIcon({ className }) {
   return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={cn("size-5", className)}
-      aria-hidden
-    >
-      <path
-        d="M16.2401 23.5136C9.00445 23.7491 -4.00214 10.7422 2.03886 3.68139L3.06214 2.78635C4.14256 1.73952 5.8515 1.75523 6.90594 2.82823C6.93192 2.8544 8.57852 5.01086 8.57852 5.01086C9.59661 6.08386 9.59141 7.77449 8.57332 8.84749L7.64873 9.95713C7.33707 10.3288 7.27474 10.8574 7.48771 11.2971C8.58371 13.5216 10.3706 15.3221 12.573 16.4318C13.0093 16.6516 13.5287 16.5888 13.9027 16.2695L15.0091 15.3326C16.0739 14.3067 17.7465 14.3067 18.8165 15.3274C18.8165 15.3274 20.9566 16.9866 20.9826 17.0128C22.0526 18.0962 22.0526 19.8497 20.9826 20.9331L20.1723 21.87C19.1334 22.9273 17.7205 23.5188 16.2401 23.5136Z"
-        fill="currentColor"
-      />
-    </svg>
+    <img
+      src={PROVIDER_ICONS.phoneDark}
+      alt=""
+      className={cn("size-5 object-contain", className)}
+      draggable={false}
+    />
   );
 }
 
@@ -69,7 +65,12 @@ function ProviderVoiceCallCard({ message }) {
       <div className="flex max-w-[85%] flex-col items-end gap-1 md:max-w-[70%]">
         <div className="flex items-center gap-3 rounded-2xl border border-[#EEF2F7] bg-white px-4 py-3 shadow-[0_2px_12px_rgba(15,23,42,0.06)]">
           <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#EFF6FF]">
-            <img src="/icons/call.svg" alt="" className="size-5" draggable={false} />
+            <img
+              src={PROVIDER_ICONS.phoneBlue}
+              alt=""
+              className="size-5 object-contain"
+              draggable={false}
+            />
           </span>
           <div className="min-w-0">
             <p className="text-sm font-semibold text-[#111827]">Voice Call</p>
@@ -134,13 +135,18 @@ export function ProviderChatThreadView() {
     return (
       <div className="flex min-h-0 flex-1 flex-col bg-[#F4F7FF]">
         <header className="sticky top-0 z-30 border-b border-[#E8EEF8] bg-white">
-          <div className="mx-auto flex h-14 max-w-3xl items-center gap-2 px-4 lg:px-6">
+          <div className={PROVIDER_MOBILE_HEADER}>
             <Link
               href={ROUTES.PROVIDER_CHATS}
               className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-[#F3F4F6]"
               aria-label="Back"
             >
-              <ArrowLeft className="size-5" />
+              <img
+                src={PROVIDER_ICONS.arrowLeft}
+                alt=""
+                className="size-5 object-contain"
+                draggable={false}
+              />
             </Link>
             <h1 className="text-lg font-bold text-[#111827]">Chat</h1>
           </div>
@@ -166,13 +172,18 @@ export function ProviderChatThreadView() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
       <header className="sticky top-0 z-30 shrink-0 border-b border-[#EEF2F7] bg-white">
-        <div className="mx-auto flex w-full max-w-3xl items-center gap-2 px-3 py-2.5 sm:gap-3 sm:px-4 lg:px-6">
+        <div className={cn(PROVIDER_MOBILE_HEADER, "sm:gap-3")}>
           <Link
             href={ROUTES.PROVIDER_CHATS}
             className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-[#F3F4F6]"
             aria-label="Back"
           >
-            <ArrowLeft className="size-5" />
+            <img
+              src={PROVIDER_ICONS.arrowLeft}
+              alt=""
+              className="size-5 object-contain"
+              draggable={false}
+            />
           </Link>
 
           <Avatar
@@ -212,7 +223,7 @@ export function ProviderChatThreadView() {
 
       <div
         className={cn(
-          "scrollbar-hide relative min-h-0 flex-1 overflow-y-auto px-4 py-4 lg:px-6",
+          "scrollbar-hide relative min-h-0 flex-1 overflow-y-auto py-4",
           "bg-[url('/icons/chat-bg.jpg')] bg-cover bg-center bg-no-repeat",
         )}
       >
@@ -221,7 +232,7 @@ export function ProviderChatThreadView() {
             Loading messages...
           </p>
         ) : (
-          <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
+          <div className={cn(PROVIDER_PAGE_SHELL, "flex flex-col gap-4")}>
             {messages.map((msg) => {
               if (msg.type === "call") {
                 return <ProviderVoiceCallCard key={msg.id} message={msg} />;
@@ -243,7 +254,7 @@ export function ProviderChatThreadView() {
         )}
       </div>
 
-      <div className="mx-auto w-full max-w-3xl shrink-0">
+      <div className={cn(PROVIDER_PAGE_SHELL, "shrink-0 px-0 lg:px-0")}>
         <MessageInput
           onSend={handleSend}
           onSendVoice={sendVoiceMessage}

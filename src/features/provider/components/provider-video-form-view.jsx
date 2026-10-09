@@ -3,10 +3,14 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Check, Pencil, Play, Plus, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { ROUTES } from "@/constants/routes.constants";
+import {
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
 import {
   emptyVideoForm,
@@ -18,6 +22,17 @@ import { formatCurrency } from "@/utils/format.utils";
 
 const DESC_MAX = 500;
 const FALLBACK_VIDEO = "/images/doctor-videos/video-1.png";
+
+function PackIcon({ src, className, alt = "" }) {
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={cn("object-contain", className)}
+      draggable={false}
+    />
+  );
+}
 
 function FieldLabel({ children, className }) {
   return (
@@ -69,8 +84,8 @@ function DiscountEmptyIllustration({ kind }) {
         </div>
       </div>
 
-      <div className="absolute right-3 bottom-14 flex size-9 items-center justify-center rounded-full bg-[#E8F1FF] text-[#1865EA] shadow-sm">
-        <Search className="size-4" />
+      <div className="absolute right-3 bottom-14 flex size-9 items-center justify-center rounded-full bg-[#E8F1FF] shadow-sm">
+        <PackIcon src={PROVIDER_ICONS.search} className="size-4" />
       </div>
 
       <span className="sr-only">{kind}</span>
@@ -99,19 +114,21 @@ function DiscountRow({ item, selected, onToggle }) {
       type="button"
       onClick={onToggle}
       className={cn(
-        "flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition-colors",
-        selected ? "bg-[#ECFDF5]" : "bg-white hover:bg-[#F8FAFF]",
+        "flex w-full items-start gap-3 rounded-xl border px-3 py-3 text-left transition-colors",
+        selected
+          ? "border-[#86EFAC] bg-[#ECFDF5]"
+          : "border-transparent bg-white hover:bg-[#F8FAFF]",
       )}
     >
       <span
         className={cn(
           "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors",
-          selected
-            ? "border-[#22C55E] bg-[#22C55E] text-white"
-            : "border-[#CBD5E1] bg-white",
+          selected ? "border-[#22C55E] bg-[#22C55E]" : "border-[#CBD5E1] bg-white",
         )}
       >
-        {selected ? <Check className="size-3" strokeWidth={3} /> : null}
+        {selected ? (
+          <PackIcon src={PROVIDER_ICONS.check} className="size-3 brightness-0 invert" />
+        ) : null}
       </span>
 
       <div className="min-w-0 flex-1">
@@ -135,7 +152,7 @@ function DiscountRow({ item, selected, onToggle }) {
           </span>
         </div>
         {item.offerLabel ? (
-          <span className="mt-1 inline-flex rounded-md bg-[#22C55E] px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-white">
+          <span className="mt-1 inline-flex rounded-md bg-[#DCFCE7] px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-[#16A34A]">
             {item.offerLabel}
           </span>
         ) : null}
@@ -283,25 +300,25 @@ export function ProviderVideoFormView({ videoId }) {
 
   const emptyKind = form.discountType === "packages" ? "packages" : "services";
   const emptyTitle =
-    form.discountType === "packages" ? "No Packages Yet" : "No Services Yet";
+    form.discountType === "packages" ? "Not Packages Yet" : "Not Service Yet";
   const emptySubtitle =
     form.discountType === "packages"
-      ? "You haven't added any packages yet. Add a package to make it available for selection."
+      ? "You haven't added any packages yet. Add a packages to make it available for selection."
       : "You haven't added any services yet. Add a service to make it available for selection.";
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F7FF]">
       <header className="sticky top-0 z-30 shrink-0 border-b border-[#E8EEF8] bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 max-w-3xl items-center gap-1 px-3 lg:px-6">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <button
             type="button"
             onClick={() => router.back()}
             className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-[#F4F7FF]"
             aria-label="Back"
           >
-            <ArrowLeft className="size-5" />
+            <PackIcon src={PROVIDER_ICONS.arrowLeft} className="size-5" />
           </button>
-          <h1 className="flex-1 truncate pr-10 text-center text-lg font-bold text-[#111827]">
+          <h1 className="flex-1 truncate text-[17px] font-bold text-[#111827]">
             {isEdit ? "Edit Videos" : "Upload Videos"}
           </h1>
         </div>
@@ -312,89 +329,105 @@ export function ProviderVideoFormView({ videoId }) {
         className="flex min-h-0 flex-1 flex-col overflow-hidden"
       >
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="mx-auto w-full max-w-3xl space-y-4 px-4 py-4 pb-6 lg:px-6 lg:py-6">
-            <div>
-              <FieldLabel>Upload Videos</FieldLabel>
-              <input
-                id={fileInputId}
-                ref={inputRef}
-                type="file"
-                accept="video/*,image/*"
-                className="sr-only"
-                onChange={handlePickVideo}
-              />
-
-              {form.thumbnail ? (
-                <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-[#E8F1FF]">
-                  <Image
-                    src={form.thumbnail || FALLBACK_VIDEO}
-                    alt=""
-                    fill
-                    className="object-cover"
-                    unoptimized
-                  />
-                  <div className="absolute bottom-2.5 left-2.5 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-[11px] font-semibold text-white">
-                    <Play className="size-3 fill-current" />
-                    {form.duration || "00.45"}
-                  </div>
-                  <div className="absolute top-2.5 right-2.5 flex gap-2">
-                    <label
-                      htmlFor={fileInputId}
-                      className="flex size-8 cursor-pointer items-center justify-center rounded-lg bg-white text-[#64748B] shadow-sm transition-opacity hover:opacity-90"
-                      aria-label="Replace video"
-                    >
-                      <Pencil className="size-3.5" />
-                    </label>
-                    <button
-                      type="button"
-                      onClick={handleDeleteFromPreview}
-                      className="flex size-8 items-center justify-center rounded-lg bg-[#EF4444] text-white shadow-sm transition-opacity hover:opacity-90"
-                      aria-label="Remove video"
-                    >
-                      <Trash2 className="size-3.5" />
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <label
-                  htmlFor={fileInputId}
-                  className="flex min-h-[9.5rem] cursor-pointer flex-col items-center justify-center gap-2.5 rounded-2xl border border-dashed border-[#93C5FD] bg-white px-4 py-6 transition-colors hover:bg-[#F8FAFF]"
-                >
-                  <span className="flex size-11 items-center justify-center rounded-xl bg-[#1865EA] text-white shadow-sm">
-                    <Plus className="size-5" strokeWidth={2.5} />
-                  </span>
-                  <span className="text-sm font-semibold text-[#0F172A]">
-                    Add Videos
-                  </span>
-                </label>
-              )}
-            </div>
-
-            <div>
-              <FieldLabel>Video Title</FieldLabel>
-              <input
-                value={form.title}
-                onChange={(e) => setField("title", e.target.value)}
-                placeholder="Write Video Title"
-                className="h-12 w-full rounded-xl border border-[#E2E8F0] bg-white px-3.5 text-sm text-[#0F172A] outline-none placeholder:text-[#94A3B8] focus:border-[#1865EA] focus:ring-2 focus:ring-[#1865EA]/20"
-              />
-            </div>
-
-            <div>
-              <FieldLabel>Description</FieldLabel>
-              <div className="relative">
-                <textarea
-                  value={form.description}
-                  onChange={(e) =>
-                    setField("description", e.target.value.slice(0, DESC_MAX))
-                  }
-                  placeholder="ABC..."
-                  rows={4}
-                  className="w-full resize-none rounded-xl border border-[#E2E8F0] bg-white px-3.5 py-3 pb-8 text-sm text-[#0F172A] outline-none placeholder:text-[#94A3B8] focus:border-[#1865EA] focus:ring-2 focus:ring-[#1865EA]/20"
+          <div
+            className={cn(
+              PROVIDER_PAGE_SHELL,
+              "space-y-4 py-4 pb-6 lg:grid lg:max-w-6xl lg:grid-cols-2 lg:gap-6 lg:space-y-0 lg:py-6",
+            )}
+          >
+            <div className="space-y-4">
+              <div>
+                <FieldLabel>Upload Videos</FieldLabel>
+                <input
+                  id={fileInputId}
+                  ref={inputRef}
+                  type="file"
+                  accept="video/*,image/*"
+                  className="sr-only"
+                  onChange={handlePickVideo}
                 />
-                <span className="pointer-events-none absolute right-3 bottom-2.5 text-[11px] font-medium text-[#94A3B8]">
-                  {form.description.length}/{DESC_MAX}
-                </span>
+
+                {form.thumbnail ? (
+                  <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-[#E8F1FF]">
+                    <Image
+                      src={form.thumbnail || FALLBACK_VIDEO}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                    <div className="absolute bottom-2.5 left-2.5 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-[11px] font-semibold text-white">
+                      <PackIcon
+                        src={PROVIDER_ICONS.play}
+                        className="size-3.5 brightness-0 invert"
+                      />
+                      {form.duration || "00.45"}
+                    </div>
+                    <div className="absolute top-2.5 right-2.5 flex gap-2">
+                      <label
+                        htmlFor={fileInputId}
+                        className="flex size-8 cursor-pointer items-center justify-center rounded-lg bg-white shadow-sm transition-opacity hover:opacity-90"
+                        aria-label="Replace video"
+                      >
+                        <PackIcon src={PROVIDER_ICONS.edit} className="size-3.5" />
+                      </label>
+                      <button
+                        type="button"
+                        onClick={handleDeleteFromPreview}
+                        className="flex size-8 items-center justify-center rounded-lg bg-[#EF4444] shadow-sm transition-opacity hover:opacity-90"
+                        aria-label="Remove video"
+                      >
+                        <PackIcon
+                          src={PROVIDER_ICONS.trashRed}
+                          className="size-3.5 brightness-0 invert"
+                        />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <label
+                    htmlFor={fileInputId}
+                    className="flex min-h-[9.5rem] cursor-pointer flex-col items-center justify-center gap-2.5 rounded-2xl border border-dashed border-[#93C5FD] bg-white px-4 py-6 transition-colors hover:bg-[#F8FAFF]"
+                  >
+                    <span className="flex size-11 items-center justify-center rounded-xl bg-[#1865EA] shadow-sm">
+                      <PackIcon
+                        src={PROVIDER_ICONS.plus}
+                        className="size-5 brightness-0 invert"
+                      />
+                    </span>
+                    <span className="text-sm font-semibold text-[#0F172A]">
+                      Add Videos
+                    </span>
+                  </label>
+                )}
+              </div>
+
+              <div>
+                <FieldLabel>Video Title</FieldLabel>
+                <input
+                  value={form.title}
+                  onChange={(e) => setField("title", e.target.value)}
+                  placeholder="Write Video Title"
+                  className="h-12 w-full rounded-xl border border-[#E2E8F0] bg-white px-3.5 text-sm text-[#0F172A] outline-none placeholder:text-[#94A3B8] focus:border-[#1865EA] focus:ring-2 focus:ring-[#1865EA]/20"
+                />
+              </div>
+
+              <div>
+                <FieldLabel>Description</FieldLabel>
+                <div className="relative">
+                  <textarea
+                    value={form.description}
+                    onChange={(e) =>
+                      setField("description", e.target.value.slice(0, DESC_MAX))
+                    }
+                    placeholder="ABC..."
+                    rows={4}
+                    className="w-full resize-none rounded-xl border border-[#E2E8F0] bg-white px-3.5 py-3 pb-8 text-sm text-[#0F172A] outline-none placeholder:text-[#94A3B8] focus:border-[#1865EA] focus:ring-2 focus:ring-[#1865EA]/20"
+                  />
+                  <span className="pointer-events-none absolute right-3 bottom-2.5 text-[11px] font-medium text-[#94A3B8]">
+                    {form.description.length}/{DESC_MAX}
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -440,7 +473,10 @@ export function ProviderVideoFormView({ videoId }) {
               <div className="mt-3 overflow-hidden rounded-2xl bg-white ring-1 ring-[#E8EEF8]">
                 <div className="border-b border-[#EEF1F6] p-3">
                   <div className="flex h-11 items-center gap-2 rounded-xl bg-[#F4F7FF] px-3">
-                    <Search className="size-4 shrink-0 text-[#94A3B8]" />
+                    <PackIcon
+                      src={PROVIDER_ICONS.search}
+                      className="size-4 shrink-0 opacity-50"
+                    />
                     <input
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
@@ -463,7 +499,7 @@ export function ProviderVideoFormView({ videoId }) {
                     </p>
                   </div>
                 ) : (
-                  <div className="divide-y divide-[#F1F5F9] p-1.5">
+                  <div className="space-y-1.5 p-1.5">
                     {discountItems.map((item) => (
                       <DiscountRow
                         key={item.id}
@@ -479,12 +515,12 @@ export function ProviderVideoFormView({ videoId }) {
           </div>
         </div>
 
-        <div className="shrink-0 border-t border-[#E8EEF8] bg-white/95 px-4 py-3 backdrop-blur-sm lg:px-6">
-          <div className="mx-auto w-full max-w-3xl">
+        <div className="shrink-0 border-t border-[#E8EEF8] bg-white/95 py-3 backdrop-blur-sm">
+          <div className={PROVIDER_PAGE_SHELL}>
             <button
               type="submit"
               disabled={saving}
-              className="flex h-12 w-full items-center justify-center rounded-xl bg-[#1865EA] text-base font-semibold text-white shadow-[0_8px_20px_rgba(24,101,234,0.28)] transition-opacity hover:opacity-95 disabled:opacity-60"
+              className="flex h-12 w-full items-center justify-center rounded-xl bg-gradient-to-b from-[#4B8BF5] to-[#1865EA] text-base font-semibold text-white shadow-[0_8px_20px_rgba(24,101,234,0.28)] transition-opacity hover:opacity-95 disabled:opacity-60"
             >
               Save Videos
             </button>

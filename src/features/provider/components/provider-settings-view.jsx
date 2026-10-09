@@ -4,30 +4,23 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import {
-  BadgePercent,
-  CalendarClock,
-  ChevronRight,
-  FileText,
-  ImagePlus,
-  Languages,
-  LayoutGrid,
-  LogOut,
-  Pencil,
-  Star,
-  Wrench,
-} from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
 import { LogoutConfirmResponsive } from "@/components/responsive/Dialogs";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
+import {
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { ROUTES } from "@/constants/routes.constants";
 import { currentProvider } from "@/mock/providers";
 import { useProviderAuthStore, useProviderProfileStore } from "@/store";
 import { cn } from "@/lib/utils";
 
-function SettingsSection({ title, children }) {
+function SettingsSection({ title, children, className }) {
   return (
-    <section>
+    <section className={className}>
       <div className="mb-3 flex items-center gap-2">
         <span className="h-4 w-1 shrink-0 rounded-full bg-[#1865EA]" aria-hidden />
         <h2 className="text-base font-bold text-[#1F2937]">{title}</h2>
@@ -39,7 +32,7 @@ function SettingsSection({ title, children }) {
   );
 }
 
-function SettingsMenuItem({ href, label, icon: Icon, iconWrapClass, onClick }) {
+function SettingsMenuItem({ href, label, iconSrc, iconWrapClass, onClick }) {
   const content = (
     <>
       <span
@@ -48,12 +41,12 @@ function SettingsMenuItem({ href, label, icon: Icon, iconWrapClass, onClick }) {
           iconWrapClass,
         )}
       >
-        <Icon className="size-5" strokeWidth={1.9} />
+        <img src={iconSrc} alt="" className="size-5 object-contain" draggable={false} />
       </span>
       <span className="min-w-0 flex-1 text-[14.5px] font-medium text-[#0F172A]">
         {label}
       </span>
-      <ChevronRight className="size-4 shrink-0 text-[#94A3B8]" />
+      <ChevronRight className="size-4 shrink-0 text-[#94A3B8]" strokeWidth={2.2} />
     </>
   );
 
@@ -127,144 +120,176 @@ export function ProviderSettingsView() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F7FF]">
       <header className="sticky top-0 z-20 border-b border-[#E8EEF8] bg-[#F4F7FF]/95 backdrop-blur-sm lg:hidden">
-        <div className="mx-auto flex h-14 max-w-3xl items-center px-4">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <h1 className="text-lg font-bold text-[#111827]">Settings</h1>
         </div>
       </header>
 
       <main className="min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-3xl space-y-5 px-4 py-5 lg:px-6 lg:py-8">
+        <div className={cn(PROVIDER_PAGE_SHELL, "space-y-5 py-5 lg:py-8")}>
           <h1 className="hidden text-2xl font-bold text-[#111827] lg:block">
             Settings
           </h1>
 
-          <div className="relative isolate overflow-hidden rounded-[1.35rem] bg-gradient-to-br from-[#1865EA] via-[#1A6CF0] to-[#4B8BF5] shadow-[0_10px_28px_rgba(24,101,234,0.28)]">
-            <div
-              className="pointer-events-none absolute inset-0 opacity-40"
-              aria-hidden
-              style={{
-                backgroundImage:
-                  "radial-gradient(circle at 88% 18%, rgba(255,255,255,0.28), transparent 38%), radial-gradient(circle at 12% 90%, rgba(255,255,255,0.12), transparent 40%)",
-              }}
-            />
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,22rem)_1fr] lg:items-start xl:grid-cols-[minmax(0,26rem)_1fr]">
+            <div className="relative isolate overflow-hidden rounded-[1.35rem] bg-gradient-to-br from-[#1865EA] via-[#1A6CF0] to-[#4B8BF5] shadow-[0_10px_28px_rgba(24,101,234,0.28)] lg:sticky lg:top-6">
+              <div
+                className="pointer-events-none absolute inset-0 opacity-40"
+                aria-hidden
+                style={{
+                  backgroundImage:
+                    "radial-gradient(circle at 88% 18%, rgba(255,255,255,0.28), transparent 38%), radial-gradient(circle at 12% 90%, rgba(255,255,255,0.12), transparent 40%)",
+                }}
+              />
 
-            <div className="relative z-10 p-4 pb-3.5">
-              <div className="flex items-start gap-3">
-                <div className="relative size-14 shrink-0 overflow-hidden rounded-full border-2 border-white/40 bg-white/20">
-                  <Image
-                    src={data.avatar || "/icons/provider-expert-logo.png"}
-                    alt=""
-                    fill
-                    className="object-cover"
-                    unoptimized
-                  />
+              <div className="relative z-10 p-4 pb-3.5">
+                <div className="flex items-start gap-3">
+                  <div className="relative size-14 shrink-0 overflow-hidden rounded-full border-2 border-white/40 bg-white/20">
+                    <Image
+                      src={data.avatar || "/icons/provider-expert-logo.png"}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1 pt-0.5">
+                    <p className="truncate text-[17px] font-bold text-white">
+                      {data.businessName}
+                    </p>
+                    <p className="mt-0.5 truncate text-[13px] font-medium text-white/85">
+                      {data.specialty}
+                    </p>
+                  </div>
+                  <Link
+                    href={ROUTES.PROVIDER_SETTINGS_PROFILE}
+                    className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm transition-opacity hover:opacity-90"
+                    aria-label="Edit profile"
+                  >
+                    <img
+                      src={PROVIDER_ICONS.edit}
+                      alt=""
+                      className="size-4 object-contain"
+                      draggable={false}
+                    />
+                  </Link>
                 </div>
-                <div className="min-w-0 flex-1 pt-0.5">
-                  <p className="truncate text-[17px] font-bold text-white">
-                    {data.businessName}
-                  </p>
-                  <p className="mt-0.5 truncate text-[13px] font-medium text-white/85">
-                    {data.specialty}
-                  </p>
-                </div>
-                <Link
-                  href={ROUTES.PROVIDER_SETTINGS_PROFILE}
-                  className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white text-[#1865EA] shadow-sm transition-opacity hover:opacity-90"
-                  aria-label="Edit profile"
-                >
-                  <Pencil className="size-4" strokeWidth={2.2} />
-                </Link>
+              </div>
+
+              <div className="relative z-10 grid grid-cols-3 border-t border-white/20 bg-[#0F4FCB]/35">
+                {[
+                  { label: "Earnings", value: stats.earnings },
+                  { label: "Bookings", value: stats.bookings },
+                  { label: "Reviews", value: stats.reviews },
+                ].map((item, index) => (
+                  <div
+                    key={item.label}
+                    className={cn(
+                      "flex flex-col items-center justify-center px-2 py-3.5",
+                      index > 0 && "border-l border-white/25",
+                    )}
+                  >
+                    <p className="text-[20px] leading-none font-bold tracking-tight text-white">
+                      {formatStat(item.value)}
+                    </p>
+                    <p className="mt-1.5 text-[11.5px] font-medium text-white/85">
+                      {item.label}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div className="relative z-10 grid grid-cols-3 border-t border-white/20 bg-[#0F4FCB]/35">
-              {[
-                { label: "Earnings", value: stats.earnings },
-                { label: "Bookings", value: stats.bookings },
-                { label: "Reviews", value: stats.reviews },
-              ].map((item, index) => (
-                <div
-                  key={item.label}
-                  className={cn(
-                    "flex flex-col items-center justify-center px-2 py-3.5",
-                    index > 0 && "border-l border-white/25",
-                  )}
-                >
-                  <p className="text-[20px] leading-none font-bold tracking-tight text-white">
-                    {formatStat(item.value)}
-                  </p>
-                  <p className="mt-1.5 text-[11.5px] font-medium text-white/85">
-                    {item.label}
-                  </p>
-                </div>
-              ))}
+            <div className="space-y-5">
+              <SettingsSection title="Business Info">
+                <SettingsMenuItem
+                  href={`${ROUTES.PROVIDER_SETTINGS_PROFILE}?tab=service`}
+                  label="Service Details"
+                  iconSrc={PROVIDER_ICONS.serviceDetails}
+                  iconWrapClass="bg-[#E8F1FF]"
+                />
+                <SettingsMenuItem
+                  href={ROUTES.PROVIDER_MEDIA}
+                  label="Upload Photo & Videos"
+                  iconSrc={PROVIDER_ICONS.uploadMedia}
+                  iconWrapClass="bg-[#FFE8EE]"
+                />
+                <SettingsMenuItem
+                  href={ROUTES.PROVIDER_SLOTS}
+                  label="Slot Management"
+                  iconSrc={PROVIDER_ICONS.slots}
+                  iconWrapClass="bg-[#FFE4EC]"
+                />
+              </SettingsSection>
+
+              <SettingsSection title="Operations">
+                <SettingsMenuItem
+                  href={ROUTES.PROVIDER_CATEGORIES}
+                  label="Suggest Category"
+                  iconSrc={PROVIDER_ICONS.category}
+                  iconWrapClass="bg-[#F3E8FF]"
+                />
+                <SettingsMenuItem
+                  href={ROUTES.PROVIDER_PACKAGES}
+                  label="Packages"
+                  iconSrc={PROVIDER_ICONS.packages}
+                  iconWrapClass="bg-[#E0F2FE]"
+                />
+                <SettingsMenuItem
+                  href={ROUTES.PROVIDER_RATINGS}
+                  label="My Ratings"
+                  iconSrc={PROVIDER_ICONS.ratings}
+                  iconWrapClass="bg-[#FFE8DE]"
+                />
+              </SettingsSection>
+
+              {/* Desktop-only extras — mobile Settings matches screenshot 05 */}
+              <SettingsSection title="More" className="hidden lg:block">
+                <SettingsMenuItem
+                  href={ROUTES.PROVIDER_SERVICES}
+                  label="My Services"
+                  iconSrc={PROVIDER_ICONS.document}
+                  iconWrapClass="bg-[#E0F2FE]"
+                />
+                <SettingsMenuItem
+                  href={ROUTES.PROVIDER_BRANCHES}
+                  label="Branches"
+                  iconSrc={PROVIDER_ICONS.building}
+                  iconWrapClass="bg-[#EEF2FF]"
+                />
+                <SettingsMenuItem
+                  href={ROUTES.PROVIDER_ANALYTICS}
+                  label="Analytics"
+                  iconSrc={PROVIDER_ICONS.filter}
+                  iconWrapClass="bg-[#ECFDF5]"
+                />
+                <SettingsMenuItem
+                  label="Language"
+                  iconSrc={PROVIDER_ICONS.language}
+                  iconWrapClass="bg-[#FFE4EC]"
+                  onClick={() => comingSoon("Language")}
+                />
+              </SettingsSection>
+
+              <button
+                type="button"
+                onClick={() => setLogoutOpen(true)}
+                className="flex w-full items-center gap-3 rounded-2xl border border-[#FECACA]/60 bg-[#FFF1F2] px-4 py-3.5 text-left transition-colors hover:bg-[#FFE4E6]"
+              >
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#FEE2E2]">
+                  <img
+                    src={PROVIDER_ICONS.logout}
+                    alt=""
+                    className="size-5 object-contain brightness-0"
+                    draggable={false}
+                  />
+                </span>
+                <span className="text-[14.5px] font-medium text-[#0F172A]">
+                  Sign out
+                </span>
+              </button>
             </div>
           </div>
-
-          <SettingsSection title="Business Info">
-            <SettingsMenuItem
-              href={`${ROUTES.PROVIDER_SETTINGS_PROFILE}?tab=service`}
-              label="Service Details"
-              icon={FileText}
-              iconWrapClass="bg-[#E8F1FF] text-[#1865EA]"
-            />
-            <SettingsMenuItem
-              href={ROUTES.PROVIDER_SERVICES}
-              label="My Services"
-              icon={Wrench}
-              iconWrapClass="bg-[#E0F2FE] text-[#0284C7]"
-            />
-            <SettingsMenuItem
-              href={ROUTES.PROVIDER_MEDIA}
-              label="Upload Photo & Videos"
-              icon={ImagePlus}
-              iconWrapClass="bg-[#FFE8EE] text-[#EC407A]"
-            />
-            <SettingsMenuItem
-              href={ROUTES.PROVIDER_SLOTS}
-              label="Slot Management"
-              icon={CalendarClock}
-              iconWrapClass="bg-[#FFE4EC] text-[#E91E63]"
-            />
-          </SettingsSection>
-
-          <SettingsSection title="Operations">
-            <SettingsMenuItem
-              href={ROUTES.PROVIDER_CATEGORIES}
-              label="Suggest Category"
-              icon={LayoutGrid}
-              iconWrapClass="bg-[#F3E8FF] text-[#9333EA]"
-            />
-            <SettingsMenuItem
-              href={ROUTES.PROVIDER_PACKAGES}
-              label="Packages"
-              icon={BadgePercent}
-              iconWrapClass="bg-[#E0F2FE] text-[#0284C7]"
-            />
-            <SettingsMenuItem
-              href={ROUTES.PROVIDER_RATINGS}
-              label="My Ratings"
-              icon={Star}
-              iconWrapClass="bg-[#FFE8DE] text-[#EA580C]"
-            />
-            <SettingsMenuItem
-              label="Language"
-              icon={Languages}
-              iconWrapClass="bg-[#FFE4EC] text-[#DB2777]"
-              onClick={() => comingSoon("Language")}
-            />
-          </SettingsSection>
-
-          <button
-            type="button"
-            onClick={() => setLogoutOpen(true)}
-            className="flex w-full items-center gap-3 rounded-2xl border border-[#FECACA]/60 bg-[#FFF1F2] px-4 py-3.5 text-left transition-colors hover:bg-[#FFE4E6]"
-          >
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#F97316] to-[#EF4444] text-white shadow-sm">
-              <LogOut className="size-5" strokeWidth={2} />
-            </span>
-            <span className="text-[14.5px] font-medium text-[#0F172A]">Sign out</span>
-          </button>
         </div>
       </main>
 

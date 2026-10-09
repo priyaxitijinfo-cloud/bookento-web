@@ -14,7 +14,7 @@ function NotificationTimeMeta({ notification }) {
       <span
         className={cn(
           "size-2 shrink-0 rounded-full",
-          notification.isRead ? "bg-transparent" : "bg-primary",
+          notification.isRead ? "bg-transparent" : "bg-[#1865EA]",
         )}
         aria-hidden={notification.isRead}
         aria-label={notification.isRead ? undefined : "Unread"}

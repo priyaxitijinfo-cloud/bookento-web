@@ -5,34 +5,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
-import {
-  ArrowLeft,
-  Check,
-  ClipboardList,
-  Clock3,
-  Copy,
-  Info,
-  Lock,
-  Mail,
-  MessageCircle,
-  Phone,
-  Shield,
-  UserRound,
-} from "lucide-react";
+import { Check } from "lucide-react";
 import { toast } from "sonner";
 
 import { OtpBoxes, useOtpCountdown } from "@/features/auth/components/auth-shared";
-import {
-  BookingCalendarIcon,
-  BookingLocationIcon,
-  BookingPhoneIcon,
-} from "@/components/icons/booking-detail-icons";
 import { ProviderVisitBadge } from "@/features/provider/components/provider-visit-badge";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import {
   ROUTES,
   providerAppointmentDetailRoute,
   providerChatDetailRoute,
 } from "@/constants/routes.constants";
+import {
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { APPOINTMENT_STATUS } from "@/constants/status.constants";
 import { providerConversations } from "@/mock/chat";
 import { useAppointmentStore } from "@/store";
@@ -72,6 +59,17 @@ const COMPLETABLE_STATUSES = [
   APPOINTMENT_STATUS.CONFIRMED,
 ];
 
+function PackIcon({ src, className }) {
+  return (
+    <img
+      src={src}
+      alt=""
+      className={cn("object-contain", className)}
+      draggable={false}
+    />
+  );
+}
+
 function ShieldLockIllustration({ className }) {
   return (
     <div className={cn("relative mx-auto flex items-center justify-center", className)}>
@@ -84,14 +82,11 @@ function ShieldLockIllustration({ className }) {
         +
       </span>
       <div className="relative flex size-24 items-center justify-center rounded-full bg-[#E8F1FF] shadow-[0_8px_24px_rgba(24,101,234,0.12)]">
-        <div className="flex size-16 items-center justify-center rounded-2xl bg-[#1865EA] text-white shadow-md">
-          <div className="relative">
-            <Shield className="size-9 fill-white/15" strokeWidth={1.75} />
-            <Lock
-              className="absolute inset-0 m-auto size-4 text-white"
-              strokeWidth={2.4}
-            />
-          </div>
+        <div className="flex size-16 items-center justify-center rounded-2xl bg-[#1865EA] shadow-md">
+          <PackIcon
+            src={PROVIDER_ICONS.security}
+            className="size-8 brightness-0 invert"
+          />
         </div>
       </div>
     </div>
@@ -221,11 +216,11 @@ function OtpVerifiedModal({ open, onBackHome }) {
   );
 }
 
-function InfoRow({ icon: Icon, label, children }) {
+function InfoRow({ iconSrc, label, children }) {
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-[#E6EAF2] bg-white px-4 py-3.5">
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#EEF4FF] text-[#1865EA]">
-        <Icon className="size-4" />
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#EEF4FF]">
+        <PackIcon src={iconSrc} className="size-4" />
       </span>
       <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
         <p className="text-sm font-medium text-[#4D5972]">{label}</p>
@@ -261,14 +256,14 @@ function CompletionOtpView({ onBack, onVerified }) {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F7FF]">
       <header className="sticky top-0 z-30 shrink-0 border-b border-[#E8EEF8] bg-[#F4F7FF]/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 max-w-3xl items-center gap-2 px-4 lg:px-6">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <button
             type="button"
             onClick={onBack}
             className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-white/80"
             aria-label="Back"
           >
-            <ArrowLeft className="size-5" />
+            <PackIcon src={PROVIDER_ICONS.arrowLeft} className="size-5" />
           </button>
           <h1 className="flex-1 truncate text-center text-lg font-bold text-[#111827]">
             User Details
@@ -278,7 +273,7 @@ function CompletionOtpView({ onBack, onVerified }) {
       </header>
 
       <main className="min-h-0 flex-1 overflow-y-auto bg-[#F4F7FF]">
-        <div className="mx-auto flex w-full max-w-3xl flex-col px-4 pt-6 pb-8 lg:px-6">
+        <div className={cn(PROVIDER_PAGE_SHELL, "flex flex-col pt-6 pb-8")}>
           <div className="flex flex-col items-center text-center">
             <Image
               src="/images/auth/otp-illustration.png?v=1"
@@ -317,7 +312,7 @@ function CompletionOtpView({ onBack, onVerified }) {
           </div>
 
           <div className="mt-4 flex items-start gap-2.5 rounded-xl bg-[#E8F1FF] px-3.5 py-3">
-            <Info className="mt-0.5 size-4 shrink-0 text-[#1865EA]" />
+            <PackIcon src={PROVIDER_ICONS.info} className="mt-0.5 size-4 shrink-0" />
             <p className="text-sm text-[#374151]">
               Do not share this code with anyone.
             </p>
@@ -424,13 +419,13 @@ export function ProviderBookingDetailsView({ appointmentId }) {
   return (
     <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F7FF]">
       <header className="sticky top-0 z-30 shrink-0 border-b border-[#E8EEF8] bg-[#F4F7FF]/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 max-w-3xl items-center gap-2 px-4 lg:px-6">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <Link
             href={ROUTES.PROVIDER_APPOINTMENTS}
             className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-white/80"
             aria-label="Back"
           >
-            <ArrowLeft className="size-5" />
+            <PackIcon src={PROVIDER_ICONS.arrowLeft} className="size-5" />
           </Link>
           <h1 className="flex-1 truncate text-center text-lg font-bold text-[#111827]">
             Booking Details
@@ -440,7 +435,7 @@ export function ProviderBookingDetailsView({ appointmentId }) {
       </header>
 
       <main className="min-h-0 flex-1 overflow-y-auto bg-[#F4F7FF]">
-        <div className="mx-auto w-full max-w-3xl space-y-4 px-4 pt-4 pb-6 lg:px-6">
+        <div className={cn(PROVIDER_PAGE_SHELL, "space-y-4 pt-4 pb-6")}>
           <section className="overflow-hidden rounded-2xl border border-[#E6EAF2] bg-white shadow-[0_2px_12px_rgba(15,23,42,0.04)]">
             <div className="flex items-start gap-3.5 p-4">
               {appointment.userAvatar ? (
@@ -463,19 +458,28 @@ export function ProviderBookingDetailsView({ appointmentId }) {
                 </p>
                 {appointment.userPhone ? (
                   <p className="flex items-center gap-2 text-sm text-[#4D5972]">
-                    <BookingPhoneIcon className="size-4 shrink-0 text-[#6B7280]" />
+                    <PackIcon
+                      src={PROVIDER_ICONS.phoneMono}
+                      className="size-4 shrink-0 opacity-70"
+                    />
                     <span className="truncate">{appointment.userPhone}</span>
                   </p>
                 ) : null}
                 {appointment.userEmail ? (
                   <p className="flex items-center gap-2 text-sm text-[#4D5972]">
-                    <Mail className="size-4 shrink-0 text-[#6B7280]" />
+                    <PackIcon
+                      src={PROVIDER_ICONS.mail}
+                      className="size-4 shrink-0 opacity-70"
+                    />
                     <span className="truncate">{appointment.userEmail}</span>
                   </p>
                 ) : null}
                 {appointment.locationName ? (
                   <p className="flex items-center gap-2 text-sm text-[#4D5972]">
-                    <BookingLocationIcon className="size-4 shrink-0 text-[#6B7280]" />
+                    <PackIcon
+                      src={PROVIDER_ICONS.location}
+                      className="size-4 shrink-0 opacity-70"
+                    />
                     <span className="truncate">{appointment.locationName}</span>
                   </p>
                 ) : null}
@@ -500,7 +504,7 @@ export function ProviderBookingDetailsView({ appointmentId }) {
                   {copiedBookingId ? (
                     <Check className="size-4" strokeWidth={2.5} />
                   ) : (
-                    <Copy className="size-4" />
+                    <PackIcon src={PROVIDER_ICONS.copy} className="size-4" />
                   )}
                 </button>
               </div>
@@ -510,8 +514,8 @@ export function ProviderBookingDetailsView({ appointmentId }) {
           {canComplete ? (
             <section className="rounded-2xl border border-[#C9DBFF] bg-[#EAF2FF] p-4 shadow-[0_2px_12px_rgba(15,23,42,0.03)]">
               <div className="flex items-start gap-3">
-                <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-[#1865EA] shadow-sm">
-                  <Shield className="size-5" />
+                <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white shadow-sm">
+                  <PackIcon src={PROVIDER_ICONS.security} className="size-5" />
                 </div>
                 <div className="min-w-0">
                   <p className="text-base font-bold text-[#111827]">
@@ -538,24 +542,27 @@ export function ProviderBookingDetailsView({ appointmentId }) {
             </h2>
             <div className="space-y-3">
               <div className="flex items-center gap-3 rounded-2xl border border-[#E6EAF2] bg-white px-4 py-3.5">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#EEF4FF] text-[#1865EA]">
-                  <BookingCalendarIcon className="size-4" />
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#EEF4FF]">
+                  <PackIcon src={PROVIDER_ICONS.calendar} className="size-4" />
                 </span>
                 <div className="flex min-w-0 flex-1 items-center gap-2 text-sm font-medium text-[#111827]">
                   <span className="truncate">{dateLabel}</span>
                   <span className="text-[#D1D5DB]">|</span>
                   <span className="inline-flex shrink-0 items-center gap-1.5">
-                    <Clock3 className="size-3.5 text-[#6B7280]" />
+                    <PackIcon
+                      src={PROVIDER_ICONS.clock}
+                      className="size-3.5 opacity-70"
+                    />
                     {appointment.scheduledTime}
                   </span>
                 </div>
               </div>
 
-              <InfoRow icon={UserRound} label="Consultation Type">
+              <InfoRow iconSrc={PROVIDER_ICONS.user} label="Consultation Type">
                 <ProviderVisitBadge visitType={appointment.visitType} />
               </InfoRow>
 
-              <InfoRow icon={ClipboardList} label="Status">
+              <InfoRow iconSrc={PROVIDER_ICONS.analytics} label="Status">
                 <span
                   className={cn(
                     "inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-semibold",
@@ -566,7 +573,7 @@ export function ProviderBookingDetailsView({ appointmentId }) {
                 </span>
               </InfoRow>
 
-              <InfoRow icon={ClipboardList} label="Reason for visit">
+              <InfoRow iconSrc={PROVIDER_ICONS.document} label="Reason for visit">
                 <span className="text-sm font-semibold text-[#111827]">
                   {appointment.serviceName}
                 </span>
@@ -577,12 +584,12 @@ export function ProviderBookingDetailsView({ appointmentId }) {
       </main>
 
       <div className="safe-bottom shrink-0 border-t border-[#EEF2F7] bg-white">
-        <div className="mx-auto flex w-full max-w-3xl gap-3 px-4 py-3 lg:px-6">
+        <div className={cn(PROVIDER_PAGE_SHELL, "flex gap-3 py-3")}>
           <Link
             href={chatHref}
             className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-[#E8F1FF] text-sm font-semibold text-[#1865EA] transition-colors hover:bg-[#DCE9FF]"
           >
-            <MessageCircle className="size-4" />
+            <PackIcon src={PROVIDER_ICONS.chats} className="size-4" />
             Chats
           </Link>
           {appointment.userPhone ? (
@@ -590,7 +597,7 @@ export function ProviderBookingDetailsView({ appointmentId }) {
               href={`tel:${appointment.userPhone.replace(/\s+/g, "")}`}
               className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-[#E6F7ED] text-sm font-semibold text-[#1B9E5A] transition-colors hover:bg-[#D8F2E4]"
             >
-              <Phone className="size-4" />
+              <PackIcon src={PROVIDER_ICONS.phone} className="size-4" />
               Call
             </a>
           ) : (
@@ -599,7 +606,7 @@ export function ProviderBookingDetailsView({ appointmentId }) {
               disabled
               className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-[#E6F7ED] text-sm font-semibold text-[#1B9E5A] opacity-60"
             >
-              <Phone className="size-4" />
+              <PackIcon src={PROVIDER_ICONS.phone} className="size-4" />
               Call
             </button>
           )}

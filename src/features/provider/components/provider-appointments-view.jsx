@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { format, isValid, parseISO } from "date-fns";
-import { ArrowLeft, CalendarDays, Info, Search, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { ProviderAppointmentRequestCard } from "@/features/provider/components/provider-appointment-request-card";
@@ -16,8 +15,14 @@ import {
   ProviderVisitBadge,
   getScheduleDotClass,
 } from "@/features/provider/components/provider-visit-badge";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { ROUTES, providerAppointmentDetailRoute } from "@/constants/routes.constants";
 import { APPOINTMENT_STATUS } from "@/constants/status.constants";
+import {
+  PROVIDER_DESKTOP_GRID,
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { useAppointmentStore } from "@/store";
 import { cn } from "@/lib/utils";
 import { getLocalDateKey, isTodayDate } from "@/utils/format.utils";
@@ -30,8 +35,8 @@ const TABS = [
 ];
 
 const TAB_ACTIVE_CLASS = {
-  upcoming: "border-[#1865EA] bg-[#E8F1FF] text-[#1865EA]",
-  pending: "border-[#F97316] bg-white text-[#F97316]",
+  upcoming: "border-[#1865EA] bg-white text-[#1865EA]",
+  pending: "border-[#F97316] bg-[#FFF4ED] text-[#F97316]",
   completed: "border-[#16A34A] bg-white text-[#16A34A]",
   cancelled: "border-[#EF4444] bg-white text-[#EF4444]",
 };
@@ -148,9 +153,14 @@ function TimelineAppointmentRow({
                   }}
                   aria-label="Appointment info"
                 >
-                  <Info className="size-3.5 text-[#1865EA]" />
+                  <img
+                    src={PROVIDER_ICONS.info}
+                    alt=""
+                    className="size-3.5 object-contain"
+                    draggable={false}
+                  />
                   {tipOpen ? (
-                    <span className="absolute top-5 left-0 z-20 w-[220px] rounded-xl bg-[#111827] px-3 py-2 text-[11px] leading-relaxed font-normal text-white shadow-lg sm:w-[260px]">
+                    <span className="absolute top-5 left-0 z-20 w-[220px] rounded-xl border border-[#E5E7EB] bg-white px-3 py-2 text-[11px] leading-relaxed font-normal text-[#6B7280] shadow-[0_8px_24px_rgba(15,23,42,0.12)] sm:w-[260px]">
                       {appointment.unavailableReason}
                     </span>
                   ) : null}
@@ -158,9 +168,8 @@ function TimelineAppointmentRow({
               ) : null}
             </div>
             {showBookingId ? (
-              <p className="text-muted-foreground mt-1 text-xs">
-                Booking ID:-{" "}
-                <span className="font-semibold text-[#111827]">{bookingId}</span>
+              <p className="mt-1 text-xs font-semibold text-[#111827]">
+                Booking ID:- {bookingId}
               </p>
             ) : null}
           </div>
@@ -211,7 +220,7 @@ export function ProviderAppointmentsView() {
   const { providerAppointments, updateStatus } = useAppointmentStore();
 
   const [tab, setTab] = useState(
-    TABS.some((item) => item.id === tabParam) ? tabParam : "pending",
+    TABS.some((item) => item.id === tabParam) ? tabParam : "upcoming",
   );
   const [searchOpen, setSearchOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -261,15 +270,20 @@ export function ProviderAppointmentsView() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F7FF]">
       <header className="sticky top-0 z-30 shrink-0 border-b border-[#E8EEF8] bg-[#F4F7FF]/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 max-w-3xl items-center gap-2 px-4 lg:px-6">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <Link
             href={ROUTES.PROVIDER_HOME}
             className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-white/80"
             aria-label="Back"
           >
-            <ArrowLeft className="size-5" />
+            <img
+              src={PROVIDER_ICONS.arrowLeft}
+              alt=""
+              className="size-5 object-contain"
+              draggable={false}
+            />
           </Link>
-          <h1 className="flex-1 truncate text-center text-lg font-bold text-[#111827]">
+          <h1 className="min-w-0 flex-1 truncate text-lg font-bold text-[#111827]">
             Appointments
           </h1>
           <button
@@ -278,21 +292,45 @@ export function ProviderAppointmentsView() {
             className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-white/80"
             aria-label="Search appointments"
           >
-            {searchOpen ? <X className="size-5" /> : <Search className="size-5" />}
+            {searchOpen ? (
+              <img
+                src={PROVIDER_ICONS.closeCircle}
+                alt=""
+                className="size-5 object-contain"
+                draggable={false}
+              />
+            ) : (
+              <img
+                src={PROVIDER_ICONS.search}
+                alt=""
+                className="size-5 object-contain"
+                draggable={false}
+              />
+            )}
           </button>
           <Link
             href={ROUTES.PROVIDER_APPOINTMENTS}
-            className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#1865EA] transition-colors hover:bg-white/80"
+            className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#E8F1FF] transition-colors hover:bg-[#D6E6FF]"
             aria-label="Calendar"
           >
-            <CalendarDays className="size-5" />
+            <img
+              src={PROVIDER_ICONS.calendarBlue}
+              alt=""
+              className="size-5 object-contain"
+              draggable={false}
+            />
           </Link>
         </div>
 
         {searchOpen && (
-          <div className="mx-auto max-w-3xl px-4 pb-3 lg:px-6">
+          <div className={cn(PROVIDER_PAGE_SHELL, "pb-3")}>
             <div className="relative">
-              <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+              <img
+                src={PROVIDER_ICONS.search}
+                alt=""
+                className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 object-contain opacity-50"
+                draggable={false}
+              />
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
@@ -306,8 +344,8 @@ export function ProviderAppointmentsView() {
       </header>
 
       <main className="min-h-0 flex-1 overflow-y-auto bg-[#F4F7FF]">
-        <div className="mx-auto w-full max-w-3xl px-4 pt-4 pb-6 lg:px-6">
-          <div className="mb-4 grid grid-cols-4 gap-1.5 sm:gap-2">
+        <div className={cn(PROVIDER_PAGE_SHELL, "pt-4 pb-6")}>
+          <div className="-mx-1 mb-4 flex [scrollbar-width:none] gap-2 overflow-x-auto px-1 pb-1 [&::-webkit-scrollbar]:hidden">
             {TABS.map((item) => {
               const active = tab === item.id;
               return (
@@ -316,10 +354,10 @@ export function ProviderAppointmentsView() {
                   type="button"
                   onClick={() => setTab(item.id)}
                   className={cn(
-                    "h-10 rounded-xl border text-[11px] font-semibold transition-colors sm:text-sm",
+                    "h-10 shrink-0 rounded-full border px-4 text-sm font-semibold transition-colors",
                     active
                       ? TAB_ACTIVE_CLASS[item.id]
-                      : "border-[#E5E7EB] bg-white text-[#9CA3AF]",
+                      : "border-[#E5E7EB] bg-white text-[#6B7280]",
                   )}
                 >
                   {item.label}
@@ -329,7 +367,7 @@ export function ProviderAppointmentsView() {
           </div>
 
           {tab === "pending" ? (
-            <div className="space-y-3">
+            <div className={PROVIDER_DESKTOP_GRID}>
               {filtered.map((apt) => (
                 <ProviderAppointmentRequestCard
                   key={apt.id}

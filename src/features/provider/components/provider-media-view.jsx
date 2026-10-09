@@ -4,19 +4,14 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import {
-  ArrowLeft,
-  Eye,
-  ImageIcon,
-  MoreVertical,
-  Pencil,
-  Plus,
-  Trash2,
-  X,
-} from "lucide-react";
 import { toast } from "sonner";
 
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { ROUTES, providerMediaVideoEditRoute } from "@/constants/routes.constants";
+import {
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { cn } from "@/lib/utils";
 import {
   formatCompactViews,
@@ -27,6 +22,17 @@ const MAX_PHOTOS_PER_UPLOAD = 5;
 const FALLBACK_PHOTO = "/images/nearby-bright-dental.png";
 const FALLBACK_VIDEO = "/images/doctor-videos/video-1.png";
 
+function PackIcon({ src, className, alt = "" }) {
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={cn("object-contain", className)}
+      draggable={false}
+    />
+  );
+}
+
 function PhotosEmptyIllustration() {
   return (
     <div className="relative mx-auto mb-6 flex h-48 w-56 items-end justify-center">
@@ -34,6 +40,7 @@ function PhotosEmptyIllustration() {
       <span className="absolute top-12 right-12 size-1 rounded-full bg-[#60A5FA]" />
       <span className="absolute top-20 left-16 size-1 rounded-full bg-[#BFDBFE]" />
       <span className="absolute right-10 bottom-32 size-1.5 rounded-full bg-[#93C5FD]" />
+      <span className="absolute top-10 right-16 text-[10px] text-[#93C5FD]">✦</span>
 
       <div className="absolute bottom-12 left-2 flex flex-col items-center">
         <div className="mb-0.5 flex items-end gap-0.5">
@@ -52,7 +59,7 @@ function PhotosEmptyIllustration() {
                 key={i}
                 className="flex size-7 items-center justify-center rounded-md bg-white shadow-sm"
               >
-                <ImageIcon className="size-3.5 text-[#93C5FD]" strokeWidth={2} />
+                <PackIcon src={PROVIDER_ICONS.gallery} className="size-3.5" />
               </span>
             ))}
           </div>
@@ -76,6 +83,7 @@ function VideosEmptyIllustration() {
       <span className="absolute top-8 left-12 size-1.5 rounded-full bg-[#93C5FD]" />
       <span className="absolute top-14 right-14 size-1 rounded-full bg-[#60A5FA]" />
       <span className="absolute right-10 bottom-36 size-1.5 rounded-full bg-[#93C5FD]" />
+      <span className="absolute top-12 right-10 text-[10px] text-[#93C5FD]">✦</span>
 
       <div className="absolute bottom-14 left-3 flex flex-col items-center">
         <div className="mb-0.5 flex items-end gap-0.5">
@@ -94,9 +102,7 @@ function VideosEmptyIllustration() {
             <span className="h-2.5 w-3 rounded-sm bg-white/70" />
           </div>
           <div className="flex h-16 items-center justify-center bg-[#E8F1FF]">
-            <span className="flex size-10 items-center justify-center rounded-full bg-[#1865EA] text-white shadow-sm">
-              <span className="ml-0.5 size-0 border-y-[6px] border-l-[10px] border-y-transparent border-l-white" />
-            </span>
+            <PackIcon src={PROVIDER_ICONS.play} className="size-10" />
           </div>
         </div>
       </div>
@@ -159,7 +165,7 @@ function UploadPhotosModal({ open, onClose, onSave }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="upload-photos-title"
-        className="relative w-full max-w-[360px] rounded-[1.5rem] bg-white px-5 pt-6 pb-5 shadow-[0_20px_60px_rgba(15,23,42,0.18)]"
+        className="relative w-full max-w-[360px] rounded-[1.5rem] bg-white px-5 pt-5 pb-5 shadow-[0_20px_60px_rgba(15,23,42,0.18)]"
       >
         <h2
           id="upload-photos-title"
@@ -167,6 +173,7 @@ function UploadPhotosModal({ open, onClose, onSave }) {
         >
           Upload Photos
         </h2>
+        <div className="mt-4 border-t border-[#EEF1F6]" />
 
         <input
           id={fileInputId}
@@ -192,7 +199,7 @@ function UploadPhotosModal({ open, onClose, onSave }) {
                   className="absolute top-1.5 right-1.5 flex size-5 items-center justify-center rounded-full bg-[#1865EA] text-white shadow-sm"
                   aria-label="Remove photo"
                 >
-                  <X className="size-3" strokeWidth={2.5} />
+                  <span className="text-[10px] leading-none font-bold">×</span>
                 </button>
               </div>
             ))}
@@ -201,8 +208,11 @@ function UploadPhotosModal({ open, onClose, onSave }) {
                 htmlFor={fileInputId}
                 className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-[#93C5FD] bg-[#F4F7FF] transition-colors hover:bg-[#E8F1FF]"
               >
-                <span className="flex size-8 items-center justify-center rounded-lg bg-[#1865EA] text-white">
-                  <Plus className="size-4" strokeWidth={2.5} />
+                <span className="flex size-8 items-center justify-center rounded-lg bg-[#1865EA]">
+                  <PackIcon
+                    src={PROVIDER_ICONS.plus}
+                    className="size-4 brightness-0 invert"
+                  />
                 </span>
               </label>
             ) : null}
@@ -212,8 +222,11 @@ function UploadPhotosModal({ open, onClose, onSave }) {
             htmlFor={fileInputId}
             className="mt-5 flex min-h-[9.5rem] cursor-pointer flex-col items-center justify-center gap-2.5 rounded-2xl border border-dashed border-[#93C5FD] bg-[#F4F7FF] px-4 py-6 transition-colors hover:bg-[#E8F1FF]"
           >
-            <span className="flex size-11 items-center justify-center rounded-xl bg-[#1865EA] text-white shadow-sm">
-              <Plus className="size-5" strokeWidth={2.5} />
+            <span className="flex size-11 items-center justify-center rounded-xl bg-[#1865EA] shadow-sm">
+              <PackIcon
+                src={PROVIDER_ICONS.plus}
+                className="size-5 brightness-0 invert"
+              />
             </span>
             <span className="text-sm font-semibold text-[#0F172A]">Add Photos</span>
           </label>
@@ -292,10 +305,13 @@ function DeleteVideoModal({ open, onClose, onConfirm }) {
             +
           </span>
           <span className="absolute right-0 bottom-3 size-1.5 rounded-full bg-[#FCA5A5]" />
-          <span className="flex size-16 items-center justify-center rounded-full bg-[#FEE2E2]">
-            <span className="flex size-12 items-center justify-center rounded-full bg-[#EF4444] text-white shadow-sm">
-              <Trash2 className="size-5" strokeWidth={2.2} />
-            </span>
+          <span className="absolute inset-0 rounded-full bg-[#FEE2E2]/70" />
+          <span className="absolute inset-2 rounded-full bg-[#FECACA]/80" />
+          <span className="relative flex size-14 items-center justify-center rounded-full bg-[#EF4444] shadow-sm">
+            <PackIcon
+              src={PROVIDER_ICONS.trashRed}
+              className="size-6 brightness-0 invert"
+            />
           </span>
         </div>
 
@@ -306,7 +322,7 @@ function DeleteVideoModal({ open, onClose, onConfirm }) {
           Delete Videos
         </h2>
         <p className="mx-auto mt-2 max-w-[260px] text-center text-sm leading-relaxed text-[#64748B]">
-          Are you sure you want to remove this video from your service?
+          Are you sure you want to remove this Videos from your Service?
         </p>
 
         <div className="mt-6 grid grid-cols-2 gap-3">
@@ -357,7 +373,7 @@ function VideoGridCard({ video, onEdit, onDelete }) {
       />
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent px-2 pt-8 pb-2">
         <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-white">
-          <Eye className="size-3.5" strokeWidth={2.2} />
+          <PackIcon src={PROVIDER_ICONS.eye} className="size-3.5 brightness-0 invert" />
           {formatCompactViews(video.views)}
         </span>
       </div>
@@ -366,11 +382,11 @@ function VideoGridCard({ video, onEdit, onDelete }) {
         <button
           type="button"
           onClick={() => setMenuOpen((v) => !v)}
-          className="flex size-7 items-center justify-center rounded-full bg-white text-[#1865EA] shadow-sm"
+          className="flex size-7 items-center justify-center rounded-full bg-white shadow-sm"
           aria-label="Video actions"
           aria-expanded={menuOpen}
         >
-          <MoreVertical className="size-3.5" />
+          <PackIcon src={PROVIDER_ICONS.more} className="size-3.5" />
         </button>
         {menuOpen ? (
           <div className="absolute top-full right-0 z-20 mt-1.5 min-w-[7.5rem] overflow-hidden rounded-xl border border-[#EEF1F6] bg-white py-1 shadow-[0_8px_24px_rgba(15,23,42,0.12)]">
@@ -382,7 +398,7 @@ function VideoGridCard({ video, onEdit, onDelete }) {
                 onEdit(video);
               }}
             >
-              <Pencil className="size-3.5 text-[#64748B]" />
+              <PackIcon src={PROVIDER_ICONS.edit} className="size-3.5 opacity-70" />
               Edit
             </button>
             <div className="mx-3 border-t border-[#EEF1F6]" />
@@ -394,7 +410,7 @@ function VideoGridCard({ video, onEdit, onDelete }) {
                 onDelete(video);
               }}
             >
-              <Trash2 className="size-3.5 text-[#64748B]" />
+              <PackIcon src={PROVIDER_ICONS.trash} className="size-3.5 opacity-70" />
               Delete
             </button>
           </div>
@@ -466,40 +482,43 @@ export function ProviderMediaView() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F7FF]">
       <header className="sticky top-0 z-30 shrink-0 border-b border-[#E8EEF8] bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 max-w-3xl items-center gap-1 px-3 lg:px-6">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <button
             type="button"
             onClick={() => router.back()}
             className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-[#F4F7FF]"
             aria-label="Back"
           >
-            <ArrowLeft className="size-5" />
+            <PackIcon src={PROVIDER_ICONS.arrowLeft} className="size-5" />
           </button>
-          <h1 className="flex-1 truncate text-center text-lg font-bold text-[#111827]">
+          <h1 className="flex-1 truncate text-[17px] font-bold text-[#111827]">
             Post Upload
           </h1>
           <button
             type="button"
             onClick={handleHeaderAdd}
-            className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#1865EA] text-white shadow-sm transition-opacity hover:opacity-90"
+            className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#1865EA] shadow-sm transition-opacity hover:opacity-90"
             aria-label={tab === "photos" ? "Add photos" : "Add video"}
           >
-            <Plus className="size-5" strokeWidth={2.4} />
+            <PackIcon
+              src={PROVIDER_ICONS.plus}
+              className="size-5 brightness-0 invert"
+            />
           </button>
         </div>
       </header>
 
       <div className="shrink-0 border-b border-[#E8EEF8] bg-white">
-        <div className="mx-auto max-w-3xl px-4 py-3 lg:px-6">
-          <div className="grid grid-cols-2 gap-1 rounded-xl bg-[#F4F7FF] p-1 ring-1 ring-[#E8EEF8]">
+        <div className={cn(PROVIDER_PAGE_SHELL, "py-3")}>
+          <div className="grid grid-cols-2 gap-1 rounded-full bg-white p-1 shadow-[0_2px_10px_rgba(15,23,42,0.06)] ring-1 ring-[#E8EEF8]">
             <button
               type="button"
               onClick={() => setTabAndQuery("photos")}
               className={cn(
-                "h-10 rounded-lg text-sm font-semibold transition-colors",
+                "h-10 rounded-full text-sm font-semibold transition-colors",
                 tab === "photos"
                   ? "bg-[#1865EA] text-white shadow-sm"
-                  : "bg-transparent text-[#64748B]",
+                  : "bg-transparent text-[#94A3B8]",
               )}
             >
               Gallery Photos
@@ -508,10 +527,10 @@ export function ProviderMediaView() {
               type="button"
               onClick={() => setTabAndQuery("videos")}
               className={cn(
-                "h-10 rounded-lg text-sm font-semibold transition-colors",
+                "h-10 rounded-full text-sm font-semibold transition-colors",
                 tab === "videos"
                   ? "bg-[#1865EA] text-white shadow-sm"
-                  : "bg-transparent text-[#64748B]",
+                  : "bg-transparent text-[#94A3B8]",
               )}
             >
               Shorts Videos
@@ -521,7 +540,7 @@ export function ProviderMediaView() {
       </div>
 
       <main className="min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-3xl px-4 py-4 lg:px-6 lg:py-6">
+        <div className={cn(PROVIDER_PAGE_SHELL, "py-4 lg:py-6")}>
           {tab === "photos" ? (
             isPhotosEmpty ? (
               <div className="flex min-h-[calc(100dvh-12rem)] flex-col items-center justify-center px-4 pb-16 text-center">
@@ -530,19 +549,22 @@ export function ProviderMediaView() {
                   No Photos Added Yet
                 </h2>
                 <p className="mt-2 max-w-xs text-[13.5px] leading-relaxed text-[#94A3B8]">
-                  You haven&apos;t added any photos yet. Add photos for a richer
-                  profile.
+                  You haven&apos;t added any photos yet. Add an photos to for faster
+                  checkout.
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
+              <div className="grid grid-cols-3 gap-2.5 sm:gap-3 lg:grid-cols-4 xl:grid-cols-6">
                 <button
                   type="button"
                   onClick={() => setUploadOpen(true)}
-                  className="flex aspect-square items-center justify-center rounded-2xl bg-[#E8EEF8] text-[#94A3B8] transition-colors hover:bg-[#DEE5F2]"
+                  className="flex aspect-square items-center justify-center rounded-2xl bg-[#E8EEF8] transition-colors hover:bg-[#DEE5F2]"
                   aria-label="Add photos"
                 >
-                  <ImageIcon className="size-8" strokeWidth={1.6} />
+                  <PackIcon
+                    src={PROVIDER_ICONS.galleryMono}
+                    className="size-8 opacity-50"
+                  />
                 </button>
                 {photoList.map((photo) => (
                   <div
@@ -565,7 +587,7 @@ export function ProviderMediaView() {
                       className="absolute top-1.5 right-1.5 flex size-6 items-center justify-center rounded-full bg-[#1865EA] text-white shadow-sm transition-opacity hover:opacity-90"
                       aria-label="Delete photo"
                     >
-                      <X className="size-3.5" strokeWidth={2.5} />
+                      <span className="text-[11px] leading-none font-bold">×</span>
                     </button>
                   </div>
                 ))}
@@ -576,12 +598,12 @@ export function ProviderMediaView() {
               <VideosEmptyIllustration />
               <h2 className="text-xl font-bold text-[#0F172A]">No Videos Yet</h2>
               <p className="mt-2 max-w-xs text-[13.5px] leading-relaxed text-[#94A3B8]">
-                You haven&apos;t saved any videos yet. Upload a short video to get
-                started.
+                You haven&apos;t saved anything yet. Save your favorite Video to access
+                them.
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
+            <div className="grid grid-cols-3 gap-2.5 sm:gap-3 lg:grid-cols-4 xl:grid-cols-6">
               {videoList.map((video) => (
                 <VideoGridCard
                   key={video.id}

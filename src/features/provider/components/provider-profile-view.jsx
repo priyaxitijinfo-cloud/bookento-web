@@ -23,6 +23,10 @@ import { toast } from "sonner";
 
 import { LogoutConfirmResponsive } from "@/components/responsive/Dialogs";
 import { ROUTES } from "@/constants/routes.constants";
+import {
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { currentProvider } from "@/mock/providers";
 import { useProviderAuthStore } from "@/store";
 import { cn } from "@/lib/utils";
@@ -110,13 +114,13 @@ export function ProviderProfileView() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F7FF]">
       <header className="sticky top-0 z-20 border-b border-[#E8EEF8] bg-[#F4F7FF]/95 backdrop-blur-sm lg:hidden">
-        <div className="mx-auto flex h-14 max-w-3xl items-center px-4">
+        <div className={PROVIDER_MOBILE_HEADER}>
           <h1 className="text-lg font-bold text-[#111827]">Profile</h1>
         </div>
       </header>
 
       <main className="min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-3xl space-y-5 px-4 py-5 lg:px-6 lg:py-8">
+        <div className={cn(PROVIDER_PAGE_SHELL, "space-y-5 py-5 lg:py-8")}>
           <div className="overflow-hidden rounded-2xl border border-[#EEF1F6] bg-white shadow-[0_2px_12px_rgba(15,23,42,0.04)]">
             <div className="flex items-center gap-3.5 p-4">
               <div className="relative size-16 shrink-0 overflow-hidden rounded-2xl bg-[#E8F1FF]">

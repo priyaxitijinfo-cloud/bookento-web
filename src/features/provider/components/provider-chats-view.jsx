@@ -2,14 +2,18 @@
 
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Search } from "lucide-react";
 
 import { ChatCard } from "@/components/chats/chat-card";
 import { ChatEmptyInbox } from "@/components/chats/chat-empty-inbox";
 import { ChatFilterTabs } from "@/components/chats/chat-filter-tabs";
 import { ChatMobileSearchBar } from "@/components/chats/chat-mobile-search-bar";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { providerChatDetailRoute } from "@/constants/routes.constants";
 import { filterConversations } from "@/lib/chats/chat.utils";
+import {
+  PROVIDER_MOBILE_HEADER,
+  PROVIDER_PAGE_SHELL,
+} from "@/lib/layout/page-layout.constants";
 import { useChatStore } from "@/store";
 import { cn } from "@/lib/utils";
 
@@ -70,7 +74,7 @@ export function ProviderChatsView() {
         />
       ) : (
         <header className="sticky top-0 z-30 shrink-0 border-b border-[#E8EEF8] bg-[#F4F7FF]/95 backdrop-blur-sm">
-          <div className="mx-auto flex h-14 w-full max-w-3xl items-center justify-between gap-3 px-4 lg:px-6">
+          <div className={cn(PROVIDER_MOBILE_HEADER, "justify-between")}>
             <h1 className="truncate text-xl font-bold text-[#111827]">Chat</h1>
             {!isEmptyInbox ? (
               <button
@@ -79,7 +83,12 @@ export function ProviderChatsView() {
                 className="flex size-10 shrink-0 items-center justify-center rounded-full text-[#111827] transition-colors hover:bg-white/80 lg:hidden"
                 aria-label="Search chats"
               >
-                <Search className="size-5" strokeWidth={2} />
+                <img
+                  src={PROVIDER_ICONS.search}
+                  alt=""
+                  className="size-5 object-contain"
+                  draggable={false}
+                />
               </button>
             ) : (
               <span className="size-10 shrink-0" aria-hidden />
@@ -89,7 +98,12 @@ export function ProviderChatsView() {
       )}
 
       <main className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        <div className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col">
+        <div
+          className={cn(
+            PROVIDER_PAGE_SHELL,
+            "flex min-h-0 flex-1 flex-col max-lg:!px-0",
+          )}
+        >
           {isEmptyInbox ? (
             <ChatEmptyInbox
               title="Not Chats Yet"
@@ -98,9 +112,14 @@ export function ProviderChatsView() {
             />
           ) : (
             <>
-              <div className="shrink-0 space-y-3 px-4 pt-3 pb-2 lg:px-6 lg:pt-4">
+              <div className="shrink-0 space-y-3 px-4 pt-3 pb-2 lg:px-0 lg:pt-4">
                 <div className="relative hidden lg:block">
-                  <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-[#94A3B8]" />
+                  <img
+                    src={PROVIDER_ICONS.search}
+                    alt=""
+                    className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 object-contain opacity-50"
+                    draggable={false}
+                  />
                   <input
                     type="search"
                     value={search}
@@ -116,7 +135,7 @@ export function ProviderChatsView() {
                 <ChatFilterTabs value={filter} onChange={setFilter} counts={counts} />
               </div>
 
-              <div className="scrollbar-hide min-h-0 flex-1 overflow-y-auto overscroll-contain bg-white lg:mx-6 lg:mb-4 lg:rounded-2xl lg:border lg:border-[#EEF2F7] lg:shadow-[0_2px_12px_rgba(15,23,42,0.04)]">
+              <div className="scrollbar-hide min-h-0 flex-1 overflow-y-auto overscroll-contain bg-white lg:mb-4 lg:rounded-2xl lg:border lg:border-[#EEF2F7] lg:shadow-[0_2px_12px_rgba(15,23,42,0.04)]">
                 {filtered.length === 0 ? (
                   <ChatEmptyInbox
                     title={emptyTitle}
