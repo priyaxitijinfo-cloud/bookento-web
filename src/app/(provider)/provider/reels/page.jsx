@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { Eye, MessageCircle, Play, Share2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { HeroHeartIcon } from "@/components/icons/hero-nav-icons";
@@ -10,6 +9,7 @@ import { ProviderHeader } from "@/components/layout/provider-nav";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { PROVIDER_PAGE_SHELL } from "@/lib/layout/page-layout.constants";
 import { reels } from "@/mock/reels";
 import { cn } from "@/lib/utils";
@@ -47,7 +47,12 @@ export default function ProviderReelsPage() {
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity group-hover:opacity-100">
                     <div className="rounded-full bg-white/90 p-3">
-                      <Play className="text-primary size-6 fill-current" />
+                      <img
+                        src={PROVIDER_ICONS.play}
+                        alt=""
+                        className="size-6 object-contain"
+                        draggable={false}
+                      />
                     </div>
                   </div>
                   <Badge className="absolute top-2 left-2" variant="secondary">
@@ -68,15 +73,30 @@ export default function ProviderReelsPage() {
                       {reel.likes}
                     </span>
                     <span className="flex items-center gap-1">
-                      <MessageCircle className="size-3.5" />
+                      <img
+                        src={PROVIDER_ICONS.chats}
+                        alt=""
+                        className="size-3.5 object-contain opacity-70"
+                        draggable={false}
+                      />
                       {reel.comments}
                     </span>
                     <span className="flex items-center gap-1">
-                      <Share2 className="size-3.5" />
+                      <img
+                        src={PROVIDER_ICONS.send}
+                        alt=""
+                        className="size-3.5 object-contain opacity-70"
+                        draggable={false}
+                      />
                       {reel.shares}
                     </span>
                     <span className="flex items-center gap-1">
-                      <Eye className="size-3.5" />
+                      <img
+                        src={PROVIDER_ICONS.eye}
+                        alt=""
+                        className="size-3.5 object-contain opacity-70"
+                        draggable={false}
+                      />
                       {reel.views}
                     </span>
                   </div>
@@ -89,7 +109,12 @@ export default function ProviderReelsPage() {
                       size="sm"
                       onClick={() => handleDelete(reel.id)}
                     >
-                      <Trash2 className="size-3.5" />
+                      <img
+                        src={PROVIDER_ICONS.trashRed}
+                        alt=""
+                        className="size-3.5 object-contain"
+                        draggable={false}
+                      />
                     </Button>
                   </div>
                 </CardContent>

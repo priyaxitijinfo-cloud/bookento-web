@@ -286,7 +286,7 @@ export function ProviderServicesView() {
           </h1>
           <Link
             href={ROUTES.PROVIDER_SERVICES_NEW}
-            className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#1865EA] shadow-sm transition-opacity hover:opacity-90"
+            className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#1865EA] shadow-sm transition-opacity hover:opacity-90 lg:hidden"
             aria-label="Add service"
           >
             <PackIcon
@@ -298,7 +298,7 @@ export function ProviderServicesView() {
       </header>
 
       <main className="min-h-0 flex-1 overflow-y-auto">
-        <div className={cn(PROVIDER_PAGE_SHELL, "py-4 lg:py-6")}>
+        <div className={cn(PROVIDER_PAGE_SHELL, "py-4 lg:py-6 lg:pb-24")}>
           {isEmpty ? (
             <div className="flex min-h-[calc(100dvh-8rem)] flex-col items-center justify-center px-4 pb-16 text-center">
               <ServicesEmptyIllustration />
@@ -322,6 +322,14 @@ export function ProviderServicesView() {
           )}
         </div>
       </main>
+
+      <Link
+        href={ROUTES.PROVIDER_SERVICES_NEW}
+        className="gradient-brand fixed right-8 bottom-8 z-40 hidden items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_28px_rgba(24,101,234,0.35)] transition-opacity hover:opacity-90 lg:inline-flex"
+      >
+        <PackIcon src={PROVIDER_ICONS.plus} className="size-4 brightness-0 invert" />
+        Add service
+      </Link>
     </div>
   );
 }

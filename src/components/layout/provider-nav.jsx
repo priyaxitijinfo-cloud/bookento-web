@@ -15,65 +15,98 @@ import { ROUTES } from "@/constants/routes.constants";
 import { cn } from "@/lib/utils";
 import { useProviderAuthStore, useUIStore } from "@/store";
 
-const sidebarItems = [
-  { href: ROUTES.PROVIDER_HOME, label: "Dashboard", icon: PROVIDER_ICONS.home },
+/** Sidebar icons — same box size; maskScale tweaks optical weight only */
+const SIDEBAR_ICON_SIZE = "size-[1.125rem]";
+
+/** Grouped like reference admin sidebar (MAIN MENU / BUSINESS / …) */
+const sidebarSections = [
   {
-    href: ROUTES.PROVIDER_APPOINTMENTS,
-    label: "Appointments",
-    icon: PROVIDER_ICONS.schedule,
+    title: "Main Menu",
+    items: [
+      { href: ROUTES.PROVIDER_HOME, label: "Dashboard", icon: PROVIDER_ICONS.home },
+      {
+        href: ROUTES.PROVIDER_APPOINTMENTS,
+        label: "Appointments",
+        icon: PROVIDER_ICONS.calendarBlue,
+      },
+      {
+        href: ROUTES.PROVIDER_EARNINGS,
+        label: "Earnings",
+        icon: PROVIDER_ICONS.earnings,
+      },
+      { href: ROUTES.PROVIDER_CHATS, label: "Chats", icon: PROVIDER_ICONS.chats },
+    ],
   },
   {
-    href: ROUTES.PROVIDER_EARNINGS,
-    label: "Earnings",
-    icon: PROVIDER_ICONS.earnings,
+    title: "Business",
+    items: [
+      {
+        href: ROUTES.PROVIDER_SERVICES,
+        label: "My Services",
+        icon: PROVIDER_ICONS.serviceDetails,
+      },
+      {
+        href: ROUTES.PROVIDER_PACKAGES,
+        label: "Packages",
+        icon: PROVIDER_ICONS.packages,
+        maskScale: "80%",
+      },
+      {
+        href: ROUTES.PROVIDER_BRANCHES,
+        label: "Branches",
+        icon: PROVIDER_ICONS.building,
+      },
+      {
+        href: ROUTES.PROVIDER_CATEGORIES,
+        label: "Categories",
+        icon: PROVIDER_ICONS.category,
+      },
+    ],
   },
   {
-    href: ROUTES.PROVIDER_SERVICES,
-    label: "My Services",
-    icon: PROVIDER_ICONS.serviceDetails,
+    title: "Content",
+    items: [
+      {
+        href: ROUTES.PROVIDER_POSTS,
+        label: "Posts",
+        icon: PROVIDER_ICONS.gallery,
+        maskScale: "82%",
+      },
+      {
+        href: ROUTES.PROVIDER_REELS,
+        label: "Reels",
+        icon: PROVIDER_ICONS.video,
+      },
+      {
+        href: ROUTES.PROVIDER_RATINGS,
+        label: "Ratings",
+        icon: PROVIDER_ICONS.ratings,
+        maskScale: "82%",
+      },
+      {
+        href: ROUTES.PROVIDER_ANALYTICS,
+        label: "Analytics",
+        icon: PROVIDER_ICONS.analytics,
+        maskScale: "92%",
+      },
+    ],
   },
   {
-    href: ROUTES.PROVIDER_PACKAGES,
-    label: "Packages",
-    icon: PROVIDER_ICONS.packages,
-  },
-  {
-    href: ROUTES.PROVIDER_BRANCHES,
-    label: "Branches",
-    icon: PROVIDER_ICONS.building,
-  },
-  {
-    href: ROUTES.PROVIDER_CATEGORIES,
-    label: "Categories",
-    icon: PROVIDER_ICONS.category,
-  },
-  {
-    href: ROUTES.PROVIDER_POSTS,
-    label: "Posts",
-    icon: PROVIDER_ICONS.gallery,
-  },
-  {
-    href: ROUTES.PROVIDER_REELS,
-    label: "Reels",
-    icon: PROVIDER_ICONS.video,
-  },
-  {
-    href: ROUTES.PROVIDER_RATINGS,
-    label: "Ratings",
-    icon: PROVIDER_ICONS.ratings,
-  },
-  { href: ROUTES.PROVIDER_CHATS, label: "Chats", icon: PROVIDER_ICONS.chats },
-  {
-    href: ROUTES.PROVIDER_ANALYTICS,
-    label: "Analytics",
-    icon: PROVIDER_ICONS.analytics,
-  },
-  {
-    href: ROUTES.PROVIDER_SETTINGS,
-    label: "Settings",
-    icon: PROVIDER_ICONS.settings,
+    title: "Account",
+    items: [
+      {
+        href: ROUTES.PROVIDER_SETTINGS,
+        label: "Settings",
+        icon: PROVIDER_ICONS.settings,
+      },
+    ],
   },
 ];
+
+function isSidebarItemActive(pathname, href) {
+  if (href === ROUTES.PROVIDER_HOME) return pathname === href;
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 const bottomNavItems = [
   {
@@ -104,26 +137,59 @@ const bottomNavItems = [
   },
 ];
 
-function ProviderNavIcon({ src, active, className }) {
+/** Fixed square box so every nav SVG renders at the same optical size. */
+function ProviderNavIcon({
+  src,
+  active,
+  className,
+  maskScale = "88%",
+  activeClassName = "gradient-brand",
+  inactiveClassName = "bg-current text-[var(--nav-inactive)]",
+}) {
   return (
     <span
       aria-hidden
       className={cn(
-        "inline-block",
-        active ? "gradient-brand" : "bg-current text-[var(--nav-inactive)]",
+        "inline-flex shrink-0 items-center justify-center overflow-hidden",
         className,
       )}
-      style={{
-        WebkitMaskImage: `url(${src})`,
-        maskImage: `url(${src})`,
-        WebkitMaskSize: "contain",
-        maskSize: "contain",
-        WebkitMaskRepeat: "no-repeat",
-        maskRepeat: "no-repeat",
-        WebkitMaskPosition: "center",
-        maskPosition: "center",
-      }}
-    />
+    >
+      <span
+        className={cn("block size-full", active ? activeClassName : inactiveClassName)}
+        style={{
+          WebkitMaskImage: `url(${src})`,
+          maskImage: `url(${src})`,
+          WebkitMaskSize: maskScale,
+          maskSize: maskScale,
+          WebkitMaskRepeat: "no-repeat",
+          maskRepeat: "no-repeat",
+          WebkitMaskPosition: "center",
+          maskPosition: "center",
+        }}
+      />
+    </span>
+  );
+}
+
+function SidebarChevron({ active }) {
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        "ml-auto inline-flex size-4 shrink-0 items-center justify-center",
+        active ? "text-[#1865EA]" : "text-[#CBD5E1]",
+      )}
+    >
+      <svg viewBox="0 0 16 16" fill="none" className="size-3.5">
+        <path
+          d="M6 4l4 4-4 4"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </span>
   );
 }
 
@@ -175,11 +241,12 @@ export function ProviderSidebar() {
       )}
       <aside
         className={cn(
-          "border-border bg-card fixed inset-y-0 left-0 z-50 flex h-dvh w-64 flex-col border-r transition-transform lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex h-dvh w-[17rem] flex-col border-r border-[#EEF2F7] bg-white transition-transform lg:translate-x-0",
           isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         )}
       >
-        <div className="border-border border-b p-6">
+        {/* Brand — Rizz-style header */}
+        <div className="px-5 pt-7 pb-5">
           <Link
             href={ROUTES.PROVIDER_HOME}
             className="flex items-center gap-3"
@@ -188,55 +255,82 @@ export function ProviderSidebar() {
             <NextImage
               src="/icons/bookento-expert-appicon.png"
               alt="Bookento"
-              width={40}
-              height={40}
-              className="size-10 shrink-0 rounded-[0.65rem] object-cover"
+              width={56}
+              height={56}
+              className="size-14 shrink-0 rounded-full object-cover"
               unoptimized
               priority
             />
-            <span className="text-xl font-bold tracking-tight text-[#0F172A]">
+            <span className="text-[1.6rem] font-bold tracking-tight text-[#0F172A]">
               Bookento
             </span>
           </Link>
         </div>
-        <nav className="scrollbar-hover flex-1 space-y-1 overflow-y-auto p-4">
-          {sidebarItems.map(({ href, label, icon }) => {
-            const active = pathname === href || pathname.startsWith(`${href}/`);
-            return (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setSidebarOpen(false)}
-                className={cn(
-                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
-                  active
-                    ? "bg-accent text-accent-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                )}
-              >
-                <ProviderNavIcon
-                  src={icon}
-                  active={active}
-                  className="size-5 shrink-0"
-                />
-                {label}
-              </Link>
-            );
-          })}
+
+        {/* Grouped nav */}
+        <nav className="scrollbar-hover flex-1 space-y-6 overflow-y-auto px-3.5 pb-3">
+          {sidebarSections.map((section) => (
+            <div key={section.title}>
+              <p className="mb-2.5 px-3 text-[11px] font-semibold tracking-[0.1em] text-[#94A3B8] uppercase">
+                {section.title}
+              </p>
+              <ul className="space-y-1">
+                {section.items.map(({ href, label, icon, maskScale }) => {
+                  const active = isSidebarItemActive(pathname, href);
+                  return (
+                    <li key={href}>
+                      <Link
+                        href={href}
+                        onClick={() => setSidebarOpen(false)}
+                        className={cn(
+                          "group relative flex items-center gap-3 rounded-lg py-2.5 pr-3 pl-3.5 text-[14px] font-medium transition-colors",
+                          active
+                            ? "bg-[#E8F1FF] text-[#1865EA]"
+                            : "text-[#334155] hover:bg-[#F8FAFC] hover:text-[#0F172A]",
+                        )}
+                      >
+                        {active ? (
+                          <span
+                            aria-hidden
+                            className="absolute inset-y-0 -left-3.5 w-1 rounded-r-full bg-[#1865EA]"
+                          />
+                        ) : null}
+                        <ProviderNavIcon
+                          src={icon}
+                          active={active}
+                          maskScale={maskScale}
+                          className={SIDEBAR_ICON_SIZE}
+                          activeClassName="bg-[#1865EA]"
+                          inactiveClassName="bg-[#64748B]"
+                        />
+                        <span className="min-w-0 flex-1 truncate">{label}</span>
+                        <SidebarChevron active={active} />
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
         </nav>
-        <div className="border-border border-t p-4">
-          <button
-            type="button"
-            onClick={() => setLogoutOpen(true)}
-            className="text-muted-foreground hover:bg-muted hover:text-destructive flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors"
-          >
-            <ProviderNavIcon
-              src={PROVIDER_ICONS.logout}
-              active={false}
-              className="size-5 shrink-0"
-            />
-            Logout
-          </button>
+
+        {/* Footer strip — reference style */}
+        <div className="px-3.5 pb-5">
+          <div className="flex items-center gap-1 rounded-xl bg-[#E8F1FF] p-1.5">
+            <button
+              type="button"
+              onClick={() => setLogoutOpen(true)}
+              className="flex flex-1 items-center gap-3 rounded-lg px-3 py-2.5 text-[14px] font-medium text-[#475569] transition-colors hover:bg-white hover:text-[#EF4444]"
+            >
+              <ProviderNavIcon
+                src={PROVIDER_ICONS.logout}
+                active={false}
+                className={SIDEBAR_ICON_SIZE}
+                inactiveClassName="bg-[#64748B]"
+              />
+              Logout
+            </button>
+          </div>
         </div>
       </aside>
 

@@ -4,25 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import {
-  BarChart3,
-  Bell,
-  Building2,
-  ChevronRight,
-  Film,
-  Image as ImageIcon,
-  Layers,
-  LogOut,
-  Package,
-  Settings,
-  Star,
-  UserRound,
-  Wrench,
-} from "lucide-react";
 import { toast } from "sonner";
 
 import { LogoutConfirmResponsive } from "@/components/responsive/Dialogs";
 import { ROUTES } from "@/constants/routes.constants";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import {
   PROVIDER_MOBILE_HEADER,
   PROVIDER_PAGE_SHELL,
@@ -45,7 +31,7 @@ function ProfileSection({ title, children }) {
   );
 }
 
-function ProfileMenuItem({ href, label, icon: Icon, iconWrapClass, onClick }) {
+function ProfileMenuItem({ href, label, iconSrc, iconWrapClass, onClick }) {
   const content = (
     <>
       <span
@@ -54,12 +40,17 @@ function ProfileMenuItem({ href, label, icon: Icon, iconWrapClass, onClick }) {
           iconWrapClass,
         )}
       >
-        <Icon className="size-5" strokeWidth={1.9} />
+        <img src={iconSrc} alt="" className="size-5 object-contain" draggable={false} />
       </span>
       <span className="min-w-0 flex-1 text-[14.5px] font-medium text-[#0F172A]">
         {label}
       </span>
-      <ChevronRight className="size-4 shrink-0 text-[#94A3B8]" />
+      <img
+        src={PROVIDER_ICONS.chevronRight}
+        alt=""
+        className="size-4 shrink-0 object-contain opacity-50"
+        draggable={false}
+      />
     </>
   );
 
@@ -150,26 +141,26 @@ export function ProviderProfileView() {
             <ProfileMenuItem
               href={ROUTES.PROVIDER_SERVICES}
               label="My Services"
-              icon={Wrench}
-              iconWrapClass="bg-[#E8F1FF] text-[#1865EA]"
+              iconSrc={PROVIDER_ICONS.serviceDetails}
+              iconWrapClass="bg-[#E8F1FF]"
             />
             <ProfileMenuItem
               href={ROUTES.PROVIDER_PACKAGES}
               label="Packages"
-              icon={Package}
-              iconWrapClass="bg-[#FFF0F3] text-[#EC407A]"
+              iconSrc={PROVIDER_ICONS.packages}
+              iconWrapClass="bg-[#FFF0F3]"
             />
             <ProfileMenuItem
               href={ROUTES.PROVIDER_BRANCHES}
               label="Branches"
-              icon={Building2}
-              iconWrapClass="bg-[#E6F7ED] text-[#16A34A]"
+              iconSrc={PROVIDER_ICONS.building}
+              iconWrapClass="bg-[#E6F7ED]"
             />
             <ProfileMenuItem
               href={ROUTES.PROVIDER_CATEGORIES}
               label="Categories"
-              icon={Layers}
-              iconWrapClass="bg-[#FFF4E5] text-[#E67E22]"
+              iconSrc={PROVIDER_ICONS.category}
+              iconWrapClass="bg-[#FFF4E5]"
             />
           </ProfileSection>
 
@@ -177,26 +168,26 @@ export function ProviderProfileView() {
             <ProfileMenuItem
               href={ROUTES.PROVIDER_POSTS}
               label="Posts"
-              icon={ImageIcon}
-              iconWrapClass="bg-[#EEF2FF] text-[#6366F1]"
+              iconSrc={PROVIDER_ICONS.gallery}
+              iconWrapClass="bg-[#EEF2FF]"
             />
             <ProfileMenuItem
               href={ROUTES.PROVIDER_REELS}
               label="Reels"
-              icon={Film}
-              iconWrapClass="bg-[#DBEAFE] text-[#2563EB]"
+              iconSrc={PROVIDER_ICONS.video}
+              iconWrapClass="bg-[#DBEAFE]"
             />
             <ProfileMenuItem
               href={ROUTES.PROVIDER_RATINGS}
               label="Ratings"
-              icon={Star}
-              iconWrapClass="bg-[#FEF3C7] text-[#D97706]"
+              iconSrc={PROVIDER_ICONS.starFilled}
+              iconWrapClass="bg-[#FEF3C7]"
             />
             <ProfileMenuItem
               href={ROUTES.PROVIDER_ANALYTICS}
               label="Analytics"
-              icon={BarChart3}
-              iconWrapClass="bg-[#E0F2FE] text-[#0284C7]"
+              iconSrc={PROVIDER_ICONS.analytics}
+              iconWrapClass="bg-[#E0F2FE]"
             />
           </ProfileSection>
 
@@ -204,25 +195,25 @@ export function ProviderProfileView() {
             <ProfileMenuItem
               href={ROUTES.PROVIDER_NOTIFICATIONS}
               label="Notifications"
-              icon={Bell}
-              iconWrapClass="bg-[#FEE2E2] text-[#EF4444]"
+              iconSrc={PROVIDER_ICONS.bell}
+              iconWrapClass="bg-[#FEE2E2]"
             />
             <ProfileMenuItem
               href={ROUTES.PROVIDER_SETTINGS}
               label="Settings"
-              icon={Settings}
-              iconWrapClass="bg-[#F1F5F9] text-[#475569]"
+              iconSrc={PROVIDER_ICONS.settings}
+              iconWrapClass="bg-[#F1F5F9]"
             />
             <ProfileMenuItem
               href={ROUTES.PROVIDER_SETTINGS_PROFILE}
               label="Edit Profile"
-              icon={UserRound}
-              iconWrapClass="bg-[#E8F1FF] text-[#1865EA]"
+              iconSrc={PROVIDER_ICONS.user}
+              iconWrapClass="bg-[#E8F1FF]"
             />
             <ProfileMenuItem
               label="Logout"
-              icon={LogOut}
-              iconWrapClass="bg-[#FEECEC] text-[#EF4444]"
+              iconSrc={PROVIDER_ICONS.logout}
+              iconWrapClass="bg-[#FEECEC]"
               onClick={() => setLogoutOpen(true)}
             />
           </ProfileSection>

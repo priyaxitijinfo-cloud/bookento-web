@@ -81,7 +81,7 @@ export default function ProviderLayout({ children }) {
       <ProviderSidebar />
       <div
         className={cn(
-          "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden lg:ml-64 lg:pb-0",
+          "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden lg:ml-[17rem] lg:pb-0",
           // Match elevated bottom nav + home indicator clearance (user-nav parity)
           hideBottomNav ? "pb-0" : "pb-[5.75rem]",
         )}

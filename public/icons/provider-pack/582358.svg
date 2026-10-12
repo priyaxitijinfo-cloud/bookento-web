@@ -1,7 +1,5 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<use xlink:href="#stroke0_6728_2372" fill="#1964E9"/>
 <use xlink:href="#stroke0_6728_2372" fill="url(#paint0_linear_6728_2372)"/>
-<use xlink:href="#stroke1_6728_2372" fill="#1964E9"/>
 <use xlink:href="#stroke1_6728_2372" fill="url(#paint1_linear_6728_2372)"/>
 <defs>
 <linearGradient id="paint0_linear_6728_2372" x1="3.42578" y1="6.30579" x2="18.5646" y2="23.3369" gradientUnits="userSpaceOnUse">

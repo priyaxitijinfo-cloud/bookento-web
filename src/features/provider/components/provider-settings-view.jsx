@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
 import { LogoutConfirmResponsive } from "@/components/responsive/Dialogs";
@@ -46,7 +45,12 @@ function SettingsMenuItem({ href, label, iconSrc, iconWrapClass, onClick }) {
       <span className="min-w-0 flex-1 text-[14.5px] font-medium text-[#0F172A]">
         {label}
       </span>
-      <ChevronRight className="size-4 shrink-0 text-[#94A3B8]" strokeWidth={2.2} />
+      <img
+        src={PROVIDER_ICONS.chevronRight}
+        alt=""
+        className="size-4 shrink-0 object-contain opacity-50"
+        draggable={false}
+      />
     </>
   );
 

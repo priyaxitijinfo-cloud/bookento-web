@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { Grid3X3, Play, Plus, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 import { ProviderHeader } from "@/components/layout/provider-nav";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { PROVIDER_PAGE_SHELL } from "@/lib/layout/page-layout.constants";
 import { currentProvider } from "@/mock/providers";
 import { getGalleryByProvider } from "@/mock/gallery";
@@ -37,17 +37,34 @@ export default function ProviderGalleryPage() {
         <div className={cn(PROVIDER_PAGE_SHELL, "py-4 lg:py-6")}>
           <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <Grid3X3 className="text-primary size-5" />
+              <img
+                src={PROVIDER_ICONS.galleryMono}
+                alt=""
+                className="size-5 object-contain"
+                draggable={false}
+              />
               <p className="text-muted-foreground text-sm">
                 {galleryItems.length} media items
               </p>
             </div>
             <div className="flex gap-2">
               <Button variant="outline">
-                <Upload className="size-4" /> Upload
+                <img
+                  src={PROVIDER_ICONS.upload}
+                  alt=""
+                  className="size-4 object-contain"
+                  draggable={false}
+                />{" "}
+                Upload
               </Button>
               <Button>
-                <Plus className="size-4" /> Add Media
+                <img
+                  src={PROVIDER_ICONS.plus}
+                  alt=""
+                  className="size-4 object-contain brightness-0 invert"
+                  draggable={false}
+                />{" "}
+                Add Media
               </Button>
             </div>
           </div>
@@ -65,7 +82,12 @@ export default function ProviderGalleryPage() {
                   {item.type === "video" && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                       <div className="rounded-full bg-white/90 p-2">
-                        <Play className="text-primary size-5 fill-current" />
+                        <img
+                          src={PROVIDER_ICONS.play}
+                          alt=""
+                          className="size-5 object-contain"
+                          draggable={false}
+                        />
                       </div>
                       <Badge className="absolute top-2 left-2" variant="secondary">
                         Video
@@ -81,7 +103,12 @@ export default function ProviderGalleryPage() {
                         className="text-white hover:bg-white/20"
                         onClick={() => handleDelete(item.id)}
                       >
-                        <Trash2 className="size-4" />
+                        <img
+                          src={PROVIDER_ICONS.trashRed}
+                          alt=""
+                          className="size-4 object-contain"
+                          draggable={false}
+                        />
                       </Button>
                     </div>
                   </div>

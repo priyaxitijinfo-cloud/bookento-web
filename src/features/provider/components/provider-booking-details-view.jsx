@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
-import { Check } from "lucide-react";
 import { toast } from "sonner";
 
 import { OtpBoxes, useOtpCountdown } from "@/features/auth/components/auth-shared";
@@ -192,7 +191,10 @@ function OtpVerifiedModal({ open, onBackHome }) {
           <span className="absolute right-16 bottom-10 size-2 rotate-45 bg-[#1865EA]" />
           <span className="absolute bottom-12 left-12 size-1.5 rounded-sm bg-[#F59E0B]" />
           <div className="flex size-20 items-center justify-center rounded-full bg-[#22C55E] shadow-[0_10px_28px_rgba(34,197,94,0.35)]">
-            <Check className="size-10 text-white" strokeWidth={3} />
+            <PackIcon
+              src={PROVIDER_ICONS.check}
+              className="size-10 brightness-0 invert"
+            />
           </div>
         </div>
         <div className="px-6 pt-2 pb-6 text-center">
@@ -502,7 +504,7 @@ export function ProviderBookingDetailsView({ appointmentId }) {
                   aria-label={copiedBookingId ? "Booking ID copied" : "Copy booking ID"}
                 >
                   {copiedBookingId ? (
-                    <Check className="size-4" strokeWidth={2.5} />
+                    <PackIcon src={PROVIDER_ICONS.check} className="size-4" />
                   ) : (
                     <PackIcon src={PROVIDER_ICONS.copy} className="size-4" />
                   )}

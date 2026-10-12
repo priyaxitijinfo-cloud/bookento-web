@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { Eye, MessageCircle, Plus } from "lucide-react";
 
 import { HeroHeartIcon } from "@/components/icons/hero-nav-icons";
 import { ProviderHeader } from "@/components/layout/provider-nav";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { PROVIDER_PAGE_SHELL } from "@/lib/layout/page-layout.constants";
 import { posts } from "@/mock/posts";
 import { cn } from "@/lib/utils";
@@ -31,7 +31,13 @@ export default function ProviderPostsPage() {
               {posts.length} posts published
             </p>
             <Button>
-              <Plus className="size-4" /> Create Post
+              <img
+                src={PROVIDER_ICONS.plus}
+                alt=""
+                className="size-4 object-contain brightness-0 invert"
+                draggable={false}
+              />{" "}
+              Create Post
             </Button>
           </div>
 
@@ -82,10 +88,22 @@ export default function ProviderPostsPage() {
                       {post.likes + (liked[post.id] ? 1 : 0)}
                     </button>
                     <span className="text-muted-foreground flex items-center gap-1 text-sm">
-                      <MessageCircle className="size-4" /> {post.comments}
+                      <img
+                        src={PROVIDER_ICONS.chats}
+                        alt=""
+                        className="size-4 object-contain opacity-70"
+                        draggable={false}
+                      />{" "}
+                      {post.comments}
                     </span>
                     <span className="text-muted-foreground flex items-center gap-1 text-sm">
-                      <Eye className="size-4" /> Public
+                      <img
+                        src={PROVIDER_ICONS.eye}
+                        alt=""
+                        className="size-4 object-contain opacity-70"
+                        draggable={false}
+                      />{" "}
+                      Public
                     </span>
                   </div>
                 </CardContent>

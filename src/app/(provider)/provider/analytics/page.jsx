@@ -1,7 +1,5 @@
 "use client";
 
-import { BarChart3, Clock, TrendingUp, Users } from "lucide-react";
-
 import { ProviderHeader } from "@/components/layout/provider-nav";
 import {
   Card,
@@ -10,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { PROVIDER_PAGE_SHELL } from "@/lib/layout/page-layout.constants";
 import { analytics } from "@/mock/analytics";
 import { cn } from "@/lib/utils";
@@ -74,28 +73,37 @@ export default function ProviderAnalyticsPage() {
               {
                 label: "Total Views",
                 value: overview.totalViews.toLocaleString(),
-                icon: BarChart3,
+                iconSrc: PROVIDER_ICONS.analytics,
               },
               {
                 label: "Profile Views",
                 value: overview.profileViews.toLocaleString(),
-                icon: Users,
+                iconSrc: PROVIDER_ICONS.user,
               },
               {
                 label: "Conversion",
                 value: `${overview.bookingConversion}%`,
-                icon: TrendingUp,
+                iconSrc: PROVIDER_ICONS.analytics,
               },
-              { label: "Response Time", value: overview.avgResponseTime, icon: Clock },
+              {
+                label: "Response Time",
+                value: overview.avgResponseTime,
+                iconSrc: PROVIDER_ICONS.clock,
+              },
               {
                 label: "Retention",
                 value: `${overview.customerRetention}%`,
-                icon: Users,
+                iconSrc: PROVIDER_ICONS.user,
               },
-            ].map(({ label, value, icon: Icon }) => (
+            ].map(({ label, value, iconSrc }) => (
               <Card key={label}>
                 <CardContent className="p-5">
-                  <Icon className="text-primary mb-2 size-5" />
+                  <img
+                    src={iconSrc}
+                    alt=""
+                    className="mb-2 size-5 object-contain"
+                    draggable={false}
+                  />
                   <p className="text-muted-foreground text-sm">{label}</p>
                   <p className="text-xl font-bold">{value}</p>
                 </CardContent>

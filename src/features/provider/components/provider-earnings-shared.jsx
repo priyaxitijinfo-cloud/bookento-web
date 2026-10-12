@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Check, Plane } from "lucide-react";
 import { toast } from "sonner";
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -64,10 +63,11 @@ export function EarningsEmptyIllustration({ variant = "earnings" }) {
 
       {variant === "transactions" ? (
         <>
-          <Plane
-            className="absolute top-4 right-6 size-7 rotate-12 text-[#1865EA]"
-            fill="currentColor"
-            strokeWidth={0}
+          <img
+            src={PROVIDER_ICONS.send}
+            alt=""
+            className="absolute top-4 right-6 size-7 rotate-12 object-contain"
+            draggable={false}
           />
           <svg
             className="absolute top-10 right-10 text-[#93C5FD]"
@@ -568,7 +568,12 @@ export function DownloadReportModal({ open, onOpenChange }) {
 export function VerifiedCheck() {
   return (
     <span className="flex size-6 items-center justify-center rounded-full bg-[#16A34A] text-white">
-      <Check className="size-3.5" strokeWidth={3} />
+      <img
+        src={PROVIDER_ICONS.check}
+        alt=""
+        className="size-3.5 object-contain brightness-0 invert"
+        draggable={false}
+      />
     </span>
   );
 }

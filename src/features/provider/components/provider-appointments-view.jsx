@@ -103,6 +103,19 @@ function TimelineAppointmentRow({
 
   return (
     <li className="relative">
+      {/* Continuous timeline: spans this row into the next so gaps never appear */}
+      {total > 1 && index < total - 1 ? (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute top-[1.375rem] -bottom-[1.375rem] left-[calc(72px+0.75rem+0.4375rem)] z-[1] w-px bg-[#E5E7EB]"
+        />
+      ) : null}
+      {total === 1 ? (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute top-3 bottom-3 left-[calc(72px+0.75rem+0.4375rem)] z-[1] w-px bg-[#E5E7EB]"
+        />
+      ) : null}
       <button
         type="button"
         onClick={() => onOpen?.(appointment)}
@@ -114,13 +127,10 @@ function TimelineAppointmentRow({
           </p>
         </div>
 
-        <div className="relative flex w-4 shrink-0 flex-col items-center">
-          {index < total - 1 && (
-            <span className="absolute top-3 bottom-[-14px] w-px bg-[#E5E7EB]" />
-          )}
+        <div className="relative z-10 flex w-4 shrink-0 flex-col items-center">
           <span
             className={cn(
-              "relative z-10 mt-1.5 size-2.5 rounded-full",
+              "mt-1.5 size-2.5 rounded-full",
               getScheduleDotClass(appointment.visitType, index),
             )}
           />
@@ -354,7 +364,7 @@ export function ProviderAppointmentsView() {
                   type="button"
                   onClick={() => setTab(item.id)}
                   className={cn(
-                    "h-10 shrink-0 rounded-full border px-4 text-sm font-semibold transition-colors",
+                    "h-10 shrink-0 rounded-xl border px-4 text-sm font-semibold transition-colors",
                     active
                       ? TAB_ACTIVE_CLASS[item.id]
                       : "border-[#E5E7EB] bg-white text-[#6B7280]",

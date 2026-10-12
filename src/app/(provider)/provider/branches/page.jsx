@@ -1,11 +1,10 @@
 "use client";
 
-import { Building2, Clock, Mail, MapPin, Phone, Star } from "lucide-react";
-
 import { ProviderHeader } from "@/components/layout/provider-nav";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { PROVIDER_PAGE_SHELL } from "@/lib/layout/page-layout.constants";
 import { branches } from "@/mock/branches";
 import { cn } from "@/lib/utils";
@@ -29,7 +28,12 @@ export default function ProviderBranchesPage() {
                 <CardHeader className="flex flex-row items-start justify-between">
                   <div>
                     <div className="flex items-center gap-2">
-                      <Building2 className="text-primary size-5" />
+                      <img
+                        src={PROVIDER_ICONS.building}
+                        alt=""
+                        className="size-5 object-contain"
+                        draggable={false}
+                      />
                       <CardTitle className="text-base">{branch.name}</CardTitle>
                     </div>
                     {branch.isMain && (
@@ -44,26 +48,51 @@ export default function ProviderBranchesPage() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="text-muted-foreground flex items-start gap-2 text-sm">
-                    <MapPin className="mt-0.5 size-4 shrink-0" />
+                    <img
+                      src={PROVIDER_ICONS.location}
+                      alt=""
+                      className="mt-0.5 size-4 shrink-0 object-contain opacity-70"
+                      draggable={false}
+                    />
                     <span>
                       {branch.address}, {branch.city} - {branch.pincode}
                     </span>
                   </div>
                   <div className="text-muted-foreground flex items-center gap-2 text-sm">
-                    <Phone className="size-4 shrink-0" />
+                    <img
+                      src={PROVIDER_ICONS.phone}
+                      alt=""
+                      className="size-4 shrink-0 object-contain opacity-70"
+                      draggable={false}
+                    />
                     {branch.phone}
                   </div>
                   <div className="text-muted-foreground flex items-center gap-2 text-sm">
-                    <Mail className="size-4 shrink-0" />
+                    <img
+                      src={PROVIDER_ICONS.mail}
+                      alt=""
+                      className="size-4 shrink-0 object-contain opacity-70"
+                      draggable={false}
+                    />
                     {branch.email}
                   </div>
                   <div className="text-muted-foreground flex items-center gap-2 text-sm">
-                    <Clock className="size-4 shrink-0" />
+                    <img
+                      src={PROVIDER_ICONS.clock}
+                      alt=""
+                      className="size-4 shrink-0 object-contain opacity-70"
+                      draggable={false}
+                    />
                     Mon-Fri: {branch.businessHours.weekdays}
                   </div>
                   <div className="flex items-center justify-between border-t pt-3">
                     <span className="text-muted-foreground flex items-center gap-1 text-sm">
-                      <Star className="size-3.5" />
+                      <img
+                        src={PROVIDER_ICONS.star}
+                        alt=""
+                        className="size-3.5 object-contain opacity-70"
+                        draggable={false}
+                      />
                       {branch.staffCount} staff members
                     </span>
                     <div className="flex gap-2">

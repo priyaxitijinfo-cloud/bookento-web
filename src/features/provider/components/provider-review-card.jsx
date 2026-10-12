@@ -1,16 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Star, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { ReviewLikeIcon, ReviewMsgIcon } from "@/components/icons/review-action-icons";
+import { PROVIDER_ICONS } from "@/features/provider/provider-icons";
 import { currentProvider } from "@/mock/providers";
 import { cn } from "@/lib/utils";
 import { formatRelativeTime } from "@/utils/format.utils";
-
-const STAR_ORANGE = "#F5A623";
-const STAR_EMPTY = "#D1D5DB";
 
 export function ProviderStarRating({ value, size = "sm", className }) {
   const sizeClass = size === "lg" ? "size-5" : size === "md" ? "size-4" : "size-[15px]";
@@ -20,15 +17,12 @@ export function ProviderStarRating({ value, size = "sm", className }) {
       {Array.from({ length: 5 }).map((_, index) => {
         const filled = index < Math.round(value);
         return (
-          <Star
+          <img
             key={index}
-            className={cn(sizeClass)}
-            style={
-              filled
-                ? { fill: STAR_ORANGE, color: STAR_ORANGE }
-                : { fill: "none", color: STAR_EMPTY }
-            }
-            strokeWidth={filled ? 0 : 1.5}
+            src={filled ? PROVIDER_ICONS.starFilled : PROVIDER_ICONS.star}
+            alt=""
+            className={cn(sizeClass, "object-contain", !filled && "opacity-50")}
+            draggable={false}
           />
         );
       })}
@@ -134,7 +128,12 @@ export function ProviderReviewCard({ review }) {
               }}
               className="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-[#64748B] transition-colors hover:text-[#111827]"
             >
-              <X className="size-4" />
+              <img
+                src={PROVIDER_ICONS.closeCircle}
+                alt=""
+                className="size-4 object-contain"
+                draggable={false}
+              />
               Cancel
             </button>
             <button
