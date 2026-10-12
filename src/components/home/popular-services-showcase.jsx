@@ -209,7 +209,7 @@ export function PopularServicesShowcase({ className, web = false }) {
 
         <div
           className={cn(
-            "mb-5 items-end justify-between gap-4 md:mb-6 md:gap-6",
+            "mb-5 items-end justify-between gap-4 md:mb-12 md:gap-6",
             web ? "flex" : "hidden md:flex",
           )}
         >
@@ -218,7 +218,7 @@ export function PopularServicesShowcase({ className, web = false }) {
             titleKey="popularTitle"
             highlightKey="popularHighlight"
             align="left"
-            className="mb-0 w-full md:w-auto"
+            className="mb-0 w-full md:mb-0 md:w-auto"
           />
           <Link
             href={ROUTES.SERVICES}

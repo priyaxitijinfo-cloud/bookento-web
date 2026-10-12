@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { ResponsiveView } from "@/components/responsive/primitives/ResponsiveView";
 import { PageLoader } from "@/components/ui/skeleton";
+import { FEATURE_FLAGS } from "@/config/app.config";
 import { ROUTES } from "@/constants/routes.constants";
 import {
   AuthBrandLogo,
@@ -123,21 +124,23 @@ function LoginFields({
         Continue as Guest
       </button>
 
-      <p
-        className={
-          isWeb
-            ? "mt-1 text-center text-[13.5px] text-[#667085]"
-            : "mt-2.5 pt-1 text-center text-[13px] text-[#64748B]"
-        }
-      >
-        Are you a provider?{" "}
-        <Link
-          href={ROUTES.PROVIDER_LOGIN}
-          className="font-semibold text-[#1865EA] hover:underline"
+      {FEATURE_FLAGS.providerFlowEnabled && (
+        <p
+          className={
+            isWeb
+              ? "mt-1 text-center text-[13.5px] text-[#667085]"
+              : "mt-2.5 pt-1 text-center text-[13px] text-[#64748B]"
+          }
         >
-          Provider Login
-        </Link>
-      </p>
+          Are you a provider?{" "}
+          <Link
+            href={ROUTES.PROVIDER_LOGIN}
+            className="font-semibold text-[#1865EA] hover:underline"
+          >
+            Provider Login
+          </Link>
+        </p>
+      )}
     </form>
   );
 }
@@ -217,6 +220,7 @@ export function UserLoginForm() {
             illustration={<AuthBrandLogo size={112} className="size-[7rem]" />}
             headline="Book trusted professionals nearby"
             copy="Find verified experts, compare options, and book in minutes — in person or online."
+            centered
           >
             <LoginCopy variant="web" />
             <LoginFields variant="web" {...fieldProps} />
@@ -227,6 +231,7 @@ export function UserLoginForm() {
             illustration={<AuthBrandLogo size={144} className="size-[9rem]" />}
             headline="Book trusted professionals nearby"
             copy="Find verified experts, compare options, and book in minutes — in person or online."
+            centered
           >
             <LoginCopy variant="web" />
             <LoginFields variant="web" {...fieldProps} />

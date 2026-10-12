@@ -55,8 +55,8 @@ export function ProviderDetailDesktop({
 
         <div className="scrollbar-hide min-h-0 flex-1 overflow-y-auto overscroll-contain">
           <div className="mx-auto flex min-h-full w-full max-w-[calc(96rem-60px)] flex-col px-4 pt-0 pb-4 md:px-[4.875rem] md:pt-1 md:pb-4 xl:px-[5.875rem]">
-            <div className="grid min-h-[calc(100dvh-8.5rem)] flex-1 gap-6 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)]">
-              <aside className="hidden min-h-0 overflow-y-auto lg:block">
+            <div className="grid min-h-[calc(100dvh-8.5rem)] flex-1 gap-6 lg:h-[calc(100dvh-8.5rem)] lg:min-h-0 lg:flex-none lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)]">
+              <aside className="hidden lg:sticky lg:top-0 lg:block lg:self-start">
                 <DoctorProfileSidebar
                   provider={provider}
                   categorySlug={categorySlug}

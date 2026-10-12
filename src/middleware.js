@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { AUTH_CONFIG } from "@/config/app.config";
+import { AUTH_CONFIG, FEATURE_FLAGS } from "@/config/app.config";
 import {
   ROUTES,
   isProviderGuestRoute,
@@ -91,6 +91,10 @@ export function middleware(request) {
   const isProviderRoute = isProviderPanelRoute(pathname);
   const isProviderPublic = isProviderPublicRoute(pathname);
 
+  if (isProviderRoute && !FEATURE_FLAGS.providerFlowEnabled) {
+    return NextResponse.redirect(new URL(ROUTES.HOME, request.url));
+  }
+
   // User guest routes: redirect authenticated users to home
   if (userAuth && isUserGuestRoute(pathname)) {
     return NextResponse.redirect(new URL(ROUTES.HOME, request.url));
@@ -110,14 +114,18 @@ export function middleware(request) {
     }
 
     if (providerAuth.status === "rejected") {
-      return NextResponse.redirect(new URL(ROUTES.PROVIDER_REGISTRATION_STATUS, request.url));
+      return NextResponse.redirect(
+        new URL(ROUTES.PROVIDER_REGISTRATION_STATUS, request.url),
+      );
     }
 
     if (
       providerAuth.status === "pending" &&
       pathname !== ROUTES.PROVIDER_REGISTRATION_STATUS
     ) {
-      return NextResponse.redirect(new URL(ROUTES.PROVIDER_REGISTRATION_STATUS, request.url));
+      return NextResponse.redirect(
+        new URL(ROUTES.PROVIDER_REGISTRATION_STATUS, request.url),
+      );
     }
   }
 
@@ -149,5 +157,7 @@ export function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };

@@ -196,6 +196,7 @@ export function UserOtpForm() {
           illustration={<OtpIllustration className="!h-auto !w-full" />}
           headline="Book trusted professionals nearby"
           copy="Find verified experts, compare options, and book in minutes — in person or online."
+          centered
         >
           <OtpHeader variant="web" destination={destination} />
           <OtpFields variant="web" {...fieldProps} />
@@ -206,6 +207,7 @@ export function UserOtpForm() {
           illustration={<OtpIllustration className="!h-auto !w-full" />}
           headline="Book trusted professionals nearby"
           copy="Find verified experts, compare options, and book in minutes — in person or online."
+          centered
         >
           <OtpHeader variant="web" destination={destination} />
           <OtpFields variant="web" {...fieldProps} />

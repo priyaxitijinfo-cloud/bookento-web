@@ -543,13 +543,8 @@ export function HeroSection({ className }) {
 
   const showSuggestions = searchOpen && categorySuggestions.length > 0;
 
-  function gateHref(destination) {
-    if (!canBrowseBooked) return getLoginRedirectUrl(destination);
-    return destination;
-  }
-
   function resolveCategoryHref(slug) {
-    return gateHref(categoryListingRoute(slug));
+    return categoryListingRoute(slug);
   }
 
   useEffect(() => {

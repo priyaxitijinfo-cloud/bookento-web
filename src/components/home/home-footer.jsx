@@ -12,6 +12,7 @@ import {
   Youtube,
 } from "lucide-react";
 
+import { FEATURE_FLAGS } from "@/config/app.config";
 import { categoryListingRoute, ROUTES } from "@/constants/routes.constants";
 import { useRequireLoginToBook } from "@/hooks/use-require-login-to-book";
 import { useWebLocale } from "@/hooks/use-web-locale";
@@ -28,8 +29,12 @@ const EXPLORE_LINKS = [
 ];
 
 const PRO_LINKS = [
-  { href: ROUTES.PROVIDER_REGISTER, labelKey: "footerProList" },
-  { href: ROUTES.PROVIDER_REGISTER, labelKey: "footerProPricing" },
+  ...(FEATURE_FLAGS.providerFlowEnabled
+    ? [
+        { href: ROUTES.PROVIDER_REGISTER, labelKey: "footerProList" },
+        { href: ROUTES.PROVIDER_REGISTER, labelKey: "footerProPricing" },
+      ]
+    : []),
   { href: ROUTES.HELP, labelKey: "footerProResources" },
   { href: "/#testimonials", labelKey: "footerProStories" },
 ];

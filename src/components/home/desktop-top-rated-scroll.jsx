@@ -205,16 +205,16 @@ export function DesktopTopRatedScroll({ providers }) {
 
   return (
     <div>
-      <div className="flex items-end justify-between gap-4 md:gap-6">
+      <div className="flex items-end justify-between gap-4 md:mt-5 md:gap-6">
         <DesktopSectionHeading
           badgeKey="professionalsBadge"
           titleKey="professionalsTitle"
           highlightKey="professionalsHighlight"
           align="left"
-          className="mb-0 w-full md:w-auto"
+          className="mb-0 w-full md:mb-0 md:w-auto"
         />
 
-        <div className="mb-1 hidden shrink-0 items-center gap-2 md:flex">
+        <div className="hidden shrink-0 items-center gap-2 md:flex">
           <NavButton
             label="Previous professionals"
             side="left"
@@ -229,7 +229,7 @@ export function DesktopTopRatedScroll({ providers }) {
       </div>
 
       <div
-        className="scrollbar-hide mt-5 mb-5 flex flex-nowrap items-center justify-center gap-1.5 overflow-x-auto md:flex-wrap md:justify-start md:gap-2"
+        className="scrollbar-hide mt-5 mb-5 flex flex-nowrap items-center justify-center gap-1.5 overflow-x-auto md:mt-6 md:flex-wrap md:justify-start md:gap-2"
         role="tablist"
         aria-label={t("prosFilterAria")}
       >
@@ -247,8 +247,8 @@ export function DesktopTopRatedScroll({ providers }) {
                 "px-3 py-2 text-[11px] md:px-5 md:py-[0.55rem] md:text-[13px]",
                 "focus-visible:ring-2 focus-visible:ring-[#1865EA]/30 focus-visible:ring-offset-2 focus-visible:outline-none",
                 active
-                  ? "gradient-brand text-white ring-1 ring-[#1865EA]/35"
-                  : "bg-white text-[#5B6B82] ring-1 ring-[#DCE3EE] hover:bg-[#F5F8FC] hover:text-[#314158] hover:ring-[#C9D6EA]",
+                  ? "gradient-brand text-white shadow-[0_6px_16px_-6px_rgba(24,101,234,0.55)]"
+                  : "bg-[#F1F5FB] text-[#5B6B82] hover:bg-[#E4EEFD] hover:text-[#1865EA] md:bg-white md:hover:bg-[#EEF4FE]",
               )}
             >
               {t(filter.labelKey)}

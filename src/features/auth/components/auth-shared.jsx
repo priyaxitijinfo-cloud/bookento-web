@@ -442,6 +442,7 @@ export function AuthWebFrame({
   copy,
   children,
   wide = false,
+  centered = false,
 }) {
   const desktopArt = isValidElement(illustration)
     ? cloneElement(illustration, { key: "desktop-art" })
@@ -559,6 +560,7 @@ export function AuthWebFrame({
                 // Never scroll this wrapper — ProviderAuthWebShell pins the button below.
                 "mx-auto flex h-full min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden overscroll-none px-6 pb-2",
                 wide ? "max-w-[38rem]" : "max-w-[28rem]",
+                centered && "justify-center",
               )}
             >
               {children}
